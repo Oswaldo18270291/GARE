@@ -9,4 +9,10 @@ class Report extends Model
 {
     /** @use HasFactory<\Database\Factories\ReportFactory> */
     use HasFactory;
+
+
+    public function titles()
+    {
+        return $this->belongsToMany(Title::class);
+    }
 }
