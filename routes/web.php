@@ -22,3 +22,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/reports_pdf', function () {
+    return view('plantillas.reports_pdf');
+})->name('pdf');
