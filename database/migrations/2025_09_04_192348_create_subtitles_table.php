@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('subtitles', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('nombre'); 
+            $table->foreignId('title_id')->constrained('titles'); //Creada
+
         });
     }
 

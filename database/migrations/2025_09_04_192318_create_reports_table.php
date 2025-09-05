@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('nombre_empresa');      
             $table->string('giro_empresa');
+            $table->integer('ubicacion');
             $table->integer('telefono');
             $table->string('representante');
             $table->date('fecha_analisis');

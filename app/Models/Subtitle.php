@@ -9,4 +9,11 @@ class Subtitle extends Model
 {
     /** @use HasFactory<\Database\Factories\SubtitleFactory> */
     use HasFactory;
+
+
+    
+    public function titles()
+    {
+        return $this->belongsTo(Title::class);
+    }
 }

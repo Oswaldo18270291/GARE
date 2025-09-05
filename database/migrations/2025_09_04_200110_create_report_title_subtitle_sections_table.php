@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('report_title_subtitle_sections', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId('section_id')->constrained('sections'); //Creada
+            $table->foreignId('r_t_s_id')->constrained('report_title_subtitles'); //Creada
+
         });
     }
 

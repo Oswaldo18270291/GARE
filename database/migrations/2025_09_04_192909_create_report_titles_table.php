@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('report_titles', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('report_id')->constrained('report'); //Creada
+            $table->foreignId('report_id')->constrained('reports'); //Creada
             $table->foreignId('title_id')->constrained('titles'); //Creada
 
         });

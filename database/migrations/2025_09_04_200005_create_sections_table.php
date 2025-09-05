@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('sections', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId('subtitle_id')->constrained('subtitles'); //Creada
+            $table->string('nombre');
+
         });
     }
 
