@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId('subtitle_id')->constrained('subtitles'); //Creada
             $table->foreignId('r_t_id')->constrained('report_titles'); //Creada
+            $table->boolean('status')->default(false);
         });
     }
 

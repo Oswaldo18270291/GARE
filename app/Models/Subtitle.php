@@ -13,7 +13,7 @@ class Subtitle extends Model
     protected $fillable = ['nombre', 'title_id'];
 
     
-    public function titles()
+    public function title()
     {
         return $this->belongsTo(Title::class);
     }
