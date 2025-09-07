@@ -10,14 +10,15 @@ class Title extends Model
     /** @use HasFactory<\Database\Factories\TitleFactory> */
     use HasFactory;
 
-
+    protected $fillable = ['nombre'];
     
-    public function reports()
-    {
-        return $this->belongsToMany(Report::class);
-    }
+
         public function subtitles()
     {
         return $this->hasMany(Subtitle::class);
+    }
+        public function reportTitles()
+    {
+        return $this->hasMany(ReportTitle::class);
     }
 }

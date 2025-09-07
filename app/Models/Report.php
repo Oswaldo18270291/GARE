@@ -9,10 +9,20 @@ class Report extends Model
 {
     /** @use HasFactory<\Database\Factories\ReportFactory> */
     use HasFactory;
+    protected $fillable = [
+        'nombre_empresa', 'giro_empresa', 'ubicacion', 'telefono', 'representante',
+        'fecha_analisis', 'user_id', 'colaborador1', 'colaborador2',
+        'colaborador3', 'colaborador4', 'colaborador5', 'logo'
+    ];
 
 
-    public function titles()
+        public function user()
     {
-        return $this->belongsToMany(Title::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function reportTitles()
+    {
+        return $this->hasMany(ReportTitle::class);
     }
 }

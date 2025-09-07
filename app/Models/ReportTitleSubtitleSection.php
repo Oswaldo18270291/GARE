@@ -9,4 +9,19 @@ class ReportTitleSubtitleSection extends Model
 {
     /** @use HasFactory<\Database\Factories\ReportTitleSubtitleSectionFactory> */
     use HasFactory;
+
+        public function reportTitleSubtitle()
+    {
+        return $this->belongsTo(ReportTitleSubtitle::class, 'r_t_s_id');
+    }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
+
+    public function contents()
+    {
+        return $this->hasMany(Content::class, 'r_t_s_s_id');
+    }
 }
