@@ -8,13 +8,15 @@
     }
 
     html, body {
+      font-family: "Times News Roman", serif;
+      font-size: 12pt;
       margin: 0;
       padding: 0;
       height: 100%;
     }
 
     body {
-      background-image: url('fondo_portada/portada.png'); /* Reemplaza con tu imagen */
+      background-image: url('fondo_portada/portada.png'); /* Imagen de fondo */
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
@@ -29,6 +31,9 @@
     }
   </style>
 </head>
+<header>
+  
+</header>
 <body>
   <div class="contenido">
     <h1>Hola, este es mi PDF con fondo</h1>
