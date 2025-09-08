@@ -14,10 +14,9 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Menú')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Inicio</flux:navlist.item>
-                    <flux:navlist.item icon="clipboard-document-list" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Informes creados</flux:navlist.item>
-                    <flux:navlist.item icon="document-plus" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Creación de informes</flux:navlist.item>
-                    <flux:navlist.item icon="document-duplicate" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Historial de informes</flux:navlist.item>
-
+                    <flux:navlist.item icon="clipboard-document-list" :href="route('my_reports.index')" :current="request()->routeIs('my_reports.index')" wire:navigate>Mis informes creados</flux:navlist.item>
+                    <flux:navlist.item icon="document-plus" :href="route('creacion_reports.index')" :current="request()->routeIs('creacion_reports.index')" wire:navigate>Creación de informes</flux:navlist.item>
+                    <flux:navlist.item icon="document-duplicate" :href="route('history.index')" :current="request()->routeIs('history.index')" wire:navigate>Historial de informes</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 

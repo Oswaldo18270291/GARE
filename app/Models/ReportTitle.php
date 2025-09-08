@@ -10,6 +10,9 @@ class ReportTitle extends Model
     /** @use HasFactory<\Database\Factories\ReportTitleFactory> */
     use HasFactory;
 
+        protected $fillable = ['report_id', 'title_id'];
+
+        
     public function report()
     {
         return $this->belongsTo(Report::class);

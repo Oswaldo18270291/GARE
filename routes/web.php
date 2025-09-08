@@ -1,5 +1,8 @@
 <?php
 
+use App\Livewire\CReports\Index as CReportsIndex;
+use App\Livewire\History\Index as HistoryIndex;
+use App\Livewire\Reports\Index;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -30,3 +33,7 @@ Route::get('/reports_pdf', function () {
     $pdf = Pdf::loadView('plantillas.reports_pdf');
     return $pdf->stream();
 });
+
+Route::get('c_report', CReportsIndex::class)->name('creacion_reports.index');
+Route::get('my_reports', Index::class)->name('my_reports.index');
+Route::get('history', HistoryIndex::class)->name('history.index');
