@@ -13,18 +13,18 @@
             required
             autofocus
             autocomplete="email"
-            placeholder="email@example.com"
+            placeholder="7777_ejemplo"
         />
 
         <!-- Password -->
         <div class="relative">
             <flux:input
                 wire:model="password"
-                :label="__('Contraseña')"
+                :label="__('Ingrese contraseña')"
                 type="password"
                 required
                 autocomplete="current-password"
-                :placeholder="__('Password')"
+                :placeholder="__('Contraseña')"
                 viewable
             />
 
