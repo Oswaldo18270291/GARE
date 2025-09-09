@@ -34,21 +34,34 @@ Creacion de reportes
 
 <!-- JavaScript -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Toggle subtítulos al marcar título
+    function initCheckboxes() {
         document.querySelectorAll('.toggle-subtitles').forEach(function (checkbox) {
-            checkbox.addEventListener('change', function () {
-                const subtitlesDiv = this.closest('.title-wrapper').querySelector('.subtitles');
-                subtitlesDiv.style.display = this.checked ? 'block' : 'none';
-            });
+            checkbox.removeEventListener('change', toggleSubtitlesHandler); // Limpieza previa
+            checkbox.addEventListener('change', toggleSubtitlesHandler);
         });
 
-        // Toggle secciones al marcar subtítulo
         document.querySelectorAll('.toggle-sections').forEach(function (checkbox) {
-            checkbox.addEventListener('change', function () {
-                const sectionsUl = this.closest('.subtitle-wrapper').querySelector('.sections');
-                sectionsUl.style.display = this.checked ? 'block' : 'none';
-            });
+            checkbox.removeEventListener('change', toggleSectionsHandler); // Limpieza previa
+            checkbox.addEventListener('change', toggleSectionsHandler);
+        });
+    }
+
+    function toggleSubtitlesHandler(event) {
+        const subtitlesDiv = event.target.closest('.title-wrapper').querySelector('.subtitles');
+        subtitlesDiv.style.display = event.target.checked ? 'block' : 'none';
+    }
+
+    function toggleSectionsHandler(event) {
+        const sectionsUl = event.target.closest('.subtitle-wrapper').querySelector('.sections');
+        sectionsUl.style.display = event.target.checked ? 'block' : 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        initCheckboxes();
+
+        // Escuchar cuando Livewire actualiza el DOM
+        Livewire.hook('message.processed', (message, component) => {
+            initCheckboxes();
         });
     });
 </script>
