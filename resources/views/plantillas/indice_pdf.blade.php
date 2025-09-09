@@ -6,6 +6,7 @@
     @page {
       size: A4;
       margin: 0;
+      counter-reset: page 2;
     }
 
     header { 
@@ -41,7 +42,7 @@
       margin-top: 100px;
     }
 
-    flooter {
+    footer {
       position: fixed;
       left: 0px;
       bottom: 0px;
@@ -49,6 +50,14 @@
       height: 50px;
       text-align: right;
       color: black; /* O el color que contraste con tu fondo */
+    }
+
+    footer .page:after {
+        content: counter(page);
+    }
+
+    .page-content {
+      page-break-after: always;
     }
   </style>
 </head>
@@ -79,19 +88,50 @@
     </header>
   <!-- Contenido -->
   <div class="contenido">
-    <p>Dr. Rafael Rincón ValenciaS</p>
-    <p>Mtro. Oscar Solís Martínez</p>
-    <br><br><br><br><br><br><br><br>
-    <p>Informe de Evaluación</p>
-    <br>
-    <p>SECRETARIA DE SEGURIDAD DEL PUEBLO DE CHIAPAS</p>
-    <p>Análisis de Riesgos del H. Congreso del Estado</p>
+    <h2 style="text-align: left; font-size: 16pt; margin-bottom: 20px;">ÍNDICE</h2>
+    <table style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 12pt;">
+        <tr>
+            <td style="padding: 8px; text-align: left;">1. Introducción</td>
+            <td style="padding: 8px; text-align: right;">4</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; text-align: left;">2. Objetivos</td>
+            <td style="padding: 8px; text-align: right;">5</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; text-align: left;">3. Alcance</td>
+            <td style="padding: 8px; text-align: right;">6</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; text-align: left;">4. Metodología</td>
+            <td style="padding: 8px; text-align: right;">7</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; text-align: left;">5. Identificación de Riesgos</td>
+            <td style="padding: 8px; text-align: right;">10</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; text-align: left;">6. Análisis de Riesgos</td>
+            <td style="padding: 8px; text-align: right;">15</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; text-align: left;">7. Evaluación de Riesgos</td>
+            <td style="padding: 8px; text-align: right;">20</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; text-align: left;">8. Plan de Tratamiento de Riesgos</td>
+            <td style="padding: 8px; text-align: right;">25</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; text-align: left;">9. Monitoreo y Revisión</td>
+            <td style="padding: 8px; text-align: right;">30</td>
+        </tr>
   </div>
   <!-- Pie de pagina -->
-  <flooter>
-    <p style="font-size: 10pt;">
-      Pagina 2
+  <footer>
+    <p style="font-size: 10pt;" class="page">
+      Página 
     </p>
-  </flooter>
+  </footer>
 </body>
 </html>
