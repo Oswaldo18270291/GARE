@@ -14,11 +14,9 @@ use Livewire\Component;
 class Register extends Component
 {
     public string $name = '';
-
+    public string $username = '';
     public string $email = '';
-
     public string $password = '';
-
     public string $password_confirmation = '';
 
     /**
@@ -28,6 +26,7 @@ class Register extends Component
     {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:50', 'unique:'.User::class],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
