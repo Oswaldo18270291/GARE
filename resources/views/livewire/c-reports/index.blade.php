@@ -1,50 +1,53 @@
 <div>
     Creación de reportes
-
+ <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
     <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
         <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Nombre de empresa</label>
-        <input id="textInputDefault" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="name" placeholder="Enter your name" autocomplete="name"/>
+        <input id="textInputDefault" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+        text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
+        disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="name" 
+        placeholder="Ingrese Nombre de empresa" autocomplete="name"/>
     </div>
     <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
         <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Giro de empresa</label>
-        <input id="textInputDefault" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="name" placeholder="Enter your name" autocomplete="name"/>
+        <input id="textInputDefault" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+        text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
+        disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="name" 
+        placeholder="Ingrese Giro de empresa" autocomplete="name"/>
     </div>
+ </div>
+ <br>
+  <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
         <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
         <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Ubicación</label>
-        <input id="textInputDefault" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="name" placeholder="Enter your name" autocomplete="name"/>
+        <input id="textInputDefault" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2
+         text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
+         disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="name" 
+         placeholder="Ingrese Ubicación de la empresa" autocomplete="name"/>
     </div>
     <div x-data class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
         <label for="phoneInput" class="w-fit pl-0.5 text-sm">Telefono</label>
-        <input id="phoneInput" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" x-mask="(999) 999-9999" name="phone" autocomplete="tel-national" placeholder="(999) 999-9999"/>
+        <input id="phoneInput" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 text-sm 
+        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 
+        dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" x-mask="(999) 999-9999" 
+        name="phone" autocomplete="tel-national" placeholder="(999) 999-9999"/>
     </div>
+  </div>
+  <br>
+   <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
     <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
         <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Representante</label>
-        <input id="textInputDefault" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="name" placeholder="Enter your name" autocomplete="name"/>
+        <input id="textInputDefault" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+        text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
+        disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="name" 
+        placeholder="Ingrese representantes" autocomplete="name"/>
     </div>
-    <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-        <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Fecha de analisis</label>
-        <input id="textInputDefault" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="name" placeholder="Enter your name" autocomplete="name"/>
-    </div>
-<div>
-    <h2 class="text-lg font-bold mb-4">Agregar Colaboradores</h2>
-
-
-        <div class="flex items-center gap-2 mb-2">
-            <input type="text"
-                   wire:model="colaboradores.{{ $index }}"
-                   placeholder="Nombre del colaborador"
-                   class="border rounded px-2 py-1 w-full">
-
-            <!-- Botón para eliminar -->
-
-
-    <!-- Botón para agregar más -->
-    <button type="button"
-            wire:click="addColaborador"
-            class="bg-green-500 text-white px-2 py-1 rounded">
-        +
-    </button>
-</div>
+        <div class="flex flex-col w-full">
+            <label for="i_vigencia" class="w-fit pl-0.5 text-sm">Fecha de analisis</label>
+            <input wire:model="i_vigencia" type="date" id="i_vigencia" name="i_vigencia">
+        </div>
+   </div>
+   <br>
 
 
 
