@@ -1,5 +1,10 @@
 <div class="flex flex-col gap-6">
-    <x-auth-header :title="__('GARE')" :description="__('Ingresa tus datos de acceso')" />
+    <x-auth-header 
+        :title="__('GARE')" 
+        :description="__('Ingresa tus datos de acceso')" 
+        titleClass="font-serif"
+        descClass="text-black"
+    />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
@@ -45,8 +50,8 @@
 
     @if (Route::has('register'))
         <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
-            <span>{{ __('Don\'t have an account?') }}</span>
-            <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
+            <span>{{ __('¿No tienes una cuenta?') }}</span>
+            <flux:link :href="route('register')" wire:navigate>{{ __('Crear cuenta') }}</flux:link>
         </div>
     @endif
 </div>
