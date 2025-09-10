@@ -34,16 +34,16 @@
 
             @if (Route::has('password.request'))
                 <flux:link class="absolute end-0 top-0 text-sm" :href="route('password.request')" wire:navigate>
-                    {{ __('¿Olvidaste tu contraseña?') }}
+                    {{ __('¿Olvidó la contraseña?') }}
                 </flux:link>
             @endif
         </div>
 
         <!-- Remember Me -->
-        <flux:checkbox wire:model="remember" :label="__('Remember me')" />
+        <flux:checkbox wire:model="remember" :label="__('Recuérdame')" />
 
         <div class="flex items-center justify-end">
-            <flux:button variant="primary" type="submit" class="w-full">{{ __('Log in') }}</flux:button>
+            <flux:button variant="primary" type="submit" class="w-full bg-blue-950">{{ __('Ingresar') }}</flux:button>
         </div>
     </form>
 
