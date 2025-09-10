@@ -13,12 +13,10 @@
     <form method="POST" wire:submit="login" class="flex flex-col gap-6">
         <!-- Email Address -->
         <flux:input
-            wire:model="email"
+            wire:model="username"
             :label="__('Usuario')"
-            type="email"
             required
             autofocus
-            autocomplete="email"
             placeholder="7777_ejemplo"
         />
 

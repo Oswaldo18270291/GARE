@@ -16,15 +16,26 @@
             :placeholder="__('Full name')"
         />
 
-        <!-- Email Address -->
+        <!-- Username -->
+        <flux:input
+            wire:model="username"
+            :label="__('Usuario')"
+            type="text"
+            required
+            autocomplete="username"
+            placeholder="1234Juan"
+        />
+
+        <!-- Email -->
         <flux:input
             wire:model="email"
-            :label="__('Email address')"
+            :label="__('Correo electrónico')"
             type="email"
             required
             autocomplete="email"
-            placeholder="email@example.com"
+            placeholder="ejemplo@correo.com"
         />
+
 
         <!-- Password -->
         <flux:input
