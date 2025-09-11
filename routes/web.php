@@ -8,7 +8,7 @@ use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use Illuminate\Support\Facades\Route;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use App\Livewire\Plantillas\portada_pdf;
 
 
 /*Route::get('/', function () {
@@ -29,11 +29,12 @@ Route::middleware(['auth'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/portada_pdf', function () {
+/*Route::get('/portada_pdf', function () {
     $pdf = Pdf::loadView('plantillas.portada_pdf');
     return $pdf->stream();
-});
+});*/
 
 Route::get('c_report', CReportsIndex::class)->name('creacion_reports.index');
 Route::get('my_reports', Index::class)->name('my_reports.index');
 Route::get('history', HistoryIndex::class)->name('history.index');
+Route::get('/portada_pdf', portada_pdf::class)->name('plantillas.portada_pdf');
