@@ -4,7 +4,7 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
-<flux:sidebar sticky stashable class="border-e border-zinc-200 dark:border-zinc-700" style="background-color: rgba(234, 234, 234, 1);">
+<flux:sidebar sticky stashable class="border-e border-zinc-200 dark:border-zinc-700" style="background-color: rgba(143, 6, 6, 1);">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
             <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
@@ -13,10 +13,10 @@
 
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Menú')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Inicio</flux:navlist.item>
-                    <flux:navlist.item icon="clipboard-document-list" :href="route('my_reports.index')" :current="request()->routeIs('my_reports.index')" wire:navigate>Mis informes creados</flux:navlist.item>
-                    <flux:navlist.item icon="document-plus" :href="route('creacion_reports.index')" :current="request()->routeIs('creacion_reports.index')" wire:navigate>Creación de informes</flux:navlist.item>
-                    <flux:navlist.item icon="document-duplicate" :href="route('history.index')" :current="request()->routeIs('history.index')" wire:navigate>Historial de informes</flux:navlist.item>
+                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate class="!text-white data-[current]:!text-black">Inicio</flux:navlist.item>
+                    <flux:navlist.item icon="clipboard-document-list" :href="route('my_reports.index')" :current="request()->routeIs('my_reports.index')" wire:navigate class="!text-white data-[current]:!text-black">Mis informes creados</flux:navlist.item>
+                    <flux:navlist.item icon="document-plus" :href="route('creacion_reports.index')" :current="request()->routeIs('creacion_reports.index')" wire:navigate class="!text-white data-[current]:!text-black">Creación de informes</flux:navlist.item>
+                    <flux:navlist.item icon="document-duplicate" :href="route('history.index')" :current="request()->routeIs('history.index')" wire:navigate class="!text-white data-[current]:!text-black">Historial de informes</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
@@ -26,11 +26,13 @@
 
             <!-- Desktop User Menu -->
             <flux:dropdown class="hidden lg:block" position="bottom" align="start">
-                <flux:profile
+                <div class="px-2 bg-white rounded-md">
+                    <flux:profile
                     :name="auth()->user()->name"
                     :initials="auth()->user()->initials()"
                     icon:trailing="chevrons-up-down"
-                />
+                    />
+                </div>
 
                 <flux:menu class="w-[220px]">
                     <flux:menu.radio.group>
@@ -55,7 +57,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+                        <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Configuración') }}</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
@@ -63,7 +65,7 @@
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
-                            {{ __('Log Out') }}
+                            {{ __('Cerrar sesión') }}
                         </flux:menu.item>
                     </form>
                 </flux:menu>

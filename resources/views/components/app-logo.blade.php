@@ -3,5 +3,5 @@
 </div>
 
 <div class="ms-1 grid flex-1 text-start text-sm">
-    <span class="mb-0.5 truncate leading-tight font-semibold">GARE</span>
+    <span class="mb-0.5 truncate leading-tight font-serif bold text-4xl text-white">GARE</span>
 </div>

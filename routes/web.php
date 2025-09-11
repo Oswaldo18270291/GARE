@@ -29,8 +29,8 @@ Route::middleware(['auth'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/indice_pdf', function () {
-    $pdf = Pdf::loadView('plantillas.indice_pdf');
+Route::get('/portada_pdf', function () {
+    $pdf = Pdf::loadView('plantillas.portada_pdf');
     return $pdf->stream();
 });
 
