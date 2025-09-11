@@ -12,34 +12,23 @@
 
     <form method="POST" wire:submit="login" class="flex flex-col gap-6 login-form text-white">
         <!-- Email Address -->
-<flux:input
-    id="username-input"
-    wire:model="username"
-    :label="__('Usuario')"
-    required
-    autofocus
-    placeholder="7777_ejemplo"
-/>
 
-<style>
-    #username-input[data-flux-input] label {
-        color: white !important;
-    }
-</style>
-
-
+        <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
+            <label for="textInputDefault" class="w-fit pl-0.5 text-sm text-white">Usuario</label>
+            <input wire:model="username" id="username-input" type="text" required autofocus class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+            text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 
+            dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark " name="name" placeholder="7777_ejemplo" 
+            autocomplete="name"/>
+        </div>
         <!-- Password -->
         <div class="relative">
-            <flux:input
-                wire:model="password"
-                :label="__('Ingrese contraseña')"
-                type="password"
-                required
-                autocomplete="current-password"
-                :placeholder="__('Contraseña')"
-                viewable
-                class="[&>label]:text-white"
-            />
+        <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
+            <label for="textInputDefault" class="w-fit pl-0.5 text-sm text-white">Ingrese contraseña</label>
+            <input wire:model="password" id="username-input" type="password" required autofocus class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+            text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 
+            dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark " required autocomplete="current-password" name="password" placeholder="Contraseña" 
+            autocomplete="name"/>
+        </div>
 
             @if (Route::has('password.request'))
                 <flux:link class="absolute end-0 top-0 text-sm !text-blue-950 font-semibold" :href="route('password.request')" wire:navigate>
@@ -49,11 +38,18 @@
         </div>
 
         <!-- Remember Me -->
-        <flux:checkbox 
-            wire:model="remember"  
-            :label="__('Recuérdame')"  
-            class="[&>label]:text-white"
-        />
+
+        <label for="remember" class="flex items-center gap-2 text-sm text-white cursor-pointer">
+            <flux:checkbox 
+                wire:model="remember"  
+                class="[&>label]:text-white"
+                descClass="text-white"
+                id="remember"
+            />
+            <span>Recordar contraseña</span>
+        </label>
+
+
 
         <div class="flex items-center justify-end">
             <flux:button variant="primary" type="submit" class="w-full bg-blue-950">{{ __('Ingresar') }}</flux:button>
