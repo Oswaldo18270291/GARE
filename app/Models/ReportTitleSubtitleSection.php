@@ -9,7 +9,7 @@ class ReportTitleSubtitleSection extends Model
 {
     /** @use HasFactory<\Database\Factories\ReportTitleSubtitleSectionFactory> */
     use HasFactory;
-    protected $fillable = ['r_t_s_id', 'section_id'];
+    protected $fillable = ['r_t_s_id', 'section_id','status'];
 
         public function reportTitleSubtitle()
     {

@@ -10,7 +10,7 @@ class ReportTitle extends Model
     /** @use HasFactory<\Database\Factories\ReportTitleFactory> */
     use HasFactory;
 
-        protected $fillable = ['report_id', 'title_id'];
+        protected $fillable = ['report_id', 'title_id','status'];
 
         
     public function report()
