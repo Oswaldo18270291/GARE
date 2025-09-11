@@ -18,9 +18,9 @@ return new class extends Migration
             $table->foreignId('r_t_s_id')->constrained('report_title_subtitles'); //Creada
             $table->foreignId('r_t_s_s_id')->constrained('report_title_subtitle_sections'); //Creada
             $table->string('cont');
-            $table->string('img1');
-            $table->string('img2');
-            $table->string('img3');
+            $table->string('img1')->nullable();;
+            $table->string('img2')->nullable();;
+            $table->string('img3')->nullable();;
 
         });
     }

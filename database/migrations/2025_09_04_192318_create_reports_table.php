@@ -15,18 +15,18 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('nombre_empresa');      
-            $table->string('giro_empresa');
-            $table->integer('ubicacion');
-            $table->integer('telefono');
+            $table->string('giro_empresa')->nullable();;
+            $table->string('ubicacion')->nullable();;
+            $table->string('telefono')->nullable();;
             $table->string('representante');
             $table->date('fecha_analisis');
             $table->foreignId('user_id')->constrained('users'); //Creada
             $table->string('colaborador1');
-            $table->string('colaborador2');
-            $table->string('colaborador3');
-            $table->string('colaborador4');
-            $table->string('colaborador5');
-            $table->string('logo');
+            $table->string('colaborador2')->nullable();;
+            $table->string('colaborador3')->nullable();;
+            $table->string('colaborador4')->nullable();;
+            $table->string('colaborador5')->nullable();;
+            $table->string('logo')->nullable();;
         });
     }
 
