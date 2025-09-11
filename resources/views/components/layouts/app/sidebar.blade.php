@@ -26,14 +26,13 @@
 
             <!-- Desktop User Menu -->
             <flux:dropdown class="hidden lg:block" position="bottom" align="start">
-                <div class="px-2 bg-white rounded-md">
-                    <flux:profile
-                    :name="auth()->user()->name"
+            <div class="px-2 bg-white rounded-md">
+                <flux:profile
+                    :name="collect(explode(' ', auth()->user()->name))->take(2)->implode(' ')"
                     :initials="auth()->user()->initials()"
                     icon:trailing="chevrons-up-down"
-                    />
-                </div>
-
+                />
+            </div>
                 <flux:menu class="w-[220px]">
                     <flux:menu.radio.group>
                         <div class="p-0 text-sm font-normal">
