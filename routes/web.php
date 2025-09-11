@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Portada as ControllersPortada;
 use App\Livewire\CReports\Index as CReportsIndex;
 use App\Livewire\History\Index as HistoryIndex;
 use App\Livewire\Reports\Index;
@@ -37,4 +38,7 @@ require __DIR__.'/auth.php';
 Route::get('c_report', CReportsIndex::class)->name('creacion_reports.index');
 Route::get('my_reports', Index::class)->name('my_reports.index');
 Route::get('history', HistoryIndex::class)->name('history.index');
-Route::get('/portada_pdf', portada::class)->name('plantillas.portada');
+//Route::get('/portada', portada::class)->name('plantillas.portada');
+
+
+Route::get('/portada', [ControllersPortada::class, 'index']);

@@ -72,7 +72,7 @@
   <!-- Contenido -->
   <div class="contenido">
     <p>ANÁLISIS Y EVALUACIÓN DE RIESGOS</p>
-    <p>H. CONGRESO DEL ESTADO DE CHIAPAS</p>
+    <p>{{$reports->nombre_empresa}}</p>
     <p>SECRETARÍA DE SEGURIDAD DEL PUEBLO</p>
     <p>SUBSECRETARÍA DE SERVICIOS ESTRATÉGICOS DE SEGURIDAD</p>
     <p>DIVISIÓN DE LA GUARDIA DE SERVICIOS</p>
