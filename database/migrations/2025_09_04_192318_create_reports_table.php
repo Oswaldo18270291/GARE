@@ -26,7 +26,8 @@ return new class extends Migration
             $table->string('colaborador3')->nullable();;
             $table->string('colaborador4')->nullable();;
             $table->string('colaborador5')->nullable();;
-            $table->string('logo')->nullable();;
+            $table->string('logo')->nullable();
+            $table->string('img')->nullable();
         });
     }
 
