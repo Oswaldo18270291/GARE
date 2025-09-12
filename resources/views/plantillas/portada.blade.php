@@ -56,8 +56,8 @@
     flooter {
       position: fixed;
       left: 0px;
-      bottom: 0px;
-      right: 30px;
+      bottom: 22px;
+      right: 40px;
       height: 50px;
       text-align: right;
       color: black; /* O el color que contraste con tu fondo */
@@ -79,10 +79,13 @@
     <img src="img_portada/CONGRESO.png" class="ilustrativa">
   </div>
   <!-- Pie de pagina -->
+  @php
+    use Carbon\Carbon;
+    setlocale(LC_TIME, 'es_ES.UTF-8'); // Para que los meses salgan en español
+    \Carbon\Carbon::setLocale('es');
+  @endphp
   <flooter>
-    <p style="font-size: 10pt;">
-      TUXTLA GUTIÉRREZ, CHIAPAS A 01 DE JUNIO DE 2025
-    </p>
+    <p>TUXTLA GUTIÉRREZ, CHIAPAS A {{ Str::upper(Carbon::parse($reports->fecha_analisis)->translatedFormat('d \d\e F \d\e Y')) }}</p>
   </flooter>
 </body>
 </html>
