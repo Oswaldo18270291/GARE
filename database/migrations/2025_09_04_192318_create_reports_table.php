@@ -28,6 +28,8 @@ return new class extends Migration
             $table->string('colaborador5')->nullable();;
             $table->string('logo')->nullable();
             $table->string('img')->nullable();
+            $table->boolean('status')->default(false);
+            $table->string('Folio')->nullable();
         });
     }
 

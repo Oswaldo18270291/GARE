@@ -76,7 +76,7 @@
   <!-- Encabezado -->
   <header>
     <img src="img_portada/SSP.png" class="logo_humanismo">
-    <img src="img_portada/SSP.png" class="logo_empresa">
+    <img src="storage/{{ $reports->logo }}" class="logo_empresa" />
   </header>
   <!-- Contenido -->
   <div class="contenido">
@@ -85,7 +85,7 @@
     <p>SECRETARÍA DE SEGURIDAD DEL PUEBLO</p>
     <p>SUBSECRETARÍA DE SERVICIOS ESTRATÉGICOS DE SEGURIDAD</p>
     <p>DIVISIÓN DE LA GUARDIA DE SERVICIOS</p>
-    <img src="img_portada/CONGRESO.png" class="ilustrativa">
+    <img src="storage/{{ $reports->img }}" class="ilustrativa" />
   </div>
   <!-- Pie de pagina -->
   @php
