@@ -5,14 +5,14 @@
  <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
     <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
         <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Nombre de empresa</label>
-        <input wire:model="nombre_empresa" id="nombre_empresa" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+        <input required wire:model="nombre_empresa" id="nombre_empresa" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
         text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
         disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="nombre_empresa" 
         placeholder="Ingrese Nombre de empresa" autocomplete="name"/>
     </div>
     <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
         <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Giro de empresa</label>
-        <input wire:model="giro_empresa" id="giro_empresa" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+        <input required wire:model="giro_empresa" id="giro_empresa" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
         text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
         disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="giro_empresa" 
         placeholder="Ingrese Giro de empresa" autocomplete="name"/>
@@ -22,14 +22,14 @@
   <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
         <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
         <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Ubicación</label>
-        <input wire:model="ubicacion" id="ubicacion" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2
+        <input  wire:model="ubicacion" id="ubicacion" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2
          text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
          disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="ubicacion" 
          placeholder="Ingrese Ubicación de la empresa" autocomplete="name"/>
     </div>
     <div x-data class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
         <label for="phoneInput" class="w-fit pl-0.5 text-sm">Telefono</label>
-        <input wire:model="telefono" id="telefono" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 text-sm 
+        <input  wire:model="telefono" id="telefono" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 text-sm 
         focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 
         dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" x-mask="(999) 999-9999" 
         name="telefono" autocomplete="tel-national" placeholder="(999) 999-9999"/>
@@ -39,40 +39,114 @@
    <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
         <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
             <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Representante</label>
-            <input wire:model="representante" id="representante" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+            <input required wire:model="representante" id="representante" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
             text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
             disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="representante" 
             placeholder="Ingrese representantes" autocomplete="name"/>
         </div>
             <div class="flex flex-col w-full">
                 <label for="fecha_analisis" class="w-fit pl-0.5 text-sm">Fecha de analisis</label>
-                <input wire:model="fecha_analisis" type="date" id="fecha_analisis" name="fecha_analisis">
+                <input required wire:model="fecha_analisis" type="date" id="fecha_analisis" name="fecha_analisis">
             </div>
             
    </div>
      <br>
     <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
         <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Colaborador</label>
-        <input wire:model="colaborador" id="colaborador" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2
+        <input required wire:model="colaborador" id="colaborador" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2
          text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
          disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="colaborador" 
          placeholder="Ingrese Ubicación de la empresa" autocomplete="name"/>
    </div>
      <br>
-    <div class="flex w-full max-w-xl text-center flex-col gap-1">
-        <span class="w-fit pl-0.5 text-sm text-on-surface dark:text-on-surface-dark">Importa el logo de la empresa</span>
-        <div class="flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed border-outline p-8 text-on-surface dark:border-outline-dark dark:text-on-surface-dark">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="w-12 h-12 opacity-75">
-                <path fill-rule="evenodd" d="M10.5 3.75a6 6 0 0 0-5.98 6.496A5.25 5.25 0 0 0 6.75 20.25H18a4.5 4.5 0 0 0 2.206-8.423 3.75 3.75 0 0 0-4.133-4.303A6.001 6.001 0 0 0 10.5 3.75Zm2.03 5.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 1 0 1.06 1.06l1.72-1.72v4.94a.75.75 0 0 0 1.5 0v-4.94l1.72 1.72a.75.75 0 1 0 1.06-1.06l-3-3Z" clip-rule="evenodd"/>
-            </svg>
-            <div class="group">
-                <label for="fileInputDragDrop" class="font-medium text-primary group-focus-within:underline dark:text-primary-dark">
-                    <input wire:model="logo" id="logo" type="file" class="sr-only" aria-describedby="validFileFormats" />
-                    Carga
+      <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
+        <div 
+            class="flex w-full max-w-xl text-center flex-col gap-1"
+            x-data="{
+                isDropping: false,
+                handleDrop(e) {
+                    this.isDropping = false;
+                    const file = e.dataTransfer.files[0];
+                    if (file && file.type.startsWith('image/')) {
+                        $wire.upload('img', file);
+                    }
+                }
+            }"
+            x-on:drop.prevent="handleDrop($event)"
+            x-on:dragover.prevent="isDropping = true"
+            x-on:dragleave.prevent="isDropping = false"
+        >
+            <span class="w-fit pl-0.5 text-sm">Importa el logo de la empresa</span>
+
+            <div 
+                class="flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
+                :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
+            >
+                <input 
+                    wire:model="img" 
+                    id="img" 
+                    type="file" 
+                    required
+                    class="sr-only" 
+                    accept="image/png,image/jpeg" 
+                />
+
+                <label for="img" class="cursor-pointer font-medium text-primary">
+                    Arrastra o carga tu imagen aquí
                 </label>
-                tu imagen aca
+
+                <small>PNG, JPG - Max 5MB</small>
+
+                {{-- Vista previa --}}
+                @if ($img)
+                    <img src="{{ $img->temporaryUrl() }}" class="w-32 h-32 object-cover mt-2 rounded" />
+                @endif
             </div>
-            <small id="validFileFormats">PNG, JPG - Max 5MB</small>
+        </div>
+
+    
+        <div 
+            class="flex w-full max-w-xl text-center flex-col gap-1"
+            x-data="{
+                isDropping: false,
+                handleDrop(e) {
+                    this.isDropping = false;
+                    const file = e.dataTransfer.files[0];
+                    if (file && file.type.startsWith('image/')) {
+                        $wire.upload('logo', file);
+                    }
+                }
+            }"
+            x-on:drop.prevent="handleDrop($event)"
+            x-on:dragover.prevent="isDropping = true"
+            x-on:dragleave.prevent="isDropping = false"
+        >
+            <span class="w-fit pl-0.5 text-sm">Importa el logo de la empresa</span>
+
+            <div 
+                class="flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
+                :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
+            >
+                <input 
+                    wire:model="logo" 
+                    id="logo" 
+                    type="file"
+                    required 
+                    class="sr-only" 
+                    accept="image/png,image/jpeg" 
+                />
+
+                <label for="logo" class="cursor-pointer font-medium text-primary">
+                    Arrastra o carga tu imagen aquí
+                </label>
+
+                <small>PNG, JPG - Max 5MB</small>
+
+                {{-- Vista previa --}}
+                @if ($logo)
+                    <img src="{{ $logo->temporaryUrl() }}" class="w-32 h-32 object-cover mt-2 rounded" />
+                @endif
+            </div>
         </div>
     </div>
   <br>
@@ -84,6 +158,7 @@
                 Crear empresa
             </button>
   </form>
+  <br>
 
     Esquema de Informe
     @foreach ($titles as $title)
