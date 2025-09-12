@@ -1,62 +1,67 @@
 <form  wire:submit='store' class="space-y-4 w-full p-6 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
 <div>
-    Creación de reportes
+    <div class="mb-4 flex items-center justify-center p-4 rounded-lg" style="background-color: rgba(39, 68, 112, 1);">
+        <h1 class=" text-white font-serif font-bond text-lg">CREACIÓN DE REPORTES</h1>
+    </div>
 
- <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
-    <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-        <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Nombre de empresa</label>
-        <input required wire:model="nombre_empresa" id="nombre_empresa" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
-        text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
-        disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="nombre_empresa" 
-        placeholder="Ingrese Nombre de empresa" autocomplete="name"/>
+    <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
+        <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
+            <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Nombre de empresa</label>
+            <input required wire:model="nombre_empresa" id="nombre_empresa" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+            text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
+            disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="nombre_empresa" 
+            placeholder="Ingrese Nombre de empresa" autocomplete="name" style="border-color:rgba(31, 89, 177, 1);"/>
     </div>
     <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-        <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Giro de empresa</label>
+        <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Giro de empresa</label>
         <input required wire:model="giro_empresa" id="giro_empresa" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
         text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
         disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="giro_empresa" 
-        placeholder="Ingrese Giro de empresa" autocomplete="name"/>
+        placeholder="Ingrese Giro de empresa" autocomplete="name" style="border-color:rgba(31, 89, 177, 1);"/>
     </div>
  </div>
  <br>
   <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
         <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-        <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Ubicación</label>
+        <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Ubicación</label>
         <input  wire:model="ubicacion" id="ubicacion" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2
          text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
          disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="ubicacion" 
-         placeholder="Ingrese Ubicación de la empresa" autocomplete="name"/>
+         placeholder="Ingrese Ubicación de la empresa" autocomplete="name" style="border-color:rgba(31, 89, 177, 1);"/>
     </div>
     <div x-data class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-        <label for="phoneInput" class="w-fit pl-0.5 text-sm">Telefono</label>
+        <label for="phoneInput" class="w-fit pl-0.5 text-2x1">Telefono</label>
         <input  wire:model="telefono" id="telefono" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 text-sm 
         focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 
         dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" x-mask="(999) 999-9999" 
-        name="telefono" autocomplete="tel-national" placeholder="(999) 999-9999"/>
+        name="telefono" autocomplete="tel-national" placeholder="(999) 999-9999" style="border-color:rgba(31, 89, 177, 1);"/>
     </div>
   </div>
   <br>
    <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
         <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-            <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Representante</label>
+            <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Representante</label>
             <input required wire:model="representante" id="representante" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
             text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
             disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="representante" 
-            placeholder="Ingrese representantes" autocomplete="name"/>
+            placeholder="Ingrese representantes" autocomplete="name" style="border-color:rgba(31, 89, 177, 1);"/>
         </div>
-            <div class="flex flex-col w-full">
-                <label for="fecha_analisis" class="w-fit pl-0.5 text-sm">Fecha de analisis</label>
-                <input required wire:model="fecha_analisis" type="date" id="fecha_analisis" name="fecha_analisis">
+            <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
+                <label for="fecha_analisis" class="w-fit pl-0.5 text-2x1">Fecha de análisis</label>
+                <input required wire:model="fecha_analisis" id="fecha_analisis" type="date" name="fecha_analisis" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+                text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+                disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+                style="border-color:rgba(31, 89, 177, 1);" />
             </div>
             
    </div>
      <br>
     <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-        <label for="textInputDefault" class="w-fit pl-0.5 text-sm">Colaborador</label>
+        <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Colaborador</label>
         <input required wire:model="colaborador" id="colaborador" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2
          text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
          disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="colaborador" 
-         placeholder="Ingrese Ubicación de la empresa" autocomplete="name"/>
+         placeholder="Ingrese Ubicación de la empresa" autocomplete="name" style="border-color:rgba(31, 89, 177, 1);"/>
    </div>
      <br>
       <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
@@ -76,11 +81,11 @@
             x-on:dragover.prevent="isDropping = true"
             x-on:dragleave.prevent="isDropping = false"
         >
-            <span class="w-fit pl-0.5 text-sm">Importa la imagen de la portada</span>
+            <span class="w-fit pl-0.5 text-2x1">Importa la imagen de la portada</span>
 
             <div 
                 class="flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
-                :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
+                :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'" style="border-color:rgba(31, 89, 177, 1);"
             >
                 <input 
                     wire:model="img" 
@@ -120,11 +125,12 @@
             x-on:dragover.prevent="isDropping = true"
             x-on:dragleave.prevent="isDropping = false"
         >
-            <span class="w-fit pl-0.5 text-sm">Importa el logo de la empresa</span>
+            <span class="w-fit pl-0.5 text-2x1">Importa el logo de la empresa</span>
 
             <div 
                 class="flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
                 :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
+                style="border-color:rgba(31, 89, 177, 1);"
             >
                 <input 
                     wire:model="logo" 
