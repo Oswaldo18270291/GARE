@@ -76,7 +76,7 @@
             x-on:dragover.prevent="isDropping = true"
             x-on:dragleave.prevent="isDropping = false"
         >
-            <span class="w-fit pl-0.5 text-sm">Importa el logo de la empresa</span>
+            <span class="w-fit pl-0.5 text-sm">Importa la imagen de la portada</span>
 
             <div 
                 class="flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
@@ -86,7 +86,6 @@
                     wire:model="img" 
                     id="img" 
                     type="file" 
-                    required
                     class="sr-only" 
                     accept="image/png,image/jpeg" 
                 />
@@ -131,7 +130,6 @@
                     wire:model="logo" 
                     id="logo" 
                     type="file"
-                    required 
                     class="sr-only" 
                     accept="image/png,image/jpeg" 
                 />
