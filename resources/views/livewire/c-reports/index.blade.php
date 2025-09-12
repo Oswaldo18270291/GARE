@@ -65,32 +65,47 @@
             </div>
             <br>
             <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
+
+                {{-- Imagen portada --}}
                 <div 
                     class="flex w-full max-w-xl text-center flex-col gap-1"
                     x-data="{
                         isDropping: false,
-                        handleDrop(e) {
+                        errorMsg: '',
+                        handleFile(file, field, input) {
+                            this.errorMsg = '';
+                            if (file && file.type.startsWith('image/')) {
+                                $wire.upload(field, file);
+                            } else {
+                                this.errorMsg = '⚠️ Solo se permiten imágenes PNG o JPG.';
+                                input.value = ''; // limpia el input
+                            }
+                        },
+                        handleDrop(e, field, input) {
                             this.isDropping = false;
                             const file = e.dataTransfer.files[0];
-                            if (file && file.type.startsWith('image/')) {
-                                $wire.upload('img', file);
-                            }
+                            this.handleFile(file, field, input);
                         }
                     }"
-                    x-on:drop.prevent="handleDrop($event)"
+                    x-on:drop.prevent="handleDrop($event, 'img', $refs.imgInput)"
                     x-on:dragover.prevent="isDropping = true"
                     x-on:dragleave.prevent="isDropping = false">
+
                     <span class="w-fit pl-0.5 text-2x1">Importa la imagen de la portada</span>
 
                     <div 
                         class="flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
-                        :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'" style="border-color:rgba(31, 89, 177, 1);">
+                        :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
+                        style="border-color:rgba(31, 89, 177, 1);">
+
+                        {{-- 🔹 Ya NO usamos wire:model aquí --}}
                         <input 
-                            wire:model="img" 
                             id="img" 
                             type="file" 
                             class="sr-only" 
-                            accept="image/png,image/jpeg" />
+                            accept="image/png,image/jpeg"
+                            x-ref="imgInput"
+                            x-on:change="handleFile($event.target.files[0], 'img', $event.target)" />
 
                         <label for="img" class="cursor-pointer font-medium text-primary">
                             Arrastra o carga tu imagen aquí
@@ -102,36 +117,51 @@
                         @if ($img)
                             <img src="{{ $img->temporaryUrl() }}" class="w-32 h-32 object-cover mt-2 rounded" />
                         @endif
+
+                        {{-- Mensaje de error --}}
+                        <p x-show="errorMsg" x-text="errorMsg" class="text-red-600 text-sm mt-2"></p>
                     </div>
                 </div>
-        
+
+                {{-- Logo empresa --}}
                 <div 
                     class="flex w-full max-w-xl text-center flex-col gap-1"
                     x-data="{
                         isDropping: false,
-                        handleDrop(e) {
+                        errorMsg: '',
+                        handleFile(file, field, input) {
+                            this.errorMsg = '';
+                            if (file && file.type.startsWith('image/')) {
+                                $wire.upload(field, file);
+                            } else {
+                                this.errorMsg = '⚠️ Solo se permiten imágenes PNG o JPG.';
+                                input.value = '';
+                            }
+                        },
+                        handleDrop(e, field, input) {
                             this.isDropping = false;
                             const file = e.dataTransfer.files[0];
-                            if (file && file.type.startsWith('image/')) {
-                                $wire.upload('logo', file);
-                            }
+                            this.handleFile(file, field, input);
                         }
                     }"
-                    x-on:drop.prevent="handleDrop($event)"
+                    x-on:drop.prevent="handleDrop($event, 'logo', $refs.logoInput)"
                     x-on:dragover.prevent="isDropping = true"
                     x-on:dragleave.prevent="isDropping = false">
+
                     <span class="w-fit pl-0.5 text-2x1">Importa el logo de la empresa</span>
 
                     <div 
                         class="flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
                         :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
                         style="border-color:rgba(31, 89, 177, 1);">
+
                         <input 
-                            wire:model="logo" 
                             id="logo" 
                             type="file"
                             class="sr-only" 
-                            accept="image/png,image/jpeg" />
+                            accept="image/png,image/jpeg"
+                            x-ref="logoInput"
+                            x-on:change="handleFile($event.target.files[0], 'logo', $event.target)" />
 
                         <label for="logo" class="cursor-pointer font-medium text-primary">
                             Arrastra o carga tu imagen aquí
@@ -143,6 +173,9 @@
                         @if ($logo)
                             <img src="{{ $logo->temporaryUrl() }}" class="w-32 h-32 object-cover mt-2 rounded" />
                         @endif
+
+                        {{-- Mensaje de error --}}
+                        <p x-show="errorMsg" x-text="errorMsg" class="text-red-600 text-sm mt-2"></p>
                     </div>
                 </div>
             </div>
