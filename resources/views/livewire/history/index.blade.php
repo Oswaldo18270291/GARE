@@ -1,55 +1,50 @@
 <div>
-Historial
+    <div>
+        <div class="mb-4 flex items-center justify-center p-4 rounded-lg" style="background-color: rgba(39, 68, 112, 1);">
+            <h1 class=" text-white font-serif font-bond text-lg">REPORTES FINALIZADOS</h1>
+        </div>
 
-<div class="overflow-hidden w-full overflow-x-auto rounded-radius border border-outline dark:border-outline-dark">
-    <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
-        <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">
-            <tr>
-                <th scope="col" class="p-4">CustomerID</th>
-                <th scope="col" class="p-4">Name</th>
-                <th scope="col" class="p-4">Email</th>
-                <th scope="col" class="p-4">Membership</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-outline dark:divide-outline-dark">
-                <tr class="even:bg-primary/5 dark:even:bg-primary-dark/10">
-                    <td class="p-4">2335</td>
-                    <td class="p-4">Alice Brown</td>
-                    <td class="p-4">alice.brown@penguinui.com</td>
-                    <td class="p-4">Silver</td>
-                </tr>
-                <tr class="even:bg-primary/5 dark:even:bg-primary-dark/10">
-                    <td class="p-4">2338</td>
-                    <td class="p-4">Bob Johnson</td>
-                    <td class="p-4">johnson.bob@penguinui.com</td>
-                    <td class="p-4">Gold</td>
-                </tr>
-                <tr class="even:bg-primary/5 dark:even:bg-primary-dark/10">
-                    <td class="p-4">2342</td>
-                    <td class="p-4">Sarah Adams</td>
-                    <td class="p-4">s.adams@penguinui.com</td>
-                    <td class="p-4">Gold</td>
-                </tr>
-                <tr class="even:bg-primary/5 dark:even:bg-primary-dark/10">
-                    <td class="p-4">2345</td>
-                    <td class="p-4">Alex Martinez</td>
-                    <td class="p-4">alex.martinez@penguinui.com</td>
-                    <td class="p-4">Gold</td>
-                </tr>
-                <tr class="even:bg-primary/5 dark:even:bg-primary-dark/10">
-                    <td class="p-4">2346</td>
-                    <td class="p-4">Ryan Thompson</td>
-                    <td class="p-4">ryan.thompson@penguinui.com</td>
-                    <td class="p-4">Silver</td>
-                </tr>
-                <tr class="even:bg-primary/5 dark:even:bg-primary-dark/10">
-                    <td class="p-4">2349</td>
-                    <td class="p-4">Emily Rodriguez</td>
-                    <td class="p-4">emily.rodriguez@penguinui.com</td>
-                    <td class="p-4">Gold</td>
-                </tr>
-        </tbody>
-    </table>
-</div>
+        <div class="overflow-hidden w-full overflow-x-auto rounded-lg border border-outline dark:border-outline-dark" style="border-color:rgba(31, 89, 177, 1);">
+            <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
+                <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong" style="border-color:rgba(31, 89, 177, 1);">
+                    <tr>
+                        <th scope="col" class="p-4 text-center">Nombre de empresa</th>
+                        <th scope="col" class="p-4 text-center">Fecha de creacion</th>
+                        <th scope="col" class="p-4 text-center">Representante</th>
+                        <th scope="col" class="p-4 text-center">Fecha de analisis</th>
+                        <th scope="col" class="p-4 text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-outline dark:divide-outline-dark">
+                @forelse ($reports as $report)
+                    <tr class="even:bg-primary/5 dark:even:bg-primary-dark/10" style="border-color:rgba(53, 118, 216, 0.68);">
+                        <td class="p-4 text-center">{{$report->nombre_empresa}}</td>
+                        <td class="p-4 text-center">{{$report->created_at}}</td>
+                        <td class="p-4 text-center">{{$report->representante}}</td>
+                        <td class="p-4 text-center">{{$report->fecha_analisis}}</td>
+                        <td class="p-4">
+                            <div class="flex justify-center space-x-4 flex-row">
+                                <!-- Íconos -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(143, 6, 6, 1)" class="size-6">
+                                    <title>Descargar</title>
+                                    <path fill-rule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 0 1 3.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 0 1 3.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 0 1-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875Zm5.845 17.03a.75.75 0 0 0 1.06 0l3-3a.75.75 0 1 0-1.06-1.06l-1.72 1.72V12a.75.75 0 0 0-1.5 0v4.19l-1.72-1.72a.75.75 0 0 0-1.06 1.06l3 3Z" clip-rule="evenodd" />
+                                    <path d="M14.25 5.25a5.23 5.23 0 0 0-1.279-3.434 9.768 9.768 0 0 1 6.963 6.963A5.23 5.23 0 0 0 16.5 7.5h-1.875a.375.375 0 0 1-.375-.375V5.25Z" />
+                                </svg>
 
+                                <!-- agrega los demás SVG aquí -->
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                <tr>
+                    <td colspan="5" class="p-4 text-center"> Informes no encontrados</td>
+                </tr>
+                @endforelse
+                </tbody>
+            </table>
+            <div class="p-4">
+            {{ $reports->links() }}
+            </div>
+        </div>
+    </div>
 </div>

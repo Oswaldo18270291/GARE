@@ -9,8 +9,17 @@
     }
 
     .logo_humanismo {
-      width: 10cm; /* Ajusta el tamaño según sea necesario */
-      height: auto;
+      width: auto; /* Ajusta el tamaño según sea necesario */
+      height: 2cm;
+      position: absolute;
+      left: 50px;
+    }
+
+    .logo_empresa {
+      width: auto; /* Ajusta el tamaño según sea necesario */
+      height: 2cm;
+      position: absolute;
+      right: 50px;
     }
 
     header { 
@@ -18,7 +27,6 @@
       left: 0px;
       top: 55px;
       right: 0px;
-      text-align: center;
     }
 
     html, body {
@@ -53,7 +61,7 @@
       margin-top: 20px;
     }
 
-    flooter {
+    footer {
       position: fixed;
       left: 0px;
       bottom: 22px;
@@ -68,6 +76,7 @@
   <!-- Encabezado -->
   <header>
     <img src="img_portada/SSP.png" class="logo_humanismo">
+    <img src="img_portada/SSP.png" class="logo_empresa">
   </header>
   <!-- Contenido -->
   <div class="contenido">
@@ -84,8 +93,8 @@
     setlocale(LC_TIME, 'es_ES.UTF-8'); // Para que los meses salgan en español
     \Carbon\Carbon::setLocale('es');
   @endphp
-  <flooter>
+  <footer>
     <p>TUXTLA GUTIÉRREZ, CHIAPAS A {{ Str::upper(Carbon::parse($reports->fecha_analisis)->translatedFormat('d \d\e F \d\e Y')) }}</p>
-  </flooter>
+  </footer>
 </body>
 </html>
