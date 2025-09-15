@@ -9,9 +9,9 @@ class Portada extends Controller
     public function index()
     {
         // Pasar los datos a la vista PDF
-        $reports = Report::find(1);
+        $reports = Report::find(3);
 
-        $pdf = Pdf::loadView('plantillas.portada', compact('reports'));
+        $pdf = Pdf::loadView('plantillas.indice', compact('reports'));
 
         // Mostrar PDF en el navegador
         return $pdf->stream('portada.pdf');
