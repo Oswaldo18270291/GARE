@@ -8,14 +8,14 @@
             <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
                 <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
                     <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Nombre de empresa</label>
-                    <input required wire:model="nombre_empresa" id="nombre_empresa" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+                    <input required wire:model="nombre_empresa" id="nombre_empresa" type="text" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
                     text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
                     disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="nombre_empresa" 
                     placeholder="Ingrese Nombre de empresa" autocomplete="name" style="border-color:rgba(31, 89, 177, 1);"/>
                 </div>
                 <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
                     <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Giro de empresa</label>
-                    <input required wire:model="giro_empresa" id="giro_empresa" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+                    <input required wire:model="giro_empresa" id="giro_empresa" type="text" class=" bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
                     text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
                     disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="giro_empresa" 
                     placeholder="Ingrese Giro de empresa" autocomplete="name" style="border-color:rgba(31, 89, 177, 1);"/>
@@ -25,14 +25,14 @@
             <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
                 <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
                     <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Ubicación</label>
-                    <input  wire:model="ubicacion" id="ubicacion" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2
+                    <input  wire:model="ubicacion" id="ubicacion" type="text" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2
                     text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
                     disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="ubicacion" 
                     placeholder="Ingrese Ubicación de la empresa" autocomplete="name" style="border-color:rgba(31, 89, 177, 1);"/>
                 </div>
                 <div x-data class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
                     <label for="phoneInput" class="w-fit pl-0.5 text-2x1">Telefono</label>
-                    <input  wire:model="telefono" id="telefono" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 text-sm 
+                    <input  wire:model="telefono" id="telefono" type="text" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 text-sm 
                     focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 
                     dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" x-mask="(999) 999-9999" 
                     name="telefono" autocomplete="tel-national" placeholder="(999) 999-9999" style="border-color:rgba(31, 89, 177, 1);"/>
@@ -42,14 +42,14 @@
             <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
                 <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
                     <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Representante</label>
-                    <input required wire:model="representante" id="representante" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+                    <input required wire:model="representante" id="representante" type="text" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
                     text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
                     disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="representante" 
                     placeholder="Ingrese representantes" autocomplete="name" style="border-color:rgba(31, 89, 177, 1);"/>
                 </div>
                 <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
                     <label for="fecha_analisis" class="w-fit pl-0.5 text-2x1">Fecha de análisis</label>
-                    <input required wire:model="fecha_analisis" id="fecha_analisis" type="date" name="fecha_analisis" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+                    <input required wire:model="fecha_analisis" id="fecha_analisis" type="date" name="fecha_analisis" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
                     text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
                     disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
                     style="border-color:rgba(31, 89, 177, 1);" />
@@ -58,7 +58,7 @@
             <br>
             <div class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
                 <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Colaborador</label>
-                <input required wire:model="colaborador" id="colaborador" type="text" class="w-full rounded-radius border border-outline bg-surface-alt px-2 py-2
+                <input required wire:model="colaborador" id="colaborador" type="text" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2
                 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
                 disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="colaborador" 
                 placeholder="Ingrese Ubicación de la empresa" autocomplete="name" style="border-color:rgba(31, 89, 177, 1);"/>
@@ -94,7 +94,7 @@
                     <span class="w-fit pl-0.5 text-2x1">Importa la imagen de la portada</span>
 
                     <div 
-                        class="flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
+                        class="bg-white flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
                         :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
                         style="border-color:rgba(31, 89, 177, 1);">
 
@@ -151,7 +151,7 @@
                     <span class="w-fit pl-0.5 text-2x1">Importa el logo de la empresa</span>
 
                     <div 
-                        class="flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
+                        class="bg-white flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
                         :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
                         style="border-color:rgba(31, 89, 177, 1);">
 
@@ -181,7 +181,7 @@
             </div>
         </div>
         <br>
-        <div class="overflow-y-auto max-h-[600px] p-4 border rounded" style="border-color:rgba(31, 89, 177, 1);">
+        <div class="bg-white overflow-y-auto max-h-[600px] p-4 border rounded" style="border-color:rgba(31, 89, 177, 1);">
             <div class="font-sans text-lg mb-4 text-center" style="background-color: rgba(143, 6, 6, 1); color: white; padding: 8px; border-radius: 8px;">
                 <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Esquema de Informe</label>
             </div>
