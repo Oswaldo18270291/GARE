@@ -1,18 +1,60 @@
 <?php
 
 namespace App\Livewire\Reports;
+
 use Livewire\WithPagination;
 use App\Models\Report;
+use App\Models\ReportTitle;
+use App\Models\ReportTitleSubtitle;
+use App\Models\ReportTitleSubtitleSection;
 use Livewire\Component;
-
+use Illuminate\Support\Facades\Storage;
 class Index extends Component
-{
+{   
     use WithPagination;
-    public function render()
+
+
+
+    public function delete($id)
     {
-        return view('livewire.reports.index',[
-            'reports'=> Report::paginate(10)
-        ]);
+        $report = Report::findOrFail($id);
+
+        // 🔹 Eliminar títulos asociados
+        if ($report->logo && Storage::disk('public')->exists($report->logo)) {
+        Storage::disk('public')->delete($report->logo);
+        }
+        if ($report->logo && Storage::disk('public')->exists($report->img)) {
+        Storage::disk('public')->delete($report->img);
+        }
+        $reportTitles = ReportTitle::where('report_id', $report->id)->get();
+
+        foreach ($reportTitles as $title) {
+            // Eliminar subtítulos asociados
+            $subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->get();
+
+            foreach ($subtitles as $subtitle) {
+                // Eliminar secciones asociadas
+                ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)->delete();
+            }
+
+            // Eliminar subtítulos después de limpiar secciones
+            ReportTitleSubtitle::where('r_t_id', $title->id)->delete();
+        }
+
+        // Eliminar títulos después de limpiar subtítulos
+        ReportTitle::where('report_id', $report->id)->delete();
+
+        // Finalmente eliminar el reporte
+        $report->delete();
+
+        // Mensaje flash
+        session()->flash('eliminar', 'El reporte y sus relaciones se eliminaron correctamente.');
     }
 
+    public function render()
+    {
+        return view('livewire.reports.index', [
+            'reports' => Report::paginate(10),
+        ]);
+    }
 }
