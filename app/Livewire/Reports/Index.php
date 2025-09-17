@@ -14,6 +14,14 @@ class Index extends Component
     use WithPagination;
 
 
+    public function status($id)
+    {
+        $report = Report::findOrFail($id);
+        $report->status = true;
+        $report->save();
+        session()->flash('success', 'El reporte se ha finalizado');
+        $this->redirectRoute('history.index', navigate:true);
+    }
 
     public function delete($id)
     {
@@ -54,7 +62,7 @@ class Index extends Component
     public function render()
     {
         return view('livewire.reports.index', [
-            'reports' => Report::paginate(10),
+            'reports' => Report::where('status', false)->paginate(10),
         ]);
     }
 }

@@ -11,7 +11,7 @@ class Index extends Component
     public function render()
     {
         return view('livewire.history.index',[
-            'reports'=> Report::paginate(10)
+            'reports'=> Report::where('status', true)->paginate(10),
         ]);
     }
 }
