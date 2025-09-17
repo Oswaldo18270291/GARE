@@ -65,4 +65,8 @@ class Index extends Component
             'reports' => Report::where('status', false)->paginate(10),
         ]);
     }
+
+    public function addcontent ($id){
+        $this->redirectRoute('my_reports.addcontenido',['id' => $id] ,navigate:true);
+    }
 }
