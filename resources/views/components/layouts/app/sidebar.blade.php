@@ -19,7 +19,8 @@
         </a>
 
         <flux:navlist variant="outline">
-            <flux:navlist.group :heading="__('Menú')" class="grid">
+            <flux:navlist.group>
+                <p class="px-3 py-2 text-sm font-medium text-white">Menú</p>
                 <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate class="!text-white data-[current]:!text-black">Inicio</flux:navlist.item>
                 <flux:navlist.item icon="clipboard-document-list" :href="route('my_reports.index')" :current="request()->routeIs('my_reports.index')" wire:navigate class="!text-white data-[current]:!text-black">Mis informes creados</flux:navlist.item>
                 <flux:navlist.item icon="document-plus" :href="route('creacion_reports.index')" :current="request()->routeIs('creacion_reports.index')" wire:navigate class="!text-white data-[current]:!text-black">Creación de informes</flux:navlist.item>
