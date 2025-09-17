@@ -8,8 +8,8 @@
     <flux:sidebar 
         sticky 
         stashable 
-        class="h-screen border-e border-zinc-200 dark:border-zinc-700" 
-        style="background-color: rgba(143, 6, 6, 1);"
+        class="h-screen border-e border-zinc-200 dark:border-zinc-700"
+        style="background-image: url('/inicio/banner.png');" 
     >
         <!-- Botón cerrar en mobile -->
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
