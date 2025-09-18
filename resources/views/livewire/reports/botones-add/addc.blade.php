@@ -1,5 +1,4 @@
 <div>
-    @if ($boton == 'tit')
-        si se pudo
-    @endif
+    {{$boton}}
+    {{$RTitle}}
 </div>

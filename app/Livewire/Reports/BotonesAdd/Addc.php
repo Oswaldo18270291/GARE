@@ -4,21 +4,22 @@ namespace App\Livewire\Reports\BotonesAdd;
 
 use Livewire\Component;
 use App\Models\Report;
+use App\Models\ReportTitle;
 
 class Addc extends Component
 {
-    public $report;
+    public $RTitle;
     public $boton;
+    
     public function mount($id, $boton)
     {
-        $this->report = Report::findOrFail($id);
-        $this->boton  = $boton;
-  
+        $this->RTitle = ReportTitle::findOrFail($id);
+        $boton  = $boton;
     }
     public function render()
     {
         return view('livewire.reports.botones-add.addc', [
-            'report' => $this->report,
+            'RTitle' => $this->RTitle,
             'boton'  => $this->boton,
         ]);
 
