@@ -69,4 +69,7 @@ class Index extends Component
     public function addcontent ($id){
         $this->redirectRoute('my_reports.addcontenido',['id' => $id] ,navigate:true);
     }
+        public function editeditstructure ($id){
+        $this->redirectRoute('my_reports.editestructura',['id' => $id] ,navigate:true);
+    }
 }

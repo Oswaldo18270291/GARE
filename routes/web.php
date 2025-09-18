@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Livewire\Plantillas\portada;
 use App\Livewire\Reports\Addcontenido;
+use App\Livewire\Reports\Editestructura;
 
 /*Route::get('/', function () {
     return view('welcome');
@@ -39,6 +40,7 @@ Route::get('c_report', CReportsIndex::class)->name('creacion_reports.index');
 Route::get('my_reports', Index::class)->name('my_reports.index');
 Route::get('history', HistoryIndex::class)->name('history.index');
 Route::get('my_reports/addcontent/{id}', Addcontenido::class)->name('my_reports.addcontenido');
+Route::get('my_reports/editstructure/{id}', Editestructura::class)->name('my_reports.editestructura');
 //Route::get('/portada', portada::class)->name('plantillas.portada');
 
 
