@@ -30,7 +30,7 @@
     @endif
     <div>
         <div class="mb-4 flex items-center justify-center p-4 rounded-lg" style="background-color: rgba(39, 68, 112, 1);">
-            <h1 class=" text-white font-serif font-bond text-lg">REPORTES FINALIZADOS</h1>
+            <h1 class="text-white font-sans font-bond text-lg">REPORTES FINALIZADOS</h1>
         </div>
 
         <div class="overflow-hidden w-full overflow-x-auto rounded-lg border border-outline dark:border-outline-dark" style="border-color:rgba(31, 89, 177, 1);">
