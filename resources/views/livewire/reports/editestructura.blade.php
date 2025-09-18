@@ -211,5 +211,76 @@
                 </div>
             </div>
         </div>
+                <div class="bg-white overflow-y-auto max-h-[600px] p-4 border rounded" style="border-color:rgba(31, 89, 177, 1);">
+            <div class="font-sans text-lg mb-4 text-center" style="background-color: rgba(143, 6, 6, 1); color: white; padding: 8px; border-radius: 8px;">
+                <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Esquema de Informe</label>
+            </div>
+            @foreach ($titles as $title)
+                <div class="title-wrapper">
+                    <label>
+                        <input
+                            value="{{ $title->id }}"
+                            id="title_{{ $title->id }}"
+                            wire:model="title"
+                            type="checkbox"
+                            class="toggle-subtitles"
+                        />
+                        <strong>{{ $title->nombre }}</strong>
+                    </label>
+                    <div class="subtitles" style="display: none; margin-left: 20px;">
+                        @foreach ($title->subtitles as $subtitle)
+                            <div class="subtitle-wrapper">
+                                <label>
+                                    <input
+                                        value="{{ $subtitle->id }}"
+                                        id="subtitle_{{ $subtitle->id }}"
+                                        wire:model="subtitle"
+                                        type="checkbox"
+                                        class="toggle-sections"
+                                    />
+                                    {{ $subtitle->nombre }}
+                                </label>
+
+                                <ul class="sections" style="display: none; margin-left: 20px;">
+                                    @foreach ($subtitle->sections as $section)
+                                        <li>
+                                            <label>
+                                                <input
+                                                    value="{{ $section->id }}"
+                                                    id="section_{{ $section->id }}"
+                                                    wire:model="section"
+                                                    type="checkbox"
+                                                    class="toggle-subtitles"
+                                                />
+                                                {{ $section->nombre }}
+                                            </label>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
         <br>
     </div>
+
+     <!-- JavaScript -->
+    <script>
+        document.addEventListener('change', function (event) {
+            // Mostrar/Ocultar subtítulos
+            if (event.target.matches('.toggle-subtitles')) {
+                const subtitlesDiv = event.target.closest('.title-wrapper').querySelector('.subtitles');
+                subtitlesDiv.style.display = event.target.checked ? 'block' : 'none';
+            }
+
+            // Mostrar/Ocultar secciones
+            if (event.target.matches('.toggle-sections')) {
+                const sectionsUl = event.target.closest('.subtitle-wrapper').querySelector('.sections');
+                sectionsUl.style.display = event.target.checked ? 'block' : 'none';
+            }
+        });
+    </script>
+

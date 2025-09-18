@@ -4,6 +4,7 @@ namespace App\Livewire\Reports;
 
 use Livewire\Component;
 use App\Models\Report;
+use App\Models\Title;
 use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
@@ -14,9 +15,9 @@ class Editestructura extends Component
     public $report;
     public $logo;
     public $img;
-    /*public $report_id;
+    public $report_id;
     public $titles;
-    public $nombre_empresa;
+    /*public $nombre_empresa;
     public $giro_empresa;
     public $ubicacion;
     public $telefono;
@@ -29,7 +30,7 @@ class Editestructura extends Component
 
     public function mount($id)
     {
-        
+         $this->titles = Title::with('subtitles.sections')->get();
         // Cargar el reporte principal
         $this->report = Report::findOrFail($id);
         $img = Report::select('img')->findOrFail($id);
