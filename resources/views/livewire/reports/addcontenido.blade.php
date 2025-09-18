@@ -1,23 +1,67 @@
 <div>
-<div>
-    <h1 class="text-2xl font-bold">Reporte: {{ $report->nombre_empresa }}</h1>
-    <p class="mb-4">Ubicación: {{ $report->ubicacion }}</p>
+    {{-- Encabezado --}}
+    <div class="mb-4 flex flex-col items-center justify-center p-3 rounded-lg" style="background-color: rgba(39, 68, 112, 1);">
+        <h1 class="text-white font-serif font-bold text-lg">
+            Reporte: {{ $report->nombre_empresa }}
+        </h1>
+        <h2 class="mb-4 text-center text-white">
+            Ubicación: {{ $report->ubicacion }}
+        </h2>
+    </div>
 
-    @foreach ($report->titles as $title)
-        <div class="mb-4">
-            <h2 class="text-xl font-semibold">Título: {{ $title->title->nombre }}</h2>
-
-            @foreach ($title->subtitles as $subtitle)
-                <div class="ml-4 mb-2">
-                    <h3 class="text-lg font-medium">Subtítulo: {{ $subtitle->subtitle->nombre }}</h3>
-
-                    @foreach ($subtitle->sections as $section)
-                        <p class="ml-8">Sección: {{ $section->section->nombre }}</p>
-                    @endforeach
+    {{-- Lista de contenido --}}
+    <ul class="list-none space-y-4">
+        @foreach ($report->titles as $title)
+            <li>
+                {{-- Título --}}
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-semibold py-2">
+                        {{ $loop->iteration }}. {{ $title->title->nombre }}
+                    </h2>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 border border-emerald-600 rounded text-emerald-600 hover:bg-emerald-600 hover:text-white">Agregar</button>
+                        <button class="px-3 py-1 border border-blue-400 rounded text-blue-400 hover:bg-blue-400 hover:text-white">Editar</button>
+                        <button class="px-3 py-1 border border-red-400 rounded text-red-400 hover:bg-red-400 hover:text-white">Eliminar</button>
+                    </div>
                 </div>
-            @endforeach
-        </div>
-    @endforeach
-</div>
 
+                {{-- Subtítulos dentro del título --}}
+                <ul class="list-none ml-6 space-y-2">
+                    @foreach ($title->subtitles as $subtitle)
+                        <li>
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-lg font-medium py-2">
+                                    {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $subtitle->subtitle->nombre }}
+                                </h3>
+                                <div class="flex space-x-2">
+                                    <button class="px-3 py-1 border border-emerald-600 rounded text-emerald-600 hover:bg-emerald-600 hover:text-white">Agregar</button>
+                                    <button class="px-3 py-1 border border-blue-400 rounded text-blue-400 hover:bg-blue-400 hover:text-white">Editar</button>
+                                    <button class="px-3 py-1 border border-red-400 rounded text-red-400 hover:bg-red-400 hover:text-white">Eliminar</button>
+                                </div>
+                            </div>
+
+                            {{-- Secciones dentro del subtítulo --}}
+                            <ul class="list-none ml-8 space-y-1">
+                                @foreach ($subtitle->sections as $section)
+                                    <li>
+                                        <div class="flex justify-between items-center">
+                                            <p>
+                                                {{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}
+                                                {{ $section->section->nombre }}
+                                            </p>
+                                            <div class="flex space-x-2">
+                                                <button class="px-3 py-1 border border-emerald-600 rounded text-emerald-600 hover:bg-emerald-600 hover:text-white">Agregar</button>
+                                                <button class="px-3 py-1 border border-blue-400 rounded text-blue-400 hover:bg-blue-400 hover:text-white">Editar</button>
+                                                <button class="px-3 py-1 border border-red-400 rounded text-red-400 hover:bg-red-400 hover:text-white">Eliminar</button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </li>
+                    @endforeach
+                </ul>
+            </li>
+        @endforeach
+    </ul>
 </div>
