@@ -32,6 +32,14 @@ class Addcontenido extends Component
         }
     }
 
+    public function Addc($id, $boton)
+    {
+        $this->redirectRoute('my_reports.addcontenido.Addc', [
+            'id' => $id, 
+            'boton' => $boton
+        ], navigate: true);
+    }
+
 
     public function render()
     {
