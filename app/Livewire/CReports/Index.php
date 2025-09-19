@@ -54,51 +54,48 @@ class Index extends Component
         $report->img              = $path2; // aquí va la ruta, no el archivo
         $report->user_id          = Auth::id();
         $report->save();
-
-    // Guardar Títulos seleccionados
-    $pivotTitles = []; // array para mapear title_id → report_titles.id
-    foreach ($this->title as $titleId) {
-        $pivot = ReportTitle::create([
-            'report_id' => $report->id,
-            'title_id'  => $titleId,
-            'status'    => true,
-        ]);
-
-        $pivotTitles[$titleId] = $pivot->id;
-    }
-
-    // Guardar Subtítulos seleccionados
-    $pivotSubtitles = []; // mapear subtitle_id → report_title_subtitles.id
-    foreach ($this->subtitle as $subtitleId) {
-        // Buscamos a qué título pertenece este subtítulo
-        $subtitle = \App\Models\Subtitle::find($subtitleId);
-        $titleId  = $subtitle->title_id;
-
-        if (isset($pivotTitles[$titleId])) {
-            $pivot = ReportTitleSubtitle::create([
-                'r_t_id'      => $pivotTitles[$titleId], // id de report_titles
-                'subtitle_id' => $subtitleId,
-                'status'      => true,
+        
+        // Guardar TODOS los títulos
+        $pivotTitles = [];
+        $titles = \App\Models\Title::all(); 
+        foreach ($titles as $title) {
+            $pivot = ReportTitle::create([
+                'report_id' => $report->id,
+                'title_id'  => $title->id,
+                'status'    => in_array($title->id, $this->title), // true si fue seleccionado
             ]);
-
-            $pivotSubtitles[$subtitleId] = $pivot->id;
+            $pivotTitles[$title->id] = $pivot->id;
         }
-    }
 
-    // Guardar Secciones seleccionadas
-    foreach ($this->section as $sectionId) {
-        // Buscamos a qué subtítulo pertenece esta sección
-        $section   = \App\Models\Section::find($sectionId);
-        $subtitleId = $section->subtitle_id;
+        // Guardar TODOS los subtítulos
+        $pivotSubtitles = [];
+        $subtitles = \App\Models\Subtitle::all();
+        foreach ($subtitles as $subtitle) {
+            $titleId = $subtitle->title_id;
 
-        if (isset($pivotSubtitles[$subtitleId])) {
-            ReportTitleSubtitleSection::create([
-                'r_t_s_id'  => $pivotSubtitles[$subtitleId], // id de report_title_subtitles
-                'section_id'=> $sectionId,
-                'status'    => true,
-            ]);
+            if (isset($pivotTitles[$titleId])) {
+                $pivot = ReportTitleSubtitle::create([
+                    'r_t_id'      => $pivotTitles[$titleId], // id de report_titles
+                    'subtitle_id' => $subtitle->id,
+                    'status'      => in_array($subtitle->id, $this->subtitle),
+                ]);
+                $pivotSubtitles[$subtitle->id] = $pivot->id;
+            }
         }
-    }
+
+        // Guardar TODAS las secciones
+        $sections = \App\Models\Section::all();
+        foreach ($sections as $section) {
+            $subtitleId = $section->subtitle_id;
+
+            if (isset($pivotSubtitles[$subtitleId])) {
+                ReportTitleSubtitleSection::create([
+                    'r_t_s_id'   => $pivotSubtitles[$subtitleId], // id de report_title_subtitles
+                    'section_id' => $section->id,
+                    'status'     => in_array($section->id, $this->section),
+                ]);
+            }
+        }
 
         session()->flash('success', 'Se creó el informe de "' . $this->nombre_empresa . '" con éxito.');
 
