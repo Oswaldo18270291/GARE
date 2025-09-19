@@ -173,12 +173,12 @@
                         >
                             {{-- Input oculto --}}
                             <input 
-                                id="logo" 
-                                type="file"
+                                id="img" 
+                                type="file" 
                                 class="sr-only" 
                                 accept="image/png,image/jpeg"
-                                x-ref="logoInput"
-                                x-on:change="handleFile($event.target.files[0], 'logo', $event.target)" 
+                                x-ref="imgInput"
+                                x-on:change="handleFile($event.target.files[0], 'img', $event.target)" 
                             />
 
                             <label for="logo" class="cursor-pointer font-medium text-primary">
@@ -209,97 +209,95 @@
                     </div>
                 </div>
             </div>
-
-            <div class="bg-white overflow-y-auto max-h-[600px] p-4 border rounded" style="border-color:rgba(31, 89, 177, 1);">
-                <div class="font-sans text-lg mb-4 text-center" style="background-color: rgba(143, 6, 6, 1); color: white; padding: 8px; border-radius: 8px;">
-                    <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Esquema de Informe</label>
-                </div>
-                
-                @foreach ($report->titles as $title)
-                <div class="title-wrapper" 
-                    x-data="{ isOpen: {{ $title->status ? 'true' : 'false' }} }">
-                    <label>
-                        <input
-                            value="{{ $title->id }}"
-                            id="title_{{ $title->id }}"
-                            wire:model="title"
-                            type="checkbox"
-                            x-on:click="
-                                isOpen = $event.target.checked;
-                                if (!isOpen) {
-                                    // Desmarcar todos los subtítulos y secciones hijos
-                                    const subtitles = $el.querySelectorAll('.subtitle-checkbox');
-                                    subtitles.forEach(sub => {
-                                        sub.checked = false;
-                                        // Disparar evento para Livewire
-                                        sub.dispatchEvent(new Event('input', { bubbles: true }));
-                                    });
-                                    
-                                    // También desmarcar todas las secciones directamente
-                                    const sections = $el.querySelectorAll('.section-checkbox');
-                                    sections.forEach(sec => {
-                                        sec.checked = false;
-                                        sec.dispatchEvent(new Event('input', { bubbles: true }));
-                                    });
-                                }
-                            "
-                            @checked($title->status)
-                        />
-                        <strong>{{ $title->title->nombre }}</strong>
-                    </label>
-                    
-                    <div class="subtitles" x-show="isOpen" style="margin-left: 20px;">
-                        @foreach ($title->subtitles as $subtitle)
-                        <div class="subtitle-wrapper" 
-                            x-data="{ isSubOpen: {{ $subtitle->status ? 'true' : 'false' }} }">
-                            <label>
-                                <input
-                                    value="{{ $subtitle->id }}"
-                                    id="subtitle_{{ $subtitle->id }}"
-                                    wire:model="subtitle"
-                                    type="checkbox"
-                                    class="subtitle-checkbox"
-                                    x-on:click="
-                                        isSubOpen = $event.target.checked;
-                                        if (!isSubOpen) {
-                                            // Desmarcar todas las secciones de este subtítulo
-                                            const sections = $el.querySelectorAll('.section-checkbox');
-                                            sections.forEach(sec => {
-                                                sec.checked = false;
-                                                // Disparar evento para Livewire
-                                                sec.dispatchEvent(new Event('input', { bubbles: true }));
-                                            });
-                                        }
-                                    "
-                                    @checked($subtitle->status)
-                                />
-                                {{ $subtitle->subtitle->nombre }}
-                            </label>
-
-                            <ul class="sections" x-show="isSubOpen" style="margin-left: 20px;">
-                                @foreach ($subtitle->sections as $section)
-                                <li>
-                                    <label>
-                                        <input
-                                            value="{{ $section->id }}"
-                                            id="section_{{ $section->id }}"
-                                            wire:model="section"
-                                            type="checkbox"
-                                            class="section-checkbox"
-                                            @checked($section->status)
-                                        />
-                                        {{ $section->section->nombre }}
-                                    </label>
-                                </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-                @endforeach
+        <div class="bg-white overflow-y-auto max-h-[600px] p-4 border rounded" style="border-color:rgba(31, 89, 177, 1);">
+            <div class="font-sans text-lg mb-4 text-center" style="background-color: rgba(143, 6, 6, 1); color: white; padding: 8px; border-radius: 8px;">
+                <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Esquema de Informe</label>
             </div>
+            @foreach ($report->titles as $title)
+            <div class="title-wrapper" 
+                x-data="{ isOpen: {{ $title->status ? 'true' : 'false' }} }">
+                <label>
+                    <input
+                        value="{{ $title->id }}"
+                        id="title_{{ $title->id }}"
+                        wire:model="titles"
+                        type="checkbox"
+                        x-on:click="
+                            isOpen = $event.target.checked;
+                            if (!isOpen) {
+                                // Desmarcar todos los subtítulos y secciones hijos
+                                const subtitles = $el.querySelectorAll('.subtitle-checkbox');
+                                subtitles.forEach(sub => {
+                                    sub.checked = false;
+                                    // Disparar evento para Livewire
+                                    sub.dispatchEvent(new Event('input', { bubbles: true }));
+                                });
+                                
+                                // También desmarcar todas las secciones directamente
+                                const sections = $el.querySelectorAll('.section-checkbox');
+                                sections.forEach(sec => {
+                                    sec.checked = false;
+                                    sec.dispatchEvent(new Event('input', { bubbles: true }));
+                                });
+                            }
+                        "
+                        @checked($title->status)
+                    />
+                    <strong>{{ $title->title->nombre }}</strong>
+                </label>
+                
+                <div class="subtitles" x-show="isOpen" style="margin-left: 20px;">
+                    @foreach ($title->subtitles as $subtitle)
+                    <div class="subtitle-wrapper" 
+                        x-data="{ isSubOpen: {{ $subtitle->status ? 'true' : 'false' }} }">
+                        <label>
+                            <input
+                                value="{{ $subtitle->id }}"
+                                id="subtitle_{{ $subtitle->id }}"
+                                wire:model="subtitles"
+                                type="checkbox"
+                                class="subtitle-checkbox"
+                                x-on:click="
+                                    isSubOpen = $event.target.checked;
+                                    if (!isSubOpen) {
+                                        // Desmarcar todas las secciones de este subtítulo
+                                        const sections = $el.querySelectorAll('.section-checkbox');
+                                        sections.forEach(sec => {
+                                            sec.checked = false;
+                                            // Disparar evento para Livewire
+                                            sec.dispatchEvent(new Event('input', { bubbles: true }));
+                                        });
+                                    }
+                                "
+                                @checked($subtitle->status)
+                            />
+                            {{ $subtitle->subtitle->nombre }}
+                        </label>
+
+                        <ul class="sections" x-show="isSubOpen" style="margin-left: 20px;">
+                            @foreach ($subtitle->sections as $section)
+                            <li>
+                                <label>
+                                    <input
+                                        value="{{ $section->id }}"
+                                        id="section_{{ $section->id }}"
+                                        wire:model="sections"
+                                        type="checkbox"
+                                        class="section-checkbox"
+                                        @checked($section->status)
+                                    />
+                                    {{ $section->section->nombre }}
+                                </label>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endforeach
         </div>
+    </div>
         <br>
         <button type="submit" class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-success border border-success dark:border-success px-4 py-2 text-sm font-medium tracking-wide text-on-success transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:text-on-success dark:focus-visible:outline-success">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
