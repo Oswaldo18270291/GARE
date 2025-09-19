@@ -30,7 +30,7 @@ class Editestructura extends Component
 
     public function mount($id)
     {
-         $this->titles = Title::with('subtitles.sections')->get();
+        $this->titles = Title::with('subtitles.sections')->get();
         // Cargar el reporte principal
         $this->report = Report::findOrFail($id);
         $img = Report::select('img')->findOrFail($id);
@@ -55,6 +55,7 @@ class Editestructura extends Component
             'img' => 'required|image|max:5120', // máximo 5MB
         ]);
     }
+    
     public function render()
     {
             return view('livewire.reports.editestructura', [

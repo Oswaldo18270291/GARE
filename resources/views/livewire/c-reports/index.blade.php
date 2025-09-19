@@ -239,25 +239,47 @@
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-5 fill-on-success dark:fill-on-success" fill="currentColor">
                 <path fill-rule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clip-rule="evenodd" />
             </svg>
-            Crear empresa
+            Crear informe
         </button>
     </div>
 </form>
 
     <!-- JavaScript -->
-    <script>
-        document.addEventListener('change', function (event) {
-            // Mostrar/Ocultar subtítulos
-            if (event.target.matches('.toggle-subtitles')) {
-                const subtitlesDiv = event.target.closest('.title-wrapper').querySelector('.subtitles');
-                subtitlesDiv.style.display = event.target.checked ? 'block' : 'none';
-            }
+<script>
+    document.addEventListener('change', function (event) {
+        // === Manejo de Títulos ===
+        if (event.target.matches('.toggle-subtitles')) {
+            const titleWrapper = event.target.closest('.title-wrapper');
+            const subtitlesDiv = titleWrapper.querySelector('.subtitles');
 
-            // Mostrar/Ocultar secciones
-            if (event.target.matches('.toggle-sections')) {
-                const sectionsUl = event.target.closest('.subtitle-wrapper').querySelector('.sections');
-                sectionsUl.style.display = event.target.checked ? 'block' : 'none';
+            // Mostrar u ocultar subtítulos
+            subtitlesDiv.style.display = event.target.checked ? 'block' : 'none';
+
+            // Si se desmarca, quitar checks de subtítulos y secciones
+            if (!event.target.checked) {
+                const allInputs = subtitlesDiv.querySelectorAll('input[type="checkbox"]');
+                allInputs.forEach(input => {
+                    input.checked = false;
+                });
             }
-        });
-    </script>
+        }
+
+        // === Manejo de Subtítulos ===
+        if (event.target.matches('.toggle-sections')) {
+            const subtitleWrapper = event.target.closest('.subtitle-wrapper');
+            const sectionsUl = subtitleWrapper.querySelector('.sections');
+
+            // Mostrar u ocultar secciones
+            sectionsUl.style.display = event.target.checked ? 'block' : 'none';
+
+            // Si se desmarca, quitar checks de las secciones
+            if (!event.target.checked) {
+                const sectionInputs = sectionsUl.querySelectorAll('input[type="checkbox"]');
+                sectionInputs.forEach(input => {
+                    input.checked = false;
+                });
+            }
+        }
+    });
+</script>
 
