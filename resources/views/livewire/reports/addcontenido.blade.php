@@ -50,7 +50,7 @@
                                                 {{ $section->section->nombre }}
                                             </p>
                                             <div class="flex space-x-2">
-                                                <button class="px-3 py-1 border border-emerald-600 rounded text-emerald-600 hover:bg-emerald-600 hover:text-white">Agregar</button>
+                                                <button class="px-3 py-1 border border-emerald-600 rounded text-emerald-600 hover:bg-emerald-600 hover:text-white"  wire:click="Addc({{$section->id}},'sec')">Agregar</button>
                                                 <button class="px-3 py-1 border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white">Editar</button>
                                                 <button class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">Eliminar</button>
                                             </div>
