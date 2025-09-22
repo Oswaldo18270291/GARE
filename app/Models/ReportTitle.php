@@ -25,6 +25,6 @@ class ReportTitle extends Model
 
     public function reportTitleSubtitles()
     {
-        return $this->hasMany(ReportTitleSubtitle::class);
+        return $this->hasMany(ReportTitleSubtitle::class, 'r_t_id');
     }
 }

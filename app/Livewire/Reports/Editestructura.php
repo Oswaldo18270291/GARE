@@ -34,7 +34,11 @@ class Editestructura extends Component
         $titles = $this->titles ?? [];       // si es null lo pone como []
         $subtitles = $this->subtitles ?? [];
         $sections = $this->sections ?? [];
-        $this->report = Report::findOrFail($id);
+        $this->report = Report::with([
+            'reportTitles.title',
+            'reportTitles.reportTitleSubtitles.subtitle',
+            'reportTitles.reportTitleSubtitles.reportTitleSubtitleSections.section'
+        ])->findOrFail($id);
         $img = Report::select('img')->findOrFail($id);
         $this->nombre_empresa = $this->report->nombre_empresa;
         $this->giro_empresa   = $this->report->giro_empresa;
@@ -52,16 +56,15 @@ class Editestructura extends Component
             }
         }
 
-        // Precargar selecciones
-        $this->titles = $this->report->titles->where('status', true)->pluck('id')->toArray();
+        $this->titles = $this->report->reportTitles->where('status', true)->pluck('id')->toArray();
 
-        foreach ($this->report->titles as $title) {
-            foreach ($title->subtitles as $subtitle) {
+        foreach ($this->report->reportTitles as $title) {
+            foreach ($title->reportTitleSubtitles as $subtitle) {
                 if ($subtitle->status) {
                     $this->subtitles[] = $subtitle->id;
                 }
 
-                foreach ($subtitle->sections as $section) {
+                foreach ($subtitle->reportTitleSubtitleSections as $section) {
                     if ($section->status) {
                         $this->sections[] = $section->id;
                     }
@@ -111,20 +114,20 @@ class Editestructura extends Component
             $this->report->img = $path;
         }
         $this->report->save();
-        foreach ($this->report->titles as $title) {
-        $title->status = in_array($title->id, $this->titles);
-        $title->save();
+        foreach ($this->report->reportTitles as $title) {
+            $title->status = in_array($title->id, $this->titles);
+            $title->save();
 
-        foreach ($title->subtitles as $subtitle) {
-            $subtitle->status = in_array($subtitle->id, $this->subtitles);
-            $subtitle->save();
+            foreach ($title->reportTitleSubtitles as $subtitle) {
+                $subtitle->status = in_array($subtitle->id, $this->subtitles);
+                $subtitle->save();
 
-            foreach ($subtitle->sections as $section) {
-                $section->status = in_array($section->id, $this->sections);
-                $section->save();
+                foreach ($subtitle->reportTitleSubtitleSections as $section) {
+                    $section->status = in_array($section->id, $this->sections);
+                    $section->save();
+                }
             }
         }
-    }
         session()->flash('up', 'Informe actualizado correctamente ✅');
         $this->redirectRoute('my_reports.index', navigate:true);
 

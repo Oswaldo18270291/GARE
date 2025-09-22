@@ -24,6 +24,6 @@ class Report extends Model
 
     public function reportTitles()
     {
-        return $this->hasMany(ReportTitle::class);
+        return $this->hasMany(ReportTitle::class, 'report_id');
     }
 }

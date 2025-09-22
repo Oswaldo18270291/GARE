@@ -23,7 +23,7 @@ class ReportTitleSubtitle extends Model
         return $this->belongsTo(Subtitle::class);
     }
 
-        public function reportTitleSubtitleSections()
+    public function reportTitleSubtitleSections()
     {
         return $this->hasMany(ReportTitleSubtitleSection::class, 'r_t_s_id');
     }
