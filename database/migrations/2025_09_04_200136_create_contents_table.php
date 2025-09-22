@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('contents', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('r_t_id')->constrained('report_titles'); //Creada
-            $table->foreignId('r_t_s_id')->constrained('report_title_subtitles'); //Creada
-            $table->foreignId('r_t_s_s_id')->constrained('report_title_subtitle_sections'); //Creada
+            $table->foreignId('r_t_id')->nullable()->constrained('report_titles');
+            $table->foreignId('r_t_s_id')->nullable()->constrained('report_title_subtitles');
+            $table->foreignId('r_t_s_s_id')->nullable()->constrained('report_title_subtitle_sections');
             $table->string('cont');
-            $table->string('img1')->nullable();;
-            $table->string('img2')->nullable();;
-            $table->string('img3')->nullable();;
+            $table->string('img1')->nullable();
+            $table->string('img2')->nullable();
+            $table->string('img3')->nullable();
 
         });
     }

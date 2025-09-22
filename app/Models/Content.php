@@ -10,7 +10,7 @@ class Content extends Model
     /** @use HasFactory<\Database\Factories\ContentFactory> */
     use HasFactory;
 
-        protected $fillable = ['r_t_s_s_id', 'cont', 'img1', 'img2', 'img3'];
+        protected $fillable = ['r_t_s_s_id','r_t_id','r_t_s_id', 'cont', 'img1', 'img2', 'img3'];
 
         public function reportTitleSubtitleSection()
     {
@@ -21,5 +21,8 @@ class Content extends Model
     {
         return $this->belongsTo(ReportTitleSubtitle::class, 'r_t_s_id');
     }
-
+        public function reportTitle()
+    {
+        return $this->belongsTo(ReportTitle::class, 'r_t_id');
+    }
 }
