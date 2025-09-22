@@ -17,10 +17,13 @@ return new class extends Migration
             $table->foreignId('r_t_id')->nullable()->constrained('report_titles');
             $table->foreignId('r_t_s_id')->nullable()->constrained('report_title_subtitles');
             $table->foreignId('r_t_s_s_id')->nullable()->constrained('report_title_subtitle_sections');
-            $table->string('cont');
+            $table->string('cont')->nullable();
             $table->string('img1')->nullable();
+            $table->string('leyenda1')->nullable();
             $table->string('img2')->nullable();
+            $table->string('leyenda2')->nullable();
             $table->string('img3')->nullable();
+            $table->string('leyenda3')->nullable();
 
         });
     }

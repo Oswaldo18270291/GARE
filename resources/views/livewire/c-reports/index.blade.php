@@ -181,48 +181,70 @@
             </div>
         </div>
         <br>
-        <div class="bg-white overflow-y-auto max-h-[600px] p-4 border rounded" style="border-color:rgba(31, 89, 177, 1);">
-            <div class="font-sans text-lg mb-4 text-center" style="background-color: rgba(143, 6, 6, 1); color: white; padding: 8px; border-radius: 8px;">
-                <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Esquema de Informe</label>
+        <div class="bg-white overflow-y-auto max-h-[600px] p-4 border rounded" 
+     style="border-color:rgba(31, 89, 177, 1);">
+
+        <div class="font-sans text-lg mb-4 text-center" 
+            style="background-color: rgba(143, 6, 6, 1); color: white; padding: 8px; border-radius: 8px;">
+            <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Esquema de Informe</label>
+        </div>
+
+            {{-- 🔹 Botón justo debajo del encabezado --}}
+            <div class="text-center mb-4">
+                <button 
+                    type="button"
+                    wire:click="toggleAll"
+                    class="px-4 py-2 bg-emerald-700 text-white rounded hover:bg-emerald-800"
+                >
+                    Seleccionar/Deseleccionar Todos
+                </button>
             </div>
-            @foreach ($titles as $title)
+
+            @foreach ($titles as $t)
                 <div class="title-wrapper">
                     <label>
                         <input
-                            value="{{ $title->id }}"
-                            id="title_{{ $title->id }}"
+                            value="{{ $t->id }}"
+                            id="title_{{ $t->id }}"
                             wire:model="title"
                             type="checkbox"
                             class="toggle-subtitles"
                         />
-                        <strong>{{ $title->nombre }}</strong>
+                        <strong>{{ $t->nombre }}</strong>
                     </label>
-                    <div class="subtitles" style="display: none; margin-left: 20px;">
-                        @foreach ($title->subtitles as $subtitle)
+
+                    <div class="subtitles"
+                        style="{{ ($expandAll || in_array($t->id, $title ?? [])) 
+                                ? 'display:block; margin-left:20px;' 
+                                : 'display:none; margin-left:20px;' }}">
+                        
+                        @foreach ($t->subtitles as $st)
                             <div class="subtitle-wrapper">
                                 <label>
                                     <input
-                                        value="{{ $subtitle->id }}"
-                                        id="subtitle_{{ $subtitle->id }}"
+                                        value="{{ $st->id }}"
+                                        id="subtitle_{{ $st->id }}"
                                         wire:model="subtitle"
                                         type="checkbox"
                                         class="toggle-sections"
                                     />
-                                    {{ $subtitle->nombre }}
+                                    {{ $st->nombre }}
                                 </label>
 
-                                <ul class="sections" style="display: none; margin-left: 20px;">
-                                    @foreach ($subtitle->sections as $section)
+                                <ul class="sections"
+                                    style="{{ ($expandAll || in_array($st->id, $subtitle ?? [])) 
+                                            ? 'display:block; margin-left:20px;' 
+                                            : 'display:none; margin-left:20px;' }}">
+                                    @foreach ($st->sections as $sec)
                                         <li>
                                             <label>
                                                 <input
-                                                    value="{{ $section->id }}"
-                                                    id="section_{{ $section->id }}"
+                                                    value="{{ $sec->id }}"
+                                                    id="section_{{ $sec->id }}"
                                                     wire:model="section"
                                                     type="checkbox"
-                                                    class="toggle-subtitles"
                                                 />
-                                                {{ $section->nombre }}
+                                                {{ $sec->nombre }}
                                             </label>
                                         </li>
                                     @endforeach
@@ -233,6 +255,7 @@
                 </div>
             @endforeach
         </div>
+
         </div>
         <br>
         <button type="submit" class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-success border border-success dark:border-success px-4 py-2 text-sm font-medium tracking-wide text-on-success transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:text-on-success dark:focus-visible:outline-success">

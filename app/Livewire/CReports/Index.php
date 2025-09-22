@@ -105,7 +105,32 @@ class Index extends Component
     {
         $this->titles = Title::with('subtitles.sections')->get();
     }
+    public $expandAll = false;
+ public function toggleAll()
+    {
+        $allTitles = $this->titles->pluck('id')->toArray();
+        $allSubtitles = $this->titles->flatMap->subtitles->pluck('id')->toArray();
+        $allSections = $this->titles->flatMap->subtitles->flatMap->sections->pluck('id')->toArray();
 
+        $alreadySelected =
+            count($this->title) === count($allTitles) &&
+            count($this->subtitle) === count($allSubtitles) &&
+            count($this->section) === count($allSections);
+
+        if ($alreadySelected) {
+            // Si ya estaban todos seleccionados → limpiar
+            $this->title = [];
+            $this->subtitle = [];
+            $this->section = [];
+            $this->expandAll = false;
+        } else {
+            // Seleccionar todos
+            $this->title = $allTitles;
+            $this->subtitle = $allSubtitles;
+            $this->section = $allSections;
+            $this->expandAll = true;
+        }
+    }
 
     public function render()
     {
