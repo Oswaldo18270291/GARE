@@ -14,9 +14,24 @@ return new class extends Migration
         Schema::create('contents', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('r_t_id')->nullable()->constrained('report_titles');
-            $table->foreignId('r_t_s_id')->nullable()->constrained('report_title_subtitles');
-            $table->foreignId('r_t_s_s_id')->nullable()->constrained('report_title_subtitle_sections');
+
+            // Llaves foráneas con eliminación en cascada
+            $table->foreignId('r_t_id')
+                ->nullable()
+                ->constrained('report_titles')
+                ->onDelete('cascade');
+
+            $table->foreignId('r_t_s_id')
+                ->nullable()
+                ->constrained('report_title_subtitles')
+                ->onDelete('cascade');
+
+            $table->foreignId('r_t_s_s_id')
+                ->nullable()
+                ->constrained('report_title_subtitle_sections')
+                ->onDelete('cascade');
+
+            // Contenido y multimedia
             $table->string('cont')->nullable();
             $table->string('img1')->nullable();
             $table->string('leyenda1')->nullable();
@@ -24,7 +39,6 @@ return new class extends Migration
             $table->string('leyenda2')->nullable();
             $table->string('img3')->nullable();
             $table->string('leyenda3')->nullable();
-
         });
     }
 

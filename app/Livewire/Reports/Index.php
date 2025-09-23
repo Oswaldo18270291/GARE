@@ -31,23 +31,57 @@ class Index extends Component
         if ($report->logo && Storage::disk('public')->exists($report->logo)) {
         Storage::disk('public')->delete($report->logo);
         }
-        if ($report->logo && Storage::disk('public')->exists($report->img)) {
+        if ($report->img && Storage::disk('public')->exists($report->img)) {
         Storage::disk('public')->delete($report->img);
         }
-        $reportTitles = ReportTitle::where('report_id', $report->id)->get();
 
-        foreach ($reportTitles as $title) {
-            // Eliminar subtítulos asociados
-            $subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->get();
+$reportTitles = ReportTitle::where('report_id', $report->id)->get();
 
-            foreach ($subtitles as $subtitle) {
-                // Eliminar secciones asociadas
-                ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)->delete();
+foreach ($reportTitles as $title) {
+    // Eliminar contenidos ligados directamente al título
+    foreach ($title->contents as $content) {
+        foreach (['img1', 'img2', 'img3'] as $imgField) {
+            if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
+                Storage::disk('public')->delete($content->$imgField);
+            }
+        }
+        $content->delete();
+    }
+
+    // Buscar subtítulos asociados
+    $subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->get();
+
+    foreach ($subtitles as $subtitle) {
+        // Eliminar contenidos ligados al subtítulo
+        foreach ($subtitle->contents as $content) {
+            foreach (['img1', 'img2', 'img3'] as $imgField) {
+                if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
+                    Storage::disk('public')->delete($content->$imgField);
+                }
+            }
+            $content->delete();
+        }
+
+        // Buscar secciones asociadas
+        $sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)->get();
+
+        foreach ($sections as $section) {
+            foreach ($section->contents as $content) {
+                foreach (['img1', 'img2', 'img3'] as $imgField) {
+                    if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
+                        Storage::disk('public')->delete($content->$imgField);
+                    }
+                }
+                $content->delete();
             }
 
-            // Eliminar subtítulos después de limpiar secciones
-            ReportTitleSubtitle::where('r_t_id', $title->id)->delete();
+            $section->delete();
         }
+
+        $subtitle->delete();
+    }
+}
+
 
         // Eliminar títulos después de limpiar subtítulos
         ReportTitle::where('report_id', $report->id)->delete();

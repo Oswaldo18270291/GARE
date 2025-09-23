@@ -21,7 +21,7 @@ class Content extends Model
     {
         return $this->belongsTo(ReportTitleSubtitle::class, 'r_t_s_id');
     }
-        public function reportTitle()
+    public function reportTitle()
     {
         return $this->belongsTo(ReportTitle::class, 'r_t_id');
     }
