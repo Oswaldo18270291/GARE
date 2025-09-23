@@ -32,7 +32,7 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             // Contenido y multimedia
-            $table->string('cont')->nullable();
+            $table->text('cont')->nullable();
             $table->string('img1')->nullable();
             $table->string('leyenda1')->nullable();
             $table->string('img2')->nullable();
