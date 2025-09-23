@@ -62,7 +62,9 @@
             <input id="img1" type="file" class="sr-only" accept="image/png,image/jpeg"
                    x-ref="img1Input"
                    x-on:change="handleFile($event.target.files[0], 'img1', $event.target)" />
-
+            @error('img1') 
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror
             <label for="img1" class="cursor-pointer font-medium text-primary">
                 Arrastra o carga tu imagen aquí
             </label>
@@ -82,6 +84,9 @@
                class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
                placeholder="Ingrese texto de leyenda 1"
                style="border-color:rgba(31, 89, 177, 1);" />
+            @error('leyenda1') 
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror
     </div>
 </div>
 
@@ -121,7 +126,9 @@
             <input id="img2" type="file" class="sr-only" accept="image/png,image/jpeg"
                    x-ref="img2Input"
                    x-on:change="handleFile($event.target.files[0], 'img2', $event.target)" />
-
+            @error('img2') 
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror
             <label for="img2" class="cursor-pointer font-medium text-primary">
                 Arrastra o carga tu imagen aquí
             </label>
@@ -141,6 +148,9 @@
                class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
                placeholder="Ingrese texto de leyenda 2"
                style="border-color:rgba(31, 89, 177, 1);" />
+            @error('leyenda2') 
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror
     </div>
 </div>
 
@@ -180,7 +190,9 @@
             <input id="img3" type="file" class="sr-only" accept="image/png,image/jpeg"
                    x-ref="img3Input"
                    x-on:change="handleFile($event.target.files[0], 'img3', $event.target)" />
-
+            @error('img3') 
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror
             <label for="img3" class="cursor-pointer font-medium text-primary">
                 Arrastra o carga tu imagen aquí
             </label>
@@ -200,6 +212,9 @@
                class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
                placeholder="Ingrese texto de leyenda 3"
                style="border-color:rgba(31, 89, 177, 1);" />
+            @error('leyenda3') 
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror               
     </div>
 </div>
 </div>

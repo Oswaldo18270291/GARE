@@ -51,9 +51,20 @@ class Addc extends Component
     public function store($id_,$boton,$id){
 
         $this->validate([
-            'img1' => 'nullable|image|max:5120',
-            'img2' => 'nullable|image|max:5120',
-            'img3' => 'nullable|image|max:5120',
+            'img1' => 'nullable|image|required_with:leyenda1',
+            'img2' => 'nullable|image|required_with:leyenda2',
+            'img3' => 'nullable|image|required_with:leyenda3',
+            'leyenda1' => 'nullable|string|required_with:img1',
+            'leyenda1' => 'nullable|string|required_with:img2',
+            'leyenda1' => 'nullable|string|required_with:img3',
+        ], [
+            'img1.required_with'     => '⚠️ Si agregas una leyenda, también debes subir una imagen.',
+            'leyenda1.required_with' => '⚠️ Si subes una imagen, también debes escribir una leyenda.',
+            'img2.required_with'     => '⚠️ Si agregas una leyenda, también debes subir una imagen.',
+            'leyenda2.required_with' => '⚠️ Si subes una imagen, también debes escribir una leyenda.',
+            'img3.required_with'     => '⚠️ Si agregas una leyenda, también debes subir una imagen.',
+            'leyenda3.required_with' => '⚠️ Si subes una imagen, también debes escribir una leyenda.',
+        
         ]);
     $path = $this->img1 ? $this->img1->store('img_cont1', 'public') : null;
     $path2 = $this->img2 ? $this->img2->store('img_cont2', 'public') : null;
