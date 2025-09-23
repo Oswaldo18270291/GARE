@@ -1,27 +1,106 @@
 <x-layouts.app :title="__('Dashboard')">
-    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
-        
-        <div class="grid auto-rows-min gap-4 md:grid-cols-2">
-            <div class="relative overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 aspect-video md:aspect-auto">
-                <x-placeholder-pattern class="absolute inset-0 size-full dark:stroke-neutral-100/20" />
-                <img src="inicio/definicion.png">
+    <div x-data="{            
+    // Sets the time between each slides in milliseconds
+    autoplayIntervalTime: 6000,
+    slides: [                
+        {                    
+            imgSrc: '{{ asset('carrusel/SSPC.png') }}',                  
+            imgAlt: 'Vibrant abstract painting with swirling red, yellow, and pink hues on a canvas.',  
+        },
+        {                    
+            imgSrc: '{{ asset('carrusel/definicion.png') }}',                  
+            imgAlt: 'Vibrant abstract painting with swirling red, yellow, and pink hues on a canvas.',  
+        },   
+        {
+            imgSrc: '{{ asset('carrusel/mision.png') }}',
+            imgAlt: 'Vibrant abstract painting with swirling blue and light pink hues on a canvas.',  
+        },
+        {                    
+            imgSrc: '{{ asset('carrusel/vision.png') }}',                  
+            imgAlt: 'Vibrant abstract painting with swirling red, yellow, and pink hues on a canvas.',  
+        },             
+                    
+    ],            
+    currentSlideIndex: 1,
+    isPaused: false,
+    autoplayInterval: null,
+    previous() {                
+        if (this.currentSlideIndex > 1) {                    
+            this.currentSlideIndex = this.currentSlideIndex - 1                
+        } else {   
+            // If it's the first slide, go to the last slide           
+            this.currentSlideIndex = this.slides.length                
+        }            
+    },            
+    next() {                
+        if (this.currentSlideIndex < this.slides.length) {                    
+            this.currentSlideIndex = this.currentSlideIndex + 1                
+        } else {                 
+            // If it's the last slide, go to the first slide    
+            this.currentSlideIndex = 1                
+        }            
+    },    
+    autoplay() {
+        this.autoplayInterval = setInterval(() => {
+            if (! this.isPaused) {
+                this.next()
+            }
+        }, this.autoplayIntervalTime)
+    },
+    // Updates interval time   
+    setAutoplayInterval(newIntervalTime) {
+        clearInterval(this.autoplayInterval)
+        this.autoplayIntervalTime = newIntervalTime
+        this.autoplay()
+    },    
+}" x-init="autoplay" class="relative w-full overflow-hidden rounded-xl border border-border bg-surface shadow-lg dark:border-border-dark dark:bg-surface-dark">
+   
+    <!-- previous button -->
+    <button type="button" class="absolute left-5 top-1/2 z-20 flex rounded-full -translate-y-1/2 items-center justify-center bg-surface/40 p-2 text-on-surface transition hover:bg-surface/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:outline-offset-0 dark:bg-surface-dark/40 dark:text-on-surface-dark dark:hover:bg-surface-dark/60 dark:focus-visible:outline-primary-dark" aria-label="previous slide" x-on:click="previous()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="3" class="size-5 md:size-6 pr-0.5" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+        </svg>
+    </button>
+
+    <!-- next button -->
+    <button type="button" class="absolute right-5 top-1/2 z-20 flex rounded-full -translate-y-1/2 items-center justify-center bg-surface/40 p-2 text-on-surface transition hover:bg-surface/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:outline-offset-0 dark:bg-surface-dark/40 dark:text-on-surface-dark dark:hover:bg-surface-dark/60 dark:focus-visible:outline-primary-dark" aria-label="next slide" x-on:click="next()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="3" class="size-5 md:size-6 pl-0.5" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+    </button>    
+
+    <!-- slides -->
+    <!-- Change min-h-[50svh] to your preferred height size -->
+    <div class="relative min-h-[50svh] w-full">
+        <template x-for="(slide, index) in slides">
+            <div x-cloak x-show="currentSlideIndex == index + 1" class="absolute inset-0" x-transition.opacity.duration.1000ms>
+                
+                <!-- Title and description -->
+                <div class="lg:px-32 lg:py-14 absolute inset-0 z-10 flex flex-col items-center justify-end gap-2 px-16 py-12 text-center">
+                    <h3 class="w-full lg:w-[80%] text-balance text-2xl lg:text-3xl font-bold text-zinc-50" x-text="slide.title" x-bind:aria-describedby="'slide' + (index + 1) + 'Description'"></h3>
+                    <p class="lg:w-1/2 w-full text-pretty text-sm text-zinc-200" x-text="slide.description" x-bind:id="'slide' + (index + 1) + 'Description'"></p>
+                </div>
+
+                <img class="absolute w-full h-full inset-0 object-cover text-neutral-600 dark:text-zinc-200" x-bind:src="slide.imgSrc" x-bind:alt="slide.imgAlt" />
             </div>
-            <div class="relative overflow-hidden rounded-xl border p-4" style="border-color:rgba(31, 89, 177, 1);">
-                <x-placeholder-pattern class="absolute inset-0 size-full dark:stroke-neutral-100/20" />
-                <p class="text-sm text-black relative z-10">
-                    GARE (Gestión de Análisis de Riesgos Evaluados) es un sistema diseñado para la Secretaría de Seguridad Pública, cuyo propósito es facilitar la captura, organización y generación de informes de análisis de riesgos.
-                    <br><br>
-                    Este sistema permite a los usuarios:</p> 
-                    <ul class="list-disc pl-6 mt-4 text-sm relative z-10 space-y-2">
-                        <li>Registrar y estructurar de manera ordenada la información requerida.</li>
-                        <li>Generar automáticamente un archivo PDF con el formato y la estructura oficial correspondiente.</li>
-                        <li>Optimizar el tiempo de elaboración de informes, garantizando uniformidad, precisión y respaldo documental.</li>
-                        <li>En esencia, GARE centraliza y estandariza el proceso de elaboración de reportes de análisis de riesgo, fortaleciendo la eficiencia y la transparencia institucional.</li>
-                    </ul>
-            </div>
-        </div>
-        <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-            <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
-        </div>
+        </template>
     </div>
+    
+    <!-- Pause/Play Button -->
+    <button type="button" class="absolute bottom-5 right-5 z-20 rounded-full text-zinc-200 opacity-50 transition hover:opacity-80 focus-visible:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 active:outline-offset-0" aria-label="pause carousel" x-on:click="(isPaused = !isPaused), setAutoplayInterval(autoplayIntervalTime)" x-bind:aria-pressed="isPaused">
+        <svg x-cloak x-show="isPaused" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="size-7">
+            <path fill-rule="evenodd" d="M2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm6.39-2.908a.75.75 0 0 1 .766.027l3.5 2.25a.75.75 0 0 1 0 1.262l-3.5 2.25A.75.75 0 0 1 8 12.25v-4.5a.75.75 0 0 1 .39-.658Z" clip-rule="evenodd">
+        </svg>
+        <svg x-cloak x-show="!isPaused" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="size-7">
+            <path fill-rule="evenodd" d="M2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm5-2.25A.75.75 0 0 1 7.75 7h.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-.75.75h-.5a.75.75 0 0 1-.75-.75v-4.5Zm4 0a.75.75 0 0 1 .75-.75h.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-.75.75h-.5a.75.75 0 0 1-.75-.75v-4.5Z" clip-rule="evenodd">
+        </svg>
+    </button>
+    
+    <!-- indicators -->
+    <div class="absolute rounded-sm bottom-3 md:bottom-5 left-1/2 z-20 flex -translate-x-1/2 gap-4 md:gap-3 px-1.5 py-1 md:px-2" role="group" aria-label="slides" >
+        <template x-for="(slide, index) in slides">
+            <button class="size-2 rounded-full transition" x-on:click="(currentSlideIndex = index + 1), setAutoplayInterval(autoplayIntervalTime)" x-bind:class="[currentSlideIndex === index + 1 ? 'bg-zinc-200' : 'bg-zinc-200/50']" x-bind:aria-label="'slide ' + (index + 1)"></button>
+        </template>
+    </div>
+</div>
 </x-layouts.app>
