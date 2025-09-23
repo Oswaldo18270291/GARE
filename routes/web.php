@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InformePdf;
 use App\Http\Controllers\Portada as ControllersPortada;
 use App\Livewire\CReports\Index as CReportsIndex;
 use App\Livewire\History\Index as HistoryIndex;
@@ -50,3 +51,5 @@ Route::get('my_reports/editstructure/{id}', Editestructura::class)->name('my_rep
 
 
 Route::get('/portada', [ControllersPortada::class, 'index']);
+Route::get('/report/pdf/{id}', [InformePdf::class, 'generar'])
+    ->name('reporte.pdf');

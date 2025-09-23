@@ -126,7 +126,6 @@
                 <td style="padding: 8px; text-align: left;">9. Monitoreo y Revisión</td>
                 <td style="padding: 8px; text-align: right;">30</td>
             </tr>
-        @endforelse
   </div>
   <!-- Pie de pagina -->
   <footer>
