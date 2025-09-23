@@ -47,7 +47,16 @@
                         {{ $loop->iteration }}. {{ $title->title->nombre }}
                     </h2>
                     <div class="flex space-x-2">
-                        <button class="px-3 py-1 border border-emerald-600 rounded text-emerald-600 hover:bg-emerald-600 hover:text-white" wire:click="Addc({{$title->id}},'tit',{{ $report->id }})" >Agregar</button>
+                        <button
+                            class="px-3 py-1 border border-emerald-600 rounded 
+                                text-emerald-600 
+                                hover:bg-emerald-600 hover:text-white 
+                                disabled:bg-gray-400 disabled:text-gray-200 disabled:border-gray-400 disabled:cursor-not-allowed"
+                            wire:click="Addc({{$title->id}},'tit',{{ $report->id }})"
+                            @if(\App\Models\Content::where('r_t_id', $title->id)->exists()) disabled @endif
+                            >
+                            Agregar
+                        </button>
                         <button class="px-3 py-1 border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white" wire:click="Editc({{$title->id}},'tit')">Editar</button>
                         <button class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">Eliminar</button>
                     </div>
@@ -62,7 +71,16 @@
                                     {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $subtitle->subtitle->nombre }}
                                 </h3>
                                 <div class="flex space-x-2">
-                                    <button class="px-3 py-1 border border-emerald-600 rounded text-emerald-600 hover:bg-emerald-600 hover:text-white" wire:click="Addc({{$subtitle->id}},'sub',{{ $report->id }})">Agregar</button>
+                                    <button
+                                        class="px-3 py-1 border border-emerald-600 rounded 
+                                            text-emerald-600 
+                                            hover:bg-emerald-600 hover:text-white 
+                                            disabled:bg-gray-400 disabled:text-gray-200 disabled:border-gray-400 disabled:cursor-not-allowed"
+                                        wire:click="Addc({{ $subtitle->id }}, 'sub', {{ $report->id }})"
+                                        @if(\App\Models\Content::where('r_t_s_id', $subtitle->id)->exists()) disabled @endif
+                                        >
+                                        Agregar
+                                    </button>
                                     <button class="px-3 py-1 border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white" wire:click="Addc({{$subtitle->id}},'sub')">Editar</button>
                                     <button class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">Eliminar</button>
                                 </div>
@@ -78,7 +96,16 @@
                                                 {{ $section->section->nombre }}
                                             </p>
                                             <div class="flex space-x-2">
-                                                <button class="px-3 py-1 border border-emerald-600 rounded text-emerald-600 hover:bg-emerald-600 hover:text-white"  wire:click="Addc({{$section->id}},'sec',{{ $report->id }})">Agregar</button>
+                                                <button
+                                                    class="px-3 py-1 border border-emerald-600 rounded 
+                                                        text-emerald-600 
+                                                        hover:bg-emerald-600 hover:text-white 
+                                                        disabled:bg-gray-400 disabled:text-gray-200 disabled:border-gray-400 disabled:cursor-not-allowed"
+                                                    wire:click="Addc({{$section->id}},'sec',{{ $report->id }})"
+                                                    @if(\App\Models\Content::where('r_t_s_s_id', $section->id)->exists()) disabled @endif
+                                                    >
+                                                    Agregar
+                                                </button>
                                                 <button class="px-3 py-1 border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white" wire:click="Addc({{$section->id}},'sec')">Editar</button>
                                                 <button class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">Eliminar</button>
                                             </div>

@@ -111,7 +111,7 @@ class Addc extends Component
             'leyenda2'=> $this->leyenda2,
             'leyenda3'=> $this->leyenda3,
             ]);
-        session()->flash('cont', 'Se agrego contenido de Seccioón con exito.');
+        session()->flash('cont', 'Se agrego contenido de Sección con exito.');
         $this->redirectRoute('my_reports.addcontenido',['id' => $id], navigate:true);
 
         }
