@@ -8,9 +8,11 @@ use App\Models\Content;
 use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
+use Livewire\WithFileUploads;
 
 class Addc extends Component
 {
+    use WithFileUploads;
     public $RTitle;
     public $RSubtitle;
     public $RSection;
@@ -18,8 +20,16 @@ class Addc extends Component
     public $contenido;
     public $report;
     public $rp;
-    
-    
+    public $img1;
+    public $img2;
+    public $img3;
+    public $leyenda1;
+    public $leyenda2;
+    public $leyenda3;
+    public $path;
+    public $path2;
+    public $path3;
+
     public function mount($id, $boton, $rp)
     {
         $rp = Report::findOrFail($rp);
@@ -39,11 +49,27 @@ class Addc extends Component
     }
 
     public function store($id_,$boton,$id){
-     
+
+        $this->validate([
+            'img1' => 'nullable|image|max:5120',
+            'img2' => 'nullable|image|max:5120',
+            'img3' => 'nullable|image|max:5120',
+        ]);
+    $path = $this->img1 ? $this->img1->store('img_cont1', 'public') : null;
+    $path2 = $this->img2 ? $this->img2->store('img_cont2', 'public') : null;
+    $path3 = $this->img3 ? $this->img3->store('img_cont3', 'public') : null;
+
         if($boton == 'tit'){
             Content::create([
             'cont' => $this->contenido,
             'r_t_id'=> $id_,
+            'img1'=>$path,
+            'img2'=>$path2,
+            'img3'=>$path3,
+            'leyenda1'=> $this->leyenda1,
+            'leyenda2'=> $this->leyenda2,
+            'leyenda3'=> $this->leyenda3,
+
         ]);
         session()->flash('cont', 'Se agrego contenido de Titulo con exito.');
         $this->redirectRoute('my_reports.addcontenido',['id' => $id], navigate:true);
@@ -52,6 +78,12 @@ class Addc extends Component
             Content::create([   
             'cont' => $this->contenido,
             'r_t_s_id'=> $id_,
+            'img1'=>$path,
+            'img2'=>$path2,
+            'img3'=>$path3,
+            'leyenda1'=> $this->leyenda1,
+            'leyenda2'=> $this->leyenda2,
+            'leyenda3'=> $this->leyenda3,
 
             ]);
         session()->flash('cont', 'Se agrego contenido de Subtitulo con exito.');
@@ -61,7 +93,12 @@ class Addc extends Component
             Content::create([
             'cont' => $this->contenido,
             'r_t_s_s_id'=> $id_,
-            
+            'img1'=>$path,
+            'img2'=>$path2,
+            'img3'=>$path3,
+            'leyenda1'=> $this->leyenda1,
+            'leyenda2'=> $this->leyenda2,
+            'leyenda3'=> $this->leyenda3,
             ]);
         session()->flash('cont', 'Se agrego contenido de Seccioón con exito.');
         $this->redirectRoute('my_reports.addcontenido',['id' => $id], navigate:true);
