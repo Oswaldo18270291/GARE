@@ -71,7 +71,7 @@
 
     <!-- slides -->
     <!-- Change min-h-[50svh] to your preferred height size -->
-    <div class="relative min-h-[50svh] w-full">
+    <div class="relative w-full aspect-[16/9] sm:aspect-[4/3] md:aspect-[16/9] lg:aspect-[21/9]">
         <template x-for="(slide, index) in slides">
             <div x-cloak x-show="currentSlideIndex == index + 1" class="absolute inset-0" x-transition.opacity.duration.1000ms>
                 
@@ -81,7 +81,8 @@
                     <p class="lg:w-1/2 w-full text-pretty text-sm text-zinc-200" x-text="slide.description" x-bind:id="'slide' + (index + 1) + 'Description'"></p>
                 </div>
 
-                <img class="absolute w-full h-full inset-0 object-cover text-neutral-600 dark:text-zinc-200" x-bind:src="slide.imgSrc" x-bind:alt="slide.imgAlt" />
+                <img class="absolute inset-0 h-full w-full object-cover object-center" x-bind:src="slide.imgSrc" x-bind:alt="slide.imgAlt" />
+
             </div>
         </template>
     </div>
