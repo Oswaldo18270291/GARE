@@ -40,16 +40,6 @@
       font-size: 12pt;
       margin-top: 100px;
     }
-
-    flooter {
-      position: fixed;
-      left: 0px;
-      bottom: 0px;
-      right: 30px;
-      height: 50px;
-      text-align: right;
-      color: black; /* O el color que contraste con tu fondo */
-    }
   </style>
 </head>
 <body>
@@ -59,7 +49,7 @@
             <tr>
             <td style="border: 1px solid #aaa; padding: 4px;">
                 <div style="opacity: 0.8;">
-                <strong>ANÁLISIS Y EVALUACIÓN DE RIESGOS<br>DEL H. CONGRESO DE CHIAPAS</strong>
+                <strong>ANÁLISIS Y EVALUACIÓN DE RIESGOS<br>DEL {{$reports->nombre_empresa}}</strong>
                 </div>
             </td>
             <td style="border: 1px solid #aaa; padding: 4px;">
@@ -71,7 +61,7 @@
             <td style="border: 1px solid #aaa; padding: 4px;">
                 <div style="opacity: 0.8;">
                 <strong>FECHA DE INICIO</strong><br>
-                10/06/2025
+                {{$reports->fecha_analisis}}
                 </div>
             </td>
             </tr>
@@ -79,19 +69,13 @@
     </header>
   <!-- Contenido -->
   <div class="contenido">
-    <p>Dr. Rafael Rincón ValenciaS</p>
-    <p>Mtro. Oscar Solís Martínez</p>
+    <p>{{auth()->user()->name}}</p>
+    <p>{{$reports->colaborador1}}</p>
     <br><br><br><br><br><br><br><br>
-    <p>Informe de Evaluación</p>
+    <p>INFORME DE EVALUACIÓN</p>
     <br>
     <p>SECRETARIA DE SEGURIDAD DEL PUEBLO DE CHIAPAS</p>
-    <p>Análisis de Riesgos del H. Congreso del Estado</p>
+    <p>ANÁLISIS DE RIESGO DEL {{$reports->nombre_empresa}}</p>
   </div>
-  <!-- Pie de pagina -->
-  <flooter>
-    <p style="font-size: 10pt;">
-      Pagina 2
-    </p>
-  </flooter>
 </body>
 </html>

@@ -12,11 +12,11 @@
             imgAlt: 'Vibrant abstract painting with swirling red, yellow, and pink hues on a canvas.',  
         },   
         {
-            imgSrc: '{{ asset('carrusel/mision.png') }}',
+            imgSrc: '{{ asset('carrusel/vision.png') }}',
             imgAlt: 'Vibrant abstract painting with swirling blue and light pink hues on a canvas.',  
         },
         {                    
-            imgSrc: '{{ asset('carrusel/vision.png') }}',                  
+            imgSrc: '{{ asset('carrusel/mision.png') }}',                  
             imgAlt: 'Vibrant abstract painting with swirling red, yellow, and pink hues on a canvas.',  
         },             
                     
