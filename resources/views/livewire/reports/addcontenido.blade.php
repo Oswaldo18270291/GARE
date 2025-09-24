@@ -57,8 +57,19 @@
                             >
                             Agregar
                         </button>
-                        <button class="px-3 py-1 border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white" wire:click="Editc({{$title->id}},'tit',{{ $report->id }})">Editar</button>
-                        <button class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">Eliminar</button>
+                        <button 
+                            class="px-3 py-1 border rounded 
+                                @if(\App\Models\Content::where('r_t_id', $title->id)->doesntExist()) 
+                                    border-gray-400 text-gray-400 bg-gray-100 cursor-not-allowed 
+                                @else 
+                                    border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white 
+                                @endif" 
+                            wire:click="Editc({{ $title->id }}, 'sec', {{ $title->id }})"
+                            @if(\App\Models\Content::where('r_t_id', $title->id)->doesntExist()) disabled @endif
+                        >
+                            Editar
+                        </button>
+                         <button class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">Eliminar</button>
                     </div>
                 </div>
 
@@ -81,7 +92,18 @@
                                         >
                                         Agregar
                                     </button>
-                                    <button class="px-3 py-1 border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white" wire:click="Editc({{$subtitle->id}},'sub',{{ $report->id }})">Editar</button>
+                                    <button 
+                                        class="px-3 py-1 border rounded 
+                                            @if(\App\Models\Content::where('r_t_s_id', $subtitle->id)->doesntExist()) 
+                                                border-gray-400 text-gray-400 bg-gray-100 cursor-not-allowed 
+                                            @else 
+                                                border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white 
+                                            @endif" 
+                                        wire:click="Editc({{ $subtitle->id }}, 'sec', {{ $subtitle->id }})"
+                                        @if(\App\Models\Content::where('r_t_s_id', $subtitle->id)->doesntExist()) disabled @endif
+                                    >
+                                        Editar
+                                    </button>
                                     <button class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">Eliminar</button>
                                 </div>
                             </div>
@@ -106,7 +128,18 @@
                                                     >
                                                     Agregar
                                                 </button>
-                                                <button class="px-3 py-1 border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white" wire:click="Editc({{$section->id}},'sec',{{ $report->id }})">Editar</button>
+                                                <button 
+                                                    class="px-3 py-1 border rounded 
+                                                        @if(\App\Models\Content::where('r_t_s_s_id', $section->id)->doesntExist()) 
+                                                            border-gray-400 text-gray-400 bg-gray-100 cursor-not-allowed 
+                                                        @else 
+                                                            border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white 
+                                                        @endif" 
+                                                    wire:click="Editc({{ $section->id }}, 'sec', {{ $report->id }})"
+                                                    @if(\App\Models\Content::where('r_t_s_s_id', $section->id)->doesntExist()) disabled @endif
+                                                >
+                                                    Editar
+                                                </button>
                                                 <button class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">Eliminar</button>
                                             </div>
                                         </div>
