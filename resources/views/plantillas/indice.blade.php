@@ -11,26 +11,24 @@
 
     header { 
       position: fixed;
-      left: 20px;
-      right: 20px;
-      top: 55px;
+      top: 55px; 
+      left: 30px; 
+      right: 30px;
+      height: 80px; /* define altura fija del header */
       text-align: center;
     }
 
     html, body {
       margin: 0;
-      padding: 0;
-      height: 100%;
       font-family: "Times News Roman", serif;
       font-size: 12pt;
     }
 
     body {
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center;
-      box-sizing: border-box;
-      text-align: center;
+      margin-top: 120px; /* mismo alto aproximado que ocupa tu header */
+      margin-left: 30px;
+      margin-right: 30px;
+      margin-bottom: 40px;
     }
 
     .contenido {
@@ -39,25 +37,6 @@
       padding: 2.5cm; /* Espaciado interno */
       color: black; /* O el color que contraste con tu fondo */
       font-size: 12pt;
-      margin-top: 100px;
-    }
-
-    footer {
-      position: fixed;
-      left: 0px;
-      bottom: 0px;
-      right: 30px;
-      height: 50px;
-      text-align: right;
-      color: black; /* O el color que contraste con tu fondo */
-    }
-
-    footer .page:after {
-        content: counter(page);
-    }
-
-    .page-content {
-      page-break-after: always;
     }
   </style>
 </head>
@@ -88,52 +67,33 @@
     </header>
 
   <!-- Contenido -->
-     <ul class="list-none space-y-4">
-        @foreach ($reports->titles->sortBy('id') as $title)
-              @foreach ( $title->content as $cont)
-              {!!$cont->cont!!}
-              @endforeach
-            <li>
-                {{-- Título --}}
-                <div class="flex justify-between items-center border-b border-gray-500">
-                    <h2 class="text-xl font-semibold py-2">
-                        {{ $loop->iteration }}. {{ $title->title->nombre }}
-                </div>
+  <div class="contenido">
+    <h2 style="text-align: left; font-size: 16pt; margin-bottom: 20px;">ÍNDICE</h2>
+    <table style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 12pt;">
+      @foreach ($reports->titles->sortBy('id') as $title)
+        <tr>
+          {{-- Título --}}
+          <td style="padding: 8px; text-align: left;">{{ $loop->iteration }}. {{ $title->title->nombre }}</td>
+          <td style="padding: 8px; text-align: right;">15</td>
+        </tr>
 
-                {{-- Subtítulos dentro del título --}}
-                <ul class="list-none ml-6 space-y-2">
-                    @foreach ($title->subtitles->sortBy('id') as $subtitle)
-                        <li>
-                            <div class="flex justify-between items-center border-b border-gray-400">
-                                <h3 class="text-lg font-medium py-2">
-                                    {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $subtitle->subtitle->nombre }}
-                                </h3>
-                            </div>
+        {{-- Subtítulos dentro del título --}}
+        @foreach ($title->subtitles->sortBy('id') as $subtitle)
+          <tr>
+            <td style="padding: 8px; text-align: left;">{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $subtitle->subtitle->nombre }}</td>
+            <td style="padding: 8px; text-align: right;">20</td>
+          </tr>
 
-                            {{-- Secciones dentro del subtítulo --}}
-                            <ul class="list-none ml-8 space-y-1">
-                                @foreach ($subtitle->sections->sortBy('id') as $section)
-                                    <li>
-                                        <div class="flex justify-between items-cente border-b border-gray-400">
-                                            <p>
-                                                {{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}
-                                                {{ $section->section->nombre }}
-                                            </p>
-                                        </div>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </li>
-                    @endforeach
-                </ul>
-            </li>
+            {{-- Secciones dentro del subtítulo --}}
+          @foreach ($subtitle->sections->sortBy('id') as $section)
+            <tr>
+              <td style="padding: 8px; text-align: left;">{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $section->section->nombre }}</td>
+              <td style="padding: 8px; text-align: right;">20</td>
+            </tr>
+          @endforeach
         @endforeach
-    </ul>
-  <!-- Pie de pagina -->
-  <footer>
-    <p style="font-size: 10pt;" class="page">
-      Página 
-    </p>
-  </footer>
+      @endforeach
+    </table>
+  </div>
 </body>
 </html>
