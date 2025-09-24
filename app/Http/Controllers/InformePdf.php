@@ -2,32 +2,51 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Content;
 use App\Models\Report;
+use App\Models\ReportTitle;
+use App\Models\ReportTitleSubtitle;
+use App\Models\ReportTitleSubtitleSection;
 use Barryvdh\DomPDF\Facade\Pdf;
 use setasign\Fpdi\PdfParser\StreamReader as PdfParserStreamReader;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 class InformePdf extends Controller
 {
+    public $reports;
+    public $contT;
     public function generar($id)
     {
-        $reports = Report::findOrFail($id);
+        $this->reports = Report::findOrFail($id);
 
+        // Cargar títulos relacionados
+        $this->reports->titles = ReportTitle::where('report_id', $this->reports->id)->where('status',1)->get();
+        
+        foreach ($this->reports->titles as $title) {
+             $title->content = Content::where('r_t_id', $title->id)->get();
+            // Cargar subtítulos de cada título
+            $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->where('status',1)->get();
+
+            foreach ($title->subtitles as $subtitle) {
+                // Cargar secciones de cada subtítulo
+                $subtitle->sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)->where('status',1)->get();
+            }
+        }
         // Generar PDFs separados
         $pdfPortada = Pdf::loadView('plantillas.portada', [
-            'reports' => $reports,
+            'reports' => $this->reports,
         ])->output();
 
         $pdfColaboradores = Pdf::loadView('plantillas.colaboradores', [
-            'reports' => $reports,
+            'reports' =>$this->reports,
         ])->output();
 
         $pdfIndice = Pdf::loadView('plantillas.indice', [
-            'reports' => $reports,
+            'reports' => $this->reports,
         ])->output();
 
         $pdfContenido = Pdf::loadView('plantillas.contenido', [
-            'reports' => $reports,
+            'reports' => $this->reports,
         ])->output();
 
         // Clase personalizada para pies de página
@@ -47,7 +66,7 @@ class InformePdf extends Controller
 
         $pdf->SetCreator('Laravel');
         $pdf->SetAuthor('SSP');
-        $pdf->SetTitle('Informe ' . $reports->id);
+        $pdf->SetTitle('Informe ' . $this->reports->id);
         $pdf->SetMargins(15, 15, 15);
         $pdf->setPrintHeader(false); // No usamos Header
         $pdf->setPrintFooter(true);
@@ -72,7 +91,7 @@ class InformePdf extends Controller
             }
         }
 
-        $filename = 'Informe_' . $reports->id . '.pdf';
+        $filename = 'Informe_' . $this->reports->id . '.pdf';
 
         return response($pdf->Output($filename, 'S'), 200)
             ->header('Content-Type', 'application/pdf')

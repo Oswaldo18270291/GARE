@@ -86,47 +86,49 @@
             </tr>
         </table>
     </header>
+
   <!-- Contenido -->
-  <div class="contenido">
-    <h2 style="text-align: left; font-size: 16pt; margin-bottom: 20px;">ÍNDICE</h2>
-    <table style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 12pt;">
-            <tr>
-                <td style="padding: 8px; text-align: left;">1. Introducción</td>
-                <td style="padding: 8px; text-align: right;">4</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; text-align: left;">2. Objetivos</td>
-                <td style="padding: 8px; text-align: right;">5</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; text-align: left;">3. Alcance</td>
-                <td style="padding: 8px; text-align: right;">6</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; text-align: left;">4. Metodología</td>
-                <td style="padding: 8px; text-align: right;">7</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; text-align: left;">5. Identificación de Riesgos</td>
-                <td style="padding: 8px; text-align: right;">10</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; text-align: left;">6. Análisis de Riesgos</td>
-                <td style="padding: 8px; text-align: right;">15</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; text-align: left;">7. Evaluación de Riesgos</td>
-                <td style="padding: 8px; text-align: right;">20</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; text-align: left;">8. Plan de Tratamiento de Riesgos</td>
-                <td style="padding: 8px; text-align: right;">25</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px; text-align: left;">9. Monitoreo y Revisión</td>
-                <td style="padding: 8px; text-align: right;">30</td>
-            </tr>
-  </div>
+     <ul class="list-none space-y-4">
+        @foreach ($reports->titles->sortBy('id') as $title)
+              @foreach ( $title->content as $cont)
+              {!!$cont->cont!!}
+              @endforeach
+            <li>
+                {{-- Título --}}
+                <div class="flex justify-between items-center border-b border-gray-500">
+                    <h2 class="text-xl font-semibold py-2">
+                        {{ $loop->iteration }}. {{ $title->title->nombre }}
+                </div>
+
+                {{-- Subtítulos dentro del título --}}
+                <ul class="list-none ml-6 space-y-2">
+                    @foreach ($title->subtitles->sortBy('id') as $subtitle)
+                        <li>
+                            <div class="flex justify-between items-center border-b border-gray-400">
+                                <h3 class="text-lg font-medium py-2">
+                                    {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $subtitle->subtitle->nombre }}
+                                </h3>
+                            </div>
+
+                            {{-- Secciones dentro del subtítulo --}}
+                            <ul class="list-none ml-8 space-y-1">
+                                @foreach ($subtitle->sections->sortBy('id') as $section)
+                                    <li>
+                                        <div class="flex justify-between items-cente border-b border-gray-400">
+                                            <p>
+                                                {{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}
+                                                {{ $section->section->nombre }}
+                                            </p>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </li>
+                    @endforeach
+                </ul>
+            </li>
+        @endforeach
+    </ul>
   <!-- Pie de pagina -->
   <footer>
     <p style="font-size: 10pt;" class="page">
