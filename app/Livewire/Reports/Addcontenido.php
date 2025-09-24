@@ -41,11 +41,12 @@ class Addcontenido extends Component
         ], navigate: true);
     }
 
-    public function Editc($id, $boton)
+    public function Editc($id, $boton,$rp)
     {
         $this->redirectRoute('my_reports.addcontenido.Editc', [
             'id' => $id, 
-            'boton' => $boton
+            'boton' => $boton,
+            'rp' => $rp,
         ], navigate: true);
     }
 

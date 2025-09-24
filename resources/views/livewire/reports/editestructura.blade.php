@@ -173,12 +173,12 @@
                         >
                             {{-- Input oculto --}}
                             <input 
-                                id="img" 
+                                id="logo" 
                                 type="file" 
                                 class="sr-only" 
                                 accept="image/png,image/jpeg"
                                 x-ref="imgInput"
-                                x-on:change="handleFile($event.target.files[0], 'img', $event.target)" 
+                                x-on:change="handleFile($event.target.files[0], 'logo', $event.target)" 
                             />
 
                             <label for="logo" class="cursor-pointer font-medium text-primary">

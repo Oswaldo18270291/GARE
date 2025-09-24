@@ -57,7 +57,7 @@
                             >
                             Agregar
                         </button>
-                        <button class="px-3 py-1 border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white" wire:click="Editc({{$title->id}},'tit')">Editar</button>
+                        <button class="px-3 py-1 border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white" wire:click="Editc({{$title->id}},'tit',{{ $report->id }})">Editar</button>
                         <button class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">Eliminar</button>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
                                         >
                                         Agregar
                                     </button>
-                                    <button class="px-3 py-1 border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white" wire:click="Addc({{$subtitle->id}},'sub')">Editar</button>
+                                    <button class="px-3 py-1 border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white" wire:click="Editc({{$subtitle->id}},'sub',{{ $report->id }})">Editar</button>
                                     <button class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">Eliminar</button>
                                 </div>
                             </div>
@@ -106,7 +106,7 @@
                                                     >
                                                     Agregar
                                                 </button>
-                                                <button class="px-3 py-1 border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white" wire:click="Addc({{$section->id}},'sec')">Editar</button>
+                                                <button class="px-3 py-1 border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white" wire:click="Editc({{$section->id}},'sec',{{ $report->id }})">Editar</button>
                                                 <button class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">Eliminar</button>
                                             </div>
                                         </div>

@@ -45,7 +45,7 @@ Route::get('my_reports', Index::class)->name('my_reports.index');
 Route::get('history', HistoryIndex::class)->name('history.index');
 Route::get('my_reports/addcontent/{id}', Addcontenido::class)->name('my_reports.addcontenido');
 Route::get('my_reports/addcontent/addc/{id}/{boton}/{rp}', Addc::class)->name('my_reports.addcontenido.Addc');
-Route::get('my_reports/addcontent/editc/{id}/{boton}', Editc::class)->name('my_reports.addcontenido.Editc');
+Route::get('my_reports/addcontent/editc/{id}/{boton}/{rp}', Editc::class)->name('my_reports.addcontenido.Editc');
 Route::get('my_reports/editstructure/{id}', Editestructura::class)->name('my_reports.editestructura');
 //Route::get('/portada', portada::class)->name('plantillas.portada');
 

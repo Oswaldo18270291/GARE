@@ -40,6 +40,7 @@ class Editestructura extends Component
             'reportTitles.reportTitleSubtitles.reportTitleSubtitleSections.section'
         ])->findOrFail($id);
         $img = Report::select('img')->findOrFail($id);
+        $logo = Report::select('logo')->findOrFail($id);
         $this->nombre_empresa = $this->report->nombre_empresa;
         $this->giro_empresa   = $this->report->giro_empresa;
         $this->ubicacion      = $this->report->ubicacion;
@@ -138,6 +139,7 @@ class Editestructura extends Component
             return view('livewire.reports.editestructura', [
             'report' => $this->report,
             'img' => $this->img,
+            'logo' => $this->logo,
         ]);
     }
 }

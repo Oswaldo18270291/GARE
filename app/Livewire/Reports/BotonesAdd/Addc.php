@@ -66,9 +66,9 @@ class Addc extends Component
             'leyenda3.required_with' => '⚠️ Si subes una imagen, también debes escribir una leyenda.',
         
         ]);
-    $path = $this->img1 ? $this->img1->store('img_cont1', 'public') : null;
-    $path2 = $this->img2 ? $this->img2->store('img_cont2', 'public') : null;
-    $path3 = $this->img3 ? $this->img3->store('img_cont3', 'public') : null;
+            $path = $this->img1 ? $this->img1->store('img_cont1', 'public') : null;
+            $path2 = $this->img2 ? $this->img2->store('img_cont2', 'public') : null;
+            $path3 = $this->img3 ? $this->img3->store('img_cont3', 'public') : null;
 
         if($boton == 'tit'){
             Content::create([
