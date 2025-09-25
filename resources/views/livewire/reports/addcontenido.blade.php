@@ -69,7 +69,11 @@
                         > 
                             Editar
                         </button>
-                         <button wire:confirm="¿Estás seguro de eliminar este reporte?" class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">Eliminar</button>
+                         <button  wire:click="deleteContent({{$title->id}},{{$report->id}})" 
+                         wire:confirm="¿Estás seguro de eliminar este reporte?" 
+                         class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">
+                         Eliminar
+                         </button>
                     </div>
                 </div>
 

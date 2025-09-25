@@ -7,7 +7,8 @@ use App\Models\Report;
 use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
-
+use Illuminate\Support\Facades\Storage;
+use App\Models\Content;
 class Addcontenido extends Component
 {
     public $report;
@@ -50,6 +51,18 @@ class Addcontenido extends Component
         ], navigate: true);
     }
 
+    public function deleteContent($id,$report){
+        $content = Content::findOrFail($id);
+        foreach (['img1', 'img2', 'img3'] as $imgField) {
+            if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
+                Storage::disk('public')->delete($content->$imgField);
+            }
+        }
+        $content->delete();
+        session()->flash('eliminar', 'El contenido se eliminó correctamente.');
+        $this->redirectRoute('my_reports.addcontenido',['id' => $report], navigate:true);
+   
+    }
 
     public function render()
     {
