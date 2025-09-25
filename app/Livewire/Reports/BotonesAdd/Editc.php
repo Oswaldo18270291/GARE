@@ -46,7 +46,7 @@ class Editc extends Component
             $this->oldImg3 = $this->content->img3;
             $this->RTitle = ReportTitle::findOrFail($id);
         } elseif($boton == 'sub'){
-            $this->RSubtitle = ReportTitleSubtitle::findOrFail($id);
+            $this->RTitle = null;
             $this->content = Content::where('r_t_s_id', $id)->first();
             // Cargamos valores existentes
            
@@ -58,7 +58,7 @@ class Editc extends Component
             $this->oldImg1 = $this->content->img1;
             $this->oldImg2 = $this->content->img2;
             $this->oldImg3 = $this->content->img3;
-            $this->RTitle = null;
+            $this->RSubtitle = ReportTitleSubtitle::findOrFail($id);
         } else if($boton == 'sec'){
             $this->RTitle = null;
             $this->RSubtitle = null;

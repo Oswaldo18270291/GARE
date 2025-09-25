@@ -9,7 +9,7 @@ use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
 use Livewire\WithFileUploads;
-
+use Illuminate\Support\Facades\Storage;
 class Addc extends Component
 {
     use WithFileUploads;
@@ -116,6 +116,19 @@ class Addc extends Component
 
         }
     }
+
+    public function deleteContent($id){
+        $content = Content::findOrFail($id);
+        foreach (['img1', 'img2', 'img3'] as $imgField) {
+            if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
+                Storage::disk('public')->delete($content->$imgField);
+            }
+        }
+        $content->delete();
+        session()->flash('eliminar', 'El contenido se eliminó correctamente.');
+        $this->redirectRoute('my_reports.addcontenido',['id' => $this->rp->id], navigate:true);
+    }
+
     public function render()
     {
         return view('livewire.reports.botones-add.addc', [
