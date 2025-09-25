@@ -23,13 +23,17 @@ class InformePdf extends Controller
         $this->reports->titles = ReportTitle::where('report_id', $this->reports->id)->where('status',1)->get();
         
         foreach ($this->reports->titles as $title) {
-             $title->content = Content::where('r_t_id', $title->id)->get();
+            $title->content = Content::where('r_t_id', $title->id)->get();
             // Cargar subtítulos de cada título
             $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->where('status',1)->get();
 
             foreach ($title->subtitles as $subtitle) {
+                 $subtitle->content = Content::where('r_t_s_id', $subtitle->id)->get();
                 // Cargar secciones de cada subtítulo
                 $subtitle->sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)->where('status',1)->get();
+                foreach ($subtitle->sections as $section) {
+                    $section->content = Content::where('r_t_s_s_id', $section->id)->get();
+                }
             }
         }
         // Generar PDFs separados
