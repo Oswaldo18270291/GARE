@@ -64,12 +64,12 @@
                                 @else 
                                     border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white 
                                 @endif" 
-                            wire:click="Editc({{ $title->id }}, 'sec', {{ $title->id }})"
+                            wire:click="Editc({{ $title->id }}, 'tit', {{ $report->id }})"
                             @if(\App\Models\Content::where('r_t_id', $title->id)->doesntExist()) disabled @endif
-                        >
+                        > 
                             Editar
                         </button>
-                         <button class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">Eliminar</button>
+                         <button wire:confirm="¿Estás seguro de eliminar este reporte?" class="px-3 py-1 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white">Eliminar</button>
                     </div>
                 </div>
 
@@ -99,7 +99,7 @@
                                             @else 
                                                 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white 
                                             @endif" 
-                                        wire:click="Editc({{ $subtitle->id }}, 'sec', {{ $subtitle->id }})"
+                                        wire:click="Editc({{ $subtitle->id }}, 'sub', {{ $report->id }})"
                                         @if(\App\Models\Content::where('r_t_s_id', $subtitle->id)->doesntExist()) disabled @endif
                                     >
                                         Editar
