@@ -15,7 +15,7 @@ use App\Livewire\Reports\Addcontenido;
 use App\Livewire\Reports\Editestructura;
 use App\Livewire\Reports\BotonesAdd\AddC;
 use App\Livewire\Reports\BotonesAdd\Editc;
-
+use App\Livewire\Admin\Users;
 
 /*Route::get('/', function () {
     return view('welcome');
@@ -53,3 +53,10 @@ Route::get('my_reports/editstructure/{id}', Editestructura::class)->name('my_rep
 Route::get('/portada', [ControllersPortada::class, 'index']);
 Route::get('/report/pdf/{id}', [InformePdf::class, 'generar'])
     ->name('reporte.pdf');
+
+
+
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/users', Users::class)->name('admin.users');
+});

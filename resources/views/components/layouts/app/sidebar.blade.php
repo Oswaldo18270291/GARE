@@ -25,6 +25,9 @@
                 <flux:navlist.item icon="clipboard-document-list" :href="route('my_reports.index')" :current="request()->routeIs('my_reports.*')" wire:navigate class="!text-white data-[current]:!text-black">Mis informes creados</flux:navlist.item>
                 <flux:navlist.item icon="document-plus" :href="route('creacion_reports.index')" :current="request()->routeIs('creacion_reports.*')" wire:navigate class="!text-white data-[current]:!text-black">Creación de informes</flux:navlist.item>
                 <flux:navlist.item icon="document-duplicate" :href="route('history.index')" :current="request()->routeIs('history.*')" wire:navigate class="!text-white data-[current]:!text-black">Historial de informes</flux:navlist.item>
+            @role('admin')
+                <flux:navlist.item icon="document-duplicate" :href="route('admin.users')" :current="request()->routeIs('admin.*')" wire:navigate class="!text-white data-[current]:!text-black">Usuarios</flux:navlist.item>
+            @endrole    
             </flux:navlist.group>
         </flux:navlist>
 

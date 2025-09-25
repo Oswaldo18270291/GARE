@@ -75,7 +75,7 @@ class Editc extends Component
             $this->oldImg3 = $this->content->img3;
             $this->RSection = ReportTitleSubtitleSection::findOrFail($id);
 
-        }
+        } 
 
     }
 
