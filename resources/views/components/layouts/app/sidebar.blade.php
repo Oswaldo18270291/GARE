@@ -9,7 +9,7 @@
         sticky 
         stashable 
         class="h-screen border-e border-zinc-200 dark:border-zinc-700"
-        style="background-image: url('/inicio/banner.png');" 
+        style="background-image: url('/inicio/fondo_user.png');" 
     >
         <!-- Botón cerrar en mobile -->
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
