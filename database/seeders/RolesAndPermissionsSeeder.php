@@ -43,7 +43,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'finalizar informe']);
 
         // Crear roles y asignar permisos
-        $admin = Role::create(['name' => 'Admin']);
+        $admin = Role::create(['name' => 'admin']);
         $admin->givePermissionTo(Permission::all());
 
         $analista = Role::create(['name' => 'Analista']);

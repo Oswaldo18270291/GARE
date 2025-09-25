@@ -5,8 +5,7 @@
   <style>
     @page {
       size: A4;
-      margin: 0;
-      counter-reset: page 2;
+      margin: 1cm;  /* 👈 margen oficial de 2.5 cm */
     }
 
     header { 
@@ -26,17 +25,16 @@
 
     body {
       margin-top: 120px; /* mismo alto aproximado que ocupa tu header */
-      margin-left: 30px;
-      margin-right: 30px;
-      margin-bottom: 40px;
+      margin-left: 2.5cm;  /* 👈 margen oficial de 2.5 cm */
+      margin-right: 2.5cm;
+      margin-bottom: 2.5cm;
     }
 
     .contenido {
-      text-align: center;
-      z-index: 1;
-      padding: 2.5cm; /* Espaciado interno */
+      margin: 0;
       color: black; /* O el color que contraste con tu fondo */
       font-size: 12pt;
+      line-height: 2;       /* interlineado doble */
     }
   </style>
 </head>
@@ -80,14 +78,14 @@
         {{-- Subtítulos dentro del título --}}
         @foreach ($title->subtitles->sortBy('id') as $subtitle)
           <tr>
-            <td style="padding: 8px; text-align: left;">{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $subtitle->subtitle->nombre }}</td>
+            <td style="padding: 8px; padding-left: 48px; text-align: justify;">{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $subtitle->subtitle->nombre }}</td>
             <td style="padding: 8px; text-align: right;">20</td>
           </tr>
 
             {{-- Secciones dentro del subtítulo --}}
           @foreach ($subtitle->sections->sortBy('id') as $section)
             <tr>
-              <td style="padding: 8px; text-align: left;">{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $section->section->nombre }}</td>
+              <td style="padding: 8px; padding-left: 96px; text-align: justify;">{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $section->section->nombre }}</td>
               <td style="padding: 8px; text-align: right;">20</td>
             </tr>
           @endforeach
