@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Livewire\Reports;
+namespace App\Livewire\Admin;
+
 use Illuminate\Support\Facades\Auth;
 
 use Livewire\WithPagination;
@@ -10,9 +11,9 @@ use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
 use Livewire\Component;
 use Illuminate\Support\Facades\Storage;
-class Index extends Component
-{   
-    use WithPagination;
+class TodosReportes extends Component
+{
+  use WithPagination;
 
 
     public function status($id)
@@ -97,7 +98,7 @@ class Index extends Component
 
     public function render()
     {
-        return view('livewire.reports.index', [
+        return view('livewire.admin.todos-reportes', [
             'reports' => Report::where('status', false)
                 ->where('user_id', Auth::id()) // 👈 solo del usuario autenticado
                 ->paginate(10),

@@ -31,6 +31,8 @@ class Addc extends Component
 
     public function mount($id, $boton, $rp)
     {
+        $report = Report::findOrFail($rp);
+        $this->authorize('update', $report); // 👈 ahora sí se evalúa la policy
         $rp = Report::findOrFail($rp);
         if($boton == 'tit'){
             $this->RTitle = ReportTitle::findOrFail($id);

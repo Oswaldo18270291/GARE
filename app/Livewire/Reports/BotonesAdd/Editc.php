@@ -8,6 +8,7 @@ use Livewire\WithFileUploads;
 use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
+use App\Models\Report;
 
 class Editc extends Component
 {
@@ -32,6 +33,9 @@ class Editc extends Component
 
     public function mount($id,$boton,$rp)
     {
+    $report = Report::findOrFail($rp);
+
+    $this->authorize('update', $report); // 👈 ahora sí se evalúa la policy
         if($boton == 'tit'){
             $this->content = Content::where('r_t_id', $id)->first();
             // Cargamos valores existentes

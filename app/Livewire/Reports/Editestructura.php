@@ -31,6 +31,8 @@ class Editestructura extends Component
 
     public function mount($id)
     {   
+        $report = Report::findOrFail($id);
+        $this->authorize('update', $report); // 👈 ahora sí se evalúa la policy
         $titles = $this->titles ?? [];       // si es null lo pone como []
         $subtitles = $this->subtitles ?? [];
         $sections = $this->sections ?? [];
