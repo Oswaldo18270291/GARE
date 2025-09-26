@@ -23,6 +23,7 @@
                 <p class="px-3 py-2 text-sm font-medium text-white">Menú administrador</p>
                 <flux:navlist.item icon="user-group" :href="route('admin.users')" :current="request()->routeIs('admin.*')" wire:navigate class="!text-white data-[current]:!text-black">Usuarios</flux:navlist.item>
                 <flux:navlist.item icon="document-text" :href="route('admin.users')" :current="request()->routeIs('admin.*')" wire:navigate class="!text-white data-[current]:!text-black">Estructura</flux:navlist.item>
+                <flux:navlist.item icon="document-duplicate" :href="route('admin.users')" :current="request()->routeIs('admin.*')" wire:navigate class="!text-white data-[current]:!text-black">Informes en proceso</flux:navlist.item>
 
             @endrole    
             <flux:navlist.group>

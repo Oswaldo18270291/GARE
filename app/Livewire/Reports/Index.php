@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Livewire\Reports;
+use Illuminate\Support\Facades\Auth;
 
 use Livewire\WithPagination;
 use App\Models\Report;
@@ -93,12 +94,16 @@ foreach ($reportTitles as $title) {
         session()->flash('eliminar', 'El reporte y sus relaciones se eliminaron correctamente.');
     }
 
+
     public function render()
     {
         return view('livewire.reports.index', [
-            'reports' => Report::where('status', false)->paginate(10),
+            'reports' => Report::where('status', false)
+                ->where('user_id', Auth::id()) // 👈 solo del usuario autenticado
+                ->paginate(10),
         ]);
     }
+
 
     public function addcontent ($id){
         $this->redirectRoute('my_reports.addcontenido',['id' => $id] ,navigate:true);

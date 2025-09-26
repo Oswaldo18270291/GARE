@@ -12,10 +12,14 @@ use App\Models\Content;
 class Addcontenido extends Component
 {
     public $report;
+    public $content;
 
 
     public function mount($id)
     {
+        $rep= Report::findOrFail($id);
+
+        $this->authorize('update', $rep); // 👈 ahora sí se evalúa la policy
         // Cargar el reporte principal
         $this->report = Report::findOrFail($id);
 
@@ -51,8 +55,32 @@ class Addcontenido extends Component
         ], navigate: true);
     }
 
-    public function deleteContent($id,$report){
-        $content = Content::findOrFail($id);
+    public function deleteContent($id,$boton,$rp){
+        
+        if($boton == 'tit'){
+            $content = Content::where('r_t_id', $id)->first();
+
+            foreach (['img1', 'img2', 'img3'] as $imgField) {
+                if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
+                    Storage::disk('public')->delete($content->$imgField);
+                }
+            }
+            $content->delete();
+            session()->flash('eliminar', 'El contenido se eliminó correctamente.');
+            $this->redirectRoute('my_reports.addcontenido',['id' => $rp], navigate:true);
+
+        } elseif($boton == 'sub'){
+             $content = Content::where('r_t_s_id', $id)->first();
+            foreach (['img1', 'img2', 'img3'] as $imgField) {
+                if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
+                    Storage::disk('public')->delete($content->$imgField);
+                }
+            }
+            $content->delete();
+            session()->flash('eliminar', 'El contenido se eliminó correctamente.');
+            $this->redirectRoute('my_reports.addcontenido',['id' => $rp], navigate:true);
+        } else if($boton == 'sec'){
+            $content = Content::where('r_t_s_s_id', $id)->first();
         foreach (['img1', 'img2', 'img3'] as $imgField) {
             if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
                 Storage::disk('public')->delete($content->$imgField);
@@ -60,7 +88,10 @@ class Addcontenido extends Component
         }
         $content->delete();
         session()->flash('eliminar', 'El contenido se eliminó correctamente.');
-        $this->redirectRoute('my_reports.addcontenido',['id' => $report], navigate:true);
+        $this->redirectRoute('my_reports.addcontenido',['id' => $rp], navigate:true);
+
+        }
+       
    
     }
 

@@ -40,19 +40,27 @@ require __DIR__.'/auth.php';
     return $pdf->stream();
 });*/
 
-Route::get('c_report', CReportsIndex::class)->name('creacion_reports.index');
-Route::get('my_reports', Index::class)->name('my_reports.index');
-Route::get('history', HistoryIndex::class)->name('history.index');
-Route::get('my_reports/addcontent/{id}', Addcontenido::class)->name('my_reports.addcontenido');
-Route::get('my_reports/addcontent/addc/{id}/{boton}/{rp}', Addc::class)->name('my_reports.addcontenido.Addc');
-Route::get('my_reports/addcontent/editc/{id}/{boton}/{rp}', Editc::class)->name('my_reports.addcontenido.Editc');
-Route::get('my_reports/editstructure/{id}', Editestructura::class)->name('my_reports.editestructura');
+Route::get('c_report', CReportsIndex::class)->name('creacion_reports.index')
+->middleware('permission:crear informes');
+Route::get('my_reports', Index::class)->name('my_reports.index')
+->middleware('permission:mis informes');
+Route::get('history', HistoryIndex::class)->name('history.index')
+->middleware('permission:historico de informes');
+Route::get('my_reports/addcontent/{id}', Addcontenido::class)->name('my_reports.addcontenido')
+->middleware('permission:agregar contenido');
+Route::get('my_reports/addcontent/addc/{id}/{boton}/{rp}', Addc::class)->name('my_reports.addcontenido.Addc')
+->middleware('permission:agregar contenido');
+Route::get('my_reports/addcontent/editc/{id}/{boton}/{rp}', Editc::class)->name('my_reports.addcontenido.Editc')
+->middleware('permission:editar contenido');
+Route::get('my_reports/editstructure/{id}', Editestructura::class)->name('my_reports.editestructura')
+->middleware('permission:editar informes');
 //Route::get('/portada', portada::class)->name('plantillas.portada');
 
 
 Route::get('/portada', [ControllersPortada::class, 'index']);
 Route::get('/report/pdf/{id}', [InformePdf::class, 'generar'])
-    ->name('reporte.pdf');
+    ->name('reporte.pdf')
+    ->middleware('permission:ver informe pdf');
 
 
 
