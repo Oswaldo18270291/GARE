@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\InformePdf;
 use App\Http\Controllers\Portada as ControllersPortada;
+use App\Livewire\Admin\Estructura;
+use App\Livewire\Admin\TodosReportes;
 use App\Livewire\CReports\Index as CReportsIndex;
 use App\Livewire\History\Index as HistoryIndex;
 use App\Livewire\Reports\Index;
@@ -57,6 +59,7 @@ Route::get('my_reports/editstructure/{id}', Editestructura::class)->name('my_rep
 //Route::get('/portada', portada::class)->name('plantillas.portada');
 
 
+
 Route::get('/portada', [ControllersPortada::class, 'index']);
 Route::get('/report/pdf/{id}', [InformePdf::class, 'generar'])
     ->name('reporte.pdf')
@@ -64,7 +67,10 @@ Route::get('/report/pdf/{id}', [InformePdf::class, 'generar'])
 
 
 
-
+Route::get('/admin/editstructure', Estructura::class)->name('admin.editarestrutura')
+->middleware('permission:editar estructura');
+Route::get('/admin/allreports', TodosReportes::class)->name('admin.todosreportes')
+->middleware('permission:ver todos los informes');
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/users', Users::class)->name('admin.users');
 });

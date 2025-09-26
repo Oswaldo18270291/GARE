@@ -100,7 +100,6 @@ class TodosReportes extends Component
     {
         return view('livewire.admin.todos-reportes', [
             'reports' => Report::where('status', false)
-                ->where('user_id', Auth::id()) // 👈 solo del usuario autenticado
                 ->paginate(10),
         ]);
     }

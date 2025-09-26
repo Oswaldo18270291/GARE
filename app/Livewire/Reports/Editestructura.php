@@ -10,6 +10,7 @@ use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
+
 class Editestructura extends Component
 {
     use WithFileUploads;

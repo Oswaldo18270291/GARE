@@ -24,7 +24,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'borrar usuarios']);
         Permission::create(['name' => 'ver roles']);
         Permission::create(['name' => 'crear roles']);
-        Permission::create(['name' => 'editar roles']);
+        Permission::create(['name' => 'editar estructura']);
         Permission::create(['name' => 'borrar roles']);
         Permission::create(['name' => 'ver permisos']);
         Permission::create(['name' => 'asignar permisos']);

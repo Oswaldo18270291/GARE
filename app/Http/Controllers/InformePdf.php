@@ -10,14 +10,21 @@ use App\Models\ReportTitleSubtitleSection;
 use Barryvdh\DomPDF\Facade\Pdf;
 use setasign\Fpdi\PdfParser\StreamReader as PdfParserStreamReader;
 use setasign\Fpdi\Tcpdf\Fpdi;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class InformePdf extends Controller
-{
+{    
+    use AuthorizesRequests;
+
     public $reports;
     public $contT;
     public function generar($id)
     {
+
         $this->reports = Report::findOrFail($id);
+        $report = Report::findOrFail($id);
+        $this->authorize('update', $report); 
 
         // Cargar títulos relacionados
         $this->reports->titles = ReportTitle::where('report_id', $this->reports->id)->where('status',1)->get();

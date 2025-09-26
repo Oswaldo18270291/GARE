@@ -92,6 +92,7 @@
                         <th scope="col" class="p-4 text-center">Fecha de creacion</th>
                         <th scope="col" class="p-4 text-center">Representante</th>
                         <th scope="col" class="p-4 text-center">Fecha de analisis</th>
+                        <th scope="col" class="p-4 text-center">Creador</th>
                         <th scope="col" class="p-4 text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -102,6 +103,7 @@
                         <td class="p-4 text-center">{{$report->created_at}}</td>
                         <td class="p-4 text-center">{{$report->representante}}</td>
                         <td class="p-4 text-center">{{$report->fecha_analisis}}</td>
+                        <td class="p-4 text-center">{{$report->user->name}}</td>
                         <td class="p-4">
                             <div class="flex justify-center space-x-4 flex-row">
                                 <!-- Íconos -->

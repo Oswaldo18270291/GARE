@@ -182,7 +182,7 @@
         </div>
         <br>
         <div class="bg-white overflow-y-auto max-h-[600px] p-4 border rounded" 
-     style="border-color:rgba(31, 89, 177, 1);">
+            style="border-color:rgba(31, 89, 177, 1);">
 
         <div class="font-sans text-lg mb-4 text-center" 
             style="background-color: rgba(143, 6, 6, 1); color: white; padding: 8px; border-radius: 8px;">
