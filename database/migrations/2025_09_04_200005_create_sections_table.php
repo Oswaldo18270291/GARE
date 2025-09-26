@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId('subtitle_id')->constrained('subtitles'); //Creada
             $table->string('nombre');
+            $table->integer('orden')->default(0);
 
         });
     }

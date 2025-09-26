@@ -101,12 +101,17 @@ class Index extends Component
 
         $this->redirectRoute('my_reports.index', navigate:true);
     }
+    
     public function mount()
     {
         $this->titles = Title::with('subtitles.sections')->get();
     }
+
+
+
     public $expandAll = false;
- public function toggleAll()
+
+    public function toggleAll()
     {
         $allTitles = $this->titles->pluck('id')->toArray();
         $allSubtitles = $this->titles->flatMap->subtitles->pluck('id')->toArray();
