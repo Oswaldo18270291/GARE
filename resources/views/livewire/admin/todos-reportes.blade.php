@@ -83,15 +83,61 @@
         <div class="mb-4 flex items-center justify-center p-4 rounded-lg" style="background-color: rgba(39, 68, 112, 1);">
             <h1 class="text-white font-sans font-bond text-lg">MIS REPORTES</h1>
         </div>
+{{-- Barra de búsqueda y filtros --}}
+    <div class="mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        {{-- Buscador --}}
+        <input type="text"
+               wire:model.live="search"
+               placeholder="Buscar por empresa, representante o creador..."
+               class="border px-3 py-2 rounded w-full sm:w-1/3 focus:outline-none focus:ring focus:ring-blue-300">
+
+        {{-- Filtro por fecha de creación --}}
+        <div class="flex gap-2 items-center">
+            <div>
+                <label class="block text-sm font-medium">Creación desde:</label>
+                <input type="date" wire:model.live="startCreated"
+                       class="border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-300">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Creación hasta:</label>
+                <input type="date" wire:model.live="endCreated"
+                       class="border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-300">
+            </div>
+        </div>
+
+        {{-- Filtro por fecha de análisis --}}
+        <div class="flex gap-2 items-center">
+            <div>
+                <label class="block text-sm font-medium">Análisis desde:</label>
+                <input type="date" wire:model.live="startAnalysis"
+                       class="border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-300">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Análisis hasta:</label>
+                <input type="date" wire:model.live="endAnalysis"
+                       class="border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-300">
+            </div>
+        </div>
+    </div>
 
         <div class="overflow-hidden w-full overflow-x-auto rounded-lg border border-outline dark:border-outline-dark" style="border-color:rgba(31, 89, 177, 1);">
             <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
                 <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong" style="border-color:rgba(53, 118, 216, 1);">
                     <tr>
                         <th scope="col" class="p-4 text-center">Nombre de empresa</th>
-                        <th scope="col" class="p-4 text-center">Fecha de creacion</th>
+                        <th class="p-4 text-center cursor-pointer" wire:click="sortBy('created_at')">
+                            Fecha de creación
+                            @if($sortField === 'created_at')
+                                @if($sortDirection === 'asc') ↑ @else ↓ @endif
+                            @endif
+                        </th>
                         <th scope="col" class="p-4 text-center">Representante</th>
-                        <th scope="col" class="p-4 text-center">Fecha de analisis</th>
+                        <th class="p-4 text-center cursor-pointer" wire:click="sortBy('fecha_analisis')">
+                            Fecha de análisis
+                            @if($sortField === 'fecha_analisis')
+                                @if($sortDirection === 'asc') ↑ @else ↓ @endif
+                            @endif
+                        </th>
                         <th scope="col" class="p-4 text-center">Creador</th>
                         <th scope="col" class="p-4 text-center">Acciones</th>
                     </tr>
