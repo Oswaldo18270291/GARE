@@ -69,6 +69,7 @@ Route::get('/report/pdf/{id}', [InformePdf::class, 'generar'])
 
 Route::get('/admin/editstructure', Estructura::class)->name('admin.editarestrutura')
 ->middleware('permission:editar estructura');
+
 Route::get('/admin/allreports', TodosReportes::class)->name('admin.todosreportes')
 ->middleware('permission:ver todos los informes');
 Route::middleware(['auth', 'role:admin'])->group(function () {
