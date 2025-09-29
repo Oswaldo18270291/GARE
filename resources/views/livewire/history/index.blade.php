@@ -33,14 +33,55 @@
             <h1 class="text-white font-sans font-bond text-lg">REPORTES FINALIZADOS</h1>
         </div>
 
+ {{-- Buscador y filtro por fechas --}}
+    <div class="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        {{-- Buscador --}}
+        <input type="text"
+               wire:model.live="search"
+               placeholder="Buscar reporte..."
+               class="border px-3 py-2 rounded w-full sm:w-1/3 focus:outline-none focus:ring focus:ring-blue-300">
+
+        {{-- Fechas --}}
+        <div class="flex gap-2">
+            <div>
+                <label class="block text-sm font-medium">Desde:</label>
+                <input type="date" wire:model.live="startDate"
+                       class="border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-300">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Hasta:</label>
+                <input type="date" wire:model.live="endDate"
+                       class="border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-300">
+            </div>
+        </div>
+    </div>
         <div class="overflow-hidden w-full overflow-x-auto rounded-lg border border-outline dark:border-outline-dark" style="border-color:rgba(31, 89, 177, 1);">
+            
             <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
                 <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong" style="border-color:rgba(31, 89, 177, 1);">
                     <tr>
                         <th scope="col" class="p-4 text-center">Nombre de empresa</th>
-                        <th scope="col" class="p-4 text-center">Fecha de creacion</th>
+                         <th class="p-4 text-center cursor-pointer" wire:click="sortBy('created_at')">
+                            Fecha de creación
+                            @if($sortField === 'created_at')
+                                @if($sortDirection === 'asc')
+                                    ↑
+                                @else
+                                    ↓
+                                @endif
+                            @endif
+                        </th>
                         <th scope="col" class="p-4 text-center">Representante</th>
-                        <th scope="col" class="p-4 text-center">Fecha de analisis</th>
+                        <th class="p-4 text-center cursor-pointer" wire:click="sortBy('fecha_analisis')">
+                            Fecha de análisis
+                            @if($sortField === 'fecha_analisis')
+                                @if($sortDirection === 'asc')
+                                    ↑
+                                @else
+                                    ↓
+                                @endif
+                            @endif
+                        </th>
                         <th scope="col" class="p-4 text-center">Acciones</th>
                     </tr>
                 </thead>
