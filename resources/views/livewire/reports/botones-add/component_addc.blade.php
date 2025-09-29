@@ -218,6 +218,148 @@
     </div>
 </div>
 </div>
+<br>
+5.4	 Control: Consultoría de seguridad interna. - 5.13 
+<table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 12pt; text-align: left;">
+  <tr>
+    <td style="border: 1px solid black; padding: 8px;"><b>¿Qué?</b></td>
+    <td style="border: 1px solid black; padding: 8px;">
+        <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+        px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+        disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
+        dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+    </td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 8px;"><b>¿Cómo?</b></td>
+    <td style="border: 1px solid black; padding: 8px;">
+        <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+        px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+        disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
+        dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+    </td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 8px;"><b>¿Quién?</b></td>
+    <td style="border: 1px solid black; padding: 8px;">
+        <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+        px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+        disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
+        dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>    
+    </td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 8px;"><b>¿Por qué?</b></td>
+    <td style="border: 1px solid black; padding: 8px;">
+        <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+        px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+        disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
+        dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>    
+    </td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 8px;"><b>¿Dónde?</b></td>
+    <td style="border: 1px solid black; padding: 8px;">
+        <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+        px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+        disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
+        dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+    </td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 8px;"><b>¿Cuánto?</b></td>
+    <td style="border: 1px solid black; padding: 8px;">
+        <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+        px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+        disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
+        dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+    </td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 8px;"><b>¿Cuándo?</b></td>
+    <td style="border: 1px solid black; padding: 8px;">
+        <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+        px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+        disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
+        dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+    </td>
+  </tr>
+</table>
+<br>
+<h1>5.2	Organigrama de Controles.</h1>
+<table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt; text-align: left;">
+  <!-- Encabezado Humanos -->
+  <tr style="background-color: #0070C0; color: white; font-weight: bold;">
+    <td colspan="3" style="border: 1px solid black; padding: 6px;">Humanos</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 6px;">1</td>
+    <td style="border: 1px solid black; padding: 6px;"><b>C04</b></td>
+    <td style="border: 1px solid black; padding: 6px;">Consultoría de seguridad (interna)</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 6px;">2</td>
+    <td style="border: 1px solid black; padding: 6px;"><b>C05</b></td>
+    <td style="border: 1px solid black; padding: 6px;">Controlador de acceso</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 6px;">3</td>
+    <td style="border: 1px solid black; padding: 6px;"><b>C09</b></td>
+    <td style="border: 1px solid black; padding: 6px;">Equipo de seguridad</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 6px;">4</td>
+    <td style="border: 1px solid black; padding: 6px;"><b>C01</b></td>
+    <td style="border: 1px solid black; padding: 6px;">Brigada de primeros auxilios</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 6px;">5</td>
+    <td style="border: 1px solid black; padding: 6px;"><b>C03</b></td>
+    <td style="border: 1px solid black; padding: 6px;">Consultoría de seguridad</td>
+  </tr>
+
+  <!-- Encabezado Políticos -->
+  <tr style="background-color: #0070C0; color: white; font-weight: bold; font-style: italic;">
+    <td colspan="3" style="border: 1px solid black; padding: 6px;">Políticos y regulatorios.</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 6px;">1</td>
+    <td style="border: 1px solid black; padding: 6px;"><b>C06</b></td>
+    <td style="border: 1px solid black; padding: 6px;">Cumplimentar leyes federales, provinciales/estaduales y/o municipales</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 6px;">2</td>
+    <td style="border: 1px solid black; padding: 6px;"><b>C08</b></td>
+    <td style="border: 1px solid black; padding: 6px;">Cumplimentar regulaciones de organizaciones reguladoras</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 6px;">3</td>
+    <td style="border: 1px solid black; padding: 6px;"><b>C07</b></td>
+    <td style="border: 1px solid black; padding: 6px;">Cumplimentar regulaciones de organizaciones reguladoras</td>
+  </tr>
+
+  <!-- Encabezado Procesos -->
+  <tr style="background-color: #0070C0; color: white; font-weight: bold; font-style: italic;">
+    <td colspan="3" style="border: 1px solid black; padding: 6px;">Procesos (Organizacionales)</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 6px;">1</td>
+    <td style="border: 1px solid black; padding: 6px;"><b>C02</b></td>
+    <td style="border: 1px solid black; padding: 6px;">Comité integrado de gestión de riesgos corporativos</td>
+  </tr>
+
+  <!-- Encabezado Técnicos -->
+  <tr style="background-color: #0070C0; color: white; font-weight: bold; font-style: italic;">
+    <td colspan="3" style="border: 1px solid black; padding: 6px;">Técnicos (Físicos y Electrónicos).</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black; padding: 6px;">1</td>
+    <td style="border: 1px solid black; padding: 6px;"><b>C10</b></td>
+    <td style="border: 1px solid black; padding: 6px;">Sistemas y procesos contra ciber ataques</td>
+  </tr>
+</table>
+
+
         <br>
         <button type="submit" class="inline-flex justify-center items-center gap-2 rounded-radius bg-success border border-success px-4 py-2 text-sm font-medium text-on-success transition hover:opacity-75">
             Guardar
