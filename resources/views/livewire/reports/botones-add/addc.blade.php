@@ -5,7 +5,9 @@
             <label class="w-full pl-0.5 text-2x1 font-sans font-extrabold">{{$RTitle->title->nombre}}</label>
         </div>
 
-        @include('livewire.reports.botones-add.component_addc')
+        @include('livewire.reports.botones-add.component_addc',[
+                    'titulo' => $RTitle->title->nombre,
+                ])
     </form>
 
     @elseif ($boton == 'sub')
@@ -16,7 +18,9 @@
         <div class="flex w-full flex-col gap-1 text-on-surface dark:text-on-surface-dark">
             <label class="font-semibold">{{$RSubtitle->subtitle->nombre}}</label>
         </div>
-        @include('livewire.reports.botones-add.component_addc')    
+                @include('livewire.reports.botones-add.component_addc',[
+                    'titulo' => $RSubtitle->subtitle->nombre,
+                ]) 
     </form>
 
     @elseif ($boton == 'sec')
@@ -31,7 +35,9 @@
             <label>{{$RSection->section->nombre}}</label>
         </div>
 
-            @include('livewire.reports.botones-add.component_addc')
+                   @include('livewire.reports.botones-add.component_addc',[
+                    'titulo' => $RSection->section->nombre,
+                ])
    </form>
     @endif
 </div>
