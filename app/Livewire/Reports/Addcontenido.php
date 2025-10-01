@@ -24,15 +24,15 @@ class Addcontenido extends Component
         $this->report = Report::findOrFail($id);
 
         // Cargar títulos relacionados
-        $this->report->titles = ReportTitle::where('report_id', $this->report->id)->where('status',1)->get();
+        $this->report->titles = ReportTitle::where('report_id', $this->report->id)->where('status',1)->orderBy('title_id', 'asc')->get();
 
         foreach ($this->report->titles as $title) {
             // Cargar subtítulos de cada título
-            $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->where('status',1)->get();
+            $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->where('status',1)->orderBy('subtitle_id', 'asc')->get();
 
             foreach ($title->subtitles as $subtitle) {
                 // Cargar secciones de cada subtítulo
-                $subtitle->sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)->where('status',1)->get();
+                $subtitle->sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)->where('status',1)->orderBy('section_id', 'asc')->get();
             }
         }
     }

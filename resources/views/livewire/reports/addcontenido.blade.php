@@ -66,7 +66,7 @@
 
     {{-- Lista de contenido --}}
     <ul class="list-none space-y-4">
-        @foreach ($report->titles->sortBy('id') as $title)
+        @foreach ($report->titles as $title)
             <li>
                 {{-- Título --}}
                 <div class="flex justify-between items-center border-b border-gray-500">
@@ -113,7 +113,7 @@
 
                 {{-- Subtítulos dentro del título --}}
                 <ul class="list-none ml-6 space-y-2">
-                    @foreach ($title->subtitles->sortBy('id') as $subtitle)
+                    @foreach ($title->subtitles as $subtitle)
                         <li>
                             <div class="flex justify-between items-center border-b border-gray-400">
                                 <h3 class="text-lg font-medium py-2">
@@ -159,7 +159,7 @@
 
                             {{-- Secciones dentro del subtítulo --}}
                             <ul class="list-none ml-8 space-y-1">
-                                @foreach ($subtitle->sections->sortBy('id') as $section)
+                                @foreach ($subtitle->sections as $section)
                                     <li>
                                         <div class="flex justify-between items-cente border-b border-gray-400">
                                             <p>
