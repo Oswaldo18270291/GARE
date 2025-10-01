@@ -1,6 +1,6 @@
 <div>
     @if ($boton == 'tit')
-    <form wire:submit.prevent="store({{ $RTitle->id}}, '{{ $boton }}','{{ $rp }}')" class="w-full p-6 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
+    <form wire:submit.prevent="store({{ $RTitle->id}}, '{{ $boton }}','{{ $rp }}'" class="w-full p-6 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
         <div class="flex w-full flex-col gap-1 text-on-surface dark:text-on-surface-dark">
             <label class="w-full pl-0.5 text-2x1 font-sans font-extrabold">{{$RTitle->title->nombre}}</label>
         </div>

@@ -221,6 +221,7 @@
 <br>
 @if ($titulo=='Mosler: Informe')
 4.1.1.	Mosler: Informe.
+<form wire:submit.prevent="save">
 <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: center;">
   <tr style="background-color: #0f4a75ff; color: white; font-weight: bold;">
     <td style="border: 1px solid black; padding: 5px;">No.</td>
@@ -232,128 +233,53 @@
     <td style="border: 1px solid black; padding: 5px;">PB</td>
     <td style="border: 1px solid black; padding: 5px;">If</td>
     <td style="border: 1px solid black; padding: 5px;">Clase del Riesgo</td>
-    <td style="border: 1px solid black; padding: 5px;">Factor de ocurrencia del riesgo</td>
+    <td style="border: 1px solid black; padding: 5px;">Factor de ocurrencia</td>
   </tr>
 
+  @foreach ($riesgos as $i => $riesgo)
   <tr>
-    <td style="border: 1px solid black;">R01</td>
-    <td style="border: 1px solid black; text-align: left;">Intrusión.</td>
+    {{-- Número --}}
+    <td style="border: 1px solid black;">{{ $riesgo['no'] }}</td>
+
+    {{-- Nombre del riesgo --}}
+    <td style="border: 1px solid black; text-align: left;">
+      {{ $riesgo['riesgo'] }}
+    </td>
+
+    {{-- Campos editables --}}
     <td style="border: 1px solid black;">
-    <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
-            <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-        </svg>
-        <select id="os" name="os" class="w-full appearance-none rounded-radius border border-outline bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark">
-            <option selected>Selecciona</option>
-            <option value="mac">1</option>
-            <option value="windows">2</option>
-            <option value="linux">3</option>
-            <option value="windows">4</option>
-            <option value="linux">5</option>
-        </select>
-    </div>
-    </td><td style="border: 1px solid black;">
-    <div x-data="{ currentVal: 1, minVal: 0, maxVal: 10, decimalPoints: 0, incrementAmount: 1 }" class="flex flex-col gap-1">
-        <div x-on:dblclick.prevent class="flex items-center">
-            <button x-on:click="currentVal = Math.max(minVal, currentVal - incrementAmount)" class="flex h-10 items-center justify-center rounded-radius border border-outline bg-surface-alt px-4 py-2 text-on-surface hover:opacity-75 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark dark:focus-visible:outline-primary-dark" aria-label="subtract">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="2" class="size-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15"/>
-                </svg>
-            </button>
-            <input x-model="currentVal.toFixed(decimalPoints)" id="counterInput" type="text" class="h-10 w-20 rounded-none bg-transparent text-center text-on-surface-strong focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-primary dark:text-on-surface-dark-strong dark:focus-visible:outline-primary-dark" readonly />
-            <button x-on:click="currentVal = Math.min(maxVal, currentVal + incrementAmount)" class="flex h-10 items-center justify-center rounded-radius border border-outline bg-surface-alt px-4 py-2 text-on-surface hover:opacity-75 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark dark:focus-visible:outline-primary-dark" aria-label="add">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="2" class="size-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-                </svg>
-            </button>
-        </div>
-    </div>
-    </td><td style="border: 1px solid black;">5</td>
-    <td style="border: 1px solid black;">4</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td>
-    <td style="border: 1px solid black; background-color: red; color: white; font-weight: bold;">MUY ALTO</td>
-    <td style="border: 1px solid black;">90.00</td>
-  </tr>
+      <input type="number" min="1" max="5" wire:model.live="riesgos.{{ $i }}.f" class="w-12 text-center border">
+    </td>
+    <td style="border: 1px solid black;">
+      <input type="number" min="1" max="5" wire:model.live="riesgos.{{ $i }}.s" class="w-12 text-center border">
+    </td>
+    <td style="border: 1px solid black;">
+      <input type="number" min="1" max="5" wire:model.live="riesgos.{{ $i }}.p" class="w-12 text-center border">
+    </td>
+    <td style="border: 1px solid black;">
+      <input type="number" min="1" max="5" wire:model.live="riesgos.{{ $i }}.e" class="w-12 text-center border">
+    </td>
+    <td style="border: 1px solid black;">
+      <input type="number" min="1" max="5" wire:model.live="riesgos.{{ $i }}.pb" class="w-12 text-center border">
+    </td>
+    <td style="border: 1px solid black;">
+      <input type="number" min="1" max="5" wire:model.live="riesgos.{{ $i }}.if" class="w-12 text-center border">
+    </td>
 
-  <tr>
-    <td style="border: 1px solid black;">R02</td>
-    <td style="border: 1px solid black; text-align: left;">Invasión para ocupación de áreas.</td>
-    <td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td>
-    <td style="border: 1px solid black;">4</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td>
-    <td style="border: 1px solid black; background-color: red; color: white; font-weight: bold;">MUY ALTO</td>
-    <td style="border: 1px solid black;">90.00</td>
-  </tr>
+    {{-- Clase del riesgo (dinámico según cálculo) --}}
+    <td style="border: 1px solid black; 
+               background-color: {{ $this->colorRiesgo($riesgo) }}; 
+               color: {{ $this->colorTexto($riesgo) }}; 
+               font-weight: bold;">
+      {{ $this->claseRiesgo($riesgo) }}
+    </td>
 
-  <tr>
-    <td style="border: 1px solid black;">R03</td>
-    <td style="border: 1px solid black; text-align: left;">Manifestaciones sociales y movimientos sindicales.</td>
-    <td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td>
-    <td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td>
-    <td style="border: 1px solid black; background-color: red; color: white; font-weight: bold;">MUY ALTO</td>
-    <td style="border: 1px solid black;">90.00</td>
+    {{-- Factor de ocurrencia --}}
+    <td style="border: 1px solid black;">
+      {{ number_format($this->calcularFOcurrencia($riesgo), 2) }}
+    </td>
   </tr>
-
-  <tr>
-    <td style="border: 1px solid black;">R04</td>
-    <td style="border: 1px solid black; text-align: left;">Ciber intrusión con captura y bloqueo de datos de la empresa.</td>
-    <td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">4</td>
-    <td style="border: 1px solid black;">4</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td>
-    <td style="border: 1px solid black; background-color: red; color: white; font-weight: bold;">MUY ALTO</td>
-    <td style="border: 1px solid black;">82.00</td>
-  </tr>
-
-  <tr>
-    <td style="border: 1px solid black;">R05</td>
-    <td style="border: 1px solid black; text-align: left;">Filtración de información.</td>
-    <td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">4</td>
-    <td style="border: 1px solid black;">4</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">4</td>
-    <td style="border: 1px solid black; background-color: yellow; color: black; font-weight: bold;">ALTO</td>
-    <td style="border: 1px solid black;">72.00</td>
-  </tr>
-
-  <tr>
-    <td style="border: 1px solid black;">R06</td>
-    <td style="border: 1px solid black; text-align: left;">Emergencias médicas.</td>
-    <td style="border: 1px solid black;">4</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">4</td>
-    <td style="border: 1px solid black;">4</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">4</td>
-    <td style="border: 1px solid black; background-color: yellow; color: black; font-weight: bold;">ALTO</td>
-    <td style="border: 1px solid black;">64.00</td>
-  </tr>
-
-  <tr>
-    <td style="border: 1px solid black;">R07</td>
-    <td style="border: 1px solid black; text-align: left;">Tempestad y/o lluvia con inundaciones de mediana intensidad.</td>
-    <td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">3</td>
-    <td style="border: 1px solid black;">4</td><td style="border: 1px solid black;">4</td><td style="border: 1px solid black;">4</td>
-    <td style="border: 1px solid black; background-color: #00B050; color: white; font-weight: bold;">NORMAL</td>
-    <td style="border: 1px solid black;">47.36</td>
-  </tr>
-
-  <tr>
-    <td style="border: 1px solid black;">R08</td>
-    <td style="border: 1px solid black; text-align: left;">Lesiones.</td>
-    <td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">3</td>
-    <td style="border: 1px solid black;">4</td><td style="border: 1px solid black;">4</td><td style="border: 1px solid black;">4</td>
-    <td style="border: 1px solid black; background-color: #92D050; color: black; font-weight: bold;">BAJO</td>
-    <td style="border: 1px solid black;">47.36</td>
-  </tr>
-
-  <tr>
-    <td style="border: 1px solid black;">R09</td>
-    <td style="border: 1px solid black; text-align: left;">Amenazas a empleados.</td>
-    <td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">3</td>
-    <td style="border: 1px solid black;">3</td><td style="border: 1px solid black;">4</td><td style="border: 1px solid black;">3</td>
-    <td style="border: 1px solid black; background-color: #92D050; color: black; font-weight: bold;">BAJO</td>
-    <td style="border: 1px solid black;">38.40</td>
-  </tr>
-
-  <tr>
-    <td style="border: 1px solid black;">R10</td>
-    <td style="border: 1px solid black; text-align: left;">Incendio.</td>
-    <td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td><td style="border: 1px solid black;">5</td>
-    <td style="border: 1px solid black;">3</td><td style="border: 1px solid black;">3</td><td style="border: 1px solid black;">3</td>
-    <td style="border: 1px solid black; background-color: #92D050; color: black; font-weight: bold;">BAJO</td>
-    <td style="border: 1px solid black;">28.80</td>
-  </tr>
+  @endforeach
 </table>
 @endif
 @if ($titulo=='Organigrama de Riesgos')
