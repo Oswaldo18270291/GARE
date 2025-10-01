@@ -70,21 +70,21 @@
       @foreach ($reports->titles->sortBy('id') as $title)
         <div>
           {{-- Título --}}
-          <a style="padding: 8px; text-align: left;">{{ $loop->iteration }}. {{ $title->title->nombre }}</a>
+          <a style="display: block; text-align: center; font-weight: bold;">{{ $loop->iteration }}. {{ title_case_except($title->title->nombre) }}</a>
             @foreach ( $title->content as $cont)
-            {!!$cont->cont!!}
+            {!! limpiarHtml($cont->cont) !!}
             @endforeach
             {{-- Subtítulos dentro del título --}}
             @foreach ($title->subtitles->sortBy('id') as $subtitle)
-                <a style="padding: 8px; padding-left: 48px; text-align: justify;">{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $subtitle->subtitle->nombre }}</a>
+                <a style="text-align: justify; font-weight: bold;">{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($subtitle->subtitle->nombre) }}</a>
                 @foreach ( $subtitle->content as $cont)
-                {!!$cont->cont!!}
+                {!! limpiarHtml($cont->cont) !!}
                 @endforeach
                 {{-- Secciones dentro del subtítulo --}}
                 @foreach ($subtitle->sections->sortBy('id') as $section)
-                    <a style="padding: 8px; padding-left: 96px; text-align: justify;">{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $section->section->nombre }}</a>
+                    <a style="text-align: justify; font-weight: bold; font-style: italic;">{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($section->section->nombre) }}</a>
                     @foreach ( $section->content as $cont)
-                    {!!$cont->cont!!}
+                    {!! limpiarHtml($cont->cont) !!}
                     @endforeach
                 @endforeach
             @endforeach
