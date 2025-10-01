@@ -35,6 +35,7 @@
       color: black; /* O el color que contraste con tu fondo */
       font-size: 12pt;
       line-height: 2;       /* interlineado doble */
+      text-indent: 2.5em;   /* sangría de la primera línea (~5 espacios) */
     }
   </style>
 </head>
