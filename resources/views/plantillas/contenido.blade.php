@@ -68,29 +68,53 @@
   <!-- Contenido -->
 <div class="contenido">
     <div style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 12pt;">
-      @foreach ($reports->titles->sortBy('id') as $title)
-        <div>
-          {{-- Título --}}
-          <a style="display: block; text-align: center; font-weight: bold;">{{ $loop->iteration }}. {{ title_case_except($title->title->nombre) }}</a>
-            @foreach ( $title->content as $cont)
-            {!! limpiarHtml($cont->cont) !!}
-            @endforeach
-            {{-- Subtítulos dentro del título --}}
-            @foreach ($title->subtitles->sortBy('id') as $subtitle)
-                <a style="text-align: justify; font-weight: bold;">{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($subtitle->subtitle->nombre) }}</a>
-                @foreach ( $subtitle->content as $cont)
+    @foreach ($reports->titles->sortBy('id') as $title)
+    <div>
+        {{-- Título --}}
+        <a style="display: block; text-align: center; font-weight: bold;">
+            {{ $loop->iteration }}. {{ title_case_except($title->title->nombre) }}
+        </a>
+
+        @foreach ($title->content as $cont)
+            @if (empty(trim($cont->cont)))
+                <br>
+            @else
                 {!! limpiarHtml($cont->cont) !!}
-                @endforeach
-                {{-- Secciones dentro del subtítulo --}}
-                @foreach ($subtitle->sections->sortBy('id') as $section)
-                    <a style="text-align: justify; font-weight: bold; font-style: italic;">{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($section->section->nombre) }}</a>
-                    @foreach ( $section->content as $cont)
+            @endif
+        @endforeach
+
+        {{-- Subtítulos dentro del título --}}
+        @foreach ($title->subtitles->sortBy('id') as $subtitle)
+            <a style="display: block; text-align: justify; font-weight: bold;">
+                {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($subtitle->subtitle->nombre) }}
+            </a>
+
+            @foreach ($subtitle->content as $cont)
+                @if (empty(trim($cont->cont)))
+                    <br>
+                @else
                     {!! limpiarHtml($cont->cont) !!}
-                    @endforeach
+                @endif
+            @endforeach
+
+            {{-- Secciones dentro del subtítulo --}}
+            @foreach ($subtitle->sections->sortBy('id') as $section)
+                <a style="display: block; text-align: justify; font-weight: bold; font-style: italic;">
+                    {{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($section->section->nombre) }}
+                </a>
+
+                @foreach ($section->content as $cont)
+                    @if (empty(trim($cont->cont)))
+                        <br>
+                    @else
+                        {!! limpiarHtml($cont->cont) !!}
+                    @endif
                 @endforeach
             @endforeach
-        </div>
-      @endforeach
+        @endforeach
+    </div>
+@endforeach
+
     </div>
   </div>
 </body>
