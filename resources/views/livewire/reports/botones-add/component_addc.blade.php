@@ -221,127 +221,174 @@
 <br>
 @if ($titulo=='Mosler: Informe')
 4.1.1.	Mosler: Informe.
-<form wire:submit.prevent="save">
-<table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: center;">
-  <tr style="background-color: #0f4a75ff; color: white; font-weight: bold;">
-    <td style="border: 1px solid black; padding: 5px;">No.</td>
-    <td style="border: 1px solid black; padding: 5px;">Riesgo</td>
-    <td style="border: 1px solid black; padding: 5px;">F</td>
-    <td style="border: 1px solid black; padding: 5px;">S</td>
-    <td style="border: 1px solid black; padding: 5px;">P</td>
-    <td style="border: 1px solid black; padding: 5px;">E</td>
-    <td style="border: 1px solid black; padding: 5px;">PB</td>
-    <td style="border: 1px solid black; padding: 5px;">If</td>
-    <td style="border: 1px solid black; padding: 5px;">Clase del Riesgo</td>
-    <td style="border: 1px solid black; padding: 5px;">Factor de ocurrencia</td>
-  </tr>
+  <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: center;">
+    <tr style="background-color: #0f4a75ff; color: white; font-weight: bold;">
+      <td style="border: 1px solid black; padding: 5px;">No.</td>
+      <td style="border: 1px solid black; padding: 5px;">Riesgo</td>
+      <td style="border: 1px solid black; padding: 5px;">F</td>
+      <td style="border: 1px solid black; padding: 5px;">S</td>
+      <td style="border: 1px solid black; padding: 5px;">P</td>
+      <td style="border: 1px solid black; padding: 5px;">E</td>
+      <td style="border: 1px solid black; padding: 5px;">PB</td>
+      <td style="border: 1px solid black; padding: 5px;">If</td>
+      <td style="border: 1px solid black; padding: 5px;">Clase del Riesgo</td>
+      <td style="border: 1px solid black; padding: 5px;">Factor de ocurrencia</td>
+      <td style="border: 1px solid black; padding: 5px;">Acciones</td>
+    </tr>
 
-  @foreach ($riesgos as $i => $riesgo)
-  <tr>
-    {{-- Número --}}
-    <td style="border: 1px solid black;">{{ $riesgo['no'] }}</td>
+    @foreach ($riesgos as $i => $riesgo)
+      <tr wire:key="riesgo-{{ $i }}">
+        {{-- No (solo lectura; se renumera automático) --}}
+        <td style="border: 1px solid black;">{{ $riesgo['no'] }}</td>
 
-    {{-- Nombre del riesgo --}}
-    <td style="border: 1px solid black; text-align: left;">
-      {{ $riesgo['riesgo'] }}
-    </td>
+        {{-- Nombre del riesgo (editable) --}}
+        <td style="border: 1px solid black; text-align: left;">
+          <input type="text" wire:model.live="riesgos.{{ $i }}.riesgo" class="w-full border px-2 py-1 text-left">
+          @error("riesgos.$i.riesgo") <div class="text-red-600 text-xs">{{ $message }}</div> @enderror
+        </td>
 
-    {{-- Campos editables --}}
-    <td style="border: 1px solid black;">
-      <input type="number" min="1" max="5" wire:model.live="riesgos.{{ $i }}.f" class="w-12 text-center border">
-    </td>
-    <td style="border: 1px solid black;">
-      <input type="number" min="1" max="5" wire:model.live="riesgos.{{ $i }}.s" class="w-12 text-center border">
-    </td>
-    <td style="border: 1px solid black;">
-      <input type="number" min="1" max="5" wire:model.live="riesgos.{{ $i }}.p" class="w-12 text-center border">
-    </td>
-    <td style="border: 1px solid black;">
-      <input type="number" min="1" max="5" wire:model.live="riesgos.{{ $i }}.e" class="w-12 text-center border">
-    </td>
-    <td style="border: 1px solid black;">
-      <input type="number" min="1" max="5" wire:model.live="riesgos.{{ $i }}.pb" class="w-12 text-center border">
-    </td>
-    <td style="border: 1px solid black;">
-      <input type="number" min="1" max="5" wire:model.live="riesgos.{{ $i }}.if" class="w-12 text-center border">
-    </td>
+        {{-- Campos editables numéricos --}}
+        @foreach (['f','s','p','e','pb','if'] as $col)
+          <td style="border: 1px solid black;">
+            <input type="number" min="1" max="5" wire:model.live="riesgos.{{ $i }}.{{ $col }}" class="w-12 text-center border">
+            @error("riesgos.$i.$col") <div class="text-red-600 text-xs">{{ $message }}</div> @enderror
+          </td>
+        @endforeach
 
-    {{-- Clase del riesgo (dinámico según cálculo) --}}
-    <td style="border: 1px solid black; 
-               background-color: {{ $this->colorRiesgo($riesgo) }}; 
-               color: {{ $this->colorTexto($riesgo) }}; 
-               font-weight: bold;">
-      {{ $this->claseRiesgo($riesgo) }}
-    </td>
+        {{-- Clase de riesgo --}}
+        @php
+          $bg = $this->colorRiesgo($riesgo);
+          $fg = $this->colorTexto($riesgo);
+          $clase = $this->claseRiesgo($riesgo);
+          $factor = number_format($this->calcularFOcurrencia($riesgo), 2);
+        @endphp
+        <td style="border: 1px solid black; background-color: {{ $bg }}; color: {{ $fg }}; font-weight: bold;">
+          {{ $clase }}
+        </td>
 
-    {{-- Factor de ocurrencia --}}
-    <td style="border: 1px solid black;">
-      {{ number_format($this->calcularFOcurrencia($riesgo), 2) }}
-    </td>
-  </tr>
-  @endforeach
-</table>
+        {{-- Factor --}}
+        <td style="border: 1px solid black;">{{ $factor }}</td>
+
+        {{-- Acciones fila --}}
+        <td style="border: 1px solid black;">
+          <button type="button" wire:click="removeFila({{ $i }})" class="px-2 py-1 bg-red-600 text-white rounded">Eliminar</button>
+        </td>
+      </tr>
+    @endforeach
+  </table>
+
+  <div class="mt-3 flex gap-2">
+    <button type="button" wire:click="addFila" class="px-3 py-2 bg-emerald-600 text-white rounded">+ Agregar fila</button>
+  </div>
 @endif
 @if ($titulo=='Organigrama de Riesgos')
 <br>
-4.1.2	Organigrama de Riesgos.
-<table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt; text-align: left;">
-  <!-- Encabezado Cibernéticos -->
-  <tr style="background-color: #0f4a75ff; font-weight: bold;">
-    <td colspan="2" style="border: 1px solid black; padding: 6px;">Cibernéticos.</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid black; padding: 6px; width: 40px; text-align: center;">1</td>
-    <td style="border: 1px solid black; padding: 6px;">R04 - Ciber intrusión con captura y bloqueo de datos de la empresa.</td>
-  </tr>
+<style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: Arial, sans-serif;
+      font-size: 11pt;
+    }
+    td {
+      border: 1px solid black;
+      padding: 6px;
+    }
+    tr.dragging {
+      background-color: #d1ecf1 !important;
+      opacity: 0.8;
+    }
+    tr.placeholder {
+      background: #f8d7da !important;
+    }
+  </style>
 
-  <!-- Encabezado Naturales -->
-  <tr style="background-color: #0f4a75ff; font-weight: bold;">
-    <td colspan="2" style="border: 1px solid black; padding: 6px;">Naturales</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid black; padding: 6px; text-align: center;">1</td>
-    <td style="border: 1px solid black; padding: 6px;">R07 - Tempestad y/o lluvia con inundaciones de mediana intensidad.</td>
-  </tr>
+  <table id="tabla">
+    <!-- Encabezado Cibernéticos -->
+    <tr style="background-color: #0f4a75ff; font-weight: bold;">
+      <td colspan="2">Cibernéticos</td>
+    </tr>
+    <tbody id="ciberneticos">
+      <tr>
+        <td style="width: 40px; text-align: center;">1</td>
+        <td>R04 - Ciber intrusión con captura y bloqueo de datos de la empresa.</td>
+      </tr>
+    </tbody>
 
-  <!-- Encabezado Sociales -->
-  <tr style="background-color: #00B0F0; font-weight: bold;">
-    <td colspan="2" style="border: 1px solid black; padding: 6px;">Sociales (Personas)</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid black; padding: 6px; text-align: center;">1</td>
-    <td style="border: 1px solid black; padding: 6px;">R03 - Manifestaciones sociales y movimientos sindicales.</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid black; padding: 6px; text-align: center;">2</td>
-    <td style="border: 1px solid black; padding: 6px;">R02 - Invasión para ocupación de áreas.</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid black; padding: 6px; text-align: center;">3</td>
-    <td style="border: 1px solid black; padding: 6px;">R01 - Intrusión.</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid black; padding: 6px; text-align: center;">4</td>
-    <td style="border: 1px solid black; padding: 6px;">R05 - Filtración de información.</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid black; padding: 6px; text-align: center;">5</td>
-    <td style="border: 1px solid black; padding: 6px;">R08 - Lesiones.</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid black; padding: 6px; text-align: center;">6</td>
-    <td style="border: 1px solid black; padding: 6px;">R06 - Emergencias médicas.</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid black; padding: 6px; text-align: center;">7</td>
-    <td style="border: 1px solid black; padding: 6px;">R09 - Amenazas a empleados.</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid black; padding: 6px; text-align: center;">8</td>
-    <td style="border: 1px solid black; padding: 6px;">R10 - Incendio.</td>
-  </tr>
-</table>
-<br>
+    <!-- Encabezado Naturales -->
+    <tr style="background-color: #0f4a75ff; font-weight: bold;">
+      <td colspan="2">Naturales</td>
+    </tr>
+    <tbody id="naturales">
+      <tr>
+        <td style="text-align: center;">1</td>
+        <td>R07 - Tempestad y/o lluvia con inundaciones de mediana intensidad.</td>
+      </tr>
+    </tbody>
+
+    <!-- Encabezado Sociales -->
+    <tr style="background-color: #00B0F0; font-weight: bold;">
+      <td colspan="2">Sociales (Personas)</td>
+    </tr>
+    <tbody id="sociales">
+      <tr>
+        <td style="text-align: center;">1</td>
+        <td>R03 - Manifestaciones sociales y movimientos sindicales.</td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">2</td>
+        <td>R02 - Invasión para ocupación de áreas.</td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">3</td>
+        <td>R01 - Intrusión.</td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">4</td>
+        <td>R05 - Filtración de información.</td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">5</td>
+        <td>R08 - Lesiones.</td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">6</td>
+        <td>R06 - Emergencias médicas.</td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">7</td>
+        <td>R09 - Amenazas a empleados.</td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">8</td>
+        <td>R10 - Incendio.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    function actualizarNumeros() {
+      ["ciberneticos", "naturales", "sociales"].forEach(id => {
+        const tbody = document.getElementById(id);
+        const filas = tbody.querySelectorAll("tr");
+        filas.forEach((fila, index) => {
+          fila.querySelector("td:first-child").textContent = index + 1;
+        });
+      });
+    }
+
+    ["ciberneticos", "naturales", "sociales"].forEach(id => {
+      new Sortable(document.getElementById(id), {
+        group: "riesgos",   // permite mover entre grupos
+        animation: 150,
+        ghostClass: "dragging",
+        onEnd: actualizarNumeros // 🔹 actualiza números al terminar
+      });
+    });
+
+    // Inicializa numeración correcta
+    actualizarNumeros();
+  </script>
 @endif
 @if ($titulo=='Nivel de Riesgo-Gráfico de Consecuencia x Factor de Ocurrencia')
 GRAFICA
