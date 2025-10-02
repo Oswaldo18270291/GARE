@@ -250,7 +250,7 @@
         {{-- Campos editables numéricos --}}
         @foreach (['f','s','p','e','pb','if'] as $col)
           <td style="border: 1px solid black;">
-            <input type="number" min="1" max="5" wire:model.live="riesgos.{{ $i }}.{{ $col }}" class="w-12 text-center border">
+            <input type="number" min="1" max="5" oninput="this.value = Math.max(1, Math.min(5, this.value))" wire:model.live="riesgos.{{ $i }}.{{ $col }}" class="w-12 text-center border">
             @error("riesgos.$i.$col") <div class="text-red-600 text-xs">{{ $message }}</div> @enderror
           </td>
         @endforeach
@@ -302,28 +302,34 @@
       background: #f8d7da !important;
     }
   </style>
+<table id="tabla">
+    <!-- Riesgos iniciales (arriba de todo) -->
+    <tr style="background-color: #ffc107; font-weight: bold;">
+      <td colspan="2">Riesgos sin clasificar</td>
+    </tr>
+    <tbody id="pendientes">
+      @foreach ($risks as $r)
+        <tr>
+          <td style="width: 40px; text-align: center;">{{ $loop->iteration }}</td>
+          <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+        </tr>
+      @endforeach
+    </tbody>
 
-  <table id="tabla">
     <!-- Encabezado Cibernéticos -->
-    <tr style="background-color: #0f4a75ff; font-weight: bold;">
+    <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
       <td colspan="2">Cibernéticos</td>
     </tr>
     <tbody id="ciberneticos">
-      <tr>
-        <td style="width: 40px; text-align: center;">1</td>
-        <td>R04 - Ciber intrusión con captura y bloqueo de datos de la empresa.</td>
-      </tr>
+
     </tbody>
 
     <!-- Encabezado Naturales -->
-    <tr style="background-color: #0f4a75ff; font-weight: bold;">
+    <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
       <td colspan="2">Naturales</td>
     </tr>
     <tbody id="naturales">
-      <tr>
-        <td style="text-align: center;">1</td>
-        <td>R07 - Tempestad y/o lluvia con inundaciones de mediana intensidad.</td>
-      </tr>
+
     </tbody>
 
     <!-- Encabezado Sociales -->
@@ -331,64 +337,33 @@
       <td colspan="2">Sociales (Personas)</td>
     </tr>
     <tbody id="sociales">
-      <tr>
-        <td style="text-align: center;">1</td>
-        <td>R03 - Manifestaciones sociales y movimientos sindicales.</td>
-      </tr>
-      <tr>
-        <td style="text-align: center;">2</td>
-        <td>R02 - Invasión para ocupación de áreas.</td>
-      </tr>
-      <tr>
-        <td style="text-align: center;">3</td>
-        <td>R01 - Intrusión.</td>
-      </tr>
-      <tr>
-        <td style="text-align: center;">4</td>
-        <td>R05 - Filtración de información.</td>
-      </tr>
-      <tr>
-        <td style="text-align: center;">5</td>
-        <td>R08 - Lesiones.</td>
-      </tr>
-      <tr>
-        <td style="text-align: center;">6</td>
-        <td>R06 - Emergencias médicas.</td>
-      </tr>
-      <tr>
-        <td style="text-align: center;">7</td>
-        <td>R09 - Amenazas a empleados.</td>
-      </tr>
-      <tr>
-        <td style="text-align: center;">8</td>
-        <td>R10 - Incendio.</td>
-      </tr>
     </tbody>
-  </table>
+</table>
 
-  <script>
-    function actualizarNumeros() {
-      ["ciberneticos", "naturales", "sociales"].forEach(id => {
-        const tbody = document.getElementById(id);
-        const filas = tbody.querySelectorAll("tr");
-        filas.forEach((fila, index) => {
-          fila.querySelector("td:first-child").textContent = index + 1;
-        });
-      });
-    }
-
-    ["ciberneticos", "naturales", "sociales"].forEach(id => {
-      new Sortable(document.getElementById(id), {
-        group: "riesgos",   // permite mover entre grupos
-        animation: 150,
-        ghostClass: "dragging",
-        onEnd: actualizarNumeros // 🔹 actualiza números al terminar
+<script>
+  function actualizarNumeros() {
+    ["pendientes", "ciberneticos", "naturales", "sociales"].forEach(id => {
+      const tbody = document.getElementById(id);
+      const filas = tbody.querySelectorAll("tr");
+      filas.forEach((fila, index) => {
+        fila.querySelector("td:first-child").textContent = index + 1;
       });
     });
+  }
 
-    // Inicializa numeración correcta
-    actualizarNumeros();
-  </script>
+  ["pendientes", "ciberneticos", "naturales", "sociales"].forEach(id => {
+    new Sortable(document.getElementById(id), {
+      group: "riesgos",   // todos comparten el mismo grupo
+      animation: 150,
+      ghostClass: "dragging",
+      onEnd: actualizarNumeros
+    });
+  });
+
+  // Inicializa numeración correcta al cargar
+  actualizarNumeros();
+</script>
+
 @endif
 @if ($titulo=='Nivel de Riesgo-Gráfico de Consecuencia x Factor de Ocurrencia')
 GRAFICA

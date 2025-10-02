@@ -22,7 +22,7 @@ use HasFactory;
         'pb',
         'if',
         'f_ocurrencia',
-        'contet_id',   // <- coincide con tu migración
+        'content_id',   // <- coincide con tu migración
     ];
 
     protected $casts = [
@@ -35,12 +35,9 @@ use HasFactory;
         'f_ocurrencia' => 'float',
     ];
 
-    /**
-     * Relación: pertenece a un Content
-     * (FK no convencional: contet_id)
-     */
+
     public function content()
     {
-        return $this->belongsTo(Content::class, 'contet_id');
+        return $this->belongsTo(Content::class, 'content_id');
     }
 }

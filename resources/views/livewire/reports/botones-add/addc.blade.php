@@ -20,6 +20,7 @@
         </div>
                 @include('livewire.reports.botones-add.component_addc',[
                     'titulo' => $RSubtitle->subtitle->nombre,
+                    'risks' => $risks,
                 ]) 
     </form>
 

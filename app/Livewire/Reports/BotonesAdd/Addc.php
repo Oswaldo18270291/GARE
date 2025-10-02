@@ -3,15 +3,15 @@
 namespace App\Livewire\Reports\BotonesAdd;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
+
+use App\Models\AnalysisDiagrams;
+use App\Models\Subtitle;
 use App\Models\Report;
 use App\Models\Content;
 use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
-use Livewire\WithFileUploads;
-
-use App\Models\AnalysisDiagrams;
-use App\Models\Subtitle;
 
 class Addc extends Component
 {
@@ -33,19 +33,38 @@ class Addc extends Component
     public $path;
     public $path2;
     public $path3;
+    public $mosler;
+    public $c;
+    public $risks;
 
     public $riesgos = [];
-
+    public $rep;
     public function mount($id, $boton, $rp)
     {
         $report = Report::findOrFail($rp);
-        $this->authorize('update', $report); // 👈 ahora sí se evalúa la policy
+        $this->authorize('update', $report); 
+
+        $rep = Report::findOrFail($rp);
         $rp = Report::findOrFail($rp);
+        $this->rep = $rp;
         if($boton == 'tit'){
             $this->RTitle = ReportTitle::findOrFail($id);
             $this->RSubtitle = null;
         } elseif($boton == 'sub'){
             $this->RSubtitle = ReportTitleSubtitle::findOrFail($id);
+            $this->rep->titles = ReportTitle::where('report_id', $this->rep->id)->where('status',1)->get();
+            foreach ($this->rep->titles as $title) 
+            {
+            if( ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 14)->exists()){
+            $mosler = ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 14)->first();  
+
+                if( Content::where('r_t_s_id',$mosler->id)->exists()){
+                    $c = Content::where('r_t_s_id',$mosler->id)->first();
+                    $this->risks = AnalysisDiagrams::where('content_id',$c->id)->get();
+                }
+
+             }
+            }
             $this->RTitle = null;
         } else if($boton == 'sec'){
             $this->RTitle = null;
@@ -99,7 +118,7 @@ class Addc extends Component
             'leyenda1' => 'nullable|string|required_with:img1',
             'leyenda2' => 'nullable|string|required_with:img2',
             'leyenda3' => 'nullable|string|required_with:img3',
-                        'riesgos.*.riesgo' => 'required|string|min:3',
+            'riesgos.*.riesgo' => 'required|string|min:3',
             'riesgos.*.f' => 'required|integer|min:1|max:5',
             'riesgos.*.s' => 'required|integer|min:1|max:5',
             'riesgos.*.p' => 'required|integer|min:1|max:5',
@@ -161,7 +180,7 @@ class Addc extends Component
                     'pb'           => (int)$r['pb'],
                     'if'           => (int)$r['if'],
                     'f_ocurrencia' => $this->calcularFOcurrencia($r),
-                    'contet_id'    => $content->id,
+                    'content_id'    => $content->id,
                     'created_at'   => $now,
                     'updated_at'   => $now,
                 ];
@@ -224,16 +243,16 @@ class Addc extends Component
     public int $min = 1;
     public int $max = 5;
 
-    public function updatedValor($value)
+    public function updatedRiesgos($value, $name)
     {
-        // Validar al escribir manualmente
-        if ($value < $this->min) {
-            $this->valor = $this->min;
-        } elseif ($value > $this->max) {
-            $this->valor = $this->max;
+        $parts = explode('.', $name);
+        if (count($parts) === 3) {
+            [$prefix, $index, $field] = $parts;
+            if (in_array($field, ['f','s','p','e','pb','if'])) {
+                $this->riesgos[$index][$field] = max(1, min(5, (int)$value));
+            }
         }
     }
-
 
 
     public function render()
@@ -244,6 +263,8 @@ class Addc extends Component
             'RSection' => $this->RSection,
             'boton'  => $this->boton,
             'rp'  => $this->rp,
+            'risks' => $this->risks,
+            'rep' => $this->rep,
         ]);
 
     }

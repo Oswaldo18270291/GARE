@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('pb');
             $table->integer('if');
             $table->double('f_ocurrencia');
-            $table->foreignId('contet_id')
+            $table->foreignId('content_id')
                 ->nullable()
                 ->constrained('contents')
                 ->onDelete('cascade');
