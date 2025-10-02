@@ -16,6 +16,7 @@ use App\Models\Subtitle;
 class Addc extends Component
 {
     use WithFileUploads;
+
     public $RTitle;
     public $RSubtitle;
     public $RSection;
@@ -32,6 +33,7 @@ class Addc extends Component
     public $path;
     public $path2;
     public $path3;
+
     public $riesgos = [];
 
     public function mount($id, $boton, $rp)
@@ -51,24 +53,42 @@ class Addc extends Component
             $this->RSection = ReportTitleSubtitleSection::findOrFail($id);
 
         }
-
-                $this->riesgos = [
-            ['no' => 'R01', 'riesgo' => 'Intrusión.', 'f' => 1, 's' => 1, 'p' => 1, 'e' => 1, 'pb' => 1, 'if' => 1],
-            ['no' => 'R02', 'riesgo' => 'Invasión para ocupación de áreas.', 'f' => 1, 's' => 1, 'p' => 1, 'e' => 1, 'pb' => 1, 'if' => 1],
-            ['no' => 'R03', 'riesgo' => 'Manifestaciones sociales y movimientos sindicales.', 'f' => 1, 's' => 1, 'p' => 1, 'e' => 1, 'pb' => 1, 'if' => 1],
-            ['no' => 'R04', 'riesgo' => 'Ciber intrusión con captura y bloqueo de datos de la empresa.', 'f' => 1, 's' => 1, 'p' => 1, 'e' => 1, 'pb' => 1, 'if' => 1],
-            ['no' => 'R05', 'riesgo' => 'Filtración de información.', 'f' => 1, 's' => 1, 'p' => 1, 'e' => 1, 'pb' => 1, 'if' => 1],
-            ['no' => 'R06', 'riesgo' => 'Emergencias médicas.', 'f' => 1, 's' => 1, 'p' => 1, 'e' => 1, 'pb' => 1, 'if' => 1],
-            ['no' => 'R07', 'riesgo' => 'Tempestad y/o lluvia con inundaciones de mediana intensidad.', 'f' => 1, 's' => 1, 'p' => 1, 'e' => 1, 'pb' => 1, 'if' => 1],
-            ['no' => 'R08', 'riesgo' => 'Lesiones.', 'f' => 1, 's' => 1, 'p' => 1, 'e' => 1, 'pb' => 1, 'if' => 1],
-            ['no' => 'R09', 'riesgo' => 'Amenazas a empleados.', 'f' => 1, 's' => 1, 'p' => 1, 'e' => 1, 'pb' => 1, 'if' => 1],
-            ['no' => 'R10', 'riesgo' => 'Incendio.', 'f' => 1, 's' => 1, 'p' => 1, 'e' => 1, 'pb' => 1, 'if' => 1],
-        ];
+        $this->addFila();
 
     }
-    public $n;
+
+    private function formatNo($n)
+    {
+        return 'R' . str_pad($n, 2, '0', STR_PAD_LEFT);
+    }
+
+    private function renumerar()
+    {
+        foreach ($this->riesgos as $i => &$r) {
+            $r['no'] = $this->formatNo($i + 1);
+        }
+    }
+
+    public function addFila()
+    {
+        $this->riesgos[] = [
+            'no' => $this->formatNo(count($this->riesgos) + 1),
+            'riesgo' => '',
+            'f' => 1, 's' => 1, 'p' => 1,
+            'e' => 1, 'pb' => 1, 'if' => 1,
+        ];
+    }
+
+    public function removeFila($index)
+    {
+        unset($this->riesgos[$index]);
+        $this->riesgos = array_values($this->riesgos);
+        $this->renumerar();
+    }
+
     public function store($id_, $boton, $id)
     {
+  
         $n = ReportTitleSubtitle::findOrFail($id_);
         $name = Subtitle::where('id',$n->subtitle_id)->value('nombre');
 
@@ -79,6 +99,13 @@ class Addc extends Component
             'leyenda1' => 'nullable|string|required_with:img1',
             'leyenda2' => 'nullable|string|required_with:img2',
             'leyenda3' => 'nullable|string|required_with:img3',
+                        'riesgos.*.riesgo' => 'required|string|min:3',
+            'riesgos.*.f' => 'required|integer|min:1|max:5',
+            'riesgos.*.s' => 'required|integer|min:1|max:5',
+            'riesgos.*.p' => 'required|integer|min:1|max:5',
+            'riesgos.*.e' => 'required|integer|min:1|max:5',
+            'riesgos.*.pb' => 'required|integer|min:1|max:5',
+            'riesgos.*.if' => 'required|integer|min:1|max:5',
         ], [
             'img1.required_with'     => '⚠️ Si agregas una leyenda, también debes subir una imagen.',
             'leyenda1.required_with' => '⚠️ Si subes una imagen, también debes escribir una leyenda.',
@@ -93,6 +120,7 @@ class Addc extends Component
         $path3 = $this->img3 ? $this->img3->store('img_cont3', 'public') : null;
 
         if ($boton == 'tit') {
+
             // 👉 Crear el Content y guardar la instancia
             $content = Content::create([
                 'cont'     => $this->contenido,
@@ -120,22 +148,28 @@ class Addc extends Component
                 'leyenda3' => $this->leyenda3,
             ]);
             if ($name == 'Mosler: Informe') {
-                    // 👉 Crear los riesgos ligados al Content creado
-            foreach ($this->riesgos as $riesgo) {
-                AnalysisDiagrams::create([
-                    'no'          => $riesgo['no'],
-                    'riesgo'      => $riesgo['riesgo'],
-                    'f'           => $riesgo['f'],
-                    's'           => $riesgo['s'],
-                    'p'           => $riesgo['p'],
-                    'e'           => $riesgo['e'],
-                    'pb'          => $riesgo['pb'],
-                    'if'          => $riesgo['if'],
-                    'f_ocurrencia'=> $this->calcularFOcurrencia($riesgo),
-                    'contet_id'   => $content->id, // 👈 Ahora sí, se guarda con el id correcto
-                ]);
+            $rows = [];
+            $now = now();
+            foreach ($this->riesgos as $r) {
+                $rows[] = [
+                    'no'           => $r['no'],
+                    'riesgo'       => $r['riesgo'],
+                    'f'            => (int)$r['f'],
+                    's'            => (int)$r['s'],
+                    'p'            => (int)$r['p'],
+                    'e'            => (int)$r['e'],
+                    'pb'           => (int)$r['pb'],
+                    'if'           => (int)$r['if'],
+                    'f_ocurrencia' => $this->calcularFOcurrencia($r),
+                    'contet_id'    => $content->id,
+                    'created_at'   => $now,
+                    'updated_at'   => $now,
+                ];
             }
+            if (!empty($rows)) {
+                AnalysisDiagrams::insert($rows);
             }
+        }
             session()->flash('cont', 'Se agrego contenido de Subtitulo con exito.');
             $this->redirectRoute('my_reports.addcontenido', ['id' => $id], navigate: true);
 

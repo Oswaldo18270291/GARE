@@ -285,7 +285,7 @@
 </div>
     <br>
 
-    <button wire:click.prevent="update" 
+    <button type="submit"
         class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
         💾 Guardar Cambios
     </button>
