@@ -309,7 +309,7 @@
     </tr>
     <tbody id="pendientes">
       @foreach ($risks as $r)
-        <tr>
+        <tr data-id="{{ $r->id }}">
           <td style="width: 40px; text-align: center;">{{ $loop->iteration }}</td>
           <td>{{ $r->no }} - {{ $r->riesgo }}</td>
         </tr>
@@ -320,48 +320,54 @@
     <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
       <td colspan="2">Cibernéticos</td>
     </tr>
-    <tbody id="ciberneticos">
-
-    </tbody>
+    <tbody id="ciberneticos"></tbody>
 
     <!-- Encabezado Naturales -->
     <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
       <td colspan="2">Naturales</td>
     </tr>
-    <tbody id="naturales">
-
-    </tbody>
+    <tbody id="naturales"></tbody>
 
     <!-- Encabezado Sociales -->
     <tr style="background-color: #00B0F0; font-weight: bold;">
       <td colspan="2">Sociales (Personas)</td>
     </tr>
-    <tbody id="sociales">
-    </tbody>
+    <tbody id="sociales"></tbody>
 </table>
 
 <script>
-  function actualizarNumeros() {
+  function actualizarNumerosYGuardar() {
+    let data = [];
+
     ["pendientes", "ciberneticos", "naturales", "sociales"].forEach(id => {
       const tbody = document.getElementById(id);
       const filas = tbody.querySelectorAll("tr");
+
       filas.forEach((fila, index) => {
         fila.querySelector("td:first-child").textContent = index + 1;
+
+        data.push({
+          id: fila.getAttribute("data-id"),
+          orden: index + 1,
+          tipo_riesgo: id
+        });
       });
     });
+
+    // Llamar a Livewire para guardar en la BD
+    Livewire.dispatch("guardarOrden", { risks: data });
   }
 
   ["pendientes", "ciberneticos", "naturales", "sociales"].forEach(id => {
     new Sortable(document.getElementById(id), {
-      group: "riesgos",   // todos comparten el mismo grupo
+      group: "riesgos",
       animation: 150,
       ghostClass: "dragging",
-      onEnd: actualizarNumeros
+      onEnd: actualizarNumerosYGuardar
     });
   });
 
-  // Inicializa numeración correcta al cargar
-  actualizarNumeros();
+  actualizarNumerosYGuardar();
 </script>
 
 @endif
@@ -375,18 +381,6 @@ GRAFICA
     new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: [
-          "R01 INTRUSIÓN",
-          "R02 INVASIÓN PARA...",
-          "R03 MANIFESTACIONES",
-          "R04 CIBER INTRUSIÓN",
-          "R05 FILTRACIÓN INFORMACIÓN",
-          "R06 EMERGENCIAS MÉDICAS",
-          "R07 LLUVIAS/INUNDACIONES",
-          "R08 LESIONES",
-          "R09 AMENAZAS A EMPLEADOS",
-          "R10 INCENDIO"
-        ],
         datasets: [{
           label: 'Factor de ocurrencia',
           data: [90, 90, 90, 82, 72, 64, 47.36, 47.36, 38.40, 28.80],

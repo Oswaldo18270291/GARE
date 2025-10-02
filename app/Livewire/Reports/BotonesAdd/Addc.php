@@ -202,6 +202,16 @@ class Addc extends Component
         }
     }
 
+    public function guardarOrden($data)
+    {
+        foreach ($data['risks'] as $risk) {
+            AnalysisDiagrams::where('id', $risk['id'])->update([
+                'orden' => $risk['orden'],
+                'tipo_riesgo' => $risk['tipo_riesgo'],
+            ]);
+        }
+    }
+    
      public function calcularFOcurrencia($riesgo)
     {
         // Ejemplo: promedio ponderado (ajusta según tu fórmula real)

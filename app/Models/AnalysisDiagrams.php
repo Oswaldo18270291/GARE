@@ -22,7 +22,9 @@ use HasFactory;
         'pb',
         'if',
         'f_ocurrencia',
-        'content_id',   // <- coincide con tu migración
+        'content_id',
+        'orden',
+        'tipo_riesgo',
     ];
 
     protected $casts = [
