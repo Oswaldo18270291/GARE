@@ -79,13 +79,13 @@
         </div>
          <br>
     @endif
-    <div>
+    <div class="w-full p-6 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
         <div class="mb-4 flex items-center justify-center p-4 rounded-lg" style="background-color: rgba(39, 68, 112, 1);">
             <h1 class="text-white font-sans font-bond text-lg">MIS REPORTES</h1>
         </div>
 
         <div class="overflow-hidden w-full overflow-x-auto rounded-lg border border-outline dark:border-outline-dark" style="border-color:rgba(31, 89, 177, 1);">
-            <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
+            <table class="bg-white w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
                 <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong" style="border-color:rgba(53, 118, 216, 1);">
                     <tr>
                         <th scope="col" class="p-4 text-center">Nombre de empresa</th>

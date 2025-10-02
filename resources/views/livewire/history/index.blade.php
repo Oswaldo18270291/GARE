@@ -1,5 +1,5 @@
 
-<div>
+<div class="w-full p-6 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
     @if (session('success'))
         <div x-data="{ alertIsVisible: true }" 
              x-show="alertIsVisible" 
@@ -39,25 +39,28 @@
         <input type="text"
                wire:model.live="search"
                placeholder="Buscar reporte..."
-               class="border px-3 py-2 rounded w-full sm:w-1/3 focus:outline-none focus:ring focus:ring-blue-300">
+               class="bg-white border px-3 py-2 rounded w-full sm:w-1/3 focus:outline-none focus:ring focus:ring-blue-300"
+               style="border-color:rgba(31, 89, 177, 1);">
 
         {{-- Fechas --}}
         <div class="flex gap-2">
             <div>
                 <label class="block text-sm font-medium">Desde:</label>
                 <input type="date" wire:model.live="startDate"
-                       class="border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-300">
+                       class="bg-white border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-300"
+                       style="border-color:rgba(31, 89, 177, 1);">
             </div>
             <div>
                 <label class="block text-sm font-medium">Hasta:</label>
                 <input type="date" wire:model.live="endDate"
-                       class="border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-300">
+                       class="bg-white border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-300"
+                       style="border-color:rgba(31, 89, 177, 1);">
             </div>
         </div>
     </div>
         <div class="overflow-hidden w-full overflow-x-auto rounded-lg border border-outline dark:border-outline-dark" style="border-color:rgba(31, 89, 177, 1);">
             
-            <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
+            <table class="bg-white w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
                 <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong" style="border-color:rgba(31, 89, 177, 1);">
                     <tr>
                         <th scope="col" class="p-4 text-center">Nombre de empresa</th>
