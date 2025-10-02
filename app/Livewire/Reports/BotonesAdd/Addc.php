@@ -104,12 +104,12 @@ class Addc extends Component
         $this->riesgos = array_values($this->riesgos);
         $this->renumerar();
     }
-
+    public $nl;
     public function store($id_, $boton, $id)
     {
-  
-        $n = ReportTitleSubtitle::findOrFail($id_);
-        $name = Subtitle::where('id',$n->subtitle_id)->value('nombre');
+ 
+        $nl = ReportTitleSubtitle::findOrFail($id_);
+        $name = Subtitle::where('id', $nl->subtitle_id)->value('nombre');
 
         $this->validate([
             'img1' => 'nullable|image|required_with:leyenda1',
@@ -118,13 +118,6 @@ class Addc extends Component
             'leyenda1' => 'nullable|string|required_with:img1',
             'leyenda2' => 'nullable|string|required_with:img2',
             'leyenda3' => 'nullable|string|required_with:img3',
-            'riesgos.*.riesgo' => 'required|string|min:3',
-            'riesgos.*.f' => 'required|integer|min:1|max:5',
-            'riesgos.*.s' => 'required|integer|min:1|max:5',
-            'riesgos.*.p' => 'required|integer|min:1|max:5',
-            'riesgos.*.e' => 'required|integer|min:1|max:5',
-            'riesgos.*.pb' => 'required|integer|min:1|max:5',
-            'riesgos.*.if' => 'required|integer|min:1|max:5',
         ], [
             'img1.required_with'     => '⚠️ Si agregas una leyenda, también debes subir una imagen.',
             'leyenda1.required_with' => '⚠️ Si subes una imagen, también debes escribir una leyenda.',
@@ -133,7 +126,7 @@ class Addc extends Component
             'img3.required_with'     => '⚠️ Si agregas una leyenda, también debes subir una imagen.',
             'leyenda3.required_with' => '⚠️ Si subes una imagen, también debes escribir una leyenda.',
         ]);
-
+  
         $path  = $this->img1 ? $this->img1->store('img_cont1', 'public') : null;
         $path2 = $this->img2 ? $this->img2->store('img_cont2', 'public') : null;
         $path3 = $this->img3 ? $this->img3->store('img_cont3', 'public') : null;

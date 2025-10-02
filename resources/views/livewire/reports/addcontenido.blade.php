@@ -79,7 +79,7 @@
                                 text-emerald-600 
                                 hover:bg-emerald-600 hover:text-white 
                                 disabled:bg-gray-400 disabled:text-gray-200 disabled:border-gray-400 disabled:cursor-not-allowed"
-                            wire:click="Addc({{$title->id}},'tit',{{ $report->id }})"
+                            wire:click="Addc('{{$title->id}}','tit','{{ $report->id }}')"
                             @if(\App\Models\Content::where('r_t_id', $title->id)->exists()) disabled @endif
                             >
                             Agregar

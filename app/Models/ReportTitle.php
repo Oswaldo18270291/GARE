@@ -29,6 +29,6 @@ class ReportTitle extends Model
     }
     public function contents()
     {
-        return $this->hasMany(Content::class, 'r_t_id'); // <--- llave foránea correcta
+        return $this->hasMany(Content::class, 'content_id'); // <--- llave foránea correcta
     }
 }
