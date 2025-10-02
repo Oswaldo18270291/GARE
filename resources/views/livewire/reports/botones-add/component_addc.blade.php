@@ -686,8 +686,8 @@ Características del Riesgo.
 @endif
 
 
-        <br>
-        <button type="submit" class="inline-flex justify-center items-center gap-2 rounded-radius bg-success border border-success px-4 py-2 text-sm font-medium text-on-success transition hover:opacity-75">
-            Guardar
-        </button>
+    <br>
+    <button type="submit" class="inline-flex justify-center items-center gap-2 rounded-radius bg-success border border-success px-4 py-2 text-sm font-medium text-on-success transition hover:opacity-75">
+        Guardar
+    </button>
 </div> 

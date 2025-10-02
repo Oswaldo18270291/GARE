@@ -83,8 +83,9 @@ class Editc extends Component
 
     }
 
-    public function update()
+    public function update($id,$boton,$rp)
     {
+
         $this->validate([
             'img1' => 'nullable|image',
             'img2' => 'nullable|image',
@@ -106,9 +107,8 @@ class Editc extends Component
             'img3'     => $path3,
             'leyenda3' => $this->leyenda3,
         ]);
-
         session()->flash('cont', '✅ Contenido actualizado correctamente.');
-        return redirect()->route('my_reports.addcontenido', ['id' => $this->content->r_t_id ?? $this->content->r_t_s_id ?? $this->content->r_t_s_s_id]);
+        return redirect()->route('my_reports.addcontenido', ['id' =>$rp]);
     }
 
     public function render()

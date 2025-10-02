@@ -67,8 +67,10 @@ class Addc extends Component
 
     }
     public $n;
+
     public function store($id_, $boton, $id)
     {
+  
         $n = ReportTitleSubtitle::findOrFail($id_);
         $name = Subtitle::where('id',$n->subtitle_id)->value('nombre');
 
@@ -93,6 +95,7 @@ class Addc extends Component
         $path3 = $this->img3 ? $this->img3->store('img_cont3', 'public') : null;
 
         if ($boton == 'tit') {
+
             // 👉 Crear el Content y guardar la instancia
             $content = Content::create([
                 'cont'     => $this->contenido,
