@@ -5,7 +5,7 @@ namespace App\Livewire\Reports\BotonesAdd;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-use App\Models\AnalysisDiagrams;
+use App\Models\AnalysisDiagram;
 use App\Models\Subtitle;
 use App\Models\Report;
 use App\Models\Content;
@@ -62,7 +62,7 @@ class Addc extends Component
 
                 if( Content::where('r_t_s_id',$mosler->id)->exists()){
                     $c = Content::where('r_t_s_id',$mosler->id)->first();
-                    $this->risks = AnalysisDiagrams::where('content_id',$c->id)->get();
+                    $this->risks = AnalysisDiagram::where('content_id',$c->id)->get();
                 }
 
              }
@@ -183,7 +183,7 @@ class Addc extends Component
                 ];
             }
             if (!empty($rows)) {
-                AnalysisDiagrams::insert($rows);
+                AnalysisDiagram::insert($rows);
             }
         }
             session()->flash('cont', 'Se agrego contenido de Subtitulo con exito.');
@@ -210,7 +210,7 @@ class Addc extends Component
     public function guardarOrden($risks)
     {
         foreach ($risks as $risk) {
-            AnalysisDiagrams::where('id', $risk['id'])->update([
+            AnalysisDiagram::where('id', $risk['id'])->update([
                 'orden' => $risk['orden'],
                 'tipo_riesgo' => $risk['tipo_riesgo'],
             ]);
@@ -222,7 +222,7 @@ class Addc extends Component
 
     private function cargarRiesgos()
     {
-        $this->risks = AnalysisDiagrams::orderBy('tipo_riesgo')
+        $this->risks = AnalysisDiagram::orderBy('tipo_riesgo')
                                        ->orderBy('orden')
                                        ->get();
     }

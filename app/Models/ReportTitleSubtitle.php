@@ -10,7 +10,7 @@ class ReportTitleSubtitle extends Model
     /** @use HasFactory<\Database\Factories\ReportTitleSubtitleFactory> */
     use HasFactory;
     
-    protected $fillable = ['r_t_id', 'subtitle_id','status'];
+    protected $fillable = ['r_t_id', 'subtitle_id','status','content_id'];
 
 
         public function reportTitle()
@@ -29,6 +29,6 @@ class ReportTitleSubtitle extends Model
     }
     public function contents()
     {
-        return $this->hasMany(Content::class, 'contet_id'); // <--- llave foránea correctasss
+        return $this->hasMany(Content::class, 'r_t_s_id');
     }
 }

@@ -24,75 +24,72 @@ class Index extends Component
         $this->redirectRoute('history.index', navigate:true);
     }
 
-    public function delete($id)
-    {
-        $report = Report::findOrFail($id);
+public function delete($id)
+{
+    $report = Report::findOrFail($id);
 
-        // 🔹 Eliminar títulos asociados
-        if ($report->logo && Storage::disk('public')->exists($report->logo)) {
-        Storage::disk('public')->delete($report->logo);
+    // 🔹 Eliminar imágenes principales del reporte
+    foreach (['logo', 'img'] as $field) {
+        if ($report->$field && Storage::disk('public')->exists($report->$field)) {
+            Storage::disk('public')->delete($report->$field);
         }
-        if ($report->img && Storage::disk('public')->exists($report->img)) {
-        Storage::disk('public')->delete($report->img);
-        }
-
-        $reportTitles = ReportTitle::where('report_id', $report->id)->get();
-
-        foreach ($reportTitles as $title) {
-            // Eliminar contenidos ligados directamente al título
-            foreach ($title->contents as $content) {
-                foreach (['img1', 'img2', 'img3'] as $imgField) {
-                    if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
-                        Storage::disk('public')->delete($content->$imgField);
-                    }
-                }
-                $content->delete();
-            }
-
-    // Buscar subtítulos asociados
-    $subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->get();
-
-    foreach ($subtitles as $subtitle) {
-        // Eliminar contenidos ligados al subtítulo
-        foreach ($subtitle->contents as $content) {
-            foreach (['img1', 'img2', 'img3'] as $imgField) {
-                if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
-                    Storage::disk('public')->delete($content->$imgField);
-                }
-            }
-            $content->delete();
-        }
-
-        // Buscar secciones asociadas
-        $sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)->get();
-
-        foreach ($sections as $section) {
-            foreach ($section->contents as $content) {
-                foreach (['img1', 'img2', 'img3'] as $imgField) {
-                    if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
-                        Storage::disk('public')->delete($content->$imgField);
-                    }
-                }
-                $content->delete();
-            }
-
-            $section->delete();
-        }
-
-        $subtitle->delete();
     }
+
+    // 🔹 Eliminar títulos
+    $reportTitles = ReportTitle::where('report_id', $report->id)->get();
+
+    foreach ($reportTitles as $title) {
+
+        // Contenidos ligados directamente al título
+        foreach ($title->contents as $content) {
+            $this->deleteContentWithImages($content);
+        }
+
+        // Subtítulos asociados
+        $subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->get();
+        foreach ($subtitles as $subtitle) {
+
+            // Contenidos ligados al subtítulo
+            foreach ($subtitle->contents as $content) {
+                $this->deleteContentWithImages($content);
+            }
+
+            // Secciones asociadas
+            $sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)->get();
+            foreach ($sections as $section) {
+
+                // Contenidos ligados a la sección
+                foreach ($section->contents as $content) {
+                    $this->deleteContentWithImages($content);
+                }
+
+                $section->delete();
+            }
+
+            $subtitle->delete();
+        }
+
+        $title->delete();
+    }
+
+    // 🔹 Finalmente eliminar el reporte
+    $report->delete();
 }
 
-
-        // Eliminar títulos después de limpiar subtítulos
-        ReportTitle::where('report_id', $report->id)->delete();
-
-        // Finalmente eliminar el reporte
-        $report->delete();
-
-        // Mensaje flash
-        session()->flash('eliminar', 'El reporte y sus relaciones se eliminaron correctamente.');
+/**
+ * Helper para eliminar imágenes y contenido
+ */
+protected function deleteContentWithImages($content)
+{
+    foreach (['img1', 'img2', 'img3'] as $imgField) {
+        if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
+            Storage::disk('public')->delete($content->$imgField);
+        }
     }
+    $content->delete();
+    session()->flash('eliminar', 'El reporte y sus relaciones se eliminaron correctamente.');
+
+}
 
 
     public function render()

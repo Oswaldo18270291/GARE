@@ -7,12 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ReportTitle extends Model
 {
-    /** @use HasFactory<\Database\Factories\ReportTitleFactory> */
     use HasFactory;
 
-        protected $fillable = ['report_id', 'title_id','status'];
+    protected $fillable = ['report_id', 'title_id', 'status'];
 
-        
     public function report()
     {
         return $this->belongsTo(Report::class);
@@ -27,8 +25,10 @@ class ReportTitle extends Model
     {
         return $this->hasMany(ReportTitleSubtitle::class, 'r_t_id');
     }
+
     public function contents()
     {
-        return $this->hasMany(Content::class, 'content_id'); // <--- llave foránea correcta
+        return $this->hasMany(Content::class, 'r_t_id');
     }
 }
+

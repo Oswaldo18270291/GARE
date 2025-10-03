@@ -7,7 +7,7 @@ use App\Models\Report;
 use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
-use App\Models\AnalysisDiagrams;
+use App\Models\AnalysisDiagram;
 use Barryvdh\DomPDF\Facade\Pdf;
 use setasign\Fpdi\PdfParser\StreamReader as PdfParserStreamReader;
 use setasign\Fpdi\Tcpdf\Fpdi;
@@ -38,8 +38,7 @@ class InformePdf extends Controller
 
             foreach ($title->subtitles as $subtitle) {
                  $subtitle->content = Content::where('r_t_s_id', $subtitle->id)->get();
-                 $c = Content::where('r_t_s_id', $subtitle->id)->first();
-                 $subtitle->content->analysisDiagrams = AnalysisDiagrams::where('content_id', $c->id)->get();
+                 
                 // Cargar secciones de cada subtítulo
                 $subtitle->sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)->where('status',1)->get();
                 foreach ($subtitle->sections as $section) {

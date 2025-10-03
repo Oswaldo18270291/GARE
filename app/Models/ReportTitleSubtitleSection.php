@@ -9,7 +9,7 @@ class ReportTitleSubtitleSection extends Model
 {
     /** @use HasFactory<\Database\Factories\ReportTitleSubtitleSectionFactory> */
     use HasFactory;
-    protected $fillable = ['r_t_s_id', 'section_id','status'];
+    protected $fillable = ['r_t_s_id', 'section_id','status','content_id'];
 
         public function reportTitleSubtitle()
     {
@@ -23,6 +23,6 @@ class ReportTitleSubtitleSection extends Model
 
     public function contents()
     {
-        return $this->hasMany(Content::class, 'content_id'); // <--- llave foránea correcta
+        return $this->hasMany(Content::class, 'r_t_s_s_id');
     }
 }
