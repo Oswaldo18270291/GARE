@@ -56,9 +56,9 @@
     }
 
     .ilustrativa {
-      width: 12cm; /* Ajusta el tamaño según sea necesario */
-      height: auto;
       margin-top: 20px;
+      max-width: 100%; 
+      max-height: 10cm;
     }
 
     footer {
