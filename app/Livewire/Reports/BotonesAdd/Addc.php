@@ -13,6 +13,8 @@ use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
 
+use Livewire\Attributes\On;
+
 class Addc extends Component
 {
     use WithFileUploads;
@@ -65,6 +67,7 @@ class Addc extends Component
 
              }
             }
+            $this->cargarRiesgos();
             $this->RTitle = null;
         } else if($boton == 'sec'){
             $this->RTitle = null;
@@ -73,6 +76,7 @@ class Addc extends Component
 
         }
         $this->addFila();
+
 
     }
 
@@ -202,15 +206,27 @@ class Addc extends Component
         }
     }
 
-    public function guardarOrden($data)
+    #[On('guardarOrden')]
+    public function guardarOrden($risks)
     {
-        foreach ($data['risks'] as $risk) {
+        foreach ($risks as $risk) {
             AnalysisDiagrams::where('id', $risk['id'])->update([
                 'orden' => $risk['orden'],
                 'tipo_riesgo' => $risk['tipo_riesgo'],
             ]);
         }
+
+        // 🔄 Recargar la colección después de guardar
+        $this->cargarRiesgos();
     }
+
+    private function cargarRiesgos()
+    {
+        $this->risks = AnalysisDiagrams::orderBy('tipo_riesgo')
+                                       ->orderBy('orden')
+                                       ->get();
+    }
+
     
      public function calcularFOcurrencia($riesgo)
     {

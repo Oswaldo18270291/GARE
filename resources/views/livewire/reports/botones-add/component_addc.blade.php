@@ -302,123 +302,165 @@
       background: #f8d7da !important;
     }
   </style>
-<table id="tabla">
-    <!-- Riesgos iniciales (arriba de todo) -->
-    <tr style="background-color: #ffc107; font-weight: bold;">
-      <td colspan="2">Riesgos sin clasificar</td>
-    </tr>
-    <tbody id="pendientes">
-      @foreach ($risks as $r)
-        <tr data-id="{{ $r->id }}">
-          <td style="width: 40px; text-align: center;">{{ $loop->iteration }}</td>
-          <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+<div>
+    <table id="tabla">
+        <!-- Riesgos iniciales (arriba de todo) -->
+        <tr style="background-color: #ffc107; font-weight: bold;">
+            <td colspan="2">Riesgos sin clasificar</td>
         </tr>
-      @endforeach
-    </tbody>
+        <tbody id="pendientes" wire:ignore>
+            @foreach ($risks->where('tipo_riesgo', 'pendientes')->sortBy('orden') as $r)
+                <tr data-id="{{ $r->id }}">
+                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
+                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                </tr>
+            @endforeach
+        </tbody>
 
-    <!-- Encabezado Cibernéticos -->
-    <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
-      <td colspan="2">Cibernéticos</td>
-    </tr>
-    <tbody id="ciberneticos"></tbody>
+        <!-- Encabezado Cibernéticos -->
+        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
+            <td colspan="2">Cibernéticos</td>
+        </tr>
+        <tbody id="ciberneticos" wire:ignore>
+            @foreach ($risks->where('tipo_riesgo', 'ciberneticos')->sortBy('orden') as $r)
+                <tr data-id="{{ $r->id }}">
+                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
+                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                </tr>
+            @endforeach
+        </tbody>
 
-    <!-- Encabezado Naturales -->
-    <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
-      <td colspan="2">Naturales</td>
-    </tr>
-    <tbody id="naturales"></tbody>
+        <!-- Encabezado Naturales -->
+        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
+            <td colspan="2">Naturales</td>
+        </tr>
+        <tbody id="naturales" wire:ignore>
+            @foreach ($risks->where('tipo_riesgo', 'naturales')->sortBy('orden') as $r)
+                <tr data-id="{{ $r->id }}">
+                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
+                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                </tr>
+            @endforeach
+        </tbody>
 
-    <!-- Encabezado Sociales -->
-    <tr style="background-color: #00B0F0; font-weight: bold;">
-      <td colspan="2">Sociales (Personas)</td>
-    </tr>
-    <tbody id="sociales"></tbody>
-</table>
+        <!-- Encabezado Sociales -->
+        <tr style="background-color: #00B0F0; font-weight: bold;">
+            <td colspan="2">Sociales (Personas)</td>
+        </tr>
+        <tbody id="sociales" wire:ignore>
+            @foreach ($risks->where('tipo_riesgo', 'sociales')->sortBy('orden') as $r)
+                <tr data-id="{{ $r->id }}">
+                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
+                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 
 <script>
-  function actualizarNumerosYGuardar() {
-    let data = [];
+    function actualizarNumerosYGuardar() {
+        let data = [];
+
+        const mapSecciones = {
+            pendientes: "pendientes",
+            ciberneticos: "ciberneticos",
+            naturales: "naturales",
+            sociales: "sociales"
+        };
+
+        ["pendientes", "ciberneticos", "naturales", "sociales"].forEach(id => {
+            const tbody = document.getElementById(id);
+            const filas = tbody.querySelectorAll("tr");
+
+            filas.forEach((fila, index) => {
+                fila.querySelector("td:first-child").textContent = index + 1;
+
+                data.push({
+                    id: fila.getAttribute("data-id"),
+                    orden: index + 1,
+                    tipo_riesgo: mapSecciones[id]
+                });
+            });
+        });
+
+        // Enviar a Livewire
+        Livewire.dispatch("guardarOrden", { risks: data });
+    }
 
     ["pendientes", "ciberneticos", "naturales", "sociales"].forEach(id => {
-      const tbody = document.getElementById(id);
-      const filas = tbody.querySelectorAll("tr");
-
-      filas.forEach((fila, index) => {
-        fila.querySelector("td:first-child").textContent = index + 1;
-
-        data.push({
-          id: fila.getAttribute("data-id"),
-          orden: index + 1,
-          tipo_riesgo: id
+        new Sortable(document.getElementById(id), {
+            group: "riesgos",
+            animation: 150,
+            ghostClass: "dragging",
+            onEnd: actualizarNumerosYGuardar
         });
-      });
     });
-
-    // Llamar a Livewire para guardar en la BD
-    Livewire.dispatch("guardarOrden", { risks: data });
-  }
-
-  ["pendientes", "ciberneticos", "naturales", "sociales"].forEach(id => {
-    new Sortable(document.getElementById(id), {
-      group: "riesgos",
-      animation: 150,
-      ghostClass: "dragging",
-      onEnd: actualizarNumerosYGuardar
-    });
-  });
-
-  actualizarNumerosYGuardar();
 </script>
 
 @endif
 @if ($titulo=='Nivel de Riesgo-Gráfico de Consecuencia x Factor de Ocurrencia')
 GRAFICA
 4.1.3	Nivel de Riesgo-Gráfico de Consecuencia x Factor de Ocurrencia
-  <canvas id="riesgosChart" width="800" height="400"></canvas>
+ <canvas id="riesgosChart" width="800" height="400"></canvas>
 
-  <script>
+<script>
     const ctx = document.getElementById('riesgosChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        datasets: [{
-          label: 'Factor de ocurrencia',
-          data: [90, 90, 90, 82, 72, 64, 47.36, 47.36, 38.40, 28.80],
-          backgroundColor: [
-            "red","red","red","red", // Muy alto
-            "orange","orange",       // Alto
-            "green","green",            // Normal
-            "lightblue","lightblue"  // Bajo
-          ]
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            display: false
-          },
-          title: {
-            display: true,
-            text: 'Factor de ocurrencia'
-          }
-        },
-        scales: {
-          x: {
-            ticks: {
-              maxRotation: 90,
-              minRotation: 60
-            }
-          },
-          y: {
-            beginAtZero: true,
-            max: 100
-          }
-        }
-      }
+
+    // Ordenamos desde el backend por "no"
+    const riesgos = @json(
+        $risks->sortBy('no')->map(fn($r) => $r->no . ' - ' . $r->riesgo)->values()
+    );
+
+    const ocurrencias = @json(
+        $risks->sortBy('no')->pluck('f_ocurrencia')->values()
+    );
+
+    // Colorear según valor
+    const colores = ocurrencias.map(v => {
+        if (v >= 80) return "rgba(206, 0, 0, 1)";          // Muy alto
+        if (v >= 60) return "rgba(235, 231, 0, 1)";       // Alto
+        if (v >= 40) return "rgba(4, 121, 0, 1)";        // Normal
+        return "rgba(102, 209, 98, 1)";                 // Bajo
     });
-  </script>
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: riesgos,  // <-- etiquetas: "no - riesgo"
+            datasets: [{
+                label: 'Factor de ocurrencia',
+                data: ocurrencias,
+                backgroundColor: colores
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Factor de ocurrencia'
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        maxRotation: 90,
+                        minRotation: 60
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+</script>
+
 <br>
+
 
 Características del Riesgo.
 <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: left;">
