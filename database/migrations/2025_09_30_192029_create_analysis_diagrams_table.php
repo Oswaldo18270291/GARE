@@ -28,7 +28,7 @@ return new class extends Migration
                 ->constrained('contents')
                 ->onDelete('cascade');
             $table->integer('orden')->default(0);
-            $table->string('tipo_riesgo')->nullable();
+            $table->string('tipo_riesgo')->default('pendientes');
 
         });
     }

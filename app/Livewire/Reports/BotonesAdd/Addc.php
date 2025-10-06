@@ -46,9 +46,7 @@ class Addc extends Component
         $report = Report::findOrFail($rp);
         $this->authorize('update', $report); 
 
-        $rep = Report::findOrFail($rp);
-        $rp = Report::findOrFail($rp);
-        $this->rep = $rp;
+        $this->rep = Report::findOrFail($rp);
         if($boton == 'tit'){
             $this->RTitle = ReportTitle::findOrFail($id);
             $this->RSubtitle = null;
@@ -59,7 +57,6 @@ class Addc extends Component
             {
             if( ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 14)->exists()){
             $mosler = ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 14)->first();  
-
                 if( Content::where('r_t_s_id',$mosler->id)->exists()){
                     $c = Content::where('r_t_s_id',$mosler->id)->first();
                     $this->risks = AnalysisDiagram::where('content_id',$c->id)->get();
@@ -166,7 +163,7 @@ class Addc extends Component
             if ($name == 'Mosler: Informe') {
             $rows = [];
             $now = now();
-            foreach ($this->riesgos as $r) {
+            foreach ($this->riesgos as $index => $r) {
                 $rows[] = [
                     'no'           => $r['no'],
                     'riesgo'       => $r['riesgo'],
@@ -180,6 +177,7 @@ class Addc extends Component
                     'content_id'    => $content->id,
                     'created_at'   => $now,
                     'updated_at'   => $now,
+                    'orden'        => $index + 1,
                 ];
             }
             if (!empty($rows)) {
@@ -222,9 +220,9 @@ class Addc extends Component
 
     private function cargarRiesgos()
     {
-        $this->risks = AnalysisDiagram::orderBy('tipo_riesgo')
-                                       ->orderBy('orden')
-                                       ->get();
+        $this->risks;
+
+        
     }
 
     
