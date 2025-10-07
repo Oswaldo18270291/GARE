@@ -65,6 +65,7 @@ class Addc extends Component
              }
             }
             $this->cargarRiesgos();
+            
             $this->RTitle = null;
         } else if($boton == 'sec'){
             $this->RTitle = null;
@@ -223,6 +224,24 @@ class Addc extends Component
         $this->risks;
 
         
+    }
+
+    #[On('guardarOrden2')]
+public function guardarOrden2($risks)
+{
+    foreach ($risks as $risk) {
+        AnalysisDiagram::where('id', $risk['id'])->update([
+            'orden2' => $risk['orden2'],
+            'c_riesgo' => $risk['c_riesgo'],
+        ]);
+    }
+
+    $this->cargarRiesgos2();
+}
+
+    private function cargarRiesgos2()
+    {
+        $this->risks = AnalysisDiagram::where('content_id', $this->c->id ?? null)->get();
     }
 
     

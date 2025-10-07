@@ -463,56 +463,147 @@ GRAFICA
 
 
 Características del Riesgo.
-<table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: left;">
-  <tr style="font-weight: bold; text-align: center;">
-    <td style="border: 1px solid black; padding: 6px; background-color: #00B050; color: black;">
-      Rango Normal (Zona de Seguridad)
-    </td>
-    <td style="border: 1px solid black; padding: 6px; background-color: #FFFF00; color: black;">
-      Rango Intermedio (Zona de atención)
-    </td>
-    <td style="border: 1px solid black; padding: 6px; background-color: #FF0000; color: white;">
-      Rango de atención inmediata (Zona intolerable)
-    </td>
-  </tr>
+<div>
+  <table id="tabla" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: left;">
+        <!-- Pendientes -->
+    <tr style="background-color: #ffc107; font-weight: bold; text-align: center;">
+      <td colspan="3">Pendientes</td>
+    </tr>
+    <tr>
+      <td colspan="3" style="border: 1px solid black; padding: 6px;">
+        <ul id="pendientes" wire:ignore style="list-style: none; padding: 0; margin: 0; min-height: 80px;">
+          @foreach ($risks->where('c_riesgo', 'pendientes')->sortBy('orden2') as $r)
+            <li data-id="{{ $r->id }}" style="border: 1px solid #999; margin: 4px 0; padding: 4px; background: #fffbe6; border-radius: 4px;">
+              <strong>{{ $r->orden2 }}</strong>. {{ $r->no }} - {{ $r->riesgo }}
+            </li>
+          @endforeach
+        </ul>
+      </td>
+    </tr>
+    <!-- Encabezados -->
+    <tr style="font-weight: bold; text-align: center;">
+      <td style="border: 1px solid black; padding: 6px; background-color: #00B050; color: black;">
+        Rango Normal (Zona de Seguridad)
+      </td>
+      <td style="border: 1px solid black; padding: 6px; background-color: #FFFF00; color: black;">
+        Rango Intermedio (Zona de atención)
+      </td>
+      <td style="border: 1px solid black; padding: 6px; background-color: #FF0000; color: white;">
+        Rango de atención inmediata (Zona intolerable)
+      </td>
+    </tr>
 
-  <!-- Fila de riesgos -->
-  <tr style="vertical-align: top;">
-    <td style="border: 1px solid black; padding: 6px; height: 200px;"></td>
-    <td style="border: 1px solid black; padding: 6px; height: 200px;"></td>
-    <td style="border: 1px solid black; padding: 6px; height: 200px;">
-      ✓ R.02 Invasión para ocupación de áreas.<br>
-      ✓ R.03 Manifestaciones sociales y movimientos sindicales.<br>
-      ✓ R.05 Filtración de información.<br>
-      ✓ R.04 Ciberintrusión con captura y bloqueo de datos de la empresa.<br>
-      ✓ R.07 Tempestad y/o lluvia con inundaciones de mediana intensidad.<br>
-      ✓ R.08 Lesiones.<br>
-      ✓ R.01 Intrusión.<br>
-      ✓ R.06 Emergencias médicas.<br>
-      ✓ R.09 Amenazas a empleados.<br>
-      ✓ R.10 Incendio.
-    </td>
-  </tr>
+    <!-- Celdas con listas (drag & drop por columna) -->
+    <tr style="vertical-align: top;">
+      <!-- Columna Normal -->
+      <td style="border: 1px solid black; padding: 6px; height: 250px;">
+        <ul id="normal" wire:ignore style="list-style: none; padding: 0; margin: 0; min-height: 200px;">
+          @foreach ($risks->where('c_riesgo', 'normal')->sortBy('orden2') as $r)
+            <li data-id="{{ $r->id }}" style="border: 1px solid #999; margin: 4px 0; padding: 4px; background: #eaf9e8; border-radius: 4px;">
+              <strong>{{ $r->orden2 }}</strong>. {{ $r->no }} - {{ $r->riesgo }}
+            </li>
+          @endforeach
+        </ul>
+      </td>
 
-  <!-- Fila de descripciones -->
-  <tr style="vertical-align: top;">
-    <td style="border: 1px solid black; padding: 6px; background-color: #00B050; color: black;">
-      Este rango representa riesgos de baja probabilidad y bajo impacto. Los eventos situados en este rango normalmente se consideran aceptables y dentro de los límites normales de operación. 
-      Las consecuencias, si ocurren, serían bajas y fácilmente controladas por la organización. 
-      Normalmente, no se necesita ninguna acción correctiva inmediata, pero se deben mantener los controles actuales y monitorear continuamente los riesgos para garantizar que permanezcan dentro de esta zona de seguridad.
-    </td>
-    <td style="border: 1px solid black; padding: 6px; background-color: #FFFF00; color: black;">
-      En este rango, los riesgos presentan una probabilidad y/o impactos moderados. 
-      Los eventos en el área intermedia requieren atención, ya que pueden causar perturbaciones significativas en la operación, aunque no de manera catastrófica. 
-      Se recomiendan medidas preventivas o correctivas para mitigar el impacto o la probabilidad de ocurrencia, con un monitoreo constante para evitar que migren al área de riesgo intolerable.
-    </td>
-    <td style="border: 1px solid black; padding: 6px; background-color: #FF0000; color: white;">
-      Este rango representa riesgos de alta probabilidad y/o alto impacto, siendo considerados inaceptables y requieren intervención inmediata. 
-      Cualquier evento en este rango puede causar graves consecuencias para la organización, comprometiendo seriamente sus objetivos y/o procesos. 
-      La mitigación de estos riesgos debe ser la máxima prioridad, y se requieren acciones inmediatas para reducir el impacto y/o la probabilidad de ocurrencia.
-    </td>
-  </tr>
-</table>
+      <!-- Columna Intermedio -->
+      <td style="border: 1px solid black; padding: 6px; height: 250px;">
+        <ul id="intermedio" wire:ignore style="list-style: none; padding: 0; margin: 0; min-height: 200px;">
+          @foreach ($risks->where('c_riesgo', 'intermedio')->sortBy('orden2') as $r)
+            <li data-id="{{ $r->id }}" style="border: 1px solid #999; margin: 4px 0; padding: 4px; background: #fffbd1; border-radius: 4px;">
+              <strong>{{ $r->orden2 }}</strong>. {{ $r->no }} - {{ $r->riesgo }}
+            </li>
+          @endforeach
+        </ul>
+      </td>
+
+      <!-- Columna Inmediato -->
+      <td style="border: 1px solid black; padding: 6px; height: 250px;">
+        <ul id="inmediato" wire:ignore style="list-style: none; padding: 0; margin: 0; min-height: 200px;">
+          @foreach ($risks->where('c_riesgo', 'inmediato')->sortBy('orden2') as $r)
+            <li data-id="{{ $r->id }}" style="border: 1px solid #999; margin: 4px 0; padding: 4px; background: #ffdede; border-radius: 4px;">
+              <strong>{{ $r->orden2 }}</strong>. {{ $r->no }} - {{ $r->riesgo }}
+            </li>
+          @endforeach
+        </ul>
+      </td>
+    </tr>
+
+
+
+    <!-- Descripciones -->
+    <tr style="vertical-align: top;">
+      <td style="width: 33.33%; border: 1px solid black; padding: 6px; background-color: #00B050; color: black;">
+        Este rango representa riesgos de baja probabilidad y bajo impacto. Los eventos situados en este rango 
+        normalmente se consideran aceptables y dentro de los límites normales de operación. Las consecuencias, 
+        si ocurren, serían bajas y fácilmente controladas por la organización. Normalmente, no se necesita ninguna 
+        acción correctiva inmediata, pero se deben mantener los controles actuales y monitorear continuamente los riesgos 
+        para garantizar que permanezcan dentro de esta zona de seguridad. Este rango representa riesgos de baja probabilidad y 
+        bajo impacto. Los eventos situados en este rango normalmente se consideran aceptables y dentro de los límites normales de 
+        operación. Las consecuencias, si ocurren, serían bajas y fácilmente controladas por la organización. Normalmente, no se necesita 
+        ninguna acción correctiva inmediata, pero se deben mantener los controles actuales y monitorear continuamente los riesgos para garantizar 
+        que permanezcan dentro de esta zona de seguridad.
+      </td>
+
+      <td style="width: 33.33%; border: 1px solid black; padding: 6px; background-color: #FFFF00; color: black;">
+        En este rango, los riesgos presentan una probabilidad y/o impactos moderados. Los eventos en el área intermedia requieren atención, 
+        ya que pueden causar perturbaciones significativas en la operación, aunque no de manera catastrófica. Se recomiendan medidas preventivas 
+        o correctivas para mitigar el impacto o la probabilidad de ocurrencia, con un monitoreo constante para evitar que migren al área de 
+        riesgo intolerable.
+      </td>
+
+      <td style="width: 33.33%; border: 1px solid black; padding: 6px; background-color: #FF0000; color: white;">
+        Este rango representa riesgos de alta probabilidad y/o alto impacto, siendo considerados inaceptables y 
+        requieren intervención inmediata. Cualquier evento en este rango puede causar graves consecuencias para la 
+        organización, comprometiendo seriamente sus objetivos y/o procesos. La mitigación de estos riesgos debe ser 
+        la máxima prioridad, y se requieren acciones inmediatas para reducir el impacto y/o la probabilidad de ocurrencia.
+      </td>
+    </tr>
+  </table>
+</div>
+
+<script>
+  function actualizarNumerosYGuardar2() {
+    let data = [];
+    const mapSecciones = {
+      pendientes: "pendientes",
+      normal: "normal",
+      intermedio: "intermedio",
+      inmediato: "inmediato"
+    };
+
+    ["pendientes", "normal", "intermedio", "inmediato"].forEach(id => {
+      const lista = document.getElementById(id);
+      const items = lista.querySelectorAll("li");
+
+      items.forEach((item, index) => {
+        // Actualiza visualmente el número
+        const numero = item.querySelector("strong");
+        if (numero) numero.textContent = index + 1;
+
+        data.push({
+          id: item.getAttribute("data-id"),
+          orden2: index + 1,
+          c_riesgo: mapSecciones[id]
+        });
+      });
+    });
+
+    Livewire.dispatch("guardarOrden2", { risks: data });
+  }
+
+  ["pendientes", "normal", "intermedio", "inmediato"].forEach(id => {
+    new Sortable(document.getElementById(id), {
+      group: "riesgos",
+      animation: 150,
+      ghostClass: "dragging",
+      onEnd: actualizarNumerosYGuardar2
+    });
+  });
+</script>
+
+
+
 <br>
 @endif
 @if ($titulo=='Control Existente contra Control Ideal')

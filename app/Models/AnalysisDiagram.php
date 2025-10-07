@@ -9,9 +9,6 @@ class AnalysisDiagram extends Model
 {
 use HasFactory;
 
-    // Por convención, la tabla "analysis_diagrams" se detecta sola.
-    // Si tuvieras otro nombre de tabla, usa protected $table = '...';
-
     protected $fillable = [
         'no',
         'riesgo',
@@ -25,6 +22,8 @@ use HasFactory;
         'content_id',
         'orden',
         'tipo_riesgo',
+        'orden2',
+        'c_riesgo',
     ];
 
     protected $casts = [
