@@ -344,7 +344,7 @@
         </tbody>
 
         <!-- Encabezado Sociales -->
-        <tr style="background-color: #0f4a75ff; font-weight: bold;">
+        <tr style="background-color: #0f4a75ff; font-weight: bold; color: white">
             <td colspan="2">Sociales (Personas)</td>
         </tr>
         <tbody id="sociales" wire:ignore>
