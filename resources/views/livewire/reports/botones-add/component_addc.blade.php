@@ -400,64 +400,128 @@
 
 @endif
 @if ($titulo=='Nivel de Riesgo-Gráfico de Consecuencia x Factor de Ocurrencia')
-GRAFICA
-4.1.3	Nivel de Riesgo-Gráfico de Consecuencia x Factor de Ocurrencia
- <canvas id="riesgosChart" width="800" height="400"></canvas>
+<h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
+
+<!-- Selector del tipo de gráfico -->
+<div style="margin-bottom: 10px;">
+  <label for="chartType" style="font-weight: bold;">Tipo de gráfico:</label>
+  <select id="chartType">
+    <option value="bar" selected>Barras</option>
+    <option value="pie">Pastel</option>
+    <option value="doughnut">Dona</option>
+    <option value="polarArea">Área polar</option>
+  </select>
+</div>
+
+<!-- Contenedor del gráfico -->
+<canvas id="riesgosChart" width="800" height="400"></canvas>
+
 
 <script>
-    const ctx = document.getElementById('riesgosChart').getContext('2d');
+  const ctx = document.getElementById('riesgosChart').getContext('2d');
+  const chartTypeSelect = document.getElementById('chartType');
 
-    // Ordenamos desde el backend por "no"
-    const riesgos = @json(
-        $risks->sortBy('no')->map(fn($r) => $r->no . ' - ' . $r->riesgo)->values()
-    );
+const riesgos = @json( $risks->sortBy('no')->map(fn($r) => $r->no . ' - ' . $r->riesgo)->values() );
 
-    const ocurrencias = @json(
-        $risks->sortBy('no')->pluck('f_ocurrencia')->values()
-    );
 
-    // Colorear según valor
-    const colores = ocurrencias.map(v => {
-        if (v >= 80) return "rgba(206, 0, 0, 1)";          // Muy alto
-        if (v >= 60) return "rgba(235, 231, 0, 1)";       // Alto
-        if (v >= 40) return "rgba(4, 121, 0, 1)";        // Normal
-        return "rgba(102, 209, 98, 1)";                 // Bajo
-    });
 
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: riesgos,  // <-- etiquetas: "no - riesgo"
-            datasets: [{
-                label: 'Factor de ocurrencia',
-                data: ocurrencias,
-                backgroundColor: colores
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false },
-                title: {
-                    display: true,
-                    text: 'Factor de ocurrencia'
-                }
+  const ocurrencias = @json(
+    $risks->sortBy('no')->pluck('f_ocurrencia')->values()
+  );
+
+  // Colores según el nivel de riesgo
+  const colores = ocurrencias.map(v => {
+    if (v >= 80) return "rgba(206, 0, 0, 0.9)";      // Muy alto
+    if (v >= 60) return "rgba(235, 231, 0, 0.9)";     // Alto
+    if (v >= 40) return "rgba(4, 121, 0, 0.9)";       // Normal
+    return "rgba(102, 209, 98, 0.9)";                 // Bajo
+  });
+
+  // Función para crear el gráfico según tipo
+  function crearGrafico(tipo) {
+    if (window.chart) window.chart.destroy();
+
+    let dataConfig = {};
+
+    // Configuración para tipos circulares
+    if (tipo === 'pie' || tipo === 'doughnut' || tipo === 'polarArea') {
+      dataConfig = {
+        labels: riesgos,
+        datasets: [{
+          data: ocurrencias,
+          backgroundColor: colores
+        }]
+      };
+    } else {
+      // Por defecto: barras
+      dataConfig = {
+        labels: riesgos,
+        datasets: [{
+          label: 'Factor de ocurrencia',
+          data: ocurrencias,
+          backgroundColor: colores
+        }]
+      };
+    }
+
+    // Crear el gráfico
+    window.chart = new Chart(ctx, {
+      type: tipo,
+      data: dataConfig,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: tipo !== 'bar' },
+          title: {
+            display: true,
+            text: 'Factor de ocurrencia'
+          },
+          datalabels: {
+            color: tipo === 'bar' ? '#000' : '#fff',
+            anchor: tipo === 'bar' ? 'end' : 'center',
+            align: tipo === 'bar' ? 'end' : 'center',
+            font: {
+              weight: 'bold',
+              size: 10
             },
-            scales: {
-                x: {
-                    ticks: {
-                        maxRotation: 90,
-                        minRotation: 60
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    max: 100
-                }
+            formatter: (value, ctx) => {
+              const index = ctx.dataIndex;
+
+              // 🎯 Mostrar diferente texto según tipo de gráfica
+              if (tipo === 'pie' || tipo === 'doughnut') {
+                // Versión 1 (completa):
+                return `${ctx.chart.data.labels[index]}\n(${value})`;
+
+                // 🔸 Si prefieres solo el número, usa esta línea en su lugar:
+                // return value;
+              }
+
+              // Para barras y polar area: solo nombre
+              return ctx.chart.data.labels[index];
             }
-        }
+          }
+        },
+        // Sin ejes para gráficos circulares
+        scales: (tipo === 'pie' || tipo === 'doughnut' || tipo === 'polarArea')
+          ? {}
+          : {
+              x: { ticks: { maxRotation: 90, minRotation: 60 } },
+              y: { beginAtZero: true, max: 100 }
+            }
+      },
+      plugins: [ChartDataLabels]
     });
+  }
+
+  // Inicializar con gráfico de barras
+  crearGrafico('bar');
+
+  // Cambiar tipo según el selector
+  chartTypeSelect.addEventListener('change', (e) => {
+    crearGrafico(e.target.value);
+  });
 </script>
+
 
 <br>
 

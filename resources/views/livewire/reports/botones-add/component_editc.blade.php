@@ -302,7 +302,7 @@
       <td style="border: 1px solid black; padding: 5px;">Acciones</td>
     </tr>
 
-    @foreach ($riesgos as $i => $riesgo)
+    @foreach (collect($riesgos)->sortBy('no') as $i => $riesgo)
       <tr wire:key="riesgo-{{ $i }}">
         {{-- No (solo lectura; se renumera automático) --}}
         <td style="border: 1px solid black;">{{ $riesgo['no'] }}</td>
@@ -337,7 +337,8 @@
 
         {{-- Acciones fila --}}
         <td style="border: 1px solid black;">
-          <button type="button" wire:click="removeFila({{ $i }})" class="px-2 py-1 bg-red-600 text-white rounded">Eliminar</button>
+          <button type="button" wire:confirm="¿Estás seguro de eliminar esta fila? \nEsta acción no se puede deshacer despues de darle aceptar."
+        wire:click="removeFila({{ $i }})" class="px-2 py-1 bg-red-600 text-white rounded">Eliminar</button>
         </td>
       </tr>
     @endforeach

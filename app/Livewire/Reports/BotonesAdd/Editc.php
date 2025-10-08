@@ -126,7 +126,6 @@ class Editc extends Component
             $this->RSection = ReportTitleSubtitleSection::findOrFail($id);
 
         } 
-        $this->addFila();
 
     }
 
@@ -154,10 +153,22 @@ class Editc extends Component
 
     public function removeFila($index)
     {
+        // 1️⃣ Obtener el riesgo correspondiente
+        $riesgo = $this->riesgos[$index];
+
+        // 2️⃣ Si existe en base de datos, eliminarlo
+        if (isset($riesgo['id'])) {
+            \App\Models\AnalysisDiagram::where('id', $riesgo['id'])->delete();
+        }
+
+        // 3️⃣ Eliminar de la lista en memoria
         unset($this->riesgos[$index]);
         $this->riesgos = array_values($this->riesgos);
+
+        // 4️⃣ Reordenar si es necesario
         $this->renumerar();
     }
+
 
     public function updateRiesgos($contentId)
 {
