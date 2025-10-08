@@ -421,10 +421,7 @@
   const ctx = document.getElementById('riesgosChart').getContext('2d');
   const chartTypeSelect = document.getElementById('chartType');
 
-const riesgos = @json( $risks->sortBy('no')->map(fn($r) => $r->no . ' - ' . $r->riesgo)->values() );
-
-
-
+  const riesgos = @json( $risks->sortBy('no')->map(fn($r) => $r->no . ' - ' . $r->riesgo)->values() );
   const ocurrencias = @json(
     $risks->sortBy('no')->pluck('f_ocurrencia')->values()
   );
