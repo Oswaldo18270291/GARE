@@ -27,6 +27,7 @@ class Editc extends Component
     public $leyenda1;
     public $leyenda2;
     public $leyenda3;
+    public $grafica;
     public $boton;
     public $rp;
     // Para previsualizar las imágenes antiguas
@@ -108,6 +109,7 @@ class Editc extends Component
             $this->oldImg1 = $this->content->img1;
             $this->oldImg2 = $this->content->img2;
             $this->oldImg3 = $this->content->img3;
+            $this->grafica = $this->content->grafica;
             $this->RSubtitle = ReportTitleSubtitle::findOrFail($id);
         } else if($boton == 'sec'){
             $this->RTitle = null;
@@ -213,20 +215,20 @@ class Editc extends Component
 
     public function update($id,$boton,$rp)
     {
-
+        $nl = ReportTitleSubtitle::findOrFail($id);
         $this->validate([
             'img1' => 'nullable|image',
             'img2' => 'nullable|image',
             'img3' => 'nullable|image',
 
         ]);
-
+        
         // Subir nuevas imágenes si se reemplazaron
         $path1 = $this->img1 ? $this->img1->store('img_cont1', 'public') : $this->oldImg1;
         $path2 = $this->img2 ? $this->img2->store('img_cont2', 'public') : $this->oldImg2;
         $path3 = $this->img3 ? $this->img3->store('img_cont3', 'public') : $this->oldImg3;
 
-        $this->content->update([
+        $data = [
             'cont'     => $this->contenido,
             'img1'     => $path1,
             'leyenda1' => $this->leyenda1,
@@ -234,7 +236,15 @@ class Editc extends Component
             'leyenda2' => $this->leyenda2,
             'img3'     => $path3,
             'leyenda3' => $this->leyenda3,
-        ]);
+        ];
+
+        // Solo agrega el campo "grafica" si el subtitle_id es 16
+        if ($nl->subtitle_id === 16) {
+            $data['grafica'] = $this->grafica;
+        }
+
+        // Ahora actualiza el modelo
+        $this->content->update($data);
         session()->flash('cont', '✅ Contenido actualizado correctamente.');
         return redirect()->route('my_reports.addcontenido', ['id' =>$rp]);
     }

@@ -31,7 +31,6 @@ return new class extends Migration
             $table->string('tipo_riesgo')->default('pendientes');
             $table->integer('orden2')->default(0);
             $table->string('c_riesgo')->default('pendientes');
-
         });
     }
 

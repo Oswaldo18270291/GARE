@@ -36,6 +36,7 @@ class Addc extends Component
     public $path2;
     public $path3;
     public $mosler;
+    public $grafica;
     public $c;
     public $risks;
 
@@ -151,7 +152,7 @@ class Addc extends Component
             $this->redirectRoute('my_reports.addcontenido', ['id' => $id], navigate: true);
 
         } elseif ($boton == 'sub') {
-            $content = Content::create([   
+            $data = [
                 'cont'     => $this->contenido,
                 'r_t_s_id' => $id_,
                 'img1'     => $path,
@@ -160,7 +161,15 @@ class Addc extends Component
                 'leyenda1' => $this->leyenda1,
                 'leyenda2' => $this->leyenda2,
                 'leyenda3' => $this->leyenda3,
-            ]);
+            ];
+
+            // Si el nombre coincide, agrega la clave extra
+            if ($nl->subtitle_id === 16) {
+                $data['grafica'] = $this->grafica;
+            }
+
+            // Finalmente crea el contenido
+            $content = Content::create($data);
             if ($name == 'Mosler: Informe') {
             $rows = [];
             $now = now();
