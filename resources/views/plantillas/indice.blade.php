@@ -1,3 +1,8 @@
+@php
+    function getPage($markers, $type, $id) {
+        return $markers["{$type}_{$id}"] ?? '—';
+    }
+@endphp
 <!DOCTYPE html>
 <html>
 <head>
@@ -72,21 +77,27 @@
         <tr>
           {{-- Título --}}
           <td style="padding: 8px; text-align: left;">{{ $loop->iteration }}. {{ $title->title->nombre }}</td>
-          <td style="padding: 8px; text-align: right;">15</td>
+          <td style="text-align:right;">
+            {{ getPage($markers, 'TITLE', $title->id) }}
+          </td>
         </tr>
 
         {{-- Subtítulos dentro del título --}}
         @foreach ($title->subtitles->sortBy('id') as $subtitle)
           <tr>
             <td style="padding: 8px; padding-left: 48px; text-align: justify;">{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $subtitle->subtitle->nombre }}</td>
-            <td style="padding: 8px; text-align: right;">20</td>
+          <td style="text-align:right;">
+            {{ getPage($markers, 'SUBTITLE', $subtitle->id) }}
+          </td>
           </tr>
 
             {{-- Secciones dentro del subtítulo --}}
           @foreach ($subtitle->sections->sortBy('id') as $section)
             <tr>
               <td style="padding: 8px; padding-left: 96px; text-align: justify;">{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $section->section->nombre }}</td>
-              <td style="padding: 8px; text-align: right;">20</td>
+            <td style="text-align:right;">
+              {{ getPage($markers, 'SECTION', $section->id) }}
+            </td>
             </tr>
           @endforeach
         @endforeach

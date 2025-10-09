@@ -7,37 +7,33 @@ use App\Models\Report;
 use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
-use App\Models\AnalysisDiagram;
 use Barryvdh\DomPDF\Facade\Pdf;
 use setasign\Fpdi\PdfParser\StreamReader as PdfParserStreamReader;
 use setasign\Fpdi\Tcpdf\Fpdi;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Smalot\PdfParser\Parser; // 👈 para leer el PDF
 
 class InformePdf extends Controller
 {
-    use AuthorizesRequests;
+        public $reports;
 
-    public $reports;
-    public $contT;
-    public $c;
+    use AuthorizesRequests;
 
     public function generar($id)
     {
         $this->reports = Report::findOrFail($id);
+
         $report = Report::findOrFail($id);
         $this->authorize('update', $report);
 
-        // 🔹 Cargar títulos, subtítulos y secciones con contenido
-        $this->reports->titles = ReportTitle::where('report_id', $this->reports->id)
+        // 🔹 Cargar estructura completa
+        $report->titles = ReportTitle::where('report_id', $report->id)
             ->where('status', 1)
             ->get();
 
-        foreach ($this->reports->titles as $title) {
+        foreach ($report->titles as $title) {
             $title->content = Content::where('r_t_id', $title->id)->get();
-            $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)
-                ->where('status', 1)
-                ->get();
+            $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->where('status', 1)->get();
 
             foreach ($title->subtitles as $subtitle) {
                 $subtitle->content = Content::where('r_t_s_id', $subtitle->id)->get();
@@ -51,24 +47,58 @@ class InformePdf extends Controller
             }
         }
 
-        // 🔹 Generar PDFs individuales
-        $pdfPortada = Pdf::loadView('plantillas.portada', [
-            'reports' => $this->reports,
-        ])->output();
+        // 🔹 Generar contenido con marcadores invisibles
+        $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report]);
+        $pathContenido = storage_path("app/public/tmp_contenido_{$id}.pdf");
+        file_put_contents($pathContenido, $pdfContenido->output());
 
+        // 🔹 Analizar el PDF con Smalot\PdfParser
+        $parser = new Parser();
+        $pdf = $parser->parseFile($pathContenido);
+
+        $markers = [];
+        $pageNumber = 1;
+        foreach ($pdf->getPages() as $page) {
+            $text = $page->getText();
+
+            // Detectar títulos
+            foreach ($report->titles as $title) {
+                if (strpos($text, "__MARKER_TITLE_{$title->id}__") !== false) {
+                    $markers["TITLE_{$title->id}"] = $pageNumber;
+                }
+
+                // Detectar subtítulos
+                foreach ($title->subtitles as $subtitle) {
+                    if (strpos($text, "__MARKER_SUBTITLE_{$subtitle->id}__") !== false) {
+                        $markers["SUBTITLE_{$subtitle->id}"] = $pageNumber;
+                    }
+
+                    // Detectar secciones
+                    foreach ($subtitle->sections as $section) {
+                        if (strpos($text, "__MARKER_SECTION_{$section->id}__") !== false) {
+                            $markers["SECTION_{$section->id}"] = $pageNumber;
+                        }
+                    }
+                }
+            }
+            $pageNumber++;
+        }
+
+        // 🔹 Generar las demás plantillas
+        $pdfPortada = Pdf::loadView('plantillas.portada',  [
+            'reports' => $report,
+        ])->output();
         $pdfColaboradores = Pdf::loadView('plantillas.colaboradores', [
-            'reports' => $this->reports,
+            'reports' => $report,
         ])->output();
 
+        // 🔹 Pasamos los markers al índice
         $pdfIndice = Pdf::loadView('plantillas.indice', [
-            'reports' => $this->reports,
+            'reports' => $report,
+            'markers' => $markers
         ])->output();
 
-        $pdfContenido = Pdf::loadView('plantillas.contenido', [
-            'reports' => $this->reports,
-        ])->output();
-
-        // 🔹 Clase personalizada con control de numeración
+        // 🔹 Fusionar todos los PDFs con FPDI
         $pdf = new class extends Fpdi {
             public $pageNumber = 0;
             public $totalPages = 0;
@@ -86,49 +116,40 @@ class InformePdf extends Controller
 
         $pdf->SetCreator('Laravel');
         $pdf->SetAuthor('SSP');
-        $pdf->SetTitle('Informe ' . $this->reports->id);
+        $pdf->SetTitle('Informe ' . $report->id);
         $pdf->SetMargins(15, 15, 15);
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(true);
 
-        // 🔹 Documentos a unir (solo paginar el contenido)
         $allDocs = [
             ['doc' => $pdfPortada, 'paginar' => false],
             ['doc' => $pdfColaboradores, 'paginar' => false],
             ['doc' => $pdfIndice, 'paginar' => false],
-            ['doc' => $pdfContenido, 'paginar' => true],
+            ['doc' => file_get_contents($pathContenido), 'paginar' => true],
         ];
 
         foreach ($allDocs as $item) {
-            $doc = $item['doc'];
             $pdf->paginar = $item['paginar'];
+            $pageCount = $pdf->setSourceFile(PdfParserStreamReader::createByString($item['doc']));
 
-            $pageCount = $pdf->setSourceFile(PdfParserStreamReader::createByString($doc));
-
-            // Si es el contenido, contar total de páginas
             if ($pdf->paginar) {
                 $pdf->totalPages = $pageCount;
-                $pdf->pageNumber = 0; // reiniciar numeración
+                $pdf->pageNumber = 0;
             }
 
             for ($page = 1; $page <= $pageCount; $page++) {
-                $templateId = $pdf->importPage($page);
-                $size = $pdf->getTemplateSize($templateId);
+                $tpl = $pdf->importPage($page);
+                $size = $pdf->getTemplateSize($tpl);
 
                 $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
-                $pdf->useTemplate($templateId, 0, 0, $size['width'], $size['height']);
-
-                // Incrementar numeración solo para el contenido
-                if ($pdf->paginar) {
-                    $pdf->pageNumber++;
-                }
+                $pdf->useTemplate($tpl);
+                if ($pdf->paginar) $pdf->pageNumber++;
             }
         }
 
-        $filename = 'Informe_' . $this->reports->id . '.pdf';
-
+        $filename = "Informe_{$report->id}.pdf";
         return response($pdf->Output($filename, 'S'), 200)
             ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
+            ->header('Content-Disposition', "inline; filename=\"$filename\"");
     }
 }
