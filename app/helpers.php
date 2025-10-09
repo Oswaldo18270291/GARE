@@ -2,7 +2,7 @@
 
 if (! function_exists('title_case_except')) {
     function title_case_except($string) {
-        $excepciones = ['de', 'la', 'y', 'en', 'con', 'para', 'a', 'o', 'el', 'del', 'los', 'las'];
+        $excepciones = ['de', 'la', 'y', 'en', 'con', 'para', 'a', 'o', 'el', 'del', 'los', 'las', 'un'];
         
         $palabras = explode(' ', strtolower($string));
         foreach ($palabras as $i => $palabra) {
