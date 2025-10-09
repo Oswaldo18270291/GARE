@@ -284,7 +284,28 @@
 </div>
 </div>
     <br>
-
+    @if (session('cont'))
+        <!-- danger Alert -->
+        <div x-data="{ alertIsVisible: true }" x-show="alertIsVisible" class="relative w-full overflow-hidden rounded-radius border border-danger bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark" role="alert" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90">
+            <div class="flex w-full items-center gap-2 bg-danger/10 p-4">
+                <div class="bg-danger/15 text-danger rounded-full p-1" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-2">
+                    <h3 class="text-sm font-semibold text-danger">Mensaje de información    </h3>
+                    <p class="text-xs font-medium sm:text-sm">{{ session('cont') }}</p>
+                </div>
+                <button type="button" @click="alertIsVisible = false" class="ml-auto" aria-label="dismiss alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="2.5" class="w-4 h-4 shrink-0">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <br>
+    @endif
 @if ($titulo=='Mosler: Informe')
 4.1.1.	Mosler: Informe.
   <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: center;">
@@ -503,6 +524,7 @@ GRAFICA
   const chartTypeSelect = document.getElementById('chartType');
 
   const riesgos = @json($risks->sortBy('no')->map(fn($r) => $r->no . ' - ' . $r->riesgo)->values());
+  const riesg = @json($risks->sortBy('no')->map(fn($r) => $r->no)->values());
   const ocurrencias = @json($risks->sortBy('no')->pluck('f_ocurrencia')->values());
   const tipoInicial = @json($grafica); // 👈 tipo de gráfica desde base de datos
 
@@ -518,14 +540,26 @@ GRAFICA
 
     const esCircular = ['pie', 'doughnut', 'polarArea'].includes(tipo);
 
-    const dataConfig = {
-      labels: riesgos,
-      datasets: [{
-        label: 'Factor de ocurrencia',
-        data: ocurrencias,
-        backgroundColor: colores
-      }]
-    };
+    // 🔹 Generamos los datasets individuales
+  const dataConfig = esCircular
+    ? {
+        labels: riesgos,
+        labe: riesg,
+        datasets: [{
+          label: 'Factor de ocurrencia',
+          data: ocurrencias,
+          backgroundColor: colores
+        }]
+      }
+    : {
+        // En gráficas de barras, cada riesgo será su propio dataset
+        labels: ['Factor de ocurrencia'], // eje X genérico
+        datasets: riesgos.map((nombre, i) => ({
+          label: nombre,                // nombre del riesgo
+          data: [ocurrencias[i]],       // valor del riesgo
+          backgroundColor: colores[i]   // color único
+        }))
+      };
 
     window.chart = new Chart(ctx, {
       type: tipo,
@@ -533,25 +567,47 @@ GRAFICA
       options: {
         responsive: true,
         plugins: {
-          legend: { display: tipo !== 'bar' },
+          legend: { display: true,
+            position: 'bottom',
+            labels: {
+              color: '#000',
+              font: { size: 11, weight: 'bold' },
+              boxWidth: 15,
+              padding: 8
+            },
+          },
           title: { display: true, text: 'Factor de ocurrencia' },
           datalabels: {
-            color: tipo === 'bar' ? '#000' : '#fff',
+            color: '#000',
             anchor: tipo === 'bar' ? 'end' : 'center',
             align: tipo === 'bar' ? 'end' : 'center',
             font: { weight: 'bold', size: 10 },
             formatter: (value, ctx) => {
-              const index = ctx.dataIndex;
-              if (esCircular) return `${ctx.chart.data.labels[index]}\n(${value})`;
-              return ctx.chart.data.labels[index];
+              if (esCircular) {
+                const index = ctx.dataIndex;              
+                return `${ctx.chart.data.labe[index]}\n(${value})`;
+              } else {
+                // En barras, mostramos nombre + valor del dataset
+                const dataset = ctx.chart.data.datasets[ctx.datasetIndex];
+                return `${dataset.labe} (${value})`;
+              }
             }
           }
         },
-        scales: esCircular ? {} : {
-          x: { ticks: { maxRotation: 90, minRotation: 60 } },
-          y: { beginAtZero: true, max: 100 }
+        // 🔹 Escalas solo para gráficas no circulares
+      scales: esCircular ? {} : {
+        x: { 
+          ticks: { color: '#000' },
+          grid: { display: false }
+        },
+        y: { 
+          beginAtZero: true,
+          ticks: { color: '#000' },
+          grid: { color: '#ddd' },
+          max: 100
         }
-      },
+      }
+    },
       plugins: [ChartDataLabels]
     });
   }
