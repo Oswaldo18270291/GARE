@@ -15,44 +15,49 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class InformePdf extends Controller
-{    
+{
     use AuthorizesRequests;
 
     public $reports;
     public $contT;
     public $c;
+
     public function generar($id)
     {
-
         $this->reports = Report::findOrFail($id);
         $report = Report::findOrFail($id);
-        $this->authorize('update', $report); 
+        $this->authorize('update', $report);
 
-        // Cargar títulos relacionados
-        $this->reports->titles = ReportTitle::where('report_id', $this->reports->id)->where('status',1)->get();
-        
+        // 🔹 Cargar títulos, subtítulos y secciones con contenido
+        $this->reports->titles = ReportTitle::where('report_id', $this->reports->id)
+            ->where('status', 1)
+            ->get();
+
         foreach ($this->reports->titles as $title) {
             $title->content = Content::where('r_t_id', $title->id)->get();
-            // Cargar subtítulos de cada título
-            $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->where('status',1)->get();
+            $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)
+                ->where('status', 1)
+                ->get();
 
             foreach ($title->subtitles as $subtitle) {
-                 $subtitle->content = Content::where('r_t_s_id', $subtitle->id)->get();
-                 
-                // Cargar secciones de cada subtítulo
-                $subtitle->sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)->where('status',1)->get();
+                $subtitle->content = Content::where('r_t_s_id', $subtitle->id)->get();
+                $subtitle->sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)
+                    ->where('status', 1)
+                    ->get();
+
                 foreach ($subtitle->sections as $section) {
                     $section->content = Content::where('r_t_s_s_id', $section->id)->get();
                 }
             }
         }
-        // Generar PDFs separados
+
+        // 🔹 Generar PDFs individuales
         $pdfPortada = Pdf::loadView('plantillas.portada', [
             'reports' => $this->reports,
         ])->output();
 
         $pdfColaboradores = Pdf::loadView('plantillas.colaboradores', [
-            'reports' =>$this->reports,
+            'reports' => $this->reports,
         ])->output();
 
         $pdfIndice = Pdf::loadView('plantillas.indice', [
@@ -63,18 +68,19 @@ class InformePdf extends Controller
             'reports' => $this->reports,
         ])->output();
 
-        // Clase personalizada para pies de página
+        // 🔹 Clase personalizada con control de numeración
         $pdf = new class extends Fpdi {
-            public $pageNumber = 1;
+            public $pageNumber = 0;
+            public $totalPages = 0;
+            public $paginar = false;
 
             public function Footer()
             {
-                if ($this->pageNumber > 1) {
+                if ($this->paginar && $this->pageNumber > 0) {
                     $this->SetY(-15);
                     $this->SetFont('helvetica', '', 10);
-                    $this->Cell(0, 10, 'Página ' . $this->pageNumber, 0, 0, 'C');
+                    $this->Cell(0, 10, 'Página ' . $this->pageNumber . ' de ' . $this->totalPages, 0, 0, 'C');
                 }
-                $this->pageNumber++;
             }
         };
 
@@ -82,13 +88,29 @@ class InformePdf extends Controller
         $pdf->SetAuthor('SSP');
         $pdf->SetTitle('Informe ' . $this->reports->id);
         $pdf->SetMargins(15, 15, 15);
-        $pdf->setPrintHeader(false); // No usamos Header
+        $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(true);
 
-        $allDocs = [$pdfPortada, $pdfColaboradores, $pdfIndice, $pdfContenido];
+        // 🔹 Documentos a unir (solo paginar el contenido)
+        $allDocs = [
+            ['doc' => $pdfPortada, 'paginar' => false],
+            ['doc' => $pdfColaboradores, 'paginar' => false],
+            ['doc' => $pdfIndice, 'paginar' => false],
+            ['doc' => $pdfContenido, 'paginar' => true],
+        ];
 
-        foreach ($allDocs as $doc) {
+        foreach ($allDocs as $item) {
+            $doc = $item['doc'];
+            $pdf->paginar = $item['paginar'];
+
             $pageCount = $pdf->setSourceFile(PdfParserStreamReader::createByString($doc));
+
+            // Si es el contenido, contar total de páginas
+            if ($pdf->paginar) {
+                $pdf->totalPages = $pageCount;
+                $pdf->pageNumber = 0; // reiniciar numeración
+            }
+
             for ($page = 1; $page <= $pageCount; $page++) {
                 $templateId = $pdf->importPage($page);
                 $size = $pdf->getTemplateSize($templateId);
@@ -96,11 +118,9 @@ class InformePdf extends Controller
                 $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
                 $pdf->useTemplate($templateId, 0, 0, $size['width'], $size['height']);
 
-                // 🔑 Poner número en encabezado SOLO en la primera página
-                if ($pdf->pageNumber === 1) {
-                    $pdf->SetY(10);
-                    $pdf->SetFont('helvetica', '', 10);
-                    $pdf->Cell(0, 10, 'Página 1', 0, 0, 'C');
+                // Incrementar numeración solo para el contenido
+                if ($pdf->paginar) {
+                    $pdf->pageNumber++;
                 }
             }
         }
