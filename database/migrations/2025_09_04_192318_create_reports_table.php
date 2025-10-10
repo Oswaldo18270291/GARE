@@ -29,7 +29,8 @@ return new class extends Migration
             $table->string('logo')->nullable();
             $table->string('img')->nullable();
             $table->boolean('status')->default(false);
-            $table->string('Folio')->nullable();
+            $table->string('clasificacion');    
+            $table->string('folio')->nullable();
         });
     }
 

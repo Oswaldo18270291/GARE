@@ -26,6 +26,7 @@ class Editestructura extends Component
     public $representante;
     public $fecha_analisis;
     public $colaborador;
+    public $clasificacion;
     public $titles = [];
     public $subtitles = [];
     public $sections = [];
@@ -51,7 +52,7 @@ class Editestructura extends Component
         $this->representante  = $this->report->representante;
         $this->fecha_analisis = $this->report->fecha_analisis;
         $this->colaborador    = $this->report->colaborador1;
-
+        $this->clasificacion   = $this->report->clasificacion;
         $this->report->titles = ReportTitle::where('report_id', $this->report->id)->get();
         foreach ($this->report->titles as $title) {
             $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->get();
@@ -93,6 +94,7 @@ class Editestructura extends Component
         'representante'  => $this->representante,
         'fecha_analisis' => $this->fecha_analisis,
         'colaborador1'   => $this->colaborador,
+        'clasificacion'  => $this->clasificacion,
         ]);
 
         if ($this->logo) {
