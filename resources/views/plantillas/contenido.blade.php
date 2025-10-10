@@ -132,7 +132,8 @@
                                 @endif
                             <br>
                         @else
-                            {!! limpiarHtml($cont->cont) !!}
+                            {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
+
                             @if (!empty($cont->img1))
                                 <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; text-align: center;">
                                     <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
@@ -181,8 +182,6 @@
                             <span style="color: transparent; font-size: 0;">__MARKER_SUBTITLE_{{ $subtitle->id }}__</span>
                             {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($subtitle->subtitle->nombre) }}
                         </a>
-                        
-
                         @foreach ($subtitle->content as $cont)
                             @if (empty(trim($cont->cont)))
                                 @if (!empty($cont->img1))
@@ -254,11 +253,53 @@
                                                 <td style="border: 1px solid black; padding: 5px;">{{ $diagram->f_ocurrencia }}</td>
                                             </tr>
                                         @endforeach
+                                    </table>  
+                                @endif   
+                                @if($cont->reportTitleSubtitle()->where('subtitle_id',15))
+                                    <table id="tabla">
+                                        <!-- Encabezado Cibernéticos -->
+                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
+                                            <td colspan="2">Cibernéticos</td>
+                                        </tr>
+                                        <tbody id="ciberneticos" wire:ignore>
+                                            @foreach ($diagrama->where('tipo_riesgo', 'ciberneticos')->sortBy('orden') as $r)
+                                                <tr data-id="{{ $r->id }}">
+                                                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
+                                                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+
+                                        <!-- Encabezado Naturales -->
+                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
+                                            <td colspan="2">Naturales</td>
+                                        </tr>
+                                        <tbody id="naturales" wire:ignore>
+                                            @foreach ($diagrama->where('tipo_riesgo', 'naturales')->sortBy('orden') as $r)
+                                                <tr data-id="{{ $r->id }}">
+                                                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
+                                                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                        <!-- Encabezado Sociales -->
+                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color: white">
+                                            <td colspan="2">Sociales (Personas)</td>
+                                        </tr>
+                                        <tbody id="sociales" wire:ignore>
+                                            @foreach ($diagrama->where('tipo_riesgo', 'sociales')->sortBy('orden') as $r)
+                                                <tr data-id="{{ $r->id }}">
+                                                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
+                                                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
                                     </table>
 
-                                @endif
+                                @endif                               
                             @else
-                                {!! limpiarHtml($cont->cont) !!}
+                                {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
+
                                 
                                 @if (!empty($cont->img1))
                                     <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; text-align: center;">
@@ -332,9 +373,51 @@
                                         @endforeach
                                     </table>
                                 @endif
+                                @if($cont->reportTitleSubtitle()->where('subtitle_id',15))
+                                    <table id="tabla">
+                                        <!-- Encabezado Cibernéticos -->
+                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
+                                            <td colspan="2">Cibernéticos</td>
+                                        </tr>
+                                        <tbody id="ciberneticos" wire:ignore>
+                                            @foreach ($diagrama->where('tipo_riesgo', 'ciberneticos')->sortBy('orden') as $r)
+                                                <tr data-id="{{ $r->id }}">
+                                                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
+                                                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+
+                                        <!-- Encabezado Naturales -->
+                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
+                                            <td colspan="2">Naturales</td>
+                                        </tr>
+                                        <tbody id="naturales" wire:ignore>
+                                            @foreach ($diagrama->where('tipo_riesgo', 'naturales')->sortBy('orden') as $r)
+                                                <tr data-id="{{ $r->id }}">
+                                                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
+                                                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                        <!-- Encabezado Sociales -->
+                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color: white">
+                                            <td colspan="2">Sociales (Personas)</td>
+                                        </tr>
+                                        <tbody id="sociales" wire:ignore>
+                                            @foreach ($diagrama->where('tipo_riesgo', 'sociales')->sortBy('orden') as $r)
+                                                <tr data-id="{{ $r->id }}">
+                                                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
+                                                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+
+                                @endif
+
                             @endif
                         @endforeach
-
                         {{-- Secciones dentro del subtítulo --}}
                         @foreach ($subtitle->sections->sortBy('id') as $section)
                             <a style="display: block; text-align: justify; font-weight: bold; font-style: italic; text-indent: 0;">
@@ -383,7 +466,8 @@
                                     @endif
                                 <br>
                                 @else
-                                    {!! limpiarHtml($cont->cont) !!}
+                                    {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
+
                                     @if (!empty($cont->img1))
                                         <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; text-align: center;">
                                             <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">

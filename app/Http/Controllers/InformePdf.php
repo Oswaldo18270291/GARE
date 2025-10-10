@@ -7,6 +7,8 @@ use App\Models\Report;
 use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
+use App\Models\AnalysisDiagram;
+
 use Barryvdh\DomPDF\Facade\Pdf;
 use setasign\Fpdi\PdfParser\StreamReader as PdfParserStreamReader;
 use setasign\Fpdi\Tcpdf\Fpdi;
@@ -16,6 +18,10 @@ use Smalot\PdfParser\Parser; // 👈 para leer el PDF
 class InformePdf extends Controller
 {
         public $reports;
+        public $ti;
+        public $su;
+        public $co;
+        public $diagrama;
 
     use AuthorizesRequests;
 
@@ -40,6 +46,7 @@ class InformePdf extends Controller
                 $subtitle->sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)
                     ->where('status', 1)
                     ->get();
+                
 
                 foreach ($subtitle->sections as $section) {
                     $section->content = Content::where('r_t_s_s_id', $section->id)->get();
@@ -47,8 +54,22 @@ class InformePdf extends Controller
             }
         }
 
+        $ti = ReportTitle::where('report_id', $report->id)->where('title_id', 4 )             
+        ->where('status', 1)
+        ->first();
+
+        $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 14 )     
+        ->where('status', 1)->first();
+
+        $co = Content::where('r_t_s_id', $su->id)->first();
+
+        $diagrama = AnalysisDiagram::where('content_id', $co->id)->get();
+
+
+
+
         // 🔹 Generar contenido con marcadores invisibles
-        $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report]);
+        $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report, 'diagrama'=>$diagrama]);
         $pathContenido = storage_path("app/public/tmp_contenido_{$id}.pdf");
         file_put_contents($pathContenido, $pdfContenido->output());
 
