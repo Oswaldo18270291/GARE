@@ -557,7 +557,8 @@ GRAFICA
         datasets: riesgos.map((nombre, i) => ({
           label: nombre,                // nombre del riesgo
           data: [ocurrencias[i]],       // valor del riesgo
-          backgroundColor: colores[i]   // color único
+          backgroundColor: colores[i] ,
+          numero: riesg[i],  
         }))
       };
 
@@ -589,7 +590,7 @@ GRAFICA
               } else {
                 // En barras, mostramos nombre + valor del dataset
                 const dataset = ctx.chart.data.datasets[ctx.datasetIndex];
-                return `${dataset.labe} (${value})`;
+                return `${dataset.numero} (${value})`;
               }
             }
           }
@@ -629,6 +630,12 @@ GRAFICA
     chartTypeSelect.value = nuevoTipo;
     crearGrafico(nuevoTipo);
   });
+</script>
+<script>
+document.addEventListener('livewire:load', function () {
+    // 🔁 Espera a que Livewire cargue y refresca el componente automáticamente
+    Livewire.dispatch('refreshChart');
+});
 </script>
 
 
