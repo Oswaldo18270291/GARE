@@ -576,7 +576,7 @@ GRAFICA
               padding: 8
             },
           },
-          title: { display: true, text: 'Factor de ocurrencia' },
+          
           datalabels: {
             color: '#000',
             anchor: tipo === 'bar' ? 'end' : 'center',

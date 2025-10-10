@@ -403,18 +403,23 @@
 <h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
 
 <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-    <label for="os" class="w-fit pl-0.5 text-sm">Tipo de gráfico:</label>
+    <label for="chartType" class="w-fit pl-0.5 text-sm">Tipo de gráfico:</label>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
         <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
     </svg>
-    <select wire:model="grafica" select id="chartType" name="chartType" class="w-full appearance-none rounded-radius border border-outline bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark">
-    <option value="bar" selected>Barras</option>
-    <option value="pie">Pastel</option>
-    <option value="doughnut">Dona</option>
-    <option value="polarArea">Área polar</option>
+
+    <select 
+        wire:model="grafica" 
+        id="chartType" 
+        name="chartType" 
+        class="w-full appearance-none rounded-radius border border-outline bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+    >
+        <option value="bar">Barras</option>
+        <option value="pie">Pastel</option>
+        <option value="doughnut">Dona</option>
+        <option value="polarArea">Área polar</option>
     </select>
 </div>
-
 <!-- Contenedor del gráfico -->
 <canvas id="riesgosChart" width="800" height="400"></canvas>
 
@@ -423,101 +428,112 @@
   const ctx = document.getElementById('riesgosChart').getContext('2d');
   const chartTypeSelect = document.getElementById('chartType');
 
-  const riesgos = @json( $risks->sortBy('no')->map(fn($r) => $r->no . ' - ' . $r->riesgo)->values() );
-  const ocurrencias = @json(
-    $risks->sortBy('no')->pluck('f_ocurrencia')->values()
-  );
+  const riesgos = @json($risks->sortBy('no')->map(fn($r) => $r->no . ' - ' . $r->riesgo)->values());
+  const riesg = @json($risks->sortBy('no')->map(fn($r) => $r->no)->values());
+  const ocurrencias = @json($risks->sortBy('no')->pluck('f_ocurrencia')->values());
+  const tipoInicial = @json($grafica); // 👈 tipo de gráfica desde base de datos
 
-  // Colores según el nivel de riesgo
   const colores = ocurrencias.map(v => {
-    if (v >= 80) return "rgba(206, 0, 0, 0.9)";      // Muy alto
-    if (v >= 60) return "rgba(235, 231, 0, 0.9)";     // Alto
-    if (v >= 40) return "rgba(4, 121, 0, 0.9)";       // Normal
-    return "rgba(102, 209, 98, 0.9)";                 // Bajo
+    if (v >= 80) return "rgba(206, 0, 0, 0.9)";
+    if (v >= 60) return "rgba(235, 231, 0, 0.9)";
+    if (v >= 40) return "rgba(4, 121, 0, 0.9)";
+    return "rgba(102, 209, 98, 0.9)";
   });
 
-  // Función para crear el gráfico según tipo
   function crearGrafico(tipo) {
     if (window.chart) window.chart.destroy();
 
-    let dataConfig = {};
+    const esCircular = ['pie', 'doughnut', 'polarArea'].includes(tipo);
 
-    // Configuración para tipos circulares
-    if (tipo === 'pie' || tipo === 'doughnut' || tipo === 'polarArea') {
-      dataConfig = {
+    // 🔹 Generamos los datasets individuales
+  const dataConfig = esCircular
+    ? {
         labels: riesgos,
-        datasets: [{
-          data: ocurrencias,
-          backgroundColor: colores
-        }]
-      };
-    } else {
-      // Por defecto: barras
-      dataConfig = {
-        labels: riesgos,
+        labe: riesg,
         datasets: [{
           label: 'Factor de ocurrencia',
           data: ocurrencias,
           backgroundColor: colores
         }]
+      }
+    : {
+        // En gráficas de barras, cada riesgo será su propio dataset
+        labels: ['Factor de ocurrencia'], // eje X genérico
+        datasets: riesgos.map((nombre, i) => ({
+          label: nombre,                // nombre del riesgo
+          data: [ocurrencias[i]],       // valor del riesgo
+          backgroundColor: colores[i],
+          numero: riesg[i],   // color único
+        }))
       };
-    }
 
-    // Crear el gráfico
     window.chart = new Chart(ctx, {
       type: tipo,
       data: dataConfig,
       options: {
         responsive: true,
         plugins: {
-          legend: { display: tipo !== 'bar' },
-          title: {
-            display: true,
-            text: 'Factor de ocurrencia'
+          legend: { display: true,
+            position: 'bottom',
+            labels: {
+              color: '#000',
+              font: { size: 11, weight: 'bold' },
+              boxWidth: 15,
+              padding: 8
+            },
           },
+          
           datalabels: {
-            color: tipo === 'bar' ? '#000' : '#fff',
+            color: '#000',
             anchor: tipo === 'bar' ? 'end' : 'center',
             align: tipo === 'bar' ? 'end' : 'center',
-            font: {
-              weight: 'bold',
-              size: 10
-            },
+            font: { weight: 'bold', size: 10 },
             formatter: (value, ctx) => {
-              const index = ctx.dataIndex;
-
-              // 🎯 Mostrar diferente texto según tipo de gráfica
-              if (tipo === 'pie' || tipo === 'doughnut') {
-                // Versión 1 (completa):
-                return `${ctx.chart.data.labels[index]}\n(${value})`;
-
-                // 🔸 Si prefieres solo el número, usa esta línea en su lugar:
-                // return value;
+              if (esCircular) {
+                const index = ctx.dataIndex;              
+                return `${ctx.chart.data.labe[index]}\n(${value})`;
+              } else {
+                // En barras, mostramos nombre + valor del dataset
+                const dataset = ctx.chart.data.datasets[ctx.datasetIndex];
+                return `${dataset.numero} (${value})`;
               }
-
-              // Para barras y polar area: solo nombre
-              return ctx.chart.data.labels[index];
             }
           }
         },
-        // Sin ejes para gráficos circulares
-        scales: (tipo === 'pie' || tipo === 'doughnut' || tipo === 'polarArea')
-          ? {}
-          : {
-              x: { ticks: { maxRotation: 90, minRotation: 60 } },
-              y: { beginAtZero: true, max: 100 }
-            }
-      },
+        // 🔹 Escalas solo para gráficas no circulares
+      scales: esCircular ? {} : {
+        x: { 
+          ticks: { color: '#000' },
+          grid: { display: false }
+        },
+        y: { 
+          beginAtZero: true,
+          ticks: { color: '#000' },
+          grid: { color: '#ddd' },
+          max: 100
+        }
+      }
+    },
       plugins: [ChartDataLabels]
     });
   }
 
-  // Inicializar con gráfico de barras
-  crearGrafico('bar');
+  // 👇 Establecer el tipo del select al valor guardado
+  chartTypeSelect.value = tipoInicial ?? 'bar';
 
-  // Cambiar tipo según el selector
+  // 👇 Crear gráfico con el tipo guardado en la BD
+  crearGrafico(tipoInicial ?? 'bar');
+
+  // 👇 Detectar cambio manual
   chartTypeSelect.addEventListener('change', (e) => {
     crearGrafico(e.target.value);
+  });
+
+  // 👇 Escuchar actualizaciones desde Livewire
+  document.addEventListener('livewire:update', () => {
+    const nuevoTipo = @this.grafica;
+    chartTypeSelect.value = nuevoTipo;
+    crearGrafico(nuevoTipo);
   });
 </script>
 
