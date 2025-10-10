@@ -13,7 +13,7 @@ class Report extends Model
         'nombre_empresa', 'giro_empresa', 'ubicacion', 'telefono', 'representante',
         'fecha_analisis', 'user_id', 'colaborador1', 'colaborador2',
         'colaborador3', 'colaborador4', 'colaborador5', 'logo', 'img', 'status',
-        'folio'
+        'folio','clasificacion'
     ];
 
 

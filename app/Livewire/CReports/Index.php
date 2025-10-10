@@ -26,6 +26,7 @@ class Index extends Component
         public $colaborador;
         public $logo;
         public $img;
+        public $clasificacion;
         public $title = [];
         public $subtitle = [];
         public $section = [];
@@ -50,6 +51,7 @@ class Index extends Component
         $report->representante    = $this->representante;
         $report->fecha_analisis   = $this->fecha_analisis;
         $report->colaborador1     = $this->colaborador;
+        $report->clasificacion    = $this->clasificacion;
         $report->logo             = $path;
         $report->img              = $path2; // aquí va la ruta, no el archivo
         $report->user_id          = Auth::id();

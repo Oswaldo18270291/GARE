@@ -333,7 +333,11 @@ public function guardarOrden2($risks)
             }
         }
     }
-
+    #[On('refreshChart')]
+    public function refreshChart()
+    {
+        $this->dispatch('$refresh'); // 🔄 fuerza el re-render del componente
+    }
     public function render()
     {
         return view('livewire.reports.botones-add.editc', [
