@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Plugin 3D -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-3d"></script>
+<!-- ECharts -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
         <title>Analisis y evaluación de riesgo</title>
         <style>
             @page {
@@ -37,6 +44,9 @@
             line-height: 2;       /* interlineado doble */
             text-indent: 2.5em;   /* sangría de la primera línea (~5 espacios) */
             }
+
+
+            
         </style>
     </head>
 <body>
@@ -255,7 +265,7 @@
                                         @endforeach
                                     </table>  
                                 @endif   
-                                @if($cont->reportTitleSubtitle()->where('subtitle_id',15))
+                                @if($cont->reportTitleSubtitle->subtitle_id==15)
                                     <table id="tabla">
                                         <!-- Encabezado Cibernéticos -->
                                         <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
@@ -269,7 +279,6 @@
                                                 </tr>
                                             @endforeach
                                         </tbody>
-
                                         <!-- Encabezado Naturales -->
                                         <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
                                             <td colspan="2">Naturales</td>
@@ -295,8 +304,130 @@
                                             @endforeach
                                         </tbody>
                                     </table>
+                                @endif
+                                @if($cont->reportTitleSubtitle->subtitle_id==16)
+                                <style>
+                                    .bg-green { background-color: #15803d; }  /* Verde oscuro */
+                                    .bg-yellow { background-color: #facc15; color: black; } /* Amarillo */
+                                    .bg-red { background-color: #dc2626; }   /* Rojo */
 
-                                @endif                               
+                                    /* Colores de fondo de celdas */
+                                    .cell-green { background-color: #bbf7d0; }   /* Verde claro */
+                                    .cell-yellow { background-color: #fef9c3; }  /* Amarillo claro */
+                                    .cell-red { background-color: #fecaca; }     /* Rojo claro */
+                                    ul {
+                                    margin: 0;
+                                    padding-left: 18px;
+                                    }
+
+                                    li {
+                                    margin-bottom: 3px;
+                                    }
+
+                                    p {
+                                    margin: 0;
+                                    text-align: justify;
+                                    line-height: 1.4em;
+                                    }
+                                    .bg-green { background-color: #15803d; }  /* Verde oscuro */
+                                    .bg-yellow { background-color: #facc15; color: black; } /* Amarillo */
+                                    .bg-red { background-color: #dc2626; }   /* Rojo */
+
+                                    /* Colores de fondo de celdas */
+                                    .cell-green { background-color: #bbf7d0; }   /* Verde claro */
+                                    .cell-yellow { background-color: #fef9c3; }  /* Amarillo claro */
+                                    .cell-red { background-color: #fecaca; }     /* Rojo claro */
+                                </style>
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                            <th class="bg-green">Rango Normal<br>(Zona de Seguridad)</th>
+                                            <th class="bg-yellow">Rango Intermedio<br>(Zona de Atención)</th>
+                                            <th class="bg-red">Rango de atención inmediata<br>(Zona intolerable)</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                {{-- 🔹 RANGO NORMAL --}}
+                                                <td class="cell-green">
+                                                @php
+                                                    $riesgosNormales = $diagrama->where('c_riesgo', 'normal')->sortBy('orden2');
+                                                @endphp
+                                                @if ($riesgosNormales->count() > 0)
+                                                    <ul>
+                                                    @foreach ($riesgosNormales as $r)
+                                                        <li>{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                    @endforeach
+                                                    </ul>
+                                                @endif
+                                                </td>
+
+                                                {{-- 🔹 RANGO INTERMEDIO --}}
+                                                <td class="cell-yellow">
+                                                @php
+                                                    $riesgosIntermedios = $diagrama->where('c_riesgo', 'intermedio')->sortBy('orden2');
+                                                @endphp
+                                                @if ($riesgosIntermedios->count() > 0)
+                                                    <ul>
+                                                    @foreach ($riesgosIntermedios as $r)
+                                                        <li>{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                    @endforeach
+                                                    </ul>
+                                                @endif
+                                                </td>
+
+                                                {{-- 🔹 RANGO INMEDIATO --}}
+                                                <td class="cell-red">
+                                                @php
+                                                    $riesgosInmediatos = $diagrama->where('c_riesgo', 'inmediato')->sortBy('orden2');
+                                                @endphp
+                                                @if ($riesgosInmediatos->count() > 0)
+                                                    <ul>
+                                                    @foreach ($riesgosInmediatos as $r)
+                                                        <li>{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                    @endforeach
+                                                    </ul>
+                                                @endif
+                                                </td>
+                                            </tr>
+
+                                            {{-- 🔸 Segunda fila: Descripción de cada rango --}}
+                                            <tr>
+                                                <td class="bg-green">
+                                                <p>
+                                                    Este rango representa riesgos de baja probabilidad y bajo impacto. Los eventos situados
+                                                    en este rango normalmente se consideran aceptables y dentro de los límites normales de
+                                                    operación. Las consecuencias, si ocurren, serían bajas y fácilmente controladas por la
+                                                    organización. Normalmente, no se necesita ninguna acción correctiva inmediata, pero se
+                                                    deben mantener los controles actuales y monitorear continuamente los riesgos para
+                                                    garantizar que permanezcan dentro de esta zona de seguridad.
+                                                </p>
+                                                </td>
+
+                                                <td class="bg-yellow">
+                                                <p>
+                                                    En este rango, los riesgos presentan una probabilidad y/o impactos moderados. Los eventos
+                                                    en el área intermedia requieren atención, ya que pueden causar perturbaciones
+                                                    significativas en la operación, aunque no de manera catastrófica. Se recomiendan medidas
+                                                    preventivas o correctivas para mitigar el impacto o la probabilidad de ocurrencia, con un
+                                                    monitoreo constante para evitar que migren al área de riesgo intolerable.
+                                                </p>
+                                                </td>
+
+                                                <td class="bg-red">
+                                                <p>
+                                                    Este rango representa riesgos de alta probabilidad y/o alto impacto, siendo considerados
+                                                    inaceptables y requieren intervención inmediata. Cualquier evento en este rango puede
+                                                    causar graves consecuencias para la organización, comprometiendo seriamente sus objetivos
+                                                    y/o procesos. La mitigación de estos riesgos debe ser la máxima prioridad y se requieren
+                                                    acciones inmediatas para reducir el impacto y/o la probabilidad de ocurrencia.
+                                                </p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                @endif
+                                                               
                             @else
                                 {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
 
@@ -373,7 +504,7 @@
                                         @endforeach
                                     </table>
                                 @endif
-                                @if($cont->reportTitleSubtitle()->where('subtitle_id',15))
+                               @if($cont->reportTitleSubtitle->subtitle_id==15)
                                     <table id="tabla">
                                         <!-- Encabezado Cibernéticos -->
                                         <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
@@ -413,9 +544,11 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-
-                                @endif
-
+                                @endif      
+                                @if ($cont->reportTitleSubtitle->subtitle_id==16)
+                                    <p>aaaaaaa1</p>
+                                @endif         
+aaa
                             @endif
                         @endforeach
                         {{-- Secciones dentro del subtítulo --}}

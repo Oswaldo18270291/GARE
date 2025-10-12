@@ -63,13 +63,17 @@ class InformePdf extends Controller
 
         $co = Content::where('r_t_s_id', $su->id)->first();
 
-        $diagrama = AnalysisDiagram::where('content_id', $co->id)->get();
+        if(!empty($co)){
+            $diagrama = AnalysisDiagram::where('content_id', $co->id)->get();        
+            $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report, 'diagrama'=>$diagrama]);
+        }else{
+            $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report]);
+        }
 
 
 
 
         // 🔹 Generar contenido con marcadores invisibles
-        $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report, 'diagrama'=>$diagrama]);
         $pathContenido = storage_path("app/public/tmp_contenido_{$id}.pdf");
         file_put_contents($pathContenido, $pdfContenido->output());
 
