@@ -26,7 +26,7 @@ class Index extends Component
         public $colaborador;
         public $logo;
         public $img;
-        public $clasificacion;
+        public $clasificacion='';
         public $title = [];
         public $subtitle = [];
         public $section = [];

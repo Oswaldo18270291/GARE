@@ -65,30 +65,19 @@
                     placeholder="Ingrese Ubicación de la empresa" autocomplete="name" style="border-color:rgba(31, 89, 177, 1);"/>
                 </div>
                 <br>
-                <div class="relative flex w-full max-w-xs flex-col gap-1">
-                    <label for="clasificacion" class="w-fit pl-0.5 text-sm text-gray-700">Tipo de clasificación:</label>
-
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                        class="absolute pointer-events-none right-4 top-8 size-5 text-gray-600">
-                        <path fill-rule="evenodd"
-                            d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                            clip-rule="evenodd" />
+                <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
+                    <label for="clasificacion" class="w-fit pl-0.5 text-sm">Tipo de clasificación</label>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
+                        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                     </svg>
-
-                    <select
-                        wire:model="clasificacion"
-                        id="clasificacion"
-                        name="clasificacion"
-                        class="w-full appearance-none rounded-md border border-blue-700 bg-white text-black px-4 py-2 text-sm 
-                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        style="background-color: white; color: black;"
-                    >
-                        <option value="" select disabled>Seleccione una opción</option>
-                        <option value="Público">Público</option>
-                        <option value="Confidencial">Confidencial</option>
+                    <select required wire:model="clasificacion" id="clasificacion" name="clasificacion" class="w-full appearance-none rounded-radius border 
+                    border-outline bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+                    disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark">
+                            <option value="" disabled>Elige la clasifiación</option>
+                            <option value="Público">Público</option>
+                            <option value="Confidencial">Confidencial</option>
                     </select>
                 </div>
-
             </div>
             <br>
             <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
@@ -127,6 +116,7 @@
 
                         {{-- 🔹 Ya NO usamos wire:model aquí --}}
                         <input 
+                            required
                             id="img" 
                             type="file" 
                             class="sr-only" 
@@ -183,6 +173,7 @@
                         style="border-color:rgba(31, 89, 177, 1);">
 
                         <input 
+                            required
                             id="logo" 
                             type="file"
                             class="sr-only" 
