@@ -29,15 +29,16 @@
             dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark " required autocomplete="current-password" name="password" placeholder="Contraseña" 
             autocomplete="name"/>
         </div>
-
-            @if (Route::has('password.request'))
-                <flux:link class="absolute end-0 top-0 text-sm !text-blue-950 font-semibold" :href="route('password.request')" wire:navigate>
-                    {{ __('¿Olvidó la contraseña?') }}
-                </flux:link>
-            @endif
+            {{-- Password 
+                @if (Route::has('password.request'))
+                    <flux:link class="absolute end-0 top-0 text-sm !text-blue-950 font-semibold" :href="route('password.request')" wire:navigate>
+                        {{ __('¿Olvidó la contraseña?') }}
+                    </flux:link>
+                @endif
+            --}}
         </div>
 
-        <!-- Remember Me -->
+        {{-- Remember Me
 
         <label for="remember" class="flex items-center gap-2 text-sm text-white cursor-pointer">
             <flux:checkbox 
@@ -48,7 +49,7 @@
             />
             <span>Recordar contraseña</span>
         </label>
-
+        --}}
 
 
         <div class="flex items-center justify-end">
@@ -56,6 +57,7 @@
         </div>
     </form>
 
+    {{-- creación de cuenta
     @if (Route::has('register'))
         <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-white dark:text-zinc-400">
             <span>{{ __('¿No tienes una cuenta?') }}</span>
@@ -66,4 +68,5 @@
             </flux:link>
         </div>
     @endif
+    --}}
 </div>
