@@ -31,7 +31,7 @@
                     placeholder="Ingrese Ubicación de la empresa" autocomplete="name" style="border-color:rgba(31, 89, 177, 1);"/>
                 </div>
                 <div x-data class="flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-                    <label for="phoneInput" class="w-fit pl-0.5 text-2x1">Telefono</label>
+                    <label for="phoneInput" class="w-fit pl-0.5 text-2x1">Teléfono</label>
                     <input  wire:model="telefono" id="telefono" type="text" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 text-sm 
                     focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 
                     dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" x-mask="(999) 999-9999" 
@@ -62,18 +62,18 @@
                     <input required wire:model="colaborador" id="colaborador" type="text" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2
                     text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed 
                     disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="colaborador" 
-                    placeholder="Ingrese Ubicación de la empresa" autocomplete="name" style="border-color:rgba(31, 89, 177, 1);"/>
+                    placeholder="Ingrese nombre del colaborador" autocomplete="name" style="border-color:rgba(31, 89, 177, 1);"/>
                 </div>
                 <br>
                 <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
                     <label for="clasificacion" class="w-fit pl-0.5 text-sm">Tipo de clasificación</label>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="bg-white absolute pointer-events-none right-4 top-8 size-5">
                         <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                     </svg>
-                    <select required wire:model="clasificacion" id="clasificacion" name="clasificacion" class="w-full appearance-none rounded-radius border 
+                    <select required wire:model="clasificacion" id="clasificacion" name="clasificacion" class="bg-white w-full appearance-none rounded-radius border 
                     border-outline bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
-                    disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark">
-                            <option value="" disabled>Elige la clasifiación</option>
+                    disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" style="border-color:rgba(31, 89, 177, 1);">
+                            <option value="" disabled>Elige la clasificación</option>
                             <option value="Público">Público</option>
                             <option value="Confidencial">Confidencial</option>
                     </select>
