@@ -40,6 +40,7 @@ return new class extends Migration
             $table->string('img3')->nullable();
             $table->string('leyenda3')->nullable();
             $table->string('grafica')->nullable();
+            $table->string('img_grafica')->nullable();
         });
     }
 

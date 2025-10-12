@@ -409,6 +409,7 @@
     </svg>
 
     <select 
+        required
         wire:model="grafica" 
         id="chartType" 
         name="chartType" 

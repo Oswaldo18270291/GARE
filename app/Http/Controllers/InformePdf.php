@@ -9,18 +9,24 @@ use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
 use App\Models\AnalysisDiagram;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
 use Barryvdh\DomPDF\Facade\Pdf;
 use setasign\Fpdi\PdfParser\StreamReader as PdfParserStreamReader;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Smalot\PdfParser\Parser; // 👈 para leer el PDF
-
+use Illuminate\Support\Facades\Log;
 class InformePdf extends Controller
 {
         public $reports;
         public $ti;
         public $su;
         public $co;
+        public $ti2;
+        public $su2;
+        public $co2;
         public $diagrama;
 
     use AuthorizesRequests;
@@ -177,4 +183,68 @@ class InformePdf extends Controller
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', "inline; filename=\"$filename\"");
     }
+
+        public function generarGrafica($id)
+    {
+        $report = Report::findOrFail($id);
+        $ti = ReportTitle::where('report_id', $report->id)->where('title_id', 4 )             
+        ->where('status', 1)
+        ->first();
+        $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 14 )     
+        ->where('status', 1)->first();
+        $co = Content::where('r_t_s_id', $su->id)->first();
+
+
+        $ti2 = ReportTitle::where('report_id', $report->id)->where('title_id', 4 )             
+        ->where('status', 1)
+        ->first();
+        $su2 = ReportTitleSubtitle::where('r_t_id', $ti2->id)->where('subtitle_id', 16 )     
+        ->where('status', 1)->first();
+        $co2 = Content::where('r_t_s_id', $su2->id)->first();
+
+
+        if(!empty($co)){
+
+        $risks = AnalysisDiagram::where('content_id',$co->id)->orderBy('no')->get();
+        $grafica = $co2->grafica ?? 'bar';
+        // 👉 Esta vista no se mostrará al usuario, solo genera la gráfica en background
+        return view('reports.generar_grafica', compact('report', 'risks', 'grafica'));
+        }else{
+            $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report]);
+        }
+
+
+    }
+
+    public function guardarImagenGrafica(Request $request, $id)
+{
+
+    $report = Report::findOrFail($id);
+    $ti = ReportTitle::where('report_id', $report->id)->where('title_id', 4 )             
+    ->where('status', 1)
+    ->first();
+
+    $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 16 )     
+    ->where('status', 1)->first();
+    $content = Content::where('r_t_s_id', $su->id)->first(); // o según tu relación
+
+    $base64 = $request->imagen;
+    $nombre = 'grafica_reporte_'.$id.'.png';
+    $ruta = 'graficas/'.$nombre;
+
+    // Eliminar la anterior si existe
+    if (Storage::exists($ruta)) {
+        Storage::delete($ruta);
+    }
+
+    // Guardar nueva
+    $imagen = str_replace('data:image/png;base64,', '', $base64);
+    Storage::disk('public')->put('graficas/'.$nombre, base64_decode($imagen));
+
+    // Actualizar en BD
+    $content->update(['img_grafica' => 'graficas/'.$nombre]);
+
+    return response()->json(['success' => true]);
+}
+
 }

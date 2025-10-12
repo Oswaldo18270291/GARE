@@ -306,6 +306,8 @@
                                     </table>
                                 @endif
                                 @if($cont->reportTitleSubtitle->subtitle_id==16)
+                                <img src="storage/{{ $cont->img_grafica }}"/>
+
                                 <style>
                                     .bg-green { background-color: #15803d; }  /* Verde oscuro */
                                     .bg-yellow { background-color: #facc15; color: black; } /* Amarillo */

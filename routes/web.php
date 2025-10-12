@@ -59,6 +59,10 @@ Route::get('my_reports/editstructure/{id}', Editestructura::class)->name('my_rep
 //Route::get('/portada', portada::class)->name('plantillas.portada');
 
 
+Route::get('/reporte/generar-grafica/{id}', [InformePdf::class, 'generarGrafica'])->name('reporte.generarGrafica');
+Route::get('/reporte/pdf/{id}', [InformePdf::class, 'generar'])->name('reporte.pdf');
+Route::post('/reporte/guardar-imagen/{id}', [InformePdf::class, 'guardarImagenGrafica'])->name('guardar.imagen.grafica');
+
 
 Route::get('/portada', [ControllersPortada::class, 'index']);
 Route::get('/report/pdf/{id}', [InformePdf::class, 'generar'])
