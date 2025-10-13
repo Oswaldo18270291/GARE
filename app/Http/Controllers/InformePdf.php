@@ -210,7 +210,7 @@ class InformePdf extends Controller
         // 👉 Esta vista no se mostrará al usuario, solo genera la gráfica en background
         return view('reports.generar_grafica', compact('report', 'risks', 'grafica'));
         }else{
-            $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report]);
+           return redirect()->route('reporte.pdf', ['id' => $id]);
         }
 
 

@@ -215,7 +215,7 @@ class Editc extends Component
 
     public function update($id,$boton,$rp)
     {
-        $nl = ReportTitleSubtitle::findOrFail($id);
+        
         $this->validate([
             'img1' => 'nullable|image',
             'img2' => 'nullable|image',
@@ -239,9 +239,13 @@ class Editc extends Component
         ];
 
         // Solo agrega el campo "grafica" si el subtitle_id es 16
-        if ($nl->subtitle_id === 16) {
-            $data['grafica'] = $this->grafica;
+        if ($boton === 'sub') {
+            $nl = ReportTitleSubtitle::findOrFail($id);
+            if ($nl->subtitle_id === 16) {
+                $data['grafica'] = $this->grafica;
+            }
         }
+
 
         // Ahora actualiza el modelo
         $this->content->update($data);
