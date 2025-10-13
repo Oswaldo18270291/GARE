@@ -219,7 +219,7 @@
 </div>
 </div>
 <br>
-@if ($titulo=='Mosler: Informe')
+@if ($titulo==14)
 4.1.1.	Mosler: Informe.
   <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: center;">
     <tr style="background-color: #0f4a75ff; color: white; font-weight: bold;">
@@ -281,7 +281,7 @@
     <button type="button" wire:click="addFila" class="px-3 py-2 bg-emerald-600 text-white rounded">+ Agregar fila</button>
   </div>
 @endif
-@if ($titulo=='Organigrama de Riesgos')
+@if ($titulo==15)
 <br>
 <style>
     table {
@@ -399,7 +399,7 @@
 </script>
 
 @endif
-@if ($titulo=='Nivel de Riesgo-Gráfico de Consecuencia x Factor de Ocurrencia')
+@if ($titulo==16)
 <h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
 
 <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
@@ -686,7 +686,7 @@ Características del Riesgo.
 
 <br>
 @endif
-@if ($titulo=='Control Existente contra Control Ideal')
+@if ($titulo==17)
 5.1	Control Existente contra Control Ideal.
 <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: center;">
   <tr style="background-color: #0070C0; color: white; font-weight: bold;">
@@ -769,7 +769,7 @@ Características del Riesgo.
 
 <br>
 @endif
-@if ($titulo=='Organigrama de Controles')
+@if ($titulo==18)
 <h1>5.2	Organigrama de Controles.</h1>
 <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt; text-align: left;">
   <!-- Encabezado Humanos -->
@@ -844,7 +844,7 @@ Características del Riesgo.
 </table>
 <br>
 @endif
-@if ($titulo=='Control: Consultoría de seguridad interna')
+@if (in_array($titulo, [20,21,22,23,24,25,26,27,28,29]))
 5.4	 Control: Consultoría de seguridad interna. - 5.13 
 <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 12pt; text-align: left;">
   <tr>

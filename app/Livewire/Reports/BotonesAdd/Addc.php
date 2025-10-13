@@ -112,7 +112,7 @@ class Addc extends Component
     {
  
         $nl = ReportTitleSubtitle::findOrFail($id_);
-        $name = Subtitle::where('id', $nl->subtitle_id)->value('nombre');
+        $name = Subtitle::where('id', $nl->subtitle_id)->value('id');
 
         $this->validate([
             'img1' => 'nullable|image|required_with:leyenda1',
@@ -170,7 +170,7 @@ class Addc extends Component
 
             // Finalmente crea el contenido
             $content = Content::create($data);
-            if ($name == 'Mosler: Informe') {
+            if ($name == 14) {
             $rows = [];
             $now = now();
             foreach ($this->riesgos as $index => $r) {
