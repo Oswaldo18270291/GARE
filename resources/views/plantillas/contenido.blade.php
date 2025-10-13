@@ -310,7 +310,7 @@
                                     </table>
                                 @endif
                                 @if($cont->reportTitleSubtitle->subtitle_id==16)
-                                <img src="storage/{{ $cont->img_grafica }}"/>
+                                <img src="storage/{{ $cont->img_grafica }}" style="page-break-before: always; margin-top: 1.5cm;"/>
 
                                 <style>
                                     .bg-green { background-color: #15803d; }  /* Verde oscuro */
