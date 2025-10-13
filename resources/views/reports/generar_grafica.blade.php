@@ -59,9 +59,10 @@
 document.addEventListener('DOMContentLoaded', async function () {
     const loader = document.getElementById('loader'); // referencia al loader
     const ctx = document.getElementById('grafica').getContext('2d');
-
-    const riesgos = @json($risks->map(fn($r) => $r->no . ' - ' . $r->riesgo));
-    const ocurrencias = @json($risks->pluck('f_ocurrencia'));
+    
+    const riesg = @json($risks->sortBy('no')->map(fn($r) => $r->no)->values());
+    const riesgos = @json($risks->sortBy('no')->map(fn($r) => $r->no . ' - ' . $r->riesgo)->values());
+    const ocurrencias = @json($risks->sortBy('no')->pluck('f_ocurrencia')->values());
     const tipo = @json($grafica);
 
     const colores = ocurrencias.map(v => {
@@ -76,6 +77,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const dataConfig = esCircular
       ? {
           labels: riesgos,
+          labe: riesg,
           datasets: [{
             label: 'Factor de ocurrencia',
             data: ocurrencias,
@@ -87,7 +89,8 @@ document.addEventListener('DOMContentLoaded', async function () {
           datasets: riesgos.map((nombre, i) => ({
             label: nombre,
             data: [ocurrencias[i]],
-            backgroundColor: colores[i]
+            backgroundColor: colores[i],
+            numero: riesg[i],   
           }))
         };
 
@@ -117,10 +120,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                     font: { weight: 'bold', size: 10 },
                     formatter: (value, ctx) => {
                         if (esCircular) {
-                            return `${ctx.chart.data.labels[ctx.dataIndex]}\n(${value})`;
+                            return `${ctx.chart.data.labe[ctx.dataIndex]}\n(${value})`;
                         } else {
                             const dataset = ctx.chart.data.datasets[ctx.datasetIndex];
-                            return `${dataset.label} (${value})`;
+                            return `${dataset.numero} (${value})`;
                         }
                     }
                 }
