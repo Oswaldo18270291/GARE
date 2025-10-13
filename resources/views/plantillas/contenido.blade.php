@@ -96,12 +96,16 @@
 
                     @foreach ($title->content as $cont)
                         @php
-                            $path = storage_path('app/public/'.$cont->img1);
-                            $orientation = 'vertical';
+                            $orientation = 0;
 
-                            if (file_exists($path)) {
-                                [$width, $height] = getimagesize($path);
-                                $orientation = $width > $height ? 'horizontal' : 'vertical';
+                            if (!empty($cont->img1) && !empty($cont->img2) && !empty($cont->img3)) {
+                                $path = storage_path('app/public/'.$cont->img1);
+                                $orientation = 'vertical';
+
+                                if (file_exists($path)) {
+                                    [$width, $height] = getimagesize($path);
+                                    $orientation = $width > $height ? 'horizontal' : 'vertical';
+                                }
                             }
                         @endphp
                         @if (empty(trim($cont->cont)))
