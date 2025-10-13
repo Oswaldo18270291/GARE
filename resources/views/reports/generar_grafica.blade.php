@@ -53,7 +53,7 @@
 <!-- 🔹 Tu canvas (oculto) -->
 
 
-<canvas id="grafica" width="800" height="400" style="display:none;"></canvas>
+<canvas id="grafica" width="600" height="300" style="display:none;"></canvas>
 
 <script>
 document.addEventListener('DOMContentLoaded', async function () {
@@ -95,7 +95,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         type: tipo,
         data: dataConfig,
         options: {
-            responsive: true,
+            responsive: false,
+            maintainAspectRatio: false,
             animation: false,
             plugins: {
                 legend: {
@@ -142,6 +143,17 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Espera que se renderice todo
     await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // 🔹 Redimensionar la imagen antes de exportar
+    const originalCanvas = document.getElementById('grafica');
+    const scaledCanvas = document.createElement('canvas');
+    const scale = 0.7; // reduce al 70%
+    scaledCanvas.width = originalCanvas.width * scale;
+    scaledCanvas.height = originalCanvas.height * scale;
+
+    const scaledCtx = scaledCanvas.getContext('2d');
+    scaledCtx.scale(scale, scale);
+    scaledCtx.drawImage(originalCanvas, 0, 0);
 
     // Convierte la gráfica a imagen base64
     const base64 = document.getElementById('grafica').toDataURL('image/png');
