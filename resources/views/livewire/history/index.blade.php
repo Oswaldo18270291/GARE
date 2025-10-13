@@ -30,7 +30,7 @@
     @endif
     <div>
         <div class="mb-4 flex items-center justify-center p-4 rounded-lg" style="background-color: rgba(39, 68, 112, 1);">
-            <h1 class="text-white font-sans font-bond text-lg">REPORTES FINALIZADOS</h1>
+            <h1 class="text-white font-sans font-bond text-lg">INFORMES FINALIZADOS</h1>
         </div>
 
  {{-- Buscador y filtro por fechas --}}

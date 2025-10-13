@@ -1,7 +1,7 @@
 <form  wire:submit='store' class="w-full p-6 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
     <div>
         <div class="mb-6 flex items-center justify-center p-4 rounded-lg" style="background-color: rgba(39, 68, 112, 1);">
-            <h1 class=" text-white font-sans font-bond text-lg">CREACIÓN DE REPORTES</h1>
+            <h1 class=" text-white font-sans font-bond text-lg">CREACIÓN DE INFORMES</h1>
         </div>
         <div class="flex w-full max-w gap-4 text-on-surface dark:text-on-surface-dark">
         <div>
