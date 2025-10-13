@@ -57,7 +57,7 @@
     {{-- Encabezado --}}
     <div class="mb-4 flex flex-col items-center justify-center p-3 rounded-lg" style="background-color: rgba(39, 68, 112, 1);">
         <h1 class="text-white font-sans font-bond text-lg">
-            Reporte: {{ $report->nombre_empresa }}
+            Informe: {{ $report->nombre_empresa }}
         </h1>
         <h2 class="mb-4 text-center text-white">
             Ubicación: {{ $report->ubicacion }}

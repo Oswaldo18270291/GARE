@@ -49,7 +49,7 @@ class TodosReportes extends Component
         $report = Report::findOrFail($id);
         $report->status = true;
         $report->save();
-        session()->flash('success', 'El reporte se ha finalizado');
+        session()->flash('success', 'El informe se ha finalizado');
         $this->redirectRoute('history.index', navigate: true);
     }
 
@@ -109,7 +109,7 @@ class TodosReportes extends Component
         ReportTitle::where('report_id', $report->id)->delete();
         $report->delete();
 
-        session()->flash('eliminar', 'El reporte y sus relaciones se eliminaron correctamente.');
+        session()->flash('eliminar', 'El informe y sus relaciones se eliminaron correctamente.');
     }
 
     public function render()

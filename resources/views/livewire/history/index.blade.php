@@ -38,7 +38,7 @@
         {{-- Buscador --}}
         <input type="text"
                wire:model.live="search"
-               placeholder="Buscar reporte..."
+               placeholder="Buscar informe..."
                class="bg-white border px-3 py-2 rounded w-full sm:w-1/3 focus:outline-none focus:ring focus:ring-blue-300"
                style="border-color:rgba(31, 89, 177, 1);">
 

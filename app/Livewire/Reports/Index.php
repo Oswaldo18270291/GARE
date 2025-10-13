@@ -20,7 +20,7 @@ class Index extends Component
         $report = Report::findOrFail($id);
         $report->status = true;
         $report->save();
-        session()->flash('success', 'El reporte se ha finalizado');
+        session()->flash('success', 'El informe se ha finalizado');
         $this->redirectRoute('history.index', navigate:true);
     }
 
@@ -87,7 +87,7 @@ protected function deleteContentWithImages($content)
         }
     }
     $content->delete();
-    session()->flash('eliminar', 'El reporte y sus relaciones se eliminaron correctamente.');
+    session()->flash('eliminar', 'El informe y sus relaciones se eliminaron correctamente.');
 
 }
 

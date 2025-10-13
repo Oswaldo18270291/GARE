@@ -118,12 +118,12 @@ class Addc extends Component
             'leyenda2' => 'nullable|string|required_with:img2',
             'leyenda3' => 'nullable|string|required_with:img3',
         ], [
-            'img1.required_with'     => '⚠️ Si agregas una leyenda, también debes subir una imagen.',
-            'leyenda1.required_with' => '⚠️ Si subes una imagen, también debes escribir una leyenda.',
-            'img2.required_with'     => '⚠️ Si agregas una leyenda, también debes subir una imagen.',
-            'leyenda2.required_with' => '⚠️ Si subes una imagen, también debes escribir una leyenda.',
-            'img3.required_with'     => '⚠️ Si agregas una leyenda, también debes subir una imagen.',
-            'leyenda3.required_with' => '⚠️ Si subes una imagen, también debes escribir una leyenda.',
+            'img1.required_with'     => '⚠️ Si agregas un título, también debes subir una imagen.',
+            'leyenda1.required_with' => '⚠️ Si subes una imagen, también debes escribir un título.',
+            'img2.required_with'     => '⚠️ Si agregas un título, también debes subir una imagen.',
+            'leyenda2.required_with' => '⚠️ Si subes una imagen, también debes escribir un título.',
+            'img3.required_with'     => '⚠️ Si agregas un título, también debes subir una imagen.',
+            'leyenda3.required_with' => '⚠️ Si subes una imagen, también debes escribir un título.',
         ]);
   
         $path  = $this->img1 ? $this->img1->store('img_cont1', 'public') : null;

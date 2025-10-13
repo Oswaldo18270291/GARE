@@ -28,7 +28,18 @@
 <div class="flex gap-6 flex-wrap">
 
     <!-- Grupo Imagen 1 + Leyenda -->
+    
     <div class="flex flex-col items-center w-full max-w-xs">
+      <div class="flex w-full flex-col gap-1 mt-2">            
+        <label class="w-fit pl-0.5 text-2x1">Título 1</label>
+        <input wire:model="leyenda1" id="leyenda1" type="text"
+               class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
+               placeholder="Ingrese texto del título 1"
+               style="border-color:rgba(31, 89, 177, 1);" />
+            @error('leyenda1') 
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror
+    </div>
     <div 
         class="flex w-full flex-col gap-1"
         x-data="{
@@ -77,22 +88,21 @@
             <p x-show="errorMsg" x-text="errorMsg" class="text-red-600 text-sm mt-2"></p>
         </div>
     </div>
-
-    <div class="flex w-full flex-col gap-1 mt-2">            
-        <label class="w-fit pl-0.5 text-2x1">Leyenda 1</label>
-        <input wire:model="leyenda1" id="leyenda1" type="text"
-               class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
-               placeholder="Ingrese texto de leyenda 1"
-               style="border-color:rgba(31, 89, 177, 1);" />
-            @error('leyenda1') 
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-            @enderror
-    </div>
 </div>
 
 
     <!-- Grupo Imagen 2 + Leyenda -->
   <div class="flex flex-col items-center w-full max-w-xs">
+    <div class="flex w-full flex-col gap-1 mt-2">
+        <label class="w-fit pl-0.5 text-2x1">Título 2</label>
+        <input wire:model="leyenda2" id="leyenda2" type="text"
+               class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
+               placeholder="Ingrese texto del título 2"
+               style="border-color:rgba(31, 89, 177, 1);" />
+            @error('leyenda2') 
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror
+    </div>
     <div 
         class="flex w-full flex-col gap-1"
         x-data="{
@@ -141,22 +151,21 @@
             <p x-show="errorMsg" x-text="errorMsg" class="text-red-600 text-sm mt-2"></p>
         </div>
     </div>
-
-    <div class="flex w-full flex-col gap-1 mt-2">
-        <label class="w-fit pl-0.5 text-2x1">Leyenda 2</label>
-        <input wire:model="leyenda2" id="leyenda2" type="text"
-               class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
-               placeholder="Ingrese texto de leyenda 2"
-               style="border-color:rgba(31, 89, 177, 1);" />
-            @error('leyenda2') 
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-            @enderror
-    </div>
 </div>
 
 
     <!-- Grupo Imagen 3 + Leyenda -->
   <div class="flex flex-col items-center w-full max-w-xs">
+    <div class="flex w-full flex-col gap-1 mt-2">
+        <label class="w-fit pl-0.5 text-2x1">Título 3</label>
+        <input wire:model="leyenda3" id="leyenda3" type="text"
+               class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
+               placeholder="Ingrese texto del título 3"
+               style="border-color:rgba(31, 89, 177, 1);" />
+            @error('leyenda3') 
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+            @enderror               
+    </div>
     <div 
         class="flex w-full flex-col gap-1"
         x-data="{
@@ -204,17 +213,6 @@
 
             <p x-show="errorMsg" x-text="errorMsg" class="text-red-600 text-sm mt-2"></p>
         </div>
-    </div>
-
-    <div class="flex w-full flex-col gap-1 mt-2">
-        <label class="w-fit pl-0.5 text-2x1">Leyenda 3</label>
-        <input wire:model="leyenda3" id="leyenda3" type="text"
-               class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
-               placeholder="Ingrese texto de leyenda 3"
-               style="border-color:rgba(31, 89, 177, 1);" />
-            @error('leyenda3') 
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-            @enderror               
     </div>
 </div>
 </div>

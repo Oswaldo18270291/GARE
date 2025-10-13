@@ -198,7 +198,7 @@
                                 </button>
                                 <button 
                                     wire:click="status({{$report->id}})"
-                                    wire:confirm="¿Estás seguro que desea finalizar?"
+                                    wire:confirm="¿Estás seguro que desea finalizar?\n Esta acción no se puede deshacer y ya no podrás modificarlo."
                                     class="text-green-600 hover:text-green-800 cursor-pointer transition-colors duration-200"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" 
@@ -212,7 +212,7 @@
                                 </button>
                                 <button 
                                     wire:click="delete({{$report->id}})"
-                                    wire:confirm="¿Estás seguro de eliminar este reporte?"
+                                    wire:confirm="¿Estás seguro de eliminar este informe?\n Esta acción no se puede deshacer y el informe se eliminará de forma permanente"
                                     class="text-red-600 hover:text-red-800 cursor-pointer transition-colors duration-200"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" 
