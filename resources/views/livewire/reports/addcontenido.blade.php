@@ -104,6 +104,7 @@
                                     border-red-500 text-red-500 hover:bg-red-500 hover:text-white 
                                 @endif" 
                                     wire:click="deleteContent({{ $title->id }}, 'tit', {{ $report->id }})"
+                                    wire:confirm="¿Estás seguro de que deseas eliminar este contenido?\n\nEsta acción no se puede deshacer y el contenido se eliminará de forma permanente del documento."
                                     @if(\App\Models\Content::where('r_t_id', $title->id)->doesntExist()) disabled @endif
                                         >
                          Eliminar
@@ -149,6 +150,7 @@
                                             @else 
                                                 border-red-500 text-red-500 hover:bg-red-500 hover:text-white 
                                             @endif" 
+                                        wire:confirm="¿Estás seguro de que deseas eliminar este contenido?\n\nEsta acción no se puede deshacer y el contenido se eliminará de forma permanente del documento."
                                         wire:click="deleteContent({{ $subtitle->id }}, 'sub', {{ $report->id }})"
                                         @if(\App\Models\Content::where('r_t_s_id', $subtitle->id)->doesntExist()) disabled @endif
                                         >
@@ -194,7 +196,8 @@
                                                             border-gray-400 text-gray-400 bg-gray-100 cursor-not-allowed 
                                                         @else 
                                                             border-red-500 text-red-500 hover:bg-red-500 hover:text-white 
-                                                        @endif" 
+                                                        @endif"
+                                                    wire:confirm="¿Estás seguro de que deseas eliminar este contenido?\n\nEsta acción no se puede deshacer y el contenido se eliminará de forma permanente del documento." 
                                                     wire:click="deleteContent({{ $section->id }}, 'sec', {{ $report->id }})"
                                                     @if(\App\Models\Content::where('r_t_s_s_id', $section->id)->doesntExist()) disabled @endif
                                                 >

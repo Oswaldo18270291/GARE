@@ -7,6 +7,7 @@
 
         @include('livewire.reports.botones-add.component_addc',[
                     'titulo' => $RTitle->title->nombre,
+                    'boton' => $boton,
                 ])
     </form>
 
@@ -21,6 +22,7 @@
                 @include('livewire.reports.botones-add.component_addc',[
                     'titulo' => $RSubtitle->subtitle->id,
                     'risks' => $risks,
+                    'boton' => $boton,
                 ]) 
     </form>
 
@@ -38,6 +40,7 @@
 
                    @include('livewire.reports.botones-add.component_addc',[
                     'titulo' => $RSection->section->nombre,
+                    'boton' => $boton,
                 ])
    </form>
     @endif
