@@ -10,7 +10,8 @@ class Content extends Model
     /** @use HasFactory<\Database\Factories\ContentFactory> */
     use HasFactory;
 
-        protected $fillable = ['r_t_s_s_id','r_t_id','r_t_s_id', 'cont', 'img1', 'img2', 'img3','leyenda1','leyenda2','leyenda3','grafica','img_grafica'];
+        protected $fillable = ['r_t_s_s_id','r_t_id','r_t_s_id', 'cont', 'img1', 'img2', 'img3','leyenda1','leyenda2',
+        'leyenda3','grafica','img_grafica', 'que', 'como', 'quien', 'por_que', 'donde', 'cuanto', 'de', 'hasta'];
 
         public function reportTitleSubtitleSection()
     {

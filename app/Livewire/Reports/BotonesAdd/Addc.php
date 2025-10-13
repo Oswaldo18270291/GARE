@@ -40,6 +40,15 @@ class Addc extends Component
     public $c;
     public $risks;
 
+    public $que;
+    public $como;
+    public $quien;
+    public $por_que;
+    public $donde;
+    public $cuanto;
+    public $de;
+    public $hasta;
+
     public $riesgos = [];
     public $rep;
     public function mount($id, $boton, $rp)
@@ -160,7 +169,16 @@ class Addc extends Component
                 'leyenda2' => $this->leyenda2,
                 'leyenda3' => $this->leyenda3,
             ];
-
+            if (in_array($name, [20, 21, 22, 23, 24, 25, 26, 27, 28, 29])) {
+                $data['que']    = $this->que;
+                $data['como']   = $this->como;
+                $data['quien']  = $this->quien;
+                $data['por_que']= $this->por_que;
+                $data['donde']  = $this->donde;
+                $data['cuanto'] = $this->cuanto;
+                $data['de']     = $this->de;
+                $data['hasta']  = $this->hasta;
+            }
             // Si el nombre coincide, agrega la clave extra
             if ($nl->subtitle_id === 16) {
                 $data['grafica'] = $this->grafica;

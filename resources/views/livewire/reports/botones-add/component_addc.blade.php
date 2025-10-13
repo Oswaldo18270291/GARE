@@ -889,64 +889,76 @@
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Qué?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+          <textarea required wire:model="que" id="que" class="w-full rounded-radius border border-outline bg-surface-alt 
           px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
           disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Cómo?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+          <textarea required wire:model="como" id="como" class="w-full rounded-radius border border-outline bg-surface-alt 
           px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
           disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Quién?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+          <textarea required wire:model="quien" id="quien" class="w-full rounded-radius border border-outline bg-surface-alt 
           px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
           disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>    
+          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>    
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Por qué?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+          <textarea required wire:model="por_que" id="por_que" class="w-full rounded-radius border border-outline bg-surface-alt 
           px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
           disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>    
+          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>    
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Dónde?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+          <textarea required wire:model="donde" id="donde" class="w-full rounded-radius border border-outline bg-surface-alt 
           px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
           disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Cuánto?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+          <textarea required wire:model="cuanto" id="cuanto" class="w-full rounded-radius border border-outline bg-surface-alt 
           px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
           disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Cuándo?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
-          px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
-          disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+        <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
+          De
+          <div>
+              <input required wire:model="de" id="de" type="date" name="de" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+              text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+              disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+              style="border-color:rgba(31, 89, 177, 1);" />
+          </div>
+          Hasta
+          <div>
+              <input required wire:model="hasta" id="hasta" type="date" name="hasta" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+              text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+              disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+              style="border-color:rgba(31, 89, 177, 1);" />
+          </div>
+        </div>  
       </td>
     </tr>
   </table>

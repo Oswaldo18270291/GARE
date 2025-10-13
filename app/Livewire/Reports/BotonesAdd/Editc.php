@@ -10,7 +10,7 @@ use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
 use App\Models\Report;
-
+use App\Models\Subtitle;
 use Livewire\Attributes\On;
 
 class Editc extends Component
@@ -40,6 +40,15 @@ class Editc extends Component
     public $risks;
     public $riesgos = [];
     public $rep;
+
+    public $que;
+    public $como;
+    public $quien;
+    public $por_que;
+    public $donde;
+    public $cuanto;
+    public $de;
+    public $hasta;
 
     public function mount($id,$boton,$rp)
     {
@@ -110,6 +119,14 @@ class Editc extends Component
             $this->oldImg2 = $this->content->img2;
             $this->oldImg3 = $this->content->img3;
             $this->grafica = $this->content->grafica;
+            $this->que = $this->content->que;
+            $this->como = $this->content->como;
+            $this->quien = $this->content->quien;
+            $this->por_que = $this->content->por_que;
+            $this->donde = $this->content->donde;
+            $this->cuanto = $this->content->cuanto;
+            $this->de = $this->content->de;
+            $this->hasta = $this->content->hasta;
             $this->RSubtitle = ReportTitleSubtitle::findOrFail($id);
         } else if($boton == 'sec'){
             $this->RTitle = null;
@@ -215,7 +232,7 @@ class Editc extends Component
 
     public function update($id,$boton,$rp)
     {
-        
+
         $this->validate([
             'img1' => 'nullable|image',
             'img2' => 'nullable|image',
@@ -237,6 +254,7 @@ class Editc extends Component
             'img3'     => $path3,
             'leyenda3' => $this->leyenda3,
         ];
+       
 
         // Solo agrega el campo "grafica" si el subtitle_id es 16
         if ($boton === 'sub') {
@@ -244,6 +262,17 @@ class Editc extends Component
             if ($nl->subtitle_id === 16) {
                 $data['grafica'] = $this->grafica;
             }
+            $name = Subtitle::where('id', $nl->subtitle_id)->value('id');
+            if (in_array($name, [20, 21, 22, 23, 24, 25, 26, 27, 28, 29])) {
+            $data['que']    = $this->que;
+            $data['como']   = $this->como;
+            $data['quien']  = $this->quien;
+            $data['por_que']= $this->por_que;
+            $data['donde']  = $this->donde;
+            $data['cuanto'] = $this->cuanto;
+            $data['de']     = $this->de;
+            $data['hasta']  = $this->hasta;
+        }
         }
 
 

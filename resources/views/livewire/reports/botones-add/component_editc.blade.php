@@ -30,257 +30,258 @@
     <br>
 
 <div class="flex gap-6 flex-wrap">
+
     <div class="flex flex-col items-center w-full max-w-xs">
-        <div 
-                        class="flex w-full max-w-xl text-center flex-col gap-1"
-                        x-data="{
-                            isDropping: false,
-                            errorMsg: '',
-                            handleFile(file, field, input) {
-                                this.errorMsg = '';
-                                if (file && file.type.startsWith('image/')) {
-                                    $wire.upload(field, file, 
-                                        () => {}, 
-                                        () => { this.errorMsg = '⚠️ Error al subir la imagen.' }
-                                    );
-                                } else {
-                                    this.errorMsg = '⚠️ Solo se permiten imágenes PNG o JPG.';
-                                    input.value = ''; // limpia el input
-                                }
-                            },
-                            handleDrop(e, field, input) {
-                                this.isDropping = false;
-                                const file = e.dataTransfer.files[0];
-                                this.handleFile(file, field, input);
-                            }
-                        }"
-                        x-on:drop.prevent="handleDrop($event, 'img1', $refs.img1Input)"
-                        x-on:dragover.prevent="isDropping = true"
-                        x-on:dragleave.prevent="isDropping = false"
-                    >
-                        <span class="w-fit pl-0.5 text-2x1">Imagen 1</span>
-
-                        {{-- Contenedor Drag & Drop --}}
-                        <div 
-                            class="bg-white flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
-                            :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
-                            style="border-color:rgba(31, 89, 177, 1);"
-                        >
-                            {{-- Input oculto --}}
-                            <input 
-                                id="img1" 
-                                type="file" 
-                                class="sr-only" 
-                                accept="image/png,image/jpeg"
-                                x-ref="img1Input"
-                                x-on:change="handleFile($event.target.files[0], 'img1', $event.target)" 
-                            />
-
-                            <label for="img1" class="cursor-pointer font-medium text-primary">
-                                Arrastra o carga tu imagen aquí
-                            </label>
-                            <small>PNG, JPG - Max 5MB</small>
-
-                            {{-- Vista previa imagen actual (si existe y no se ha subido una nueva) --}}
-                            @if ($content && $content->img1 && !$img1)
-                                <img src="{{ asset('storage/' . $content->img1) }}" 
-                                    class="w-32 h-32 object-cover mt-2 rounded border" 
-                                    alt="Imagen actual" />
-                            @endif
-
-                            {{-- Vista previa nueva imagen --}}
-                            @if ($img1)
-                                <img src="{{ $img1->temporaryUrl() }}" 
-                                    class="w-32 h-32 object-cover mt-2 rounded border" 
-                                    alt="Vista previa nueva" />
-                            @endif
-
-                            {{-- Mensajes de error --}}
-                            <p x-show="errorMsg" x-text="errorMsg" class="text-red-600 text-sm mt-2"></p>
-                            @error('img1')
-                                <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-    <div class="flex w-full flex-col gap-1 mt-2">            
-        <label class="w-fit pl-0.5 text-2x1">Leyenda 1</label>
+        <div class="flex w-full flex-col gap-1 mt-2">            
+        <label class="w-fit pl-0.5 text-2x1">Título 1</label>
         <input wire:model="leyenda1" id="leyenda1" type="text"
                class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
-               placeholder="Ingrese texto de leyenda 1"
+               placeholder="Ingrese texto del título 1"
                style="border-color:rgba(31, 89, 177, 1);" />
             @error('leyenda1') 
                 <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
             @enderror
     </div>
+        <div 
+            class="flex w-full max-w-xl text-center flex-col gap-1"
+            x-data="{
+                isDropping: false,
+                errorMsg: '',
+                handleFile(file, field, input) {
+                    this.errorMsg = '';
+                    if (file && file.type.startsWith('image/')) {
+                        $wire.upload(field, file, 
+                            () => {}, 
+                            () => { this.errorMsg = '⚠️ Error al subir la imagen.' }
+                        );
+                    } else {
+                        this.errorMsg = '⚠️ Solo se permiten imágenes PNG o JPG.';
+                        input.value = ''; // limpia el input
+                    }
+                },
+                handleDrop(e, field, input) {
+                    this.isDropping = false;
+                    const file = e.dataTransfer.files[0];
+                    this.handleFile(file, field, input);
+                }
+            }"
+            x-on:drop.prevent="handleDrop($event, 'img1', $refs.img1Input)"
+            x-on:dragover.prevent="isDropping = true"
+            x-on:dragleave.prevent="isDropping = false"
+        >
+            <span class="w-fit pl-0.5 text-2x1">Imagen 1</span>
+
+            {{-- Contenedor Drag & Drop --}}
+            <div 
+                class="bg-white flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
+                :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
+                style="border-color:rgba(31, 89, 177, 1);"
+            >
+                {{-- Input oculto --}}
+                <input 
+                    id="img1" 
+                    type="file" 
+                    class="sr-only" 
+                    accept="image/png,image/jpeg"
+                    x-ref="img1Input"
+                    x-on:change="handleFile($event.target.files[0], 'img1', $event.target)" 
+                />
+
+                <label for="img1" class="cursor-pointer font-medium text-primary">
+                    Arrastra o carga tu imagen aquí
+                </label>
+                <small>PNG, JPG - Max 5MB</small>
+
+                {{-- Vista previa imagen actual (si existe y no se ha subido una nueva) --}}
+                @if ($content && $content->img1 && !$img1)
+                    <img src="{{ asset('storage/' . $content->img1) }}" 
+                        class="w-32 h-32 object-cover mt-2 rounded border" 
+                        alt="Imagen actual" />
+                @endif
+
+                {{-- Vista previa nueva imagen --}}
+                @if ($img1)
+                    <img src="{{ $img1->temporaryUrl() }}" 
+                        class="w-32 h-32 object-cover mt-2 rounded border" 
+                        alt="Vista previa nueva" />
+                @endif
+
+                {{-- Mensajes de error --}}
+                <p x-show="errorMsg" x-text="errorMsg" class="text-red-600 text-sm mt-2"></p>
+                @error('img1')
+                    <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
 </div>
 
         <!-- Imagen 2 -->
        <div class="flex flex-col items-center w-full max-w-xs">
+        <div class="flex w-full flex-col gap-1 mt-2">            
+          <label class="w-fit pl-0.5 text-2x1">Título 2</label>
+          <input wire:model="leyenda2" id="leyenda2" type="text"
+                class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
+                placeholder="Ingrese texto del título 2"
+                style="border-color:rgba(31, 89, 177, 1);" />
+              @error('leyenda2') 
+                  <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+              @enderror
+        </div>
         <div 
-                        class="flex w-full max-w-xl text-center flex-col gap-1"
-                        x-data="{
-                            isDropping: false,
-                            errorMsg: '',
-                            handleFile(file, field, input) {
-                                this.errorMsg = '';
-                                if (file && file.type.startsWith('image/')) {
-                                    $wire.upload(field, file, 
-                                        () => {}, 
-                                        () => { this.errorMsg = '⚠️ Error al subir la imagen.' }
-                                    );
-                                } else {
-                                    this.errorMsg = '⚠️ Solo se permiten imágenes PNG o JPG.';
-                                    input.value = ''; // limpia el input
-                                }
-                            },
-                            handleDrop(e, field, input) {
-                                this.isDropping = false;
-                                const file = e.dataTransfer.files[0];
-                                this.handleFile(file, field, input);
-                            }
-                        }"
-                        x-on:drop.prevent="handleDrop($event, 'img2', $refs.img2Input)"
-                        x-on:dragover.prevent="isDropping = true"
-                        x-on:dragleave.prevent="isDropping = false"
-                    >
-                        <span class="w-fit pl-0.5 text-2x1">Imagen 2</span>
+          class="flex w-full max-w-xl text-center flex-col gap-1"
+          x-data="{
+              isDropping: false,
+              errorMsg: '',
+              handleFile(file, field, input) {
+                  this.errorMsg = '';
+                  if (file && file.type.startsWith('image/')) {
+                      $wire.upload(field, file, 
+                          () => {}, 
+                          () => { this.errorMsg = '⚠️ Error al subir la imagen.' }
+                      );
+                  } else {
+                      this.errorMsg = '⚠️ Solo se permiten imágenes PNG o JPG.';
+                      input.value = ''; // limpia el input
+                  }
+              },
+              handleDrop(e, field, input) {
+                  this.isDropping = false;
+                  const file = e.dataTransfer.files[0];
+                  this.handleFile(file, field, input);
+              }
+          }"
+          x-on:drop.prevent="handleDrop($event, 'img2', $refs.img2Input)"
+          x-on:dragover.prevent="isDropping = true"
+          x-on:dragleave.prevent="isDropping = false"
+      >
+          <span class="w-fit pl-0.5 text-2x1">Imagen 2</span>
 
-                        {{-- Contenedor Drag & Drop --}}
-                        <div 
-                            class="bg-white flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
-                            :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
-                            style="border-color:rgba(31, 89, 177, 1);"
-                        >
-                            {{-- Input oculto --}}
-                            <input 
-                                id="img2" 
-                                type="file" 
-                                class="sr-only" 
-                                accept="image/png,image/jpeg"
-                                x-ref="img2Input"
-                                x-on:change="handleFile($event.target.files[0], 'img2', $event.target)" 
-                            />
+          {{-- Contenedor Drag & Drop --}}
+          <div 
+              class="bg-white flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
+              :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
+              style="border-color:rgba(31, 89, 177, 1);"
+          >
+              {{-- Input oculto --}}
+              <input 
+                  id="img2" 
+                  type="file" 
+                  class="sr-only" 
+                  accept="image/png,image/jpeg"
+                  x-ref="img2Input"
+                  x-on:change="handleFile($event.target.files[0], 'img2', $event.target)" 
+              />
 
-                            <label for="img2" class="cursor-pointer font-medium text-primary">
-                                Arrastra o carga tu imagen aquí
-                            </label>
-                            <small>PNG, JPG - Max 5MB</small>
+              <label for="img2" class="cursor-pointer font-medium text-primary">
+                  Arrastra o carga tu imagen aquí
+              </label>
+              <small>PNG, JPG - Max 5MB</small>
 
-                            {{-- Vista previa imagen actual (si existe y no se ha subido una nueva) --}}
-                            @if ($content && $content->img2 && !$img2)
-                                <img src="{{ asset('storage/' . $content->img2) }}" 
-                                    class="w-32 h-32 object-cover mt-2 rounded border" 
-                                    alt="Imagen actual" />
-                            @endif
+              {{-- Vista previa imagen actual (si existe y no se ha subido una nueva) --}}
+              @if ($content && $content->img2 && !$img2)
+                  <img src="{{ asset('storage/' . $content->img2) }}" 
+                      class="w-32 h-32 object-cover mt-2 rounded border" 
+                      alt="Imagen actual" />
+              @endif
 
-                            {{-- Vista previa nueva imagen --}}
-                            @if ($img2)
-                                <img src="{{ $img2->temporaryUrl() }}" 
-                                    class="w-32 h-32 object-cover mt-2 rounded border" 
-                                    alt="Vista previa nueva" />
-                            @endif
+              {{-- Vista previa nueva imagen --}}
+              @if ($img2)
+                  <img src="{{ $img2->temporaryUrl() }}" 
+                      class="w-32 h-32 object-cover mt-2 rounded border" 
+                      alt="Vista previa nueva" />
+              @endif
 
-                            {{-- Mensajes de error --}}
-                            <p x-show="errorMsg" x-text="errorMsg" class="text-red-600 text-sm mt-2"></p>
-                            @error('img2')
-                                <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-    <div class="flex w-full flex-col gap-1 mt-2">            
-        <label class="w-fit pl-0.5 text-2x1">Leyenda 2</label>
-        <input wire:model="leyenda2" id="leyenda2" type="text"
-               class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
-               placeholder="Ingrese texto de leyenda 1"
-               style="border-color:rgba(31, 89, 177, 1);" />
-            @error('leyenda2') 
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-            @enderror
+              {{-- Mensajes de error --}}
+              <p x-show="errorMsg" x-text="errorMsg" class="text-red-600 text-sm mt-2"></p>
+              @error('img2')
+                  <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+              @enderror
+          </div>
+      </div>
     </div>
-</div>
         <!-- Imagen 3 -->
         <div class="flex flex-col items-center w-full max-w-xs">
+        <div class="flex w-full flex-col gap-1 mt-2">            
+            <label class="w-fit pl-0.5 text-2x1">Título 3</label>
+            <input wire:model="leyenda3" id="leyenda3" type="text"
+                class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
+                placeholder="Ingrese texto del título 3"
+                style="border-color:rgba(31, 89, 177, 1);" />
+                @error('leyenda3') 
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
+        </div>
         <div 
-                        class="flex w-full max-w-xl text-center flex-col gap-1"
-                        x-data="{
-                            isDropping: false,
-                            errorMsg: '',
-                            handleFile(file, field, input) {
-                                this.errorMsg = '';
-                                if (file && file.type.startsWith('image/')) {
-                                    $wire.upload(field, file, 
-                                        () => {}, 
-                                        () => { this.errorMsg = '⚠️ Error al subir la imagen.' }
-                                    );
-                                } else {
-                                    this.errorMsg = '⚠️ Solo se permiten imágenes PNG o JPG.';
-                                    input.value = ''; // limpia el input
-                                }
-                            },
-                            handleDrop(e, field, input) {
-                                this.isDropping = false;
-                                const file = e.dataTransfer.files[0];
-                                this.handleFile(file, field, input);
-                            }
-                        }"
-                        x-on:drop.prevent="handleDrop($event, 'img3', $refs.img3Input)"
-                        x-on:dragover.prevent="isDropping = true"
-                        x-on:dragleave.prevent="isDropping = false"
-                    >
-                        <span class="w-fit pl-0.5 text-2x1">Imagen 3</span>
+            class="flex w-full max-w-xl text-center flex-col gap-1"
+            x-data="{
+                isDropping: false,
+                errorMsg: '',
+                handleFile(file, field, input) {
+                    this.errorMsg = '';
+                    if (file && file.type.startsWith('image/')) {
+                        $wire.upload(field, file, 
+                            () => {}, 
+                            () => { this.errorMsg = '⚠️ Error al subir la imagen.' }
+                        );
+                    } else {
+                        this.errorMsg = '⚠️ Solo se permiten imágenes PNG o JPG.';
+                        input.value = ''; // limpia el input
+                    }
+                },
+                handleDrop(e, field, input) {
+                    this.isDropping = false;
+                    const file = e.dataTransfer.files[0];
+                    this.handleFile(file, field, input);
+                }
+            }"
+            x-on:drop.prevent="handleDrop($event, 'img3', $refs.img3Input)"
+            x-on:dragover.prevent="isDropping = true"
+            x-on:dragleave.prevent="isDropping = false"
+        >
+            <span class="w-fit pl-0.5 text-2x1">Imagen 3</span>
 
-                        {{-- Contenedor Drag & Drop --}}
-                        <div 
-                            class="bg-white flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
-                            :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
-                            style="border-color:rgba(31, 89, 177, 1);"
-                        >
-                            {{-- Input oculto --}}
-                            <input 
-                                id="img3" 
-                                type="file" 
-                                class="sr-only" 
-                                accept="image/png,image/jpeg"
-                                x-ref="img3Input"
-                                x-on:change="handleFile($event.target.files[0], 'img3', $event.target)" 
-                            />
+            {{-- Contenedor Drag & Drop --}}
+            <div 
+                class="bg-white flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
+                :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
+                style="border-color:rgba(31, 89, 177, 1);"
+            >
+                {{-- Input oculto --}}
+                <input 
+                    id="img3" 
+                    type="file" 
+                    class="sr-only" 
+                    accept="image/png,image/jpeg"
+                    x-ref="img3Input"
+                    x-on:change="handleFile($event.target.files[0], 'img3', $event.target)" 
+                />
 
-                            <label for="img3" class="cursor-pointer font-medium text-primary">
-                                Arrastra o carga tu imagen aquí
-                            </label>
-                            <small>PNG, JPG - Max 5MB</small>
+                <label for="img3" class="cursor-pointer font-medium text-primary">
+                    Arrastra o carga tu imagen aquí
+                </label>
+                <small>PNG, JPG - Max 5MB</small>
 
-                            {{-- Vista previa imagen actual (si existe y no se ha subido una nueva) --}}
-                            @if ($content && $content->img3 && !$img3)
-                                <img src="{{ asset('storage/' . $content->img3) }}" 
-                                    class="w-32 h-32 object-cover mt-2 rounded border" 
-                                    alt="Imagen actual" />
-                            @endif
+                {{-- Vista previa imagen actual (si existe y no se ha subido una nueva) --}}
+                @if ($content && $content->img3 && !$img3)
+                    <img src="{{ asset('storage/' . $content->img3) }}" 
+                        class="w-32 h-32 object-cover mt-2 rounded border" 
+                        alt="Imagen actual" />
+                @endif
 
-                            {{-- Vista previa nueva imagen --}}
-                            @if ($img3)
-                                <img src="{{ $img3->temporaryUrl() }}" 
-                                    class="w-32 h-32 object-cover mt-2 rounded border" 
-                                    alt="Vista previa nueva" />
-                            @endif
+                {{-- Vista previa nueva imagen --}}
+                @if ($img3)
+                    <img src="{{ $img3->temporaryUrl() }}" 
+                        class="w-32 h-32 object-cover mt-2 rounded border" 
+                        alt="Vista previa nueva" />
+                @endif
 
-                            {{-- Mensajes de error --}}
-                            <p x-show="errorMsg" x-text="errorMsg" class="text-red-600 text-sm mt-2"></p>
-                            @error('img3')
-                                <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-                <div class="flex w-full flex-col gap-1 mt-2">            
-                    <label class="w-fit pl-0.5 text-2x1">Leyenda 3</label>
-                    <input wire:model="leyenda3" id="leyenda3" type="text"
-                        class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
-                        placeholder="Ingrese texto de leyenda 1"
-                        style="border-color:rgba(31, 89, 177, 1);" />
-                        @error('leyenda3') 
-                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                </div>
+                {{-- Mensajes de error --}}
+                <p x-show="errorMsg" x-text="errorMsg" class="text-red-600 text-sm mt-2"></p>
+                @error('img3')
+                    <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
 </div>
 </div>
     <br>
@@ -988,64 +989,76 @@
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Qué?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+          <textarea required wire:model="que" id="que" class="w-full rounded-radius border border-outline bg-surface-alt 
           px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
           disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Cómo?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+          <textarea required wire:model="como" id="como" class="w-full rounded-radius border border-outline bg-surface-alt 
           px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
           disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Quién?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+          <textarea required wire:model="quien" id="quien" class="w-full rounded-radius border border-outline bg-surface-alt 
           px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
           disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>    
+          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>    
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Por qué?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+          <textarea required wire:model="por_que" id="por_que" class="w-full rounded-radius border border-outline bg-surface-alt 
           px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
           disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>    
+          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>    
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Dónde?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+          <textarea required wire:model="donde" id="donde" class="w-full rounded-radius border border-outline bg-surface-alt 
           px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
           disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Cuánto?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
+          <textarea required wire:model="cuanto" id="cuanto" class="w-full rounded-radius border border-outline bg-surface-alt 
           px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
           disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Cuándo?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea id="textArea" class="w-full rounded-radius border border-outline bg-surface-alt 
-          px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
-          disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="3" placeholder="Coloca la informacion"></textarea>
+        <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
+          De
+          <div>
+              <input required wire:model="de" id="de" type="date" name="de" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+              text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+              disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+              style="border-color:rgba(31, 89, 177, 1);" />
+          </div>
+          Hasta
+          <div>
+              <input required wire:model="hasta" id="hasta" type="date" name="hasta" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
+              text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+              disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+              style="border-color:rgba(31, 89, 177, 1);" />
+          </div>
+        </div>  
       </td>
     </tr>
   </table>
