@@ -36,7 +36,7 @@ class Addc extends Component
     public $path2;
     public $path3;
     public $mosler;
-    public $grafica;
+    public $grafica='bar';
     public $c;
     public $risks;
 

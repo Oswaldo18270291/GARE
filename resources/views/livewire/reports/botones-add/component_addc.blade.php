@@ -304,6 +304,7 @@
       }
     </style>
   <div>
+    @if(!empty($risks))
       <table id="tabla">
           <!-- Riesgos iniciales (arriba de todo) -->
           <tr style="background-color: #ffc107; font-weight: bold;">
@@ -357,6 +358,7 @@
               @endforeach
           </tbody>
       </table>
+
   </div>
 
   <script>
@@ -398,17 +400,26 @@
           });
       });
   </script>
-
+      @else
+        <table id="tabla">
+          <tr style="background-color: #ffc107; font-weight: bold; text-align: center;">
+              <td colspan="2">INFORMACIÓN</td>
+          </tr>
+          <tr>
+              <td style="width: 40px; text-align: center;">
+                  No hay riesgos disponibles. Por favor, agregue riesgos en el apartado de "Mosler: Informe".
+              </td>
+        </table>
+      @endif
   @endif
   @if ($titulo==16)
   <h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
-
+@if(!empty($risks))
   <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
       <label for="chartType" class="w-fit pl-0.5 text-sm">Tipo de gráfico:</label>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
           <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
       </svg>
-
       <select 
           required
           wire:model="grafica" 
@@ -416,7 +427,7 @@
           name="chartType" 
           class="w-full appearance-none rounded-radius border border-outline bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
       >
-          <option value="bar">Barras</option>
+          <option value="bar" >Barras</option>
           <option value="pie">Pastel</option>
           <option value="doughnut">Dona</option>
           <option value="polarArea">Área polar</option>
@@ -683,7 +694,36 @@
     });
   </script>
 
-
+      @else
+        <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+        font-size: 11pt;
+      }
+      td {
+        border: 1px solid black;
+        padding: 6px;
+      }
+      tr.dragging {
+        background-color: #d1ecf1 !important;
+        opacity: 0.8;
+      }
+      tr.placeholder {
+        background: #f8d7da !important;
+      }
+    </style>
+        <table id="tabla">
+          <tr style="background-color: #ffc107; font-weight: bold; text-align: center;">
+              <td colspan="2">INFORMACIÓN</td>
+          </tr>
+          <tr>
+              <td style="width: 40px; text-align: center;">
+                  No hay riesgos disponibles. Por favor, agregue riesgos en el apartado de "Mosler: Informe".
+              </td>
+        </table>
+      @endif
 
   <br>
   @endif

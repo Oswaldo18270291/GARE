@@ -374,7 +374,7 @@
       </button>
   </div>
   @endif
-  @if ($titulo==16)
+  @if ($titulo==15)
   <br>
   <style>
       table {
@@ -396,6 +396,7 @@
       }
     </style>
   <div>
+    @if(!empty($risks))
       <table id="tabla">
           <!-- Riesgos iniciales (arriba de todo) -->
           <tr style="background-color: #ffc107; font-weight: bold;">
@@ -490,11 +491,23 @@
           });
       });
   </script>
+      @else
+        <table id="tabla">
+          <tr style="background-color: #ffc107; font-weight: bold; text-align: center;">
+              <td colspan="2">INFORMACIÓN</td>
+          </tr>
+          <tr>
+              <td style="width: 40px; text-align: center;">
+                  No hay riesgos disponibles. Por favor, agregue riesgos en el apartado de "Mosler: Informe".
+              </td>
+        </table>
+      @endif
 
   @endif
   @if ($titulo==16)
   GRAFICA
   <h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
+@if(!empty($risks))
 
   <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
       <label for="chartType" class="w-fit pl-0.5 text-sm">Tipo de gráfico:</label>
@@ -777,7 +790,36 @@
       });
     });
   </script>
-
+      @else
+        <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+        font-size: 11pt;
+      }
+      td {
+        border: 1px solid black;
+        padding: 6px;
+      }
+      tr.dragging {
+        background-color: #d1ecf1 !important;
+        opacity: 0.8;
+      }
+      tr.placeholder {
+        background: #f8d7da !important;
+      }
+    </style>
+        <table id="tabla">
+          <tr style="background-color: #ffc107; font-weight: bold; text-align: center;">
+              <td colspan="2">INFORMACIÓN</td>
+          </tr>
+          <tr>
+              <td style="width: 40px; text-align: center;">
+                  No hay riesgos disponibles. Por favor, agregue riesgos en el apartado de "Mosler: Informe".
+              </td>
+        </table>
+      @endif
 
 
   <br>
