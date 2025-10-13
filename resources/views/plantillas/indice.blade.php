@@ -56,7 +56,11 @@
             <td style="border: 1px solid #aaa; padding: 4px;">
                 <div style="opacity: 0.8;">
                 <strong>CLASIFICACIÓN DEL DOCUMENTO</strong><br>
-                <span style="color: #c44;"><strong>CONFIDENCIAL</strong></span>
+                @if ($reports->clasificacion=='Público')
+                    <span style="color: rgb(17, 28, 180);"><strong>PÚBLICO</strong></span>
+                @else
+                    <span style="color: #c44;"><strong>CONFIDENCIAL</strong></span>
+                @endif
                 </div>
             </td>
             <td style="border: 1px solid #aaa; padding: 4px;">

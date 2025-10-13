@@ -110,10 +110,6 @@ class Addc extends Component
     public $nl;
     public function store($id_, $boton, $id)
     {
- 
-        $nl = ReportTitleSubtitle::findOrFail($id_);
-        $name = Subtitle::where('id', $nl->subtitle_id)->value('nombre');
-
         $this->validate([
             'img1' => 'nullable|image|required_with:leyenda1',
             'img2' => 'nullable|image|required_with:leyenda2',
@@ -135,7 +131,7 @@ class Addc extends Component
         $path3 = $this->img3 ? $this->img3->store('img_cont3', 'public') : null;
 
         if ($boton == 'tit') {
-
+     
             // 👉 Crear el Content y guardar la instancia
             $content = Content::create([
                 'cont'     => $this->contenido,
@@ -152,6 +148,8 @@ class Addc extends Component
             $this->redirectRoute('my_reports.addcontenido', ['id' => $id], navigate: true);
 
         } elseif ($boton == 'sub') {
+        $nl = ReportTitleSubtitle::findOrFail($id_);
+        $name = Subtitle::where('id', $nl->subtitle_id)->value('id');
             $data = [
                 'cont'     => $this->contenido,
                 'r_t_s_id' => $id_,
@@ -170,7 +168,7 @@ class Addc extends Component
 
             // Finalmente crea el contenido
             $content = Content::create($data);
-            if ($name == 'Mosler: Informe') {
+            if ($name == 14) {
             $rows = [];
             $now = now();
             foreach ($this->riesgos as $index => $r) {

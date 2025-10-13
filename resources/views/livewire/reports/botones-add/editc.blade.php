@@ -6,6 +6,7 @@
         </div>
         @include('livewire.reports.botones-add.component_editc',[
                     'titulo' => $RTitle->title->nombre,
+                    'boton' => $boton,
                 ])
     </form>
 
@@ -18,8 +19,9 @@
             <label class="font-semibold">{{$RSubtitle->subtitle->nombre}}</label>
         </div>
         @include('livewire.reports.botones-add.component_editc',[
-                    'titulo' => $RSubtitle->subtitle->nombre,
+                    'titulo' => $RSubtitle->subtitle->id,
                     'risks' => $risks,
+                    'boton' => $boton,
                 ]) 
     </form>
 
@@ -39,6 +41,7 @@
 
             @include('livewire.reports.botones-add.component_editc',[
                     'titulo' => $RSection->section->nombre,
+                    'boton' => $boton,
                 ])
    </form>
     @endif
