@@ -18,12 +18,12 @@ use App\Livewire\Reports\Editestructura;
 use App\Livewire\Reports\BotonesAdd\AddC;
 use App\Livewire\Reports\BotonesAdd\Editc;
 use App\Livewire\Admin\Users;
-
+use App\Http\Controllers\Dashboard;
 /*Route::get('/', function () {
     return view('welcome');
 })->name('home');*/
 
-Route::view('dashboard', 'dashboard')
+Route::get('dashboard', [Dashboard::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 

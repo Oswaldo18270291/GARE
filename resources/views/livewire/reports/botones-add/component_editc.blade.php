@@ -532,125 +532,130 @@
   <canvas id="riesgosChart" width="800" height="400"></canvas>
 
 
-  <script>
-    const ctx = document.getElementById('riesgosChart').getContext('2d');
-    const chartTypeSelect = document.getElementById('chartType');
+  @push('scripts')
+<script>
+function renderRiesgosChart() {
+    const canvas = document.getElementById('riesgosChart');
+    const select = document.getElementById('chartType');
+    if (!canvas || !select) return;
+
+    const ctx = canvas.getContext('2d');
 
     const riesgos = @json($risks->sortBy('no')->map(fn($r) => $r->no . ' - ' . $r->riesgo)->values());
     const riesg = @json($risks->sortBy('no')->map(fn($r) => $r->no)->values());
     const ocurrencias = @json($risks->sortBy('no')->pluck('f_ocurrencia')->values());
-    const tipoInicial = @json($grafica); // 👈 tipo de gráfica desde base de datos
+    const tipoInicial = @json($grafica);
 
     const colores = ocurrencias.map(v => {
-      if (v >= 80) return "rgba(206, 0, 0, 0.9)";
-      if (v >= 60) return "rgba(235, 231, 0, 0.9)";
-      if (v >= 40) return "rgba(4, 121, 0, 0.9)";
-      return "rgba(102, 209, 98, 0.9)";
+        if (v >= 80) return "rgba(206, 0, 0, 0.9)";
+        if (v >= 60) return "rgba(235, 231, 0, 0.9)";
+        if (v >= 40) return "rgba(4, 121, 0, 0.9)";
+        return "rgba(102, 209, 98, 0.9)";
     });
 
     function crearGrafico(tipo) {
-      if (window.chart) window.chart.destroy();
+        if (window.riesgosChartInstance) window.riesgosChartInstance.destroy();
 
-      const esCircular = ['pie', 'doughnut', 'polarArea'].includes(tipo);
+        const esCircular = ['pie', 'doughnut', 'polarArea'].includes(tipo);
 
-      // 🔹 Generamos los datasets individuales
-    const dataConfig = esCircular
-      ? {
-          labels: riesgos,
-          labe: riesg,
-          datasets: [{
-            label: 'Factor de ocurrencia',
-            data: ocurrencias,
-            backgroundColor: colores
-          }]
-        }
-      : {
-          // En gráficas de barras, cada riesgo será su propio dataset
-          labels: ['Factor de ocurrencia'], // eje X genérico
-          datasets: riesgos.map((nombre, i) => ({
-            label: nombre,                // nombre del riesgo
-            data: [ocurrencias[i]],       // valor del riesgo
-            backgroundColor: colores[i] ,
-            numero: riesg[i],  
-          }))
-        };
-
-      window.chart = new Chart(ctx, {
-        type: tipo,
-        data: dataConfig,
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: true,
-              position: 'bottom',
-              labels: {
-                color: '#000',
-                font: { size: 11, weight: 'bold' },
-                boxWidth: 15,
-                padding: 8
-              },
-            },
-            
-            datalabels: {
-              color: '#000',
-              anchor: tipo === 'bar' ? 'end' : 'center',
-              align: tipo === 'bar' ? 'end' : 'center',
-              font: { weight: 'bold', size: 10 },
-              formatter: (value, ctx) => {
-                if (esCircular) {
-                  const index = ctx.dataIndex;              
-                  return `${ctx.chart.data.labe[index]}\n(${value})`;
-                } else {
-                  // En barras, mostramos nombre + valor del dataset
-                  const dataset = ctx.chart.data.datasets[ctx.datasetIndex];
-                  return `${dataset.numero} (${value})`;
-                }
-              }
+        const dataConfig = esCircular
+            ? {
+                labels: riesgos,
+                labe: riesg,
+                datasets: [{
+                    label: 'Factor de ocurrencia',
+                    data: ocurrencias,
+                    backgroundColor: colores
+                }]
             }
-          },
-          // 🔹 Escalas solo para gráficas no circulares
-        scales: esCircular ? {} : {
-          x: { 
-            ticks: { color: '#000' },
-            grid: { display: false }
-          },
-          y: { 
-            beginAtZero: true,
-            ticks: { color: '#000' },
-            grid: { color: '#ddd' },
-            max: 100
-          }
-        }
-      },
-        plugins: [ChartDataLabels]
-      });
+            : {
+                labels: ['Factor de ocurrencia'],
+                datasets: riesgos.map((nombre, i) => ({
+                    label: nombre,
+                    data: [ocurrencias[i]],
+                    backgroundColor: colores[i],
+                    numero: riesg[i],
+                }))
+            };
+
+        Chart.register(ChartDataLabels);
+
+        window.riesgosChartInstance = new Chart(ctx, {
+            type: tipo,
+            data: dataConfig,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            color: '#000',
+                            font: { size: 11, weight: 'bold' },
+                            boxWidth: 15,
+                            padding: 8
+                        },
+                    },
+                    datalabels: {
+                        color: '#000',
+                        anchor: tipo === 'bar' ? 'end' : 'center',
+                        align: tipo === 'bar' ? 'end' : 'center',
+                        font: { weight: 'bold', size: 10 },
+                        formatter: (value, ctx) => {
+                            if (esCircular) {
+                                const index = ctx.dataIndex;
+                                return `${ctx.chart.data.labe[index]}\n(${value})`;
+                            } else {
+                                const dataset = ctx.chart.data.datasets[ctx.datasetIndex];
+                                return `${dataset.numero} (${value})`;
+                            }
+                        }
+                    }
+                },
+                scales: esCircular ? {} : {
+                    x: { 
+                        ticks: { color: '#000' },
+                        grid: { display: false }
+                    },
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { color: '#000' },
+                        grid: { color: '#ddd' },
+                        max: 100
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
     }
 
-    // 👇 Establecer el tipo del select al valor guardado
-    chartTypeSelect.value = tipoInicial ?? 'bar';
-
-    // 👇 Crear gráfico con el tipo guardado en la BD
+    // 👉 Gráfico inicial
+    select.value = tipoInicial ?? 'bar';
     crearGrafico(tipoInicial ?? 'bar');
 
-    // 👇 Detectar cambio manual
-    chartTypeSelect.addEventListener('change', (e) => {
-      crearGrafico(e.target.value);
-    });
+    // 👉 Cambio manual
+    select.addEventListener('change', (e) => crearGrafico(e.target.value));
 
-    // 👇 Escuchar actualizaciones desde Livewire
+    // 👉 Cambio desde Livewire (wire:model)
     document.addEventListener('livewire:update', () => {
-      const nuevoTipo = @this.grafica;
-      chartTypeSelect.value = nuevoTipo;
-      crearGrafico(nuevoTipo);
+        const nuevoTipo = @this.grafica;
+        select.value = nuevoTipo;
+        crearGrafico(nuevoTipo);
     });
-  </script>
-  <script>
-  document.addEventListener('livewire:load', function () {
-      // 🔁 Espera a que Livewire cargue y refresca el componente automáticamente
-      Livewire.dispatch('refreshChart');
-  });
-  </script>
+}
 
+// 🔹 Ejecutar al cargar
+document.addEventListener('DOMContentLoaded', renderRiesgosChart);
+
+// 🔹 Ejecutar al navegar entre componentes Livewire
+document.addEventListener('livewire:navigated', () => setTimeout(renderRiesgosChart, 100));
+
+// 🔹 Ejecutar si Livewire actualiza el DOM parcialmente
+if (window.Livewire) {
+    Livewire.hook('morph.updated', () => setTimeout(renderRiesgosChart, 100));
+}
+</script>
+@endpush
 
   Características del Riesgo.
   <div>

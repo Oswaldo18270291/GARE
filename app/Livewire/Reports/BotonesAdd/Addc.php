@@ -49,6 +49,9 @@ class Addc extends Component
     public $de;
     public $hasta;
 
+    public $ti;
+    public $su;
+
     public $riesgos = [];
     public $rep;
     public function mount($id, $boton, $rp)
@@ -61,6 +64,17 @@ class Addc extends Component
             $this->RTitle = ReportTitle::findOrFail($id);
             $this->RSubtitle = null;
         } elseif($boton == 'sub'){
+            $ti =ReportTitle::where('report_id', $this->rep->id)
+            ->where('title_id', 5)
+            ->where('status',1)
+            ->first();
+            $this->su = ReportTitleSubtitle::where('r_t_id',$ti->id)
+            ->whereBetween('subtitle_id', [20, 29])
+            ->where('status',1)
+            ->with('subtitle')
+            ->get();
+
+            
             $this->RSubtitle = ReportTitleSubtitle::findOrFail($id);
             $this->rep->titles = ReportTitle::where('report_id', $this->rep->id)->where('status',1)->get();
             foreach ($this->rep->titles as $title) 
@@ -326,6 +340,7 @@ public function guardarOrden2($risks)
             'rp'  => $this->rp,
             'risks' => $this->risks,
             'rep' => $this->rep,
+            'su' => $this->su,
         ]);
 
     }

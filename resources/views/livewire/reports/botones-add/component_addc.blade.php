@@ -413,140 +413,154 @@
   @if ($titulo==16)
   <h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
 @if(!empty($risks))
-  <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-      <label for="chartType" class="w-fit pl-0.5 text-sm">Tipo de gráfico:</label>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
-          <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-      </svg>
-      <select 
-          required
-          wire:model="grafica" 
-          id="chartType" 
-          name="chartType" 
-          class="w-full appearance-none rounded-radius border border-outline bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
-      >
-          <option value="bar" >Barras</option>
-          <option value="pie">Pastel</option>
-          <option value="doughnut">Dona</option>
-          <option value="polarArea">Área polar</option>
-      </select>
-  </div>
-  <!-- Contenedor del gráfico -->
-  <canvas id="riesgosChart" width="800" height="400"></canvas>
+<div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
+    <label for="chartType" class="w-fit pl-0.5 text-sm">Tipo de gráfico:</label>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
+        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+    </svg>
+    <select 
+        required
+        wire:model="grafica"
+        id="chartType"
+        name="chartType"
+        class="w-full appearance-none rounded-radius border border-outline bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+    >
+        <option value="bar">Barras</option>
+        <option value="pie">Pastel</option>
+        <option value="doughnut">Dona</option>
+        <option value="polarArea">Área polar</option>
+    </select>
+</div>
 
+<!-- Contenedor del gráfico -->
+<div wire:ignore>
+    <canvas id="riesgosChart" width="800" height="400"></canvas>
+</div>
 
-  <script>
-    const ctx = document.getElementById('riesgosChart').getContext('2d');
-    const chartTypeSelect = document.getElementById('chartType');
+@push('scripts')
+<script>
+function renderRiesgosChart() {
+    const canvas = document.getElementById('riesgosChart');
+    const select = document.getElementById('chartType');
+    if (!canvas || !select) return;
+
+    const ctx = canvas.getContext('2d');
 
     const riesgos = @json($risks->sortBy('no')->map(fn($r) => $r->no . ' - ' . $r->riesgo)->values());
     const riesg = @json($risks->sortBy('no')->map(fn($r) => $r->no)->values());
     const ocurrencias = @json($risks->sortBy('no')->pluck('f_ocurrencia')->values());
-    const tipoInicial = @json($grafica); // 👈 tipo de gráfica desde base de datos
+    const tipoInicial = @json($grafica);
 
     const colores = ocurrencias.map(v => {
-      if (v >= 80) return "rgba(206, 0, 0, 0.9)";
-      if (v >= 60) return "rgba(235, 231, 0, 0.9)";
-      if (v >= 40) return "rgba(4, 121, 0, 0.9)";
-      return "rgba(102, 209, 98, 0.9)";
+        if (v >= 80) return "rgba(206, 0, 0, 0.9)";
+        if (v >= 60) return "rgba(235, 231, 0, 0.9)";
+        if (v >= 40) return "rgba(4, 121, 0, 0.9)";
+        return "rgba(102, 209, 98, 0.9)";
     });
 
     function crearGrafico(tipo) {
-      if (window.chart) window.chart.destroy();
+        if (window.riesgosChartInstance) window.riesgosChartInstance.destroy();
 
-      const esCircular = ['pie', 'doughnut', 'polarArea'].includes(tipo);
+        const esCircular = ['pie', 'doughnut', 'polarArea'].includes(tipo);
 
-      // 🔹 Generamos los datasets individuales
-    const dataConfig = esCircular
-      ? {
-          labels: riesgos,
-          labe: riesg,
-          datasets: [{
-            label: 'Factor de ocurrencia',
-            data: ocurrencias,
-            backgroundColor: colores
-          }]
-        }
-      : {
-          // En gráficas de barras, cada riesgo será su propio dataset
-          labels: ['Factor de ocurrencia'], // eje X genérico
-          datasets: riesgos.map((nombre, i) => ({
-            label: nombre,                // nombre del riesgo
-            data: [ocurrencias[i]],       // valor del riesgo
-            backgroundColor: colores[i],
-            numero: riesg[i],   // color único
-          }))
-        };
-
-      window.chart = new Chart(ctx, {
-        type: tipo,
-        data: dataConfig,
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: true,
-              position: 'bottom',
-              labels: {
-                color: '#000',
-                font: { size: 11, weight: 'bold' },
-                boxWidth: 15,
-                padding: 8
-              },
-            },
-            
-            datalabels: {
-              color: '#000',
-              anchor: tipo === 'bar' ? 'end' : 'center',
-              align: tipo === 'bar' ? 'end' : 'center',
-              font: { weight: 'bold', size: 10 },
-              formatter: (value, ctx) => {
-                if (esCircular) {
-                  const index = ctx.dataIndex;              
-                  return `${ctx.chart.data.labe[index]}\n(${value})`;
-                } else {
-                  // En barras, mostramos nombre + valor del dataset
-                  const dataset = ctx.chart.data.datasets[ctx.datasetIndex];
-                  return `${dataset.numero} (${value})`;
-                }
-              }
+        const dataConfig = esCircular
+            ? {
+                labels: riesgos,
+                labe: riesg,
+                datasets: [{
+                    label: 'Factor de ocurrencia',
+                    data: ocurrencias,
+                    backgroundColor: colores
+                }]
             }
-          },
-          // 🔹 Escalas solo para gráficas no circulares
-        scales: esCircular ? {} : {
-          x: { 
-            ticks: { color: '#000' },
-            grid: { display: false }
-          },
-          y: { 
-            beginAtZero: true,
-            ticks: { color: '#000' },
-            grid: { color: '#ddd' },
-            max: 100
-          }
-        }
-      },
-        plugins: [ChartDataLabels]
-      });
+            : {
+                labels: ['Factor de ocurrencia'],
+                datasets: riesgos.map((nombre, i) => ({
+                    label: nombre,
+                    data: [ocurrencias[i]],
+                    backgroundColor: colores[i],
+                    numero: riesg[i],
+                }))
+            };
+
+        Chart.register(ChartDataLabels);
+
+        window.riesgosChartInstance = new Chart(ctx, {
+            type: tipo,
+            data: dataConfig,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            color: '#000',
+                            font: { size: 11, weight: 'bold' },
+                            boxWidth: 15,
+                            padding: 8
+                        },
+                    },
+                    datalabels: {
+                        color: '#000',
+                        anchor: tipo === 'bar' ? 'end' : 'center',
+                        align: tipo === 'bar' ? 'end' : 'center',
+                        font: { weight: 'bold', size: 10 },
+                        formatter: (value, ctx) => {
+                            if (esCircular) {
+                                const index = ctx.dataIndex;              
+                                return `${ctx.chart.data.labe[index]}\n(${value})`;
+                            } else {
+                                const dataset = ctx.chart.data.datasets[ctx.datasetIndex];
+                                return `${dataset.numero} (${value})`;
+                            }
+                        }
+                    }
+                },
+                scales: esCircular ? {} : {
+                    x: { 
+                        ticks: { color: '#000' },
+                        grid: { display: false }
+                    },
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { color: '#000' },
+                        grid: { color: '#ddd' },
+                        max: 100
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
     }
 
-    // 👇 Establecer el tipo del select al valor guardado
-    chartTypeSelect.value = tipoInicial ?? 'bar';
-
-    // 👇 Crear gráfico con el tipo guardado en la BD
+    // 🧠 Crear gráfico inicial y mantener tipo seleccionado
+    select.value = tipoInicial ?? 'bar';
     crearGrafico(tipoInicial ?? 'bar');
 
-    // 👇 Detectar cambio manual
-    chartTypeSelect.addEventListener('change', (e) => {
-      crearGrafico(e.target.value);
-    });
+    // 🔹 Cambiar tipo manualmente
+    select.addEventListener('change', (e) => crearGrafico(e.target.value));
 
-    // 👇 Escuchar actualizaciones desde Livewire
+    // 🔹 Redibujar si Livewire actualiza el componente
     document.addEventListener('livewire:update', () => {
-      const nuevoTipo = @this.grafica;
-      chartTypeSelect.value = nuevoTipo;
-      crearGrafico(nuevoTipo);
+        const nuevoTipo = @this.grafica;
+        select.value = nuevoTipo;
+        crearGrafico(nuevoTipo);
     });
-  </script>
+}
+
+// Ejecutar al cargar la vista
+document.addEventListener('DOMContentLoaded', renderRiesgosChart);
+
+// Ejecutar al navegar entre componentes Livewire
+document.addEventListener('livewire:navigated', () => setTimeout(renderRiesgosChart, 100));
+
+// Opcional: redibujar si Livewire actualiza el DOM
+if (window.Livewire) {
+    Livewire.hook('morph.updated', () => setTimeout(renderRiesgosChart, 100));
+}
+</script>
+@endpush
 
 
   <br>
@@ -726,6 +740,7 @@
   <br>
   @endif
   @if ($titulo==17)
+
   5.1	Control Existente contra Control Ideal.
   <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: center;">
     <tr style="background-color: #0070C0; color: white; font-weight: bold;">
@@ -734,76 +749,17 @@
       <td style="border: 1px solid black; padding: 6px;">Existente</td>
       <td style="border: 1px solid black; padding: 6px;">Ideal</td>
     </tr>
-
+    @foreach($su as $s)
     <tr>
       <td style="border: 1px solid black;">C01</td>
-      <td style="border: 1px solid black; text-align: left;">Brigada de primeros auxilios</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">1</td>
+      <td style="border: 1px solid black; text-align: left;">{{$s->subtitle->nombre}}</td>
+      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">              
+      <input type="number" min="1" max="5"  class="w-12 text-center border">
+      </td>
       <td style="border: 1px solid black;">5</td>
     </tr>
+    @endforeach
 
-    <tr>
-      <td style="border: 1px solid black;">C02</td>
-      <td style="border: 1px solid black; text-align: left;">Comité integrado de gestión de riesgos corporativos</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">3</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
-
-    <tr>
-      <td style="border: 1px solid black;">C03</td>
-      <td style="border: 1px solid black; text-align: left;">Consultoría de seguridad (externa)</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">1</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
-
-    <tr>
-      <td style="border: 1px solid black;">C04</td>
-      <td style="border: 1px solid black; text-align: left;">Consultoría de seguridad (interna)</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">2</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
-
-    <tr>
-      <td style="border: 1px solid black;">C05</td>
-      <td style="border: 1px solid black; text-align: left;">Controlador de acceso</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">1</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
-
-    <tr>
-      <td style="border: 1px solid black;">C06</td>
-      <td style="border: 1px solid black; text-align: left;">Cumplimentar leyes federales, provinciales/estaduales y/o municipales</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">2</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
-
-    <tr>
-      <td style="border: 1px solid black;">C07</td>
-      <td style="border: 1px solid black; text-align: left;">Cumplimentar regulaciones de organizaciones reguladoras</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">2</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
-
-    <tr>
-      <td style="border: 1px solid black;">C08</td>
-      <td style="border: 1px solid black; text-align: left;">Cumplimentar regulaciones de organizaciones reguladoras</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">2</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
-
-    <tr>
-      <td style="border: 1px solid black;">C09</td>
-      <td style="border: 1px solid black; text-align: left;">Equipo de seguridad</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">3</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
-
-    <tr>
-      <td style="border: 1px solid black;">C10</td>
-      <td style="border: 1px solid black; text-align: left;">Sistemas y procesos contra ciber ataques</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">2</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
   </table>
 
   <br>

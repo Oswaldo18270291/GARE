@@ -12,13 +12,12 @@
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- Plugin 3D -->
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-3d"></script>
+
 <!-- ECharts -->
 <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 <link rel="preconnect" href="https://fonts.bunny.net">
 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
+@stack('scripts')
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @fluxAppearance

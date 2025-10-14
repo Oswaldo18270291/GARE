@@ -12,6 +12,7 @@
     </form>
 
     @elseif ($boton == 'sub')
+    
     <form wire:submit.prevent="store('{{ $RSubtitle->id }}', '{{ $boton }}','{{ $rp }}')" class="w-full p-6 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
         <div class="flex w-full flex-col gap-1 text-on-surface dark:text-on-surface-dark">
             <label class="font-extrabold">{{$RSubtitle->reportTitle->title->nombre}}</label>
@@ -23,6 +24,7 @@
                     'titulo' => $RSubtitle->subtitle->id,
                     'risks' => $risks,
                     'boton' => $boton,
+                    'su' => $su,
                 ]) 
     </form>
 
