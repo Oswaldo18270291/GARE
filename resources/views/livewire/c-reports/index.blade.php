@@ -197,7 +197,113 @@
                     </div>
                 </div>
             </div>
+
+
+
+<hr class="my-6 border-t border-gray-300">
+
+<div class="flex flex-col gap-4 p-4 bg-white rounded border" style="border-color:rgba(31, 89, 177, 1);">
+    <span class="text-lg font-semibold text-center" style="color:#0f4a75;">Selecciona una portada</span>
+
+ <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 place-items-center">
+    @for ($i = 1; $i <= 5; $i++)
+        <label 
+            class="relative cursor-pointer group"
+            wire:key="portada-{{ $i }}"
+        >
+            <input 
+                type="radio"
+                wire:model="img_portada"
+                value="{{ 'img_portada/portada' . $i . '.png' }}"
+                class="hidden peer"
+            />
+
+            {{-- Imagen de portada --}}
+            <img 
+                src="{{ asset('img_portada/portada' . $i . '.png') }}"
+                alt="Portada {{ $i }}" 
+                class="w-32 h-44 object-cover rounded-lg border-4 transition-all 
+                peer-checked:border-blue-600 peer-checked:ring-4 peer-checked:ring-blue-300 hover:scale-105"
+            />
+
+            {{-- Texto de selección --}}
+            <span 
+                class="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs px-2 py-1 rounded bg-black/60 text-white opacity-0 group-hover:opacity-100 transition"
+            >
+                Seleccionar
+            </span>
+
+            {{-- Icono de check al estar seleccionada --}}
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                class="absolute right-2 top-2 w-6 h-6 text-green-500 bg-white rounded-full p-1 
+                       opacity-0 peer-checked:opacity-100 transition"
+                fill="currentColor" 
+                viewBox="0 0 16 16"
+            >
+                <path fill-rule="evenodd" 
+                      d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14Zm3.844-8.791a.75.75 0 0 0-1.188-.918l-3.7 
+                      4.79-1.649-1.833a.75.75 0 1 0-1.114 
+                      1.004l2.25 2.5a.75.75 0 0 0 
+                      1.15-.043l4.25-5.5Z"
+                      clip-rule="evenodd"/>
+            </svg>
+        </label>
+    @endfor
+    </div>
+</div>
+
+ {{--
+    <div class="mt-6">
+        <span class="font-medium text-center block">O carga tu propia portada</span>
+        <div 
+            class="flex w-full justify-center flex-col items-center gap-2 rounded-radius border border-dashed p-6 transition"
+            x-data="{
+                isDropping: false,
+                errorMsg: '',
+                handleFile(file, field, input) {
+                    this.errorMsg = '';
+                    if (file && file.type.startsWith('image/')) {
+                        $wire.upload(field, file);
+                    } else {
+                        this.errorMsg = '⚠️ Solo se permiten imágenes PNG o JPG.';
+                        input.value = '';
+                    }
+                },
+                handleDrop(e, field, input) {
+                    this.isDropping = false;
+                    const file = e.dataTransfer.files[0];
+                    this.handleFile(file, field, input);
+                }
+            }"
+            x-on:drop.prevent="handleDrop($event, 'portada_custom', $refs.portadaInput)"
+            x-on:dragover.prevent="isDropping = true"
+            x-on:dragleave.prevent="isDropping = false"
+            style="border-color:rgba(31, 89, 177, 1);"
+        >
+            <input id="portada_custom" type="file" class="sr-only" accept="image/png,image/jpeg"
+                x-ref="portadaInput"
+                x-on:change="handleFile($event.target.files[0], 'portada_custom', $event.target)" />
+
+            <label for="portada_custom" class="cursor-pointer text-primary font-medium">
+                Arrastra o carga una portada personalizada
+            </label>
+            <small>PNG o JPG - Max 5MB</small>
+
+            @if ($portada_custom)
+                <img src="{{ $portada_custom->temporaryUrl() }}" class="w-32 h-44 object-cover mt-2 rounded border" />
+            @endif
         </div>
+    </div>
+</div>
+--}}
+
+
+
+        </div>
+        <br>
+
+
         <br>
         <div class="bg-white overflow-y-auto max-h-[600px] p-4 border rounded" 
             style="border-color:rgba(31, 89, 177, 1);">

@@ -31,6 +31,7 @@ return new class extends Migration
             $table->boolean('status')->default(false);
             $table->string('clasificacion');    
             $table->string('folio')->nullable();
+            $table->string('img_portada');
         });
     }
 

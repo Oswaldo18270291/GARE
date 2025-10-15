@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+@php
+    $path = public_path($reports->img_portada);
+@endphp
   <title>Analisis y evaluación de riesgo</title>
   <style>
     @page {
@@ -37,8 +40,9 @@
       font-size: 12pt;
     }
 
+
     body {
-      background-image: url('img_portada/fondo_portada.png'); /* Imagen de fondo */
+      background-image: url('file://{{ $path }}');      
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;

@@ -30,31 +30,43 @@ class Index extends Component
         public $title = [];
         public $subtitle = [];
         public $section = [];
+        public $img_portada; // 🔹 Nueva propiedad para portada seleccionada o cargada
+        public $portada_custom; // para archivo subido
 
     public function store()
     {
         $this->validate([
-            'logo' => 'required|image|max:5120', // máximo 5MB
-            'img' => 'required|image|max:5120', // máximo 5MB
+            'logo' => 'required|image|max:5120',
+            'img' => 'required|image|max:5120',
+            'portada_custom' => 'nullable|image|max:5120', // 🔹 Validación opcional
         ]);
 
-        // Guardar en storage/app/public/logos
-        $path = $this->logo->store('logos', 'public');
-        $path2 = $this->img->store('img_p', 'public');
+        // Guardar imágenes
+        $pathLogo = $this->logo->store('logos', 'public');
+        $pathImg = $this->img->store('img_p', 'public');
+
+        // Si sube su propia portada, guardarla
+        $portadaPath = null;
+        if ($this->portada_custom) {
+            $portadaPath = $this->portada_custom->store('img_portada_custom', 'public');
+        } else {
+            $portadaPath = $this->img_portada; // 🔹 Guardar nombre o ruta seleccionada
+        }
 
         // Crear el reporte
         $report = new \App\Models\Report();
-        $report->nombre_empresa   = $this->nombre_empresa;
-        $report->giro_empresa     = $this->giro_empresa;
-        $report->ubicacion        = $this->ubicacion;
-        $report->telefono         = $this->telefono;
-        $report->representante    = $this->representante;
-        $report->fecha_analisis   = $this->fecha_analisis;
-        $report->colaborador1     = $this->colaborador;
-        $report->clasificacion    = $this->clasificacion;
-        $report->logo             = $path;
-        $report->img              = $path2; // aquí va la ruta, no el archivo
-        $report->user_id          = Auth::id();
+        $report->nombre_empresa = $this->nombre_empresa;
+        $report->giro_empresa = $this->giro_empresa;
+        $report->ubicacion = $this->ubicacion;
+        $report->telefono = $this->telefono;
+        $report->representante = $this->representante;
+        $report->fecha_analisis = $this->fecha_analisis;
+        $report->colaborador1 = $this->colaborador;
+        $report->clasificacion = $this->clasificacion;
+        $report->logo = $pathLogo;
+        $report->img = $pathImg;
+        $report->img_portada = $portadaPath; // 🔹 Guardamos la portada seleccionada o subida
+        $report->user_id = Auth::id();
         $report->save();
         
         // Guardar TODOS los títulos

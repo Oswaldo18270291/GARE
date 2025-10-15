@@ -31,6 +31,9 @@ class Editestructura extends Component
     public $subtitles = [];
     public $sections = [];
 
+    public $img_portada;        // Portada seleccionada (string)
+    public $portada_custom; 
+
     public function mount($id)
     {   
         $report = Report::findOrFail($id);
@@ -53,6 +56,7 @@ class Editestructura extends Component
         $this->fecha_analisis = $this->report->fecha_analisis;
         $this->colaborador    = $this->report->colaborador1;
         $this->clasificacion   = $this->report->clasificacion;
+        $this->img_portada = $this->report->img_portada;
         $this->report->titles = ReportTitle::where('report_id', $this->report->id)->get();
         foreach ($this->report->titles as $title) {
             $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->get();
@@ -119,6 +123,9 @@ class Editestructura extends Component
             $path = $this->img->store('img', 'public');
             $this->report->img = $path;
         }
+        $this->report->update([
+            'img_portada' => $this->img_portada,
+        ]);
         $this->report->save();
         foreach ($this->report->reportTitles as $title) {
             $title->status = in_array($title->id, $this->titles);
