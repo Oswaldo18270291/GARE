@@ -274,40 +274,40 @@
                                     </table>  
                                 @endif   
                                 @if($cont->reportTitleSubtitle->subtitle_id==15)
-                                    <table id="tabla">
+                                    <table id="tabla" style=" border-collapse: collapse;">
                                         <!-- Encabezado Cibernéticos -->
-                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
-                                            <td colspan="2">Cibernéticos</td>
+                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
+                                            <td colspan="2" style="padding: 4px;">Cibernéticos</td>
                                         </tr>
                                         <tbody id="ciberneticos" wire:ignore>
                                             @foreach ($diagrama->where('tipo_riesgo', 'ciberneticos')->sortBy('orden') as $r)
-                                                <tr data-id="{{ $r->id }}">
-                                                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
-                                                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                                                    <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">{{ $r->orden }}</td>
+                                                    <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
                                         <!-- Encabezado Naturales -->
-                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
-                                            <td colspan="2">Naturales</td>
+                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
+                                            <td colspan="2" style="padding: 4px;">Naturales</td>
                                         </tr>
                                         <tbody id="naturales" wire:ignore>
                                             @foreach ($diagrama->where('tipo_riesgo', 'naturales')->sortBy('orden') as $r)
-                                                <tr data-id="{{ $r->id }}">
-                                                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
-                                                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                                                    <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">{{ $r->orden }}</td>
+                                                    <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
                                         <!-- Encabezado Sociales -->
-                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color: white">
-                                            <td colspan="2">Sociales (Personas)</td>
+                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color: white; border: 1px solid #000000ff;">
+                                            <td colspan="2" style="padding: 4px;">Sociales (Personas)</td>
                                         </tr>
                                         <tbody id="sociales" wire:ignore>
                                             @foreach ($diagrama->where('tipo_riesgo', 'sociales')->sortBy('orden') as $r)
-                                                <tr data-id="{{ $r->id }}">
-                                                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
-                                                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                                                    <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;"">{{ $r->orden }}</td>
+                                                    <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -336,8 +336,6 @@
 
                                     p {
                                     margin: 0;
-                                    text-align: justify;
-                                    line-height: 1.4em;
                                     }
                                     .bg-green { background-color: #15803d; }  /* Verde oscuro */
                                     .bg-yellow { background-color: #facc15; color: black; } /* Amarillo */
@@ -403,7 +401,7 @@
 
                                             {{-- 🔸 Segunda fila: Descripción de cada rango --}}
                                             <tr>
-                                                <td class="bg-green">
+                                                <td class="bg-green" style="text-align: justify; line-height: 1.4em;">
                                                 <p>
                                                     Este rango representa riesgos de baja probabilidad y bajo impacto. Los eventos situados
                                                     en este rango normalmente se consideran aceptables y dentro de los límites normales de
@@ -414,7 +412,7 @@
                                                 </p>
                                                 </td>
 
-                                                <td class="bg-yellow">
+                                                <td class="bg-yellow" style="text-align: justify; line-height: 1.4em;">
                                                 <p>
                                                     En este rango, los riesgos presentan una probabilidad y/o impactos moderados. Los eventos
                                                     en el área intermedia requieren atención, ya que pueden causar perturbaciones
@@ -424,7 +422,7 @@
                                                 </p>
                                                 </td>
 
-                                                <td class="bg-red">
+                                                <td class="bg-red" style="text-align: justify; line-height: 1.4em;">
                                                 <p>
                                                     Este rango representa riesgos de alta probabilidad y/o alto impacto, siendo considerados
                                                     inaceptables y requieren intervención inmediata. Cualquier evento en este rango puede
@@ -515,50 +513,45 @@
                                     </table>
                                 @endif
                                @if($cont->reportTitleSubtitle->subtitle_id==15)
-                                    <table id="tabla">
+                                    <table id="tabla" style=" border-collapse: collapse;">
                                         <!-- Encabezado Cibernéticos -->
-                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
-                                            <td colspan="2">Cibernéticos</td>
+                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
+                                            <td colspan="2" style="padding: 4px;">Cibernéticos</td>
                                         </tr>
                                         <tbody id="ciberneticos" wire:ignore>
                                             @foreach ($diagrama->where('tipo_riesgo', 'ciberneticos')->sortBy('orden') as $r)
-                                                <tr data-id="{{ $r->id }}">
-                                                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
-                                                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                                                    <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">{{ $r->orden }}</td>
+                                                    <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
-
                                         <!-- Encabezado Naturales -->
-                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white;">
-                                            <td colspan="2">Naturales</td>
+                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
+                                            <td colspan="2" style="padding: 4px;">Naturales</td>
                                         </tr>
                                         <tbody id="naturales" wire:ignore>
                                             @foreach ($diagrama->where('tipo_riesgo', 'naturales')->sortBy('orden') as $r)
-                                                <tr data-id="{{ $r->id }}">
-                                                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
-                                                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                                                    <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">{{ $r->orden }}</td>
+                                                    <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
                                         <!-- Encabezado Sociales -->
-                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color: white">
-                                            <td colspan="2">Sociales (Personas)</td>
+                                        <tr style="background-color: #0f4a75ff; font-weight: bold; color: white; border: 1px solid #000000ff;">
+                                            <td colspan="2" style="padding: 4px;">Sociales (Personas)</td>
                                         </tr>
                                         <tbody id="sociales" wire:ignore>
                                             @foreach ($diagrama->where('tipo_riesgo', 'sociales')->sortBy('orden') as $r)
-                                                <tr data-id="{{ $r->id }}">
-                                                    <td style="width: 40px; text-align: center;">{{ $r->orden }}</td>
-                                                    <td>{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                                                    <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;"">{{ $r->orden }}</td>
+                                                    <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
-                                @endif      
-                                @if ($cont->reportTitleSubtitle->subtitle_id==16)
-                                    <p>aaaaaaa1</p>
-                                @endif         
-aaa
+                                @endif               
                             @endif
                         @endforeach
                         {{-- Secciones dentro del subtítulo --}}

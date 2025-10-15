@@ -75,7 +75,7 @@
 
   <!-- Contenido -->
   <div class="contenido">
-    <h2 style="text-align: left; font-size: 16pt; margin-bottom: 20px;">ÍNDICE</h2>
+    <h2 style="text-align: center; font-size: 16pt; margin-bottom: 20px;">ÍNDICE</h2>
     <table style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 12pt;">
       @foreach ($reports->titles->sortBy('id') as $title)
         <tr>
