@@ -510,34 +510,41 @@
   <h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
 @if(!empty($risks))
 
-  <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-      <label for="chartType" class="w-fit pl-0.5 text-sm">Tipo de gráfico:</label>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
-          <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-      </svg>
+ <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
+    <label for="chartType" class="w-fit pl-0.5 text-sm">Tipo de gráfico:</label>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
+        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+    </svg>
 
-      <select 
-          wire:model="grafica" 
-          id="chartType" 
-          name="chartType" 
-          class="w-full appearance-none rounded-radius border border-outline bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
-      >
-          <option value="bar">Barras</option>
-          <option value="pie">Pastel</option>
-          <option value="doughnut">Dona</option>
-          <option value="polarArea">Área polar</option>
-      </select>
-  </div>
-  <!-- Contenedor del gráfico -->
-  <canvas id="riesgosChart" width="800" height="400"></canvas>
+    <select 
+        wire:model="grafica" 
+        id="chartType" 
+        name="chartType" 
+        class="w-full appearance-none rounded-radius border border-outline bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+    >
+        <option value="bar">Barras</option>
+        <option value="pie">Pastel</option>
+        <option value="doughnut">Dona</option>
+        <option value="polarArea">Área polar</option>
+    </select>
+</div>
 
+<br>
 
-  @push('scripts')
+<!-- Contenedor centrado -->
+<div class="w-full flex justify-center">
+    <div id="chart-container" class="mx-auto transition-all duration-300" style="width: 900px; height: 450px;">
+        <canvas id="riesgosChart"></canvas>
+    </div>
+</div>
+
+@push('scripts')
 <script>
 function renderRiesgosChart() {
     const canvas = document.getElementById('riesgosChart');
     const select = document.getElementById('chartType');
-    if (!canvas || !select) return;
+    const container = document.getElementById('chart-container');
+    if (!canvas || !select || !container) return;
 
     const ctx = canvas.getContext('2d');
 
@@ -553,8 +560,32 @@ function renderRiesgosChart() {
         return "rgba(102, 209, 98, 0.9)";
     });
 
+    // 🔹 Ajuste dinámico del tamaño según el tipo
+    function ajustarTamañoCanvas(tipo) {
+        let width = 1000;
+        let height = 500;
+
+        switch (tipo) {
+            case 'pie':
+            case 'doughnut':
+            case 'polarArea':
+                width = 400;
+                height = 400;
+                break;
+            case 'bar':
+                width = 1000;
+                height = 500;
+                break;
+        }
+
+        container.style.width = width + 'px';
+        container.style.height = height + 'px';
+    }
+
     function crearGrafico(tipo) {
         if (window.riesgosChartInstance) window.riesgosChartInstance.destroy();
+
+        ajustarTamañoCanvas(tipo);
 
         const esCircular = ['pie', 'doughnut', 'polarArea'].includes(tipo);
 
@@ -585,6 +616,7 @@ function renderRiesgosChart() {
             data: dataConfig,
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: true,
@@ -629,14 +661,14 @@ function renderRiesgosChart() {
         });
     }
 
-    // 👉 Gráfico inicial
+    // 🧠 Gráfico inicial
     select.value = tipoInicial ?? 'bar';
     crearGrafico(tipoInicial ?? 'bar');
 
-    // 👉 Cambio manual
+    // 🧩 Cambios manuales
     select.addEventListener('change', (e) => crearGrafico(e.target.value));
 
-    // 👉 Cambio desde Livewire (wire:model)
+    // 🔁 Cambios Livewire (wire:model)
     document.addEventListener('livewire:update', () => {
         const nuevoTipo = @this.grafica;
         select.value = nuevoTipo;
@@ -644,18 +676,15 @@ function renderRiesgosChart() {
     });
 }
 
-// 🔹 Ejecutar al cargar
+// ⚙️ Redibujar en todas las situaciones
 document.addEventListener('DOMContentLoaded', renderRiesgosChart);
-
-// 🔹 Ejecutar al navegar entre componentes Livewire
 document.addEventListener('livewire:navigated', () => setTimeout(renderRiesgosChart, 100));
-
-// 🔹 Ejecutar si Livewire actualiza el DOM parcialmente
 if (window.Livewire) {
     Livewire.hook('morph.updated', () => setTimeout(renderRiesgosChart, 100));
 }
 </script>
 @endpush
+
 
   Características del Riesgo.
   <div>

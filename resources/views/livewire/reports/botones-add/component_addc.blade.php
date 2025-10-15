@@ -458,8 +458,27 @@ function renderRiesgosChart() {
         return "rgba(102, 209, 98, 0.9)";
     });
 
+    // 🧩 Ajuste dinámico del tamaño del canvas
+    function ajustarTamañoCanvas(tipo) {
+        switch (tipo) {
+            case 'pie':
+            case 'doughnut':
+            case 'polarArea':
+                canvas.style.width = '400px';
+                canvas.style.height = '400px';
+                break;
+            case 'bar':
+            default:
+                canvas.style.width = '1000px';
+                canvas.style.height = '500px';
+                break;
+        }
+    }
+
     function crearGrafico(tipo) {
         if (window.riesgosChartInstance) window.riesgosChartInstance.destroy();
+
+        ajustarTamañoCanvas(tipo);
 
         const esCircular = ['pie', 'doughnut', 'polarArea'].includes(tipo);
 
@@ -490,6 +509,7 @@ function renderRiesgosChart() {
             data: dataConfig,
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: true,
@@ -534,14 +554,14 @@ function renderRiesgosChart() {
         });
     }
 
-    // 🧠 Crear gráfico inicial y mantener tipo seleccionado
+    // 🧠 Crear gráfico inicial
     select.value = tipoInicial ?? 'bar';
     crearGrafico(tipoInicial ?? 'bar');
 
-    // 🔹 Cambiar tipo manualmente
+    // 🔁 Cambio manual
     select.addEventListener('change', (e) => crearGrafico(e.target.value));
 
-    // 🔹 Redibujar si Livewire actualiza el componente
+    // 🔁 Actualización Livewire (wire:model)
     document.addEventListener('livewire:update', () => {
         const nuevoTipo = @this.grafica;
         select.value = nuevoTipo;
@@ -549,13 +569,9 @@ function renderRiesgosChart() {
     });
 }
 
-// Ejecutar al cargar la vista
+// ⚙️ Redibujar en todos los contextos
 document.addEventListener('DOMContentLoaded', renderRiesgosChart);
-
-// Ejecutar al navegar entre componentes Livewire
 document.addEventListener('livewire:navigated', () => setTimeout(renderRiesgosChart, 100));
-
-// Opcional: redibujar si Livewire actualiza el DOM
 if (window.Livewire) {
     Livewire.hook('morph.updated', () => setTimeout(renderRiesgosChart, 100));
 }
