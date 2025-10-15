@@ -96,7 +96,7 @@
 
                     @foreach ($title->content as $cont)
                         @php
-                            $orientation = 0;
+                            $orientation = 'horizontal';
 
                             if (!empty($cont->img1) && !empty($cont->img2) && !empty($cont->img3)) {
                                 $path = storage_path('app/public/'.$cont->img1);
@@ -201,6 +201,19 @@
                             {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($subtitle->subtitle->nombre) }}
                         </a>
                         @foreach ($subtitle->content as $cont)
+                        @php
+                            $orientation = 'horizontal';
+
+                            if (!empty($cont->img1) && !empty($cont->img2) && !empty($cont->img3)) {
+                                $path = storage_path('app/public/'.$cont->img1);
+                                $orientation = 'vertical';
+
+                                if (file_exists($path)) {
+                                    [$width, $height] = getimagesize($path);
+                                    $orientation = $width > $height ? 'horizontal' : 'vertical';
+                                }
+                            }
+                        @endphp
                             @if (empty(trim($cont->cont)))
                                 @if (!empty($cont->img1))
                                     <div style="display: flex; justify-content: center; align-items: center; text-align: center;">
@@ -562,6 +575,20 @@
                             </a>
 
                             @foreach ($section->content as $cont)
+                            @php
+                                $orientation = 'horizontal';
+
+                                if (!empty($cont->img1) && !empty($cont->img2) && !empty($cont->img3)) {
+                                    $path = storage_path('app/public/'.$cont->img1);
+                                    $orientation = 'vertical';
+
+                                    if (file_exists($path)) {
+                                        [$width, $height] = getimagesize($path);
+                                        $orientation = $width > $height ? 'horizontal' : 'vertical';
+                                    }
+                                }
+                            @endphp
+                            @if (empty(trim($cont->cont)))
                                 @if (!empty($cont->img1))
                                     <div style="display: flex; justify-content: center; align-items: center; text-align: center;">
                                         <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
@@ -601,6 +628,7 @@
                                         @endif
                                     @endif
                                 <br>
+                                @endif
                                 @else
                                     {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
 
