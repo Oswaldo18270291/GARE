@@ -280,7 +280,7 @@
                                                 <td style="border: 1px solid black; padding: 5px;">{{ $diagram->e }}</td>
                                                 <td style="border: 1px solid black; padding: 5px;">{{ $diagram->pb }}</td>
                                                 <td style="border: 1px solid black; padding: 5px;">{{ $diagram->if }}</td>
-                                                <td style="border: 1px solid black; padding: 5px;">xd</td>
+                                                <td style="border: 1px solid black; padding: 5px;">PENDIENTE</td>
                                                 <td style="border: 1px solid black; padding: 5px;">{{ $diagram->f_ocurrencia }}</td>
                                             </tr>
                                         @endforeach
@@ -359,7 +359,7 @@
                                     .cell-yellow { background-color: #fef9c3; }  /* Amarillo claro */
                                     .cell-red { background-color: #fecaca; }     /* Rojo claro */
                                 </style>
-                                    <table>
+                                    <table style ="font-size: 11pt;">
                                         <thead>
                                         <tr>
                                             <th class="bg-green">Rango Normal<br>(Zona de Seguridad)</th>
@@ -377,7 +377,7 @@
                                                 @if ($riesgosNormales->count() > 0)
                                                     <ul>
                                                     @foreach ($riesgosNormales as $r)
-                                                        <li>{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                        <li style="text-align: justify; line-height: 1.4em;">{{ $r->no }} - {{ $r->riesgo }}</li>
                                                     @endforeach
                                                     </ul>
                                                 @endif
@@ -391,7 +391,7 @@
                                                 @if ($riesgosIntermedios->count() > 0)
                                                     <ul>
                                                     @foreach ($riesgosIntermedios as $r)
-                                                        <li>{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                        <li style="text-align: justify; line-height: 1.4em;">{{ $r->no }} - {{ $r->riesgo }}</li>
                                                     @endforeach
                                                     </ul>
                                                 @endif
@@ -405,7 +405,7 @@
                                                 @if ($riesgosInmediatos->count() > 0)
                                                     <ul>
                                                     @foreach ($riesgosInmediatos as $r)
-                                                        <li>{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                        <li style="text-align: justify; line-height: 1.4em;">{{ $r->no }} - {{ $r->riesgo }}</li>
                                                     @endforeach
                                                     </ul>
                                                 @endif
@@ -519,7 +519,7 @@
                                                 <td style="border: 1px solid black; padding: 5px;">{{ $diagram->e }}</td>
                                                 <td style="border: 1px solid black; padding: 5px;">{{ $diagram->pb }}</td>
                                                 <td style="border: 1px solid black; padding: 5px;">{{ $diagram->if }}</td>
-                                                <td style="border: 1px solid black; padding: 5px;">xd</td>
+                                                <td style="border: 1px solid black; padding: 5px;">PENDIENTE</td>
                                                 <td style="border: 1px solid black; padding: 5px;">{{ $diagram->f_ocurrencia }}</td>
                                             </tr>
                                         @endforeach
