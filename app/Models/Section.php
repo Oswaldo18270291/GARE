@@ -9,7 +9,7 @@ class Section extends Model
 {
     /** @use HasFactory<\Database\Factories\SectionFactory> */
     use HasFactory;
-    protected $fillable = ['nombre', 'subtitle_id'];
+    protected $fillable = ['nombre', 'subtitle_id','orden'];
 
         public function subtitle()
     {
