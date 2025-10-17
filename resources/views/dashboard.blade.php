@@ -109,7 +109,7 @@
 <article class="group flex rounded-radius p-4  flex-col overflow-hidden border border-outline bg-surface-alt text-on-surface dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark">
 
         <div class="mb-6 flex items-center justify-center p-4 rounded-lg" style="background-color: rgba(39, 68, 112, 1);">
-            <h1 class=" text-white font-sans font-bond text-lg">DASHBOARD</h1>
+            <h1 class=" text-white font-sans font-bond text-lg">PANEL DE CONTROL</h1>
         </div>
 <div class="grid grid-cols-1 gap-4 lg:grid-cols-4">
     <article class="flex items-center gap-4 rounded-lg border border-blue-500 bg-white p-2">

@@ -24,7 +24,7 @@
 
     html, body {
       margin: 0;
-      font-family: "Times News Roman", serif;
+      font-family: 'Arial Nova Light', Arial, sans-serif;
       font-size: 12pt;
     }
 
@@ -33,20 +33,27 @@
       margin-left: 2.5cm;  /* 👈 margen oficial de 2.5 cm */
       margin-right: 2.5cm;
       margin-bottom: 2.5cm;
+      font-family: 'Arial Nova Light', Arial, sans-serif;
     }
 
     .contenido {
       margin: 0;
       color: black; /* O el color que contraste con tu fondo */
       font-size: 12pt;
-      line-height: 2;       /* interlineado doble */
+    }
+
+    @font-face {
+        font-family: 'Arial Nova Light';
+        src: url('/fonts/ArialNova-Light.ttf') format('truetype');
+        font-weight: 300;
+        font-style: normal;
     }
   </style>
 </head>
 <body>
   <!-- Encabezado -->
     <header>
-        <table style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 9pt; text-align: center; color: #555;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 9pt; text-align: center; color: #555;">
             <tr>
             <td style="border: 1px solid #aaa; padding: 4px;">
                 <div style="opacity: 0.8;">
@@ -76,11 +83,11 @@
   <!-- Contenido -->
   <div class="contenido">
     <h2 style="text-align: center; font-size: 16pt; margin-bottom: 20px;">ÍNDICE</h2>
-    <table style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 12pt;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 12pt;">
       @foreach ($reports->titles->sortBy('id') as $title)
         <tr>
           {{-- Título --}}
-          <td style="padding: 8px; text-align: left;">{{ $loop->iteration }}. {{ $title->title->nombre }}</td>
+          <td style="padding: 8px; text-align: justify;">{{ $loop->iteration }}. {{ $title->title->nombre }}</td>
           <td style="text-align:right;">
             {{ getPage($markers, 'TITLE', $title->id) }}
           </td>
