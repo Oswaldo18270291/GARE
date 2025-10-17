@@ -10,7 +10,7 @@ class Title extends Model
     /** @use HasFactory<\Database\Factories\TitleFactory> */
     use HasFactory;
 
-    protected $fillable = ['nombre'];
+    protected $fillable = ['nombre','orden'];
     
 
         public function subtitles()
