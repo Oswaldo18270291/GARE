@@ -75,7 +75,7 @@ class Estructura extends Component
     public function addTitle()
     {
         $orden = Title::max('orden') + 1;
-        $title = Title::create(['nombre' => 'Nuevo Título', 'orden' => $orden]);
+        $title = Title::create(['nombre' => 'Nuevo Título', 'orden' => $orden,'status'=>1]);
         $this->refreshData();
         session()->flash('success', '✅ Nuevo título creado');
     }
@@ -86,7 +86,8 @@ class Estructura extends Component
         Subtitle::create([
             'title_id' => $titleId,
             'nombre'   => 'Nuevo Subtítulo',
-            'orden'    => $orden
+            'orden'    => $orden,
+            'status'    =>  1
         ]);
         $this->refreshData();
         session()->flash('success', '✅ Nuevo subtítulo creado');
@@ -98,7 +99,8 @@ class Estructura extends Component
         Section::create([
             'subtitle_id' => $subtitleId,
             'nombre'      => 'Nueva Sección',
-            'orden'       => $orden
+            'orden'       => $orden,
+            'status'    =>  1
         ]);
         $this->refreshData();
         session()->flash('success', '✅ Nueva sección creada');

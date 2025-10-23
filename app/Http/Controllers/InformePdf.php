@@ -66,15 +66,15 @@ class InformePdf extends Controller
 
         $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 14 )     
         ->where('status', 1)->first();
-
-        $co = Content::where('r_t_s_id', $su->id)->first();
-
-        if(!empty($co)){
-            $diagrama = AnalysisDiagram::where('content_id', $co->id)->get();        
-            $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report, 'diagrama'=>$diagrama]);
+        if(!empty($su)){
+           // $diagrama = AnalysisDiagram::where('content_id', $co->id)->get();        
+           // $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report, 'diagrama'=>$diagrama]);
         }else{
             $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report]);
         }
+        //$co = Content::where('r_t_s_id', $su->id)->first();
+
+
 
 
 
@@ -192,6 +192,18 @@ class InformePdf extends Controller
         ->first();
         $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 14 )     
         ->where('status', 1)->first();
+
+        
+        if(!empty($su)){
+
+        //$risks = AnalysisDiagram::where('content_id',$co->id)->orderBy('no')->get();
+        //$grafica = $co2->grafica ?? 'bar';
+        // 👉 Esta vista no se mostrará al usuario, solo genera la gráfica en background
+        return view('reports.generar_grafica', compact('report', 'risks', 'grafica'));
+        }else{
+           return redirect()->route('reporte.pdf', ['id' => $id]);
+        }
+
         $co = Content::where('r_t_s_id', $su->id)->first();
 
 
@@ -203,15 +215,6 @@ class InformePdf extends Controller
         $co2 = Content::where('r_t_s_id', $su2->id)->first();
 
 
-        if(!empty($co)){
-
-        $risks = AnalysisDiagram::where('content_id',$co->id)->orderBy('no')->get();
-        $grafica = $co2->grafica ?? 'bar';
-        // 👉 Esta vista no se mostrará al usuario, solo genera la gráfica en background
-        return view('reports.generar_grafica', compact('report', 'risks', 'grafica'));
-        }else{
-           return redirect()->route('reporte.pdf', ['id' => $id]);
-        }
 
 
     }

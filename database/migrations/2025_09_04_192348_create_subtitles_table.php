@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nombre'); 
             $table->foreignId('title_id')->constrained('titles'); //Creada
             $table->integer('orden')->default(0);
-
+            $table->boolean('status')->default(false);
         });
     }
 

@@ -324,7 +324,7 @@
                 </button>
             </div>
 
-            @foreach ($titles->sortBy('id') as $t)
+            @foreach ($titles->where('status',1)->sortBy('orden') as $t)
                 <div class="title-wrapper">
                     <label>
                         <input
@@ -342,7 +342,7 @@
                                 ? 'display:block; margin-left:20px;' 
                                 : 'display:none; margin-left:20px;' }}">
                         
-                        @foreach ($t->subtitles->sortBy('id') as $st)
+                        @foreach ($t->subtitles->where('status',1)->sortBy('orden') as $st)
                             <div class="subtitle-wrapper">
                                 <label>
                                     <input
@@ -359,7 +359,7 @@
                                     style="{{ ($expandAll || in_array($st->id, $subtitle ?? [])) 
                                             ? 'display:block; margin-left:20px;' 
                                             : 'display:none; margin-left:20px;' }}">
-                                    @foreach ($st->sections->sortBy('id') as $sec)
+                                    @foreach ($st->sections->where('status',1)->sortBy('orden') as $sec)
                                         <li>
                                             <label>
                                                 <input

@@ -6,6 +6,7 @@ use Livewire\WithPagination;
 use App\Models\Report;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Traits\HasRoles;
 
 class Index extends Component
 {
@@ -49,20 +50,39 @@ class Index extends Component
 
     public function render()
     {
-        return view('livewire.history.index', [
-            'reports' => Report::where('status', true)
-                ->where('user_id', Auth::id())
-                ->when($this->search, function ($query) {
-                    $query->where(function ($q) {
-                        $q->where('nombre_empresa', 'ILIKE', "%{$this->search}%")
-                          ->orWhere('representante', 'ILIKE', "%{$this->search}%")
-                          ->orWhere('fecha_analisis', 'ILIKE', "%{$this->search}%");
-                    });
-                })
-                ->when($this->startDate, fn($q) => $q->whereDate('created_at', '>=', $this->startDate))
-                ->when($this->endDate, fn($q) => $q->whereDate('created_at', '<=', $this->endDate))
-                ->orderBy($this->sortField, $this->sortDirection)
-                ->paginate(10),
-        ]);
+        if(Auth::user()->hasRole('admin'))
+        {
+            return view('livewire.history.index', [
+                'reports' => Report::where('status', true)
+                        ->when($this->search, function ($query) {
+                            $query->where(function ($q) {
+                                $q->where('nombre_empresa', 'ILIKE', "%{$this->search}%")
+                                ->orWhere('representante', 'ILIKE', "%{$this->search}%")
+                                ->orWhere('fecha_analisis', 'ILIKE', "%{$this->search}%");
+                            });
+                        })
+                        ->when($this->startDate, fn($q) => $q->whereDate('created_at', '>=', $this->startDate))
+                        ->when($this->endDate, fn($q) => $q->whereDate('created_at', '<=', $this->endDate))
+                        ->orderBy($this->sortField, $this->sortDirection)
+                        ->paginate(10),
+                ]);
+        }else
+        {return view('livewire.history.index', [
+                'reports' => Report::where('status', true)
+                        ->where('user_id', Auth::id())
+                        ->when($this->search, function ($query) {
+                            $query->where(function ($q) {
+                                $q->where('nombre_empresa', 'ILIKE', "%{$this->search}%")
+                                ->orWhere('representante', 'ILIKE', "%{$this->search}%")
+                                ->orWhere('fecha_analisis', 'ILIKE', "%{$this->search}%");
+                            });
+                        })
+                        ->when($this->startDate, fn($q) => $q->whereDate('created_at', '>=', $this->startDate))
+                        ->when($this->endDate, fn($q) => $q->whereDate('created_at', '<=', $this->endDate))
+                        ->orderBy($this->sortField, $this->sortDirection)
+                        ->paginate(10),
+                ]);
+
+        }
     }
 }

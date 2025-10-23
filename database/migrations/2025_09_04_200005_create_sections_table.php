@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('subtitle_id')->constrained('subtitles'); //Creada
             $table->string('nombre');
             $table->integer('orden')->default(0);
-
+            $table->boolean('status')->default(false);
         });
     }
 
