@@ -21,7 +21,7 @@
       padding: 0;
       height: 100%;
       font-family: 'Arial Nova Light', Arial, sans-serif;
-      font-size: 12pt;
+      font-size: 14pt;
     }
 
     body {
@@ -49,11 +49,11 @@
     }
 
     .humanismo { 
-      max-height: 50cm;
+      height: 6cm;
     }
 
     .estrella {
-      max-height: 10cm;
+      height: 7cm;
     }
 
   </style>
@@ -91,9 +91,13 @@
   <div class="contenido">
     <p>Informe de evaluación</p>
     <p>SECRETARIA DE SEGURIDAD DEL PUEBLO DE CHIAPAS</p>
-    <div style="text-align: center;">
-      <img class="humanismo" alt="Gráfica" style="display: block; margin: 0 auto;" src="img_portada/SSP_portada.png">
-      <img class="estrella" alt="Gráfica" style="display: block; margin: 0 auto;" src="img_portada/SSP_ESTRELLA.jpg">
+    <div class="flex flex-col items-center w-full max-w-xs">
+        <div>
+            <img class="humanismo" style="display: block; margin: 0 auto;" src="img_portada/SSP_portada.png">
+        </div>
+        <div>
+            <img class="estrella" style="display: block; margin: 0 auto;" src="img_portada/SSP_ESTRELLA.jpg">
+        </div>
     </div>
     <p>Secretario de Seguridad</p>
     <p>{{auth()->user()->name}}</p>
