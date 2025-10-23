@@ -24,15 +24,27 @@ class Addcontenido extends Component
         $this->report = Report::findOrFail($id);
 
         // Cargar títulos relacionados
-        $this->report->titles = ReportTitle::where('report_id', $this->report->id)->where('status',1)->orderBy('title_id', 'asc')->get();
+    $this->report->titles = ReportTitle::with('title')
+    ->join('titles', 'report_titles.title_id','=','titles.id')
+    ->orderBy('titles.orden','asc')
+    ->select('titles.*','report_titles.*')
+    ->where('report_titles.report_id', $this->report->id)->where('report_titles.status',1)->get();
 
         foreach ($this->report->titles as $title) {
             // Cargar subtítulos de cada título
-            $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->where('status',1)->orderBy('subtitle_id', 'asc')->get();
+            $title->subtitles = ReportTitleSubtitle::with('subtitle')
+            ->join('subtitles', 'report_title_subtitles.subtitle_id','=','subtitles.id')
+            ->orderBy('subtitles.orden','asc')
+            ->select('subtitles.*','report_title_subtitles.*')
+            ->where('r_t_id', $title->id)->where('report_title_subtitles.status',1)->get();
 
             foreach ($title->subtitles as $subtitle) {
                 // Cargar secciones de cada subtítulo
-                $subtitle->sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)->where('status',1)->orderBy('section_id', 'asc')->get();
+                $subtitle->sections = ReportTitleSubtitleSection::with('section')
+                ->join('sections', 'report_title_subtitle_sections.section_id','=','sections.id')
+                ->orderBy('sections.orden','asc')
+                ->select('sections.*','report_title_subtitle_sections.*')
+                ->where('r_t_s_id', $subtitle->id)->where('report_title_subtitle_sections.status',1)->get();
             }
         }
     }

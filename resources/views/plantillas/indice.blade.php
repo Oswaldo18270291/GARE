@@ -76,32 +76,32 @@
   <!-- Contenido -->
   <div class="contenido">
     <h2 style="text-align: center; font-size: 16pt; margin-bottom: 20px;">ÍNDICE</h2>
-    <table style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 12pt;">
+    <table style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 10pt;">
       @foreach ($reports->titles->sortBy('id') as $title)
         <tr>
           {{-- Título --}}
-          <td style="padding: 8px; text-align: left;">{{ $loop->iteration }}. {{ $title->title->nombre }}</td>
-          <td style="text-align:right;">
-            {{ getPage($markers, 'TITLE', $title->id) }}
+          <td style="text-align: justify; border-bottom: 1.5px dotted #000; display:flex">
+            <strong><span>{{ $loop->iteration }}.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $title->title->nombre }}</span></strong>
+            <td style="float: right;"><strong>{{ getPage($markers, 'TITLE', $title->id) }}</strong></td>
           </td>
         </tr>
 
         {{-- Subtítulos dentro del título --}}
         @foreach ($title->subtitles->sortBy('id') as $subtitle)
-          <tr>
-            <td style="padding: 8px; padding-left: 48px; text-align: justify;">{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $subtitle->subtitle->nombre }}</td>
-          <td style="text-align:right;">
-            {{ getPage($markers, 'SUBTITLE', $subtitle->id) }}
-          </td>
+        <tr>
+          <td style=" padding-left: 15px; text-align: justify; border-bottom: 1px dotted #000; display:flex">
+              <span>{{ $loop->parent->iteration }}.{{ $loop->iteration }}.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $subtitle->subtitle->nombre }}</span>
+              <td style="float: right;">{{ getPage($markers, 'SUBTITLE', $subtitle->id) }}</td>
+            </td>
           </tr>
 
             {{-- Secciones dentro del subtítulo --}}
           @foreach ($subtitle->sections->sortBy('id') as $section)
-            <tr>
-              <td style="padding: 8px; padding-left: 96px; text-align: justify;">{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $section->section->nombre }}</td>
-            <td style="text-align:right;">
-              {{ getPage($markers, 'SECTION', $section->id) }}
-            </td>
+          <tr>
+              <td style=" padding-left: 30px; ptext-align: justify;border-bottom: 1px dotted #000; display:flex">
+                <span>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $section->section->nombre }}</span>
+                <td style="float: right;">{{ getPage($markers, 'SECTION', $section->id) }}</td>
+              </td>
             </tr>
           @endforeach
         @endforeach

@@ -118,7 +118,16 @@ class Index extends Component
     
     public function mount()
     {
-        $this->titles = Title::with('subtitles.sections')->get();
+        $this->titles = Title::with([
+            'subtitles' => function($query){
+                $query ->where('status',true)
+                ->with(['sections'=> function($q){
+                    $q->where('status',true);
+                }]);
+            }
+        ])
+        ->where('status',true)
+        ->get();
     }
 
 

@@ -10,7 +10,7 @@ class Subtitle extends Model
     /** @use HasFactory<\Database\Factories\SubtitleFactory> */
     use HasFactory;
 
-    protected $fillable = ['nombre', 'title_id','orden'];
+    protected $fillable = ['nombre', 'title_id','orden','status'];
 
     
     public function title()
@@ -19,7 +19,7 @@ class Subtitle extends Model
     }
         public function sections()
     {
-        return $this->hasMany(Section::class);
+        return $this->hasMany(Section::class)->where('status',true);;
     }
     
         public function reportTitleSubtitles()

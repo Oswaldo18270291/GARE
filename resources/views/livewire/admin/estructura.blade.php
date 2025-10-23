@@ -17,7 +17,7 @@
     {{-- Lista de títulos --}}
     <div class="w-full p-6 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
         <ul class="space-y-3 mt-3">
-            @foreach ($titulos->sortBy('orden') as $t)
+            @foreach ($titulos->where('status',1)->sortBy('orden') as $t)
                 <li wire:key="title-{{ $t->id }}" class="p-3 border rounded bg-white" style="border-color:rgba(31, 89, 177, 1);">
                     <div class="flex gap-2 items-center flex-wrap">
                         <input type="text"
@@ -33,7 +33,7 @@
 
                     {{-- Subtítulos --}}
                     <ul class="pl-6 space-y-2 mt-2 border-l-2 border-blue-400">
-                        @foreach ($t->subtitles->sortBy('orden') as $st)
+                        @foreach ($t->subtitles->where('status',1)->sortBy('orden') as $st)
                             <li wire:key="subtitle-{{ $st->id }}" class="p-2 border rounded bg-gray-50">
                                 <div class="flex gap-2 items-center flex-wrap">
                                     <input type="text" wire:model.defer="subtitleNames.{{ $st->id }}" class="border rounded px-2 py-1 w-2/3">
@@ -58,7 +58,7 @@
 
                                 {{-- Secciones --}}
                                 <ul class="pl-6 space-y-2 mt-2 border-l-2 border-purple-400">
-                                    @foreach ($st->sections->sortBy('orden') as $sec)
+                                    @foreach ($st->sections->where('status',1)->sortBy('orden') as $sec)
                                         <li wire:key="section-{{ $sec->id }}" class="p-2 border rounded bg-gray-100">
                                             <div class="flex gap-2 items-center flex-wrap">
                                                 <input type="text" wire:model.defer="sectionNames.{{ $sec->id }}" class="border rounded px-2 py-1 w-2/3">

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('nombre');
             $table->integer('orden')->default(0);    
+            $table->boolean('status')->default(false);
         });
     }
 
