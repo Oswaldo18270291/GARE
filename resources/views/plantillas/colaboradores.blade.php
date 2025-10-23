@@ -20,7 +20,7 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      font-family: "Times News Roman", serif;
+      font-family: 'Arial Nova Light', Arial, sans-serif;
       font-size: 12pt;
     }
 
@@ -30,6 +30,7 @@
       background-position: center;
       box-sizing: border-box;
       text-align: center;
+      font-family: 'Arial Nova Light', Arial, sans-serif;
     }
 
     .contenido {
@@ -38,14 +39,29 @@
       padding: 2.5cm; /* Espaciado interno */
       color: black; /* O el color que contraste con tu fondo */
       font-size: 12pt;
-      margin-top: 100px;
+      margin-top: 50px;
     }
+    @font-face {
+        font-family: 'Arial Nova Light';
+        src: url('/fonts/ArialNova-Light.ttf') format('truetype');
+        font-weight: 300;
+        font-style: normal;
+    }
+
+    .humanismo { 
+      max-height: 50cm;
+    }
+
+    .estrella {
+      max-height: 10cm;
+    }
+
   </style>
 </head>
 <body>
   <!-- Encabezado -->
     <header>
-        <table style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 9pt; text-align: center; color: #555;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 9pt; text-align: center; color: #555;">
             <tr>
             <td style="border: 1px solid #aaa; padding: 4px;">
                 <div style="opacity: 0.8;">
@@ -73,13 +89,16 @@
     </header>
   <!-- Contenido -->
   <div class="contenido">
+    <p>Informe de evaluación</p>
+    <p>SECRETARIA DE SEGURIDAD DEL PUEBLO DE CHIAPAS</p>
+    <div style="text-align: center;">
+      <img class="humanismo" alt="Gráfica" style="display: block; margin: 0 auto;" src="img_portada/SSP_portada.png">
+      <img class="estrella" alt="Gráfica" style="display: block; margin: 0 auto;" src="img_portada/SSP_ESTRELLA.jpg">
+    </div>
+    <p>Secretario de Seguridad</p>
     <p>{{auth()->user()->name}}</p>
     <p>{{$reports->colaborador1}}</p>
-    <br><br><br><br><br><br><br><br>
-    <p>INFORME DE EVALUACIÓN</p>
-    <br>
-    <p>SECRETARIA DE SEGURIDAD DEL PUEBLO DE CHIAPAS</p>
-    <p>ANÁLISIS DE RIESGO DEL {{$reports->nombre_empresa}}</p>
+    
   </div>
 </body>
 </html>

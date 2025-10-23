@@ -26,7 +26,7 @@
 
             html, body {
             margin: 0;
-            font-family: "Times News Roman", serif;
+            font-family: 'Arial Nova Light', Arial, sans-serif;
             font-size: 12pt;
             }
 
@@ -35,17 +35,23 @@
             margin-left: 2.5cm;  /* 👈 margen oficial de 2.5 cm */
             margin-right: 2.5cm;
             margin-bottom: 2.5cm;
+            font-family: 'Arial Nova Light', Arial, sans-serif;
             }
 
             .contenido {
             margin: 0;
             color: black; /* O el color que contraste con tu fondo */
             font-size: 12pt;
-            line-height: 2;       /* interlineado doble */
             text-indent: 2.5em;   /* sangría de la primera línea (~5 espacios) */
+            text-align: justify; /* texto justificado*/
             }
-
-
+            
+            @font-face {
+                font-family: 'Arial Nova Light';
+                src: url('/fonts/ArialNova-Light.ttf') format('truetype');
+                font-weight: 300;
+                font-style: normal;
+            }
             
         </style>
     </head>
@@ -56,7 +62,7 @@
     @endphp
     <!-- Encabezado -->
     <header>
-        <table style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 9pt; text-align: center; color: #555;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 9pt; text-align: center; color: #555;">
             <tr>
                 <td style="border: 1px solid #aaa; padding: 4px;">
                     <div style="opacity: 0.8;">
@@ -85,7 +91,7 @@
 
     <!-- Contenido -->
     <div class="contenido">
-        <div style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 12pt;">
+        <div style="width: 100%; border-collapse: collapse; font-size: 12pt;">
             @foreach ($reports->titles->sortBy('id') as $title)
                 <div>
                     {{-- Título --}}
@@ -150,7 +156,7 @@
                                 @endif
                             <br>
                         @else
-                            {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
+                            {!! fix_quill_lists(convert_quill_indents_to_nested_lists($cont->cont)) !!}
 
                             @if (!empty($cont->img1))
                                 <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; text-align: center;">
@@ -414,7 +420,7 @@
 
                                             {{-- 🔸 Segunda fila: Descripción de cada rango --}}
                                             <tr>
-                                                <td class="bg-green" style="text-align: justify; line-height: 1.4em;">
+                                                <td class="bg-green" style="line-height: 1.4em;">
                                                 <p>
                                                     Este rango representa riesgos de baja probabilidad y bajo impacto. Los eventos situados
                                                     en este rango normalmente se consideran aceptables y dentro de los límites normales de
@@ -425,7 +431,7 @@
                                                 </p>
                                                 </td>
 
-                                                <td class="bg-yellow" style="text-align: justify; line-height: 1.4em;">
+                                                <td class="bg-yellow" style="line-height: 1.4em;">
                                                 <p>
                                                     En este rango, los riesgos presentan una probabilidad y/o impactos moderados. Los eventos
                                                     en el área intermedia requieren atención, ya que pueden causar perturbaciones
@@ -435,7 +441,7 @@
                                                 </p>
                                                 </td>
 
-                                                <td class="bg-red" style="text-align: justify; line-height: 1.4em;">
+                                                <td class="bg-red" style="line-height: 1.4em;">
                                                 <p>
                                                     Este rango representa riesgos de alta probabilidad y/o alto impacto, siendo considerados
                                                     inaceptables y requieren intervención inmediata. Cualquier evento en este rango puede
@@ -450,7 +456,7 @@
                                 @endif
                                                                
                             @else
-                                {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
+                                {!! fix_quill_lists(convert_quill_indents_to_nested_lists($cont->cont)) !!}
 
                                 
                                 @if (!empty($cont->img1))
@@ -630,7 +636,7 @@
                                 <br>
                                 @endif
                                 @else
-                                    {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
+                                    {!! fix_quill_lists(convert_quill_indents_to_nested_lists($cont->cont)) !!}
 
                                     @if (!empty($cont->img1))
                                         <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; text-align: center;">
