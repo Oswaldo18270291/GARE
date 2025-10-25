@@ -25,7 +25,7 @@
     html, body {
       margin: 0;
       font-family: 'Arial Nova Light', Arial, sans-serif;
-      font-size: 12pt;
+      font-size: 10pt;
     }
 
     body {
@@ -39,7 +39,7 @@
     .contenido {
       margin: 0;
       color: black; /* O el color que contraste con tu fondo */
-      font-size: 12pt;
+      font-size: 10pt;
     }
 
     @font-face {
@@ -82,7 +82,7 @@
 
   <!-- Contenido -->
   <div class="contenido">
-    <h2 style="text-align: center; font-size: 16pt; margin-bottom: 20px;">ÍNDICE</h2>
+     <!--<h2 style="text-align: center; font-size: 16pt; margin-bottom: 20px;">ÍNDICE</h2>-->
     <table style="width: 100%; border-collapse: collapse; font-size: 10pt;">
       @foreach ($reports->titles->sortBy('id') as $title)
         <tr>

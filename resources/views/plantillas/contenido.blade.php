@@ -42,7 +42,7 @@
             margin: 0;
             color: black; /* O el color que contraste con tu fondo */
             font-size: 12pt;
-            text-indent: 2.5em;   /* sangría de la primera línea (~5 espacios) */
+            /*text-indent: 2.5em;   sangría de la primera línea (~5 espacios) */
             text-align: justify; /* texto justificado*/
             }
             
@@ -95,7 +95,7 @@
             @foreach ($reports->titles->sortBy('id') as $title)
                 <div>
                     {{-- Título --}}
-                    <a style="display: block; text-align: center; font-weight: bold; text-indent: 0;">
+                    <a style="display: block; font-weight: bold; text-indent: 0;">
                         <span style="color: transparent; font-size: 0;">__MARKER_TITLE_{{ $title->id }}__</span>
                         {{ $loop->iteration }}. {{ title_case_except($title->title->nombre) }}
                     </a>
@@ -156,7 +156,7 @@
                                 @endif
                             <br>
                         @else
-                            {!! fix_quill_lists(convert_quill_indents_to_nested_lists($cont->cont)) !!}
+                            {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
 
                             @if (!empty($cont->img1))
                                 <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; text-align: center;">
@@ -456,7 +456,7 @@
                                 @endif
                                                                
                             @else
-                                {!! fix_quill_lists(convert_quill_indents_to_nested_lists($cont->cont)) !!}
+                                {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
 
                                 
                                 @if (!empty($cont->img1))
@@ -636,7 +636,7 @@
                                 <br>
                                 @endif
                                 @else
-                                    {!! fix_quill_lists(convert_quill_indents_to_nested_lists($cont->cont)) !!}
+                                    {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
 
                                     @if (!empty($cont->img1))
                                         <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; text-align: center;">

@@ -49,11 +49,11 @@
     }
 
     .humanismo { 
-      height: 6cm;
+      height: 7cm;
     }
 
     .estrella {
-      height: 7cm;
+      height: 6.8cm;
     }
 
   </style>
@@ -91,10 +91,12 @@
   <div class="contenido">
     <p>Informe de evaluación</p>
     <p>SECRETARIA DE SEGURIDAD DEL PUEBLO DE CHIAPAS</p>
-    <div class="flex flex-col items-center w-full max-w-xs">
+    <p>Análisis y Evaluación de Riesgos del {{$reports->nombre_empresa}}</p>
+    <div class="flex flex-col items-center w-full max-w-xs" style="margin-top: 30px">
         <div>
-            <img class="humanismo" style="display: block; margin: 0 auto;" src="img_portada/SSP_portada.png">
+            <img class="humanismo" style="display: block; margin: 0 auto 30px;" src="img_portada/SSP_portada.png">
         </div>
+        
         <div>
             <img class="estrella" style="display: block; margin: 0 auto;" src="img_portada/SSP_ESTRELLA.jpg">
         </div>
