@@ -95,11 +95,11 @@
             @foreach ($reports->titles->sortBy('id') as $title)
                 <div>
                     {{-- Título --}}
-                    <a style="display: block; font-weight: bold; text-indent: 0;">
+                    <a style="display: block; font-weight: bold;">
                         <span style="color: transparent; font-size: 0;">__MARKER_TITLE_{{ $title->id }}__</span>
                         {{ $loop->iteration }}. {{ title_case_except($title->title->nombre) }}
                     </a>
-
+                    <br>
                     @foreach ($title->content as $cont)
                         @php
                             $orientation = 'horizontal';
@@ -202,10 +202,11 @@
 
                     {{-- Subtítulos dentro del título --}}
                     @foreach ($title->subtitles->sortBy('id') as $subtitle)
-                        <a style="display: block; text-align: justify; font-weight: bold; text-indent: 0;">
+                        <a style="display: block; text-align: justify; font-weight: bold;">
                             <span style="color: transparent; font-size: 0;">__MARKER_SUBTITLE_{{ $subtitle->id }}__</span>
                             {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($subtitle->subtitle->nombre) }}
                         </a>
+                        <br>
                         @foreach ($subtitle->content as $cont)
                         @php
                             $orientation = 'horizontal';
@@ -457,7 +458,6 @@
                                                                
                             @else
                                 {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
-
                                 
                                 @if (!empty($cont->img1))
                                     <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; text-align: center;">
@@ -575,11 +575,11 @@
                         @endforeach
                         {{-- Secciones dentro del subtítulo --}}
                         @foreach ($subtitle->sections->sortBy('id') as $section)
-                            <a style="display: block; text-align: justify; font-weight: bold; font-style: italic; text-indent: 0;">
+                            <a style="display: block; text-align: justify; font-weight: bold; text-indent: 0.88cm;">
                                 <span style="color: transparent; font-size: 0;">__MARKER_SECTION_{{ $section->id }}__</span>
                                 {{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($section->section->nombre) }}
                             </a>
-
+                            <br>
                             @foreach ($section->content as $cont)
                             @php
                                 $orientation = 'horizontal';
