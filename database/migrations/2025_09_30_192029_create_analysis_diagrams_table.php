@@ -14,15 +14,24 @@ return new class extends Migration
         Schema::create('analysis_diagrams', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('no');
-            $table->string('riesgo');
-            $table->integer('f');
-            $table->integer('s');
-            $table->integer('p');
-            $table->integer('e');
-            $table->integer('pb');
-            $table->integer('if');
-            $table->double('f_ocurrencia');
+            $table->string('no')->nullable();
+            $table->string('riesgo')->nullable();
+            $table->integer('impacto_f')->nullable();
+            $table->integer('impacto_o')->nullable();
+            $table->integer('extension_d')->nullable();
+            $table->integer('probabilidad_m')->nullable();
+            $table->integer('impacto_fin')->nullable();
+            $table->integer('cal')->nullable();
+            $table->string('clase_riesgo')->nullable();
+            $table->string('factor_oc')->nullable();
+
+            $table->integer('f')->nullable();
+            $table->integer('s')->nullable();
+            $table->integer('p')->nullable();
+            $table->integer('e')->nullable();
+            $table->integer('pb')->nullable();
+            $table->integer('if')->nullable();
+            $table->double('f_ocurrencia')->nullable();
             $table->foreignId('content_id')
                 ->nullable()
                 ->constrained('contents')

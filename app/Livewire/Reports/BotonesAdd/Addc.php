@@ -73,6 +73,30 @@ class Addc extends Component
             ->where('status',1)
             ->with('subtitle')
             ->get();
+            //MATRIZ DE RIESGO
+           $this->riesgos = [
+            ['no'=>'R01','riesgo'=>'Intrusión'],
+            ['no'=>'R02','riesgo'=>'Invasión para ocupación de áreas adyacentes a instalación'],
+            ['no'=>'R03','riesgo'=>'Manifestaciones sociales y movimientos sindicales'],
+            ['no'=>'R04','riesgo'=>'Ciber ataque – Sistemas de la organización'],
+            ['no'=>'R05','riesgo'=>'Filtración de información'],
+            ['no'=>'R06','riesgo'=>'Emergencias médicas'],
+            ['no'=>'R07','riesgo'=>'Tempestad y/o lluvia con inundaciones alta intensidad'],
+            ['no'=>'R08','riesgo'=>'Lesiones'],
+            ['no'=>'R09','riesgo'=>'Amenazas a empleados'],
+            ['no'=>'R10','riesgo'=>'Incendio'],
+            ['no'=>'R11','riesgo'=>'Sismo'],
+        ];
+
+        foreach ($this->riesgos as &$r) {
+            $r['impacto_f']=null; $r['impacto_o']=null; $r['extension_d']=null;
+            $r['probabilidad_m']=null; $r['impacto_fin']=null;
+            $r['cal']=0; $r['clase_riesgo']=''; $r['factor_oc']='';
+        }
+        unset($r);
+
+            //TERMINA MATRIZ DE RIESGO
+
 
             
             $this->RSubtitle = ReportTitleSubtitle::findOrFail($id);
@@ -97,7 +121,7 @@ class Addc extends Component
             $this->RSection = ReportTitleSubtitleSection::findOrFail($id);
 
         }
-        $this->addFila();
+        //$this->addFila();
 
 
     }
@@ -220,10 +244,39 @@ class Addc extends Component
                     'orden'        => $index + 1,
                 ];
             }
+            
             if (!empty($rows)) {
                 AnalysisDiagram::insert($rows);
             }
         }
+        if ($name == 32) {
+            $rows = [];
+                $now = now();
+
+                foreach ($this->riesgos as $r) {
+                    $r = $this->normalizaYCalcula($r);
+
+                    $rows[] = [
+                        'content_id'     => $content->id,
+                        'no'             => $r['no'],
+                        'riesgo'         => $r['riesgo'],
+                        'impacto_f'      => $r['impacto_f'],
+                        'impacto_o'      => $r['impacto_o'],
+                        'extension_d'    => $r['extension_d'],
+                        'probabilidad_m' => $r['probabilidad_m'],
+                        'impacto_fin'    => $r['impacto_fin'],
+                        'cal'            => $r['cal'],
+                        'clase_riesgo'   => $r['clase_riesgo'],
+                        'factor_oc'      => $r['factor_oc'],
+                        'created_at'     => $now,
+                        'updated_at'     => $now,
+                    ];
+                }
+                if (!empty($rows)) {
+                    AnalysisDiagram::insert($rows);
+                }
+
+            }
             session()->flash('cont', 'Se agrego contenido de Subtitulo con exito.');
             $this->redirectRoute('my_reports.addcontenido', ['id' => $id], navigate: true);
 
@@ -328,6 +381,77 @@ public function guardarOrden2($risks)
             }
         }
     }
+    //MATRIZ DE RIESGO
+   // Escucha cambios en los campos de la tabla de riesgos
+
+   private function normalizaYCalcula(array $fila): array
+{
+    $campos = ['impacto_f','impacto_o','extension_d','probabilidad_m','impacto_fin'];
+    foreach ($campos as $c) {
+        $v = $fila[$c] ?? null;
+        $fila[$c] = is_numeric($v) ? max(1, min(5, (int)$v)) : null;
+    }
+
+    $total = array_sum(array_map(fn($c)=> (int)($fila[$c] ?? 0), $campos));
+    $fila['cal'] = $total;
+    $fila['factor_oc'] = $total > 0 ? round(($total/25)*100) . '%' : '0%';
+
+    if ($total >= 21)       $fila['clase_riesgo'] = 'MUY ALTO';
+    elseif ($total >= 16)   $fila['clase_riesgo'] = 'ALTO';
+    elseif ($total >= 11)   $fila['clase_riesgo'] = 'MEDIO';
+    elseif ($total >= 1)    $fila['clase_riesgo'] = 'BAJO';
+    else                    $fila['clase_riesgo'] = '';
+
+    return $fila;
+}
+
+
+public function recalcularRiesgos($value, $key)
+{
+    // Ejemplo: $key = "riesgos.0.impacto_f"
+    if (str_starts_with($key, 'riesgos.')) {
+        $index = explode('.', $key)[1]; // obtiene índice de fila
+        $this->calcularFila((int)$index);
+    }
+}
+
+public function calcularFila($index)
+{
+    if (!isset($this->riesgos[$index])) return;
+
+    $fila = &$this->riesgos[$index];
+    $campos = ['impacto_f', 'impacto_o', 'extension_d', 'probabilidad_m', 'impacto_fin'];
+
+    // Validar que estén dentro del rango
+    foreach ($campos as $campo) {
+        if (!isset($fila[$campo]) || !is_numeric($fila[$campo]) || $fila[$campo] < 1 || $fila[$campo] > 5) {
+            $fila[$campo] = null;
+        } else {
+            $fila[$campo] = (int)$fila[$campo];
+        }
+    }
+
+    // Calcular Calificación total
+    $total = array_sum(array_map(fn($campo) => $fila[$campo] ?? 0, $campos));
+    $fila['cal'] = $total;
+
+    // Calcular Porcentaje (sobre 25)
+    $porcentaje = $total > 0 ? round(($total / 25) * 100) : 0;
+    $fila['factor_oc'] = $porcentaje . '%';
+
+    // Determinar Clase de Riesgo según la Calificación
+    if ($total >= 21) {
+        $fila['clase_riesgo'] = 'MUY ALTO';
+    } elseif ($total >= 16) {
+        $fila['clase_riesgo'] = 'ALTO';
+    } elseif ($total >= 11) {
+        $fila['clase_riesgo'] = 'MEDIO';
+    } elseif ($total >= 1) {
+        $fila['clase_riesgo'] = 'BAJO';
+    } else {
+        $fila['clase_riesgo'] = '';
+    }
+}
 
 
     public function render()

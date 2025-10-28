@@ -280,6 +280,75 @@
       <button type="button" wire:click="addFila" class="px-3 py-2 bg-emerald-600 text-white rounded">+ Agregar fila</button>
     </div>
   @endif
+  @if($titulo==32)
+
+<div class="p-4">
+    @if (session('success'))
+        <div class="bg-green-200 text-green-800 p-2 rounded mb-3">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <table class="w-full border-collapse text-center text-sm font-sans" style="border:1px solid black;">
+        <thead>
+            <tr style="background-color:#002060; color:white;">
+                <th rowspan="2" class="border p-2">No.</th>
+                <th rowspan="2" class="border p-2">Tipo de Riesgo</th>
+                <th colspan="5" class="border p-2">Criterios de Evaluación</th>
+                <th rowspan="2" class="border p-2">Total<br>Posible</th>
+                <th rowspan="2" class="border p-2">Cal.</th>
+                <th rowspan="2" class="border p-2">Clase de Riesgo</th>
+                <th rowspan="2" class="border p-2">Factor de ocurrencia<br>del riesgo</th>
+            </tr>
+            <tr style="background-color:#002060; color:white;">
+                <th class="border p-1">Impacto en las Funciones</th>
+                <th class="border p-1">Impacto en la Organización</th>
+                <th class="border p-1">Extensión del Daño</th>
+                <th class="border p-1">Probabilidad de Materialización</th>
+                <th class="border p-1">Impacto Financiero</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach ($riesgos as $i => $r)
+                <tr>
+                    <td class="border p-1">{{ $r['no'] }}</td>
+                    <td class="border p-1 text-left">{{ $r['riesgo'] }}</td>
+
+                    @foreach (['impacto_f','impacto_o','extension_d','probabilidad_m','impacto_fin'] as $campo)
+                        <td class="border p-1">
+                          <input 
+                              type="number"
+                              min="1"
+                              max="5"
+                              step="1"
+                  
+                              oninput="this.value = Math.max(1, Math.min(5, this.value))"
+                              wire:model.debounce.400ms="riesgos.{{ $i }}.{{ $campo }}"
+                              wire:blur="recalcularRiesgos($event.target.value, 'riesgos.{{ $i }}.{{ $campo }}')"
+                              class="w-14 text-center border-gray-400 rounded"
+                          />
+                        </td>
+                    @endforeach
+
+                    <td class="border p-1">25</td>
+                    <td class="border p-1 font-semibold">{{ $r['cal'] ?? '' }}</td>
+                    <td class="border p-1 font-bold text-white"
+                        style="background-color:
+                            {{ ($r['clase_riesgo'] ?? '') == 'MUY ALTO' ? '#ff0000' :
+                               (($r['clase_riesgo'] ?? '') == 'ALTO' ? '#ff6600' :
+                               (($r['clase_riesgo'] ?? '') == 'MEDIO' ? '#ffc000' :
+                               (($r['clase_riesgo'] ?? '') == 'BAJO' ? '#00b050' : 'transparent'))) }}">
+                        {{ $r['clase_riesgo'] ?? '' }}
+                    </td>
+                    <td class="border p-1">{{ $r['factor_oc'] ?? '' }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+  @endif
   @if ($titulo==15)
   <br>
   <style>

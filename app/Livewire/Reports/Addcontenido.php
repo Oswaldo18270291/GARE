@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Reports;
 
+use App\Models\AnalysisDiagram;
 use Livewire\Component;
 use App\Models\Report;
 use App\Models\ReportTitle;
@@ -13,6 +14,7 @@ class Addcontenido extends Component
 {
     public $report;
     public $content;
+    public $diagram;
 
 
     public function mount($id)
@@ -82,7 +84,10 @@ class Addcontenido extends Component
             $this->redirectRoute('my_reports.addcontenido',['id' => $rp], navigate:true);
 
         } elseif($boton == 'sub'){
-             $content = Content::where('r_t_s_id', $id)->first();
+            $content = Content::where('r_t_s_id', $id)->first();
+            AnalysisDiagram::where('content_id', $content->id)->delete();
+
+
             foreach (['img1', 'img2', 'img3'] as $imgField) {
                 if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
                     Storage::disk('public')->delete($content->$imgField);
