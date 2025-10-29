@@ -103,8 +103,8 @@ class Addc extends Component
             $this->rep->titles = ReportTitle::where('report_id', $this->rep->id)->where('status',1)->get();
             foreach ($this->rep->titles as $title) 
             {
-            if( ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 14)->exists()){
-            $mosler = ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 14)->first();  
+            if( ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 32)->exists()){
+            $mosler = ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 32)->first();  
                 if( Content::where('r_t_s_id',$mosler->id)->exists()){
                     $c = Content::where('r_t_s_id',$mosler->id)->first();
                     $this->risks = AnalysisDiagram::where('content_id',$c->id)->get();
@@ -420,14 +420,33 @@ public function guardarOrden2($risks)
 }
 
 
-public function recalcularRiesgos($value, $key)
+public function recalcularRiesgosFila($index)
 {
-    // Ejemplo: $key = "riesgos.0.impacto_f"
-    if (str_starts_with($key, 'riesgos.')) {
-        $index = explode('.', $key)[1]; // obtiene índice de fila
-        $this->calcularFila((int)$index);
+    if (!isset($this->riesgos[$index])) return;
+
+    $fila = &$this->riesgos[$index];
+    $campos = ['impacto_f','impacto_o','extension_d','probabilidad_m','impacto_fin'];
+
+    // Si faltan campos, no hacemos nada todavía
+    foreach ($campos as $campo) {
+        if (empty($fila[$campo])) {
+            return; // espera a que el usuario complete todos los valores
+        }
     }
+
+    // Calcular la fila normalmente
+    $this->calcularFila($index);
+
+    // 🚀 Solo cuando la fila está completa, generamos la gráfica
+    $this->dispatch('actualizarGrafica', [
+        'riesgos' => collect($this->riesgos)->map(fn($r) => [
+            'no' => $r['no'] ?? '',
+            'riesgo' => $r['riesgo'] ?? '',
+            'factor_oc' => (float)($r['factor_oc'] ?? 0),
+        ])->values()
+    ]);
 }
+
 
 public function calcularFila($index)
 {
