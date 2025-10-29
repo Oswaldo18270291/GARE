@@ -322,7 +322,7 @@
                               min="1"
                               max="5"
                               step="1"
-                  
+                              required
                               oninput="this.value = Math.max(1, Math.min(5, this.value))"
                               wire:model.debounce.400ms="riesgos.{{ $i }}.{{ $campo }}"
                               wire:blur="recalcularRiesgos($event.target.value, 'riesgos.{{ $i }}.{{ $campo }}')"
@@ -347,7 +347,161 @@
         </tbody>
     </table>
 </div>
+  <h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
 
+<div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
+    <label for="chartType" class="w-fit pl-0.5 text-sm">Tipo de gráfico:</label>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
+        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+    </svg>
+    <select 
+        required
+        wire:model="grafica"
+        id="chartType"
+        name="chartType"
+        class="w-full appearance-none rounded-radius border border-outline bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+    >
+        <option value="bar">Barras</option>
+        <option value="pie">Pastel</option>
+        <option value="doughnut">Dona</option>
+        <option value="polarArea">Área polar</option>
+    </select>
+</div>
+
+<!-- Contenedor del gráfico -->
+<div wire:ignore>
+    <canvas id="riesgosChart" width="800" height="400"></canvas>
+</div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', inicializarGrafica);
+document.addEventListener('livewire:navigated', () => setTimeout(inicializarGrafica, 100));
+if (window.Livewire) {
+    Livewire.hook('morph.updated', () => setTimeout(inicializarGrafica, 100));
+}
+
+function inicializarGrafica() {
+    let chartInstance = null;
+    const canvas = document.getElementById('riesgosChart');
+    const select = document.getElementById('chartType');
+    if (!canvas || !select) return; // evitar errores si no existe
+
+    const ctx = canvas.getContext('2d');
+
+    function crearGrafico(riesgos = [], tipo = 'bar') {
+        if (!Array.isArray(riesgos)) return;
+        if (chartInstance) chartInstance.destroy();
+
+        const etiquetas = riesgos.map(r => `${r.no} - ${r.riesgo}`);
+        const numeros = riesgos.map(r => r.no);
+        const ocurrencias = riesgos.map(r => parseFloat(r.factor_oc) || 0);
+
+        const colores = ocurrencias.map(v => {
+            if (v >= 80) return "rgba(206, 0, 0, 0.9)";
+            if (v >= 60) return "rgba(235, 231, 0, 0.9)";
+            if (v >= 40) return "rgba(4, 121, 0, 0.9)";
+            return "rgba(102, 209, 98, 0.9)";
+        });
+
+        const esCircular = ['pie', 'doughnut', 'polarArea'].includes(tipo);
+
+        const dataConfig = esCircular
+            ? {
+                labels: etiquetas,
+                labe: numeros,
+                datasets: [{
+                    label: 'Factor de ocurrencia',
+                    data: ocurrencias,
+                    backgroundColor: colores
+                }]
+            }
+            : {
+                labels: ['Factor de ocurrencia'],
+                datasets: etiquetas.map((nombre, i) => ({
+                    label: nombre,
+                    data: [ocurrencias[i]],
+                    backgroundColor: colores[i],
+                    numero: numeros[i],
+                }))
+            };
+
+        Chart.register(ChartDataLabels);
+
+        chartInstance = new Chart(ctx, {
+            type: tipo,
+            data: dataConfig,
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                animation: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            color: '#000',
+                            font: { size: 12, weight: 'bold' },
+                            boxWidth: 15,
+                            padding: 8
+                        }
+                    },
+                    datalabels: {
+                        display: true,
+                        color: '#000',
+                        anchor: tipo === 'bar' ? 'end' : 'center',
+                        align: tipo === 'bar' ? 'end' : 'center',
+                        font: { weight: 'bold', size: 10 },
+                        formatter: (value, ctx) => {
+                            if (esCircular) {
+                                const index = ctx.dataIndex;
+                                return `${ctx.chart.data.labe[index]}\n(${value})`;
+                            } else {
+                                const dataset = ctx.chart.data.datasets[ctx.datasetIndex];
+                                return `${dataset.numero} (${value})`;
+                            }
+                        }
+                    }
+                },
+                scales: esCircular ? {} : {
+                    y: { beginAtZero: true, max: 100, ticks: { color: '#000' } },
+                    x: { ticks: { color: '#000' }, grid: { display: false } }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+
+        window.ultimoDataGrafica = riesgos;
+    }
+
+    // 🔁 Cambio de tipo manual
+    select.addEventListener('change', e => {
+        const tipo = e.target.value;
+        if (window.ultimoDataGrafica) {
+            crearGrafico(window.ultimoDataGrafica, tipo);
+        }
+    });
+
+    // 🧠 Evento Livewire que actualiza los datos
+    Livewire.on('actualizarGrafica', payload => {
+        const data = Array.isArray(payload) ? payload[0] : payload;
+        if (!data || !data.riesgos) return;
+        window.ultimoDataGrafica = data.riesgos;
+        const tipo = select.value || 'bar';
+        crearGrafico(data.riesgos, tipo);
+    });
+
+    crearGrafico([], select.value || 'bar');
+}
+
+</script>
+@endpush
+
+
+
+    
+
+  <br>
   @endif
   @if ($titulo==15)
   <br>

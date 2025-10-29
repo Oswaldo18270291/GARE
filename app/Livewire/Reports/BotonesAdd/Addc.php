@@ -218,7 +218,7 @@ class Addc extends Component
                 $data['hasta']  = $this->hasta;
             }
             // Si el nombre coincide, agrega la clave extra
-            if ($nl->subtitle_id === 16) {
+            if ($nl->subtitle_id === 32) {
                 $data['grafica'] = $this->grafica;
             }
 
@@ -272,6 +272,7 @@ class Addc extends Component
                         'updated_at'     => $now,
                     ];
                 }
+                
                 if (!empty($rows)) {
                     AnalysisDiagram::insert($rows);
                 }
@@ -371,7 +372,7 @@ public function guardarOrden2($risks)
     public int $min = 1;
     public int $max = 5;
 
-    public function updatedRiesgos($value, $name)
+    public function updatedRiesgos2($value, $name)
     {
         $parts = explode('.', $name);
         if (count($parts) === 3) {
@@ -381,6 +382,19 @@ public function guardarOrden2($risks)
             }
         }
     }
+
+
+    public function updatedRiesgos()
+{
+    // Emitimos los datos actualizados al front
+    $this->dispatch('actualizarGrafica', [
+        'riesgos' => collect($this->riesgos)->map(fn($r) => [
+            'no' => $r['no'] ?? '',
+            'riesgo' => $r['riesgo'] ?? '',
+            'factor_oc' => $r['factor_oc'] ?? 0,
+        ])->values()
+    ]);
+}
     //MATRIZ DE RIESGO
    // Escucha cambios en los campos de la tabla de riesgos
 
@@ -437,7 +451,7 @@ public function calcularFila($index)
 
     // Calcular Porcentaje (sobre 25)
     $porcentaje = $total > 0 ? round(($total / 25) * 100) : 0;
-    $fila['factor_oc'] = $porcentaje . '%';
+    $fila['factor_oc'] = $porcentaje;
 
     // Determinar Clase de Riesgo según la Calificación
     if ($total >= 21) {
@@ -451,6 +465,14 @@ public function calcularFila($index)
     } else {
         $fila['clase_riesgo'] = '';
     }
+
+$this->dispatch('actualizarGrafica', [
+    'riesgos' => collect($this->riesgos)->map(fn($r) => [
+        'no' => $r['no'] ?? '',
+        'riesgo' => $r['riesgo'] ?? '',
+        'factor_oc' => (float)($r['factor_oc'] ?? 0),
+    ])->values()
+]);
 }
 
 
