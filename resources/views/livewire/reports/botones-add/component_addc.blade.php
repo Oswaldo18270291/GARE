@@ -499,7 +499,7 @@ function inicializarGrafica() {
 @endpush
 
 
-
+<livewire:reports.botones-add.mapa-mental />
     
 
   <br>
