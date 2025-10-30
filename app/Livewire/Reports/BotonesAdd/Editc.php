@@ -50,6 +50,13 @@ class Editc extends Component
     public $de;
     public $hasta;
 
+
+    
+public $nodos = [];
+public $relaciones = [];
+public $background_image = null;
+public $background_opacity = 0.4;
+
     public function mount($id,$boton,$rp)
     {
     $report = Report::findOrFail($rp);
@@ -73,33 +80,50 @@ class Editc extends Component
         } elseif($boton == 'sub'){
             $this->RTitle = null;
             $this->content = Content::where('r_t_s_id', $id)->first();
-            if ($this->content) {
-                $this->riesgos = AnalysisDiagram::where('content_id',  $this->content->id)
-                    ->orderBy('orden')
-                    ->get()
-                    ->map(function ($r) {
-                        return [
-                            'id'      => $r->id,
-                            'no'      => $r->no,
-                            'riesgo'  => $r->riesgo,
-                            'f'       => $r->f,
-                            's'       => $r->s,
-                            'p'       => $r->p,
-                            'e'       => $r->e,
-                            'pb'      => $r->pb,
-                            'if'      => $r->if,
-                        ];
-                    })
-                    ->toArray();
-            } else {
+    if ($this->content) {
+        // Si es el subtítulo 16 (criterios de evaluación)
+        $subtitleId = ReportTitleSubtitle::where('id', $id)->value('subtitle_id');
+        if ($subtitleId == 32) {
+
+            $this->riesgos = AnalysisDiagram::where('content_id', $this->content->id)
+                ->orderBy('orden')
+                ->get()
+                ->map(function ($r) {
+                    return [
+                        'id' => $r->id,
+                        'no' => $r->no,
+                        'riesgo' => $r->riesgo,
+                        'impacto_f' => $r->impacto_f,
+                        'impacto_o' => $r->impacto_o,
+                        'extension_d' => $r->extension_d,
+                        'probabilidad_m' => $r->probabilidad_m,
+                        'impacto_fin' => $r->impacto_fin,
+                        'cal' => $r->cal,
+                        'clase_riesgo' => $r->clase_riesgo,
+                        'factor_oc' => $r->factor_oc,
+                    ];
+                })
+                ->toArray();
+                $mentalMap = \App\Models\MentalMap::where('content_id', $this->content->id)->first();
+
+                if ($mentalMap) {
+                    $this->nodos = $mentalMap->nodos ?? [];
+                    $this->relaciones = $mentalMap->relaciones ?? [];
+                    $this->background_image = $mentalMap->background_image ?? null;
+                    $this->background_opacity = $mentalMap->background_opacity ?? 0.4;
+                }
+        }
+        
+
+     }else {
                 $this->riesgos = [];
             }
             $this->rep->titles = ReportTitle::where('report_id', $this->rep->id)->where('status',1)->get();
             // Cargamos valores existentes
             foreach ($this->rep->titles as $title) 
             {
-            if( ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 14)->exists()){
-            $mosler = ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 14)->first();  
+            if( ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 32)->exists()){
+            $mosler = ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 32)->first();  
                 if( Content::where('r_t_s_id',$mosler->id)->exists()){
                     $c = Content::where('r_t_s_id',$mosler->id)->first();
                     $this->risks = AnalysisDiagram::where('content_id',$c->id)->get();
@@ -128,6 +152,7 @@ class Editc extends Component
             $this->de = $this->content->de;
             $this->hasta = $this->content->hasta;
             $this->RSubtitle = ReportTitleSubtitle::findOrFail($id);
+            $this->dispatch('actualizarMapa', nodos: $this->nodos, relaciones: $this->relaciones);
         } else if($boton == 'sec'){
             $this->RTitle = null;
             $this->RSubtitle = null;
@@ -228,6 +253,39 @@ class Editc extends Component
     session()->flash('cont', '✅ Riesgos actualizados correctamente.');
 }
 
+public function updateRiesgosEvaluacion($contentId)
+{
+    $now = now();
+
+    foreach ($this->riesgos as $index => $r) {
+        if (empty($r['riesgo'])) continue;
+
+        $data = [
+            'no' => $r['no'],
+            'riesgo' => trim($r['riesgo']),
+            'impacto_f' => (int)($r['impacto_f'] ?? 1),
+            'impacto_o' => (int)($r['impacto_o'] ?? 1),
+            'extension_d' => (int)($r['extension_d'] ?? 1),
+            'probabilidad_m' => (int)($r['probabilidad_m'] ?? 1),
+            'impacto_fin' => (int)($r['impacto_fin'] ?? 1),
+            'cal' => (int)($r['cal'] ?? 0),
+            'clase_riesgo' => $r['clase_riesgo'] ?? '',
+            'factor_oc' => $r['factor_oc'] ?? 0,
+            'orden' => $index + 1,
+            'updated_at' => $now,
+        ];
+
+        if (isset($r['id'])) {
+            AnalysisDiagram::where('id', $r['id'])->update($data);
+        } else {
+            $data['content_id'] = $contentId;
+            $data['created_at'] = $now;
+            AnalysisDiagram::create($data);
+        }
+    }
+
+    session()->flash('success', '✅ Riesgos de evaluación actualizados correctamente.');
+}
 
 
     public function update($id,$boton,$rp)
@@ -259,8 +317,10 @@ class Editc extends Component
         // Solo agrega el campo "grafica" si el subtitle_id es 16
         if ($boton === 'sub') {
             $nl = ReportTitleSubtitle::findOrFail($id);
-            if ($nl->subtitle_id === 16) {
+            if ($nl->subtitle_id === 32) {
                 $data['grafica'] = $this->grafica;
+                $this->guardarRiesgos();
+                 $this->guardarMapaMental();
             }
             $name = Subtitle::where('id', $nl->subtitle_id)->value('id');
             if (in_array($name, [20, 21, 22, 23, 24, 25, 26, 27, 28, 29])) {
@@ -371,6 +431,133 @@ public function guardarOrden2($risks)
     {
         $this->dispatch('$refresh'); // 🔄 fuerza el re-render del componente
     }
+
+    public function recalcularRiesgosFila($index)
+{
+    if (!isset($this->riesgos[$index])) return;
+
+    $fila = &$this->riesgos[$index];
+    $campos = ['impacto_f','impacto_o','extension_d','probabilidad_m','impacto_fin'];
+
+    // Si faltan campos, no hacemos nada todavía
+    foreach ($campos as $campo) {
+        if (empty($fila[$campo])) {
+            return; // espera a que el usuario complete todos los valores
+        }
+    }
+
+    // Calcular la fila normalmente
+    $this->calcularFila($index);
+
+    // 🚀 Solo cuando la fila está completa, generamos la gráfica
+    $this->dispatch('actualizarGrafica', [
+        'riesgos' => collect($this->riesgos)->map(fn($r) => [
+            'no' => $r['no'] ?? '',
+            'riesgo' => $r['riesgo'] ?? '',
+            'factor_oc' => (float)($r['factor_oc'] ?? 0),
+        ])->values()
+    ]);
+    }
+    public function calcularFila($index)
+    {
+        if (!isset($this->riesgos[$index])) return;
+
+        $fila = &$this->riesgos[$index];
+        $campos = ['impacto_f', 'impacto_o', 'extension_d', 'probabilidad_m', 'impacto_fin'];
+
+        // Validar que estén dentro del rango
+        foreach ($campos as $campo) {
+            if (!isset($fila[$campo]) || !is_numeric($fila[$campo]) || $fila[$campo] < 1 || $fila[$campo] > 5) {
+                $fila[$campo] = null;
+            } else {
+                $fila[$campo] = (int)$fila[$campo];
+            }
+        }
+
+        // Calcular Calificación total
+        $total = array_sum(array_map(fn($campo) => $fila[$campo] ?? 0, $campos));
+        $fila['cal'] = $total;
+
+        // Calcular Porcentaje (sobre 25)
+        $porcentaje = $total > 0 ? round(($total / 25) * 100) : 0;
+        $fila['factor_oc'] = $porcentaje;
+
+        // Determinar Clase de Riesgo según la Calificación
+        if ($total >= 21) {
+            $fila['clase_riesgo'] = 'MUY ALTO';
+        } elseif ($total >= 16) {
+            $fila['clase_riesgo'] = 'ALTO';
+        } elseif ($total >= 11) {
+            $fila['clase_riesgo'] = 'MEDIO';
+        } elseif ($total >= 1) {
+            $fila['clase_riesgo'] = 'BAJO';
+        } else {
+            $fila['clase_riesgo'] = '';
+        }
+
+    $this->dispatch('actualizarGrafica', [
+        'riesgos' => collect($this->riesgos)->map(fn($r) => [
+            'no' => $r['no'] ?? '',
+            'riesgo' => $r['riesgo'] ?? '',
+            'factor_oc' => (float)($r['factor_oc'] ?? 0),
+        ])->values()
+    ]);
+    }
+
+    public function guardarRiesgos()
+{
+    if (!$this->content) return;
+
+    foreach ($this->riesgos as $r) {
+        // Ignora filas vacías
+        if (empty($r['riesgo'])) continue;
+
+        \App\Models\AnalysisDiagram::updateOrCreate(
+            ['id' => $r['id'] ?? null],
+            [
+                'content_id' => $this->content->id,
+                'no' => $r['no'],
+                'riesgo' => $r['riesgo'],
+                'impacto_f' => (int)($r['impacto_f'] ?? 1),
+                'impacto_o' => (int)($r['impacto_o'] ?? 1),
+                'extension_d' => (int)($r['extension_d'] ?? 1),
+                'probabilidad_m' => (int)($r['probabilidad_m'] ?? 1),
+                'impacto_fin' => (int)($r['impacto_fin'] ?? 1),
+                'cal' => (int)($r['cal'] ?? 0),
+                'clase_riesgo' => $r['clase_riesgo'] ?? '',
+                'factor_oc' => $r['factor_oc'] ?? 0,
+                'orden' => $r['orden'] ?? 1,
+                'updated_at' => now(),
+            ]
+        );
+    }
+
+}
+
+public $nuevoNodo = '';
+public $colorNodo = '#FFD700';
+public $colorLetra = '#111111';
+public $tamanoLetra = 14;
+public $nodoDesde = '';
+public $nodoHasta = '';
+
+public function guardarMapaMental()
+{
+    \App\Models\MentalMap::updateOrCreate(
+        ['content_id' => $this->content->id],
+        [
+            'nodos'              => $this->nodos,
+            'relaciones'         => $this->relaciones,
+            'background_image'   => $this->background_image,
+            'background_opacity' => $this->background_opacity,
+        ]
+    );
+
+    session()->flash('success', '🧠 Mapa mental guardado correctamente.');
+}
+
+
+
     public function render()
     {
         return view('livewire.reports.botones-add.editc', [
@@ -379,6 +566,7 @@ public function guardarOrden2($risks)
             'RSection' => $this->RSection,
             'boton'  => $this->boton,
             'rp'  => $this->rp,
+            'nodos '=> $this->nodos,
         ]);
     }
 }

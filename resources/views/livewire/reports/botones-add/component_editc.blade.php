@@ -455,6 +455,425 @@
       </button>
   </div>
   @endif
+  @if($titulo==32)
+
+<div class="p-4">
+    @if (session('success'))
+        <div class="bg-green-200 text-green-800 p-2 rounded mb-3">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <table class="w-full border-collapse text-center text-sm font-sans" style="border:1px solid black;">
+        <thead>
+            <tr style="background-color:#002060; color:white;">
+                <th rowspan="2" class="border p-2">No.</th>
+                <th rowspan="2" class="border p-2">Tipo de Riesgo</th>
+                <th colspan="5" class="border p-2">Criterios de Evaluación</th>
+                <th rowspan="2" class="border p-2">Total<br>Posible</th>
+                <th rowspan="2" class="border p-2">Cal.</th>
+                <th rowspan="2" class="border p-2">Clase de Riesgo</th>
+                <th rowspan="2" class="border p-2">Factor de ocurrencia<br>del riesgo</th>
+            </tr>
+            <tr style="background-color:#002060; color:white;">
+                <th class="border p-1">Impacto en las Funciones</th>
+                <th class="border p-1">Impacto en la Organización</th>
+                <th class="border p-1">Extensión del Daño</th>
+                <th class="border p-1">Probabilidad de Materialización</th>
+                <th class="border p-1">Impacto Financiero</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach ($riesgos as $i => $r)
+                <tr>
+                    <td class="border p-1">{{ $r['no'] }}</td>
+                    <td class="border p-1 text-left">{{ $r['riesgo'] }}</td>
+
+                    @foreach (['impacto_f','impacto_o','extension_d','probabilidad_m','impacto_fin'] as $campo)
+                        <td class="border p-1">
+                          <input 
+                              type="number"
+                              min="1"
+                              max="5"
+                              step="1"
+                              required
+                              oninput="this.value = Math.max(1, Math.min(5, this.value))"
+                              wire:model.lazy="riesgos.{{ $i }}.{{ $campo }}"
+                              wire:blur="recalcularRiesgosFila({{ $i }})"                              
+                              class="w-14 text-center border-gray-400 rounded"
+                          />
+                        </td>
+                    @endforeach
+
+                    <td class="border p-1">25</td>
+                    <td class="border p-1 font-semibold">{{ $r['cal'] ?? '' }}</td>
+                    <td class="border p-1 font-bold text-white"
+                        style="background-color:
+                            {{ ($r['clase_riesgo'] ?? '') == 'MUY ALTO' ? '#ff0000' :
+                               (($r['clase_riesgo'] ?? '') == 'ALTO' ? '#ff6600' :
+                               (($r['clase_riesgo'] ?? '') == 'MEDIO' ? '#ffc000' :
+                               (($r['clase_riesgo'] ?? '') == 'BAJO' ? '#00b050' : 'transparent'))) }}">
+                        {{ $r['clase_riesgo'] ?? '' }}
+                    </td>
+                    <td class="border p-1">{{ $r['factor_oc'] ?? '' }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+  <h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
+
+<div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
+    <label for="chartType" class="w-fit pl-0.5 text-sm">Tipo de gráfico:</label>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
+        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+    </svg>
+    <select 
+        required
+        wire:model="grafica"
+        id="chartType"
+        name="chartType"
+        class="w-full appearance-none rounded-radius border border-outline bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+    >
+        <option value="bar">Barras</option>
+        <option value="pie">Pastel</option>
+        <option value="doughnut">Dona</option>
+        <option value="polarArea">Área polar</option>
+    </select>
+</div>
+<br>
+<br>
+<!-- Contenedor del gráfico -->
+<div wire:ignore>
+    <canvas id="riesgosChart" width="800" height="400"></canvas>
+</div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', inicializarGrafica);
+document.addEventListener('livewire:navigated', () => setTimeout(inicializarGrafica, 100));
+if (window.Livewire) {
+    Livewire.hook('morph.updated', () => setTimeout(inicializarGrafica, 100));
+}
+
+let chartInstance = null; // 👈 fuera de la función
+  function inicializarGrafica() {
+    const canvas = document.getElementById('riesgosChart');
+    const select = document.getElementById('chartType');
+    if (!canvas || !select) return; // evitar errores si no existe
+
+    const ctx = canvas.getContext('2d');
+
+    function crearGrafico(riesgos = [], tipo = 'bar') {
+        if (!Array.isArray(riesgos)) return;
+        if (chartInstance) chartInstance.destroy();
+
+        const etiquetas = riesgos.map(r => `${r.no} - ${r.riesgo}`);
+        const numeros = riesgos.map(r => r.no);
+        const ocurrencias = riesgos.map(r => parseFloat(r.factor_oc) || 0);
+
+        const colores = ocurrencias.map(v => {
+            if (v >= 80) return "rgba(206, 0, 0, 0.9)";
+            if (v >= 60) return "rgba(235, 231, 0, 0.9)";
+            if (v >= 40) return "rgba(4, 121, 0, 0.9)";
+            return "rgba(102, 209, 98, 0.9)";
+        });
+
+        const esCircular = ['pie', 'doughnut', 'polarArea'].includes(tipo);
+
+        const dataConfig = esCircular
+            ? {
+                labels: etiquetas,
+                labe: numeros,
+                datasets: [{
+                    label: 'Factor de ocurrencia',
+                    data: ocurrencias,
+                    backgroundColor: colores
+                }]
+            }
+            : {
+                labels: ['Factor de ocurrencia'],
+                datasets: etiquetas.map((nombre, i) => ({
+                    label: nombre,
+                    data: [ocurrencias[i]],
+                    backgroundColor: colores[i],
+                    numero: numeros[i],
+                }))
+            };
+
+        Chart.register(ChartDataLabels);
+
+        chartInstance = new Chart(ctx, {
+            type: tipo,
+            data: dataConfig,
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                animation: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            color: '#000',
+                            font: { size: 12, weight: 'bold' },
+                            boxWidth: 15,
+                            padding: 8
+                        }
+                    },
+                    datalabels: {
+                        display: true,
+                        color: '#000',
+                        anchor: tipo === 'bar' ? 'end' : 'center',
+                        align: tipo === 'bar' ? 'end' : 'center',
+                        font: { weight: 'bold', size: 10 },
+                        formatter: (value, ctx) => {
+                            if (esCircular) {
+                                const index = ctx.dataIndex;
+                                return `${ctx.chart.data.labe[index]}\n(${value})`;
+                            } else {
+                                const dataset = ctx.chart.data.datasets[ctx.datasetIndex];
+                                return `${dataset.numero} (${value})`;
+                            }
+                        }
+                    }
+                },
+                scales: esCircular ? {} : {
+                    y: { beginAtZero: true, max: 120, ticks: { color: '#000' } },
+                    x: { ticks: { color: '#000' }, grid: { display: false } }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+
+        window.ultimoDataGrafica = riesgos;
+    }
+
+    // 🔁 Cambio de tipo manual
+    select.addEventListener('change', e => {
+        const tipo = e.target.value;
+        if (window.ultimoDataGrafica) {
+            crearGrafico(window.ultimoDataGrafica, tipo);
+        }
+    });
+
+    // 🧠 Evento Livewire que actualiza los datos
+    Livewire.on('actualizarGrafica', payload => {
+        const data = Array.isArray(payload) ? payload[0] : payload;
+        if (!data || !data.riesgos) return;
+        window.ultimoDataGrafica = data.riesgos;
+        const tipo = select.value || 'bar';
+        crearGrafico(data.riesgos, tipo);
+    });
+
+const dataInicial = @json($riesgos ?? []);
+const tipoInicial = @json($grafica ?? 'bar');
+select.value = tipoInicial; // 🔹 Esto asegura que el select muestre la opción guardada
+crearGrafico(dataInicial, tipoInicial);
+}
+
+</script>
+@endpush
+
+<div class="p-4">
+    <h2 class="text-xl font-bold text-center text-blue-800 mb-4">
+        Mapa Mental - Interacción de Riesgos
+    </h2>
+
+    {{-- Agregar nodo --}}
+    <div class="flex flex-wrap justify-center gap-3 mb-3">
+        <input type="text" wire:model.defer="nuevoNodo"
+               placeholder="Nombre del nodo"
+               class="border rounded px-2 py-1 text-sm focus:ring focus:ring-blue-300 w-40">
+
+        <label class="flex items-center gap-1 text-sm">
+            🎨 Fondo:
+            <input type="color" wire:model="colorNodo" class="w-8 h-8 border rounded">
+        </label>
+
+        <label class="flex items-center gap-1 text-sm">
+            🖋 Letra:
+            <input type="color" wire:model="colorLetra" class="w-8 h-8 border rounded">
+        </label>
+
+        <label class="flex items-center gap-1 text-sm">
+            🔠 Tamaño:
+            <input type="number" wire:model="tamanoLetra" min="8" max="30"
+                   class="w-16 border rounded px-1 py-0.5 text-center text-sm">
+        </label>
+
+        <button type="button"
+                wire:click="agregarNodoDesdeFront"
+                class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-800">
+            Agregar Nodo
+        </button>
+    </div>
+
+    {{-- Conectar nodos --}}
+    <div class="flex justify-center gap-3 mb-4">
+        <select wire:model="nodoDesde" class="border px-2 py-1 rounded text-sm">
+            <option value="">Desde...</option>
+            @foreach ($nodos as $n)
+                <option value="{{ $n['id'] }}">{{ $n['label'] }}</option>
+            @endforeach
+        </select>
+
+        <select wire:model="nodoHasta" class="border px-2 py-1 rounded text-sm">
+            <option value="">Hasta...</option>
+            @foreach ($nodos as $n)
+                <option value="{{ $n['id'] }}">{{ $n['label'] }}</option>
+            @endforeach
+        </select>
+
+        <button type="button"
+                wire:click="conectarNodos"
+                class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-800">
+            Conectar
+        </button>
+        {{-- Botones de eliminación --}}
+        <div class="flex justify-center gap-3 mb-4">
+            <button id="btnEliminarNodo"
+                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled>
+                🗑️ Eliminar Nodo Seleccionado
+            </button>
+
+            <button id="btnEliminarConexion"
+                    class="bg-orange-600 text-white px-3 py-1 rounded hover:bg-orange-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled>
+                🔗 Eliminar Conexión Seleccionada
+            </button>
+        </div>
+        <div class="flex justify-center items-center gap-3 mb-4">
+            <label class="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                🖼️ Fondo del mapa:
+                <input type="file" id="inputFondo" accept="image/*"
+                    class="text-sm border rounded p-1 cursor-pointer">
+            </label>
+
+            <button id="btnQuitarFondo"
+                    type="button"
+                    class="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-800 disabled:opacity-50">
+                Quitar Fondo
+            </button>
+        </div>
+    </div>
+<label class="flex items-center gap-2 text-sm font-semibold text-gray-700">
+    🌫️ Opacidad:
+    <input type="range" id="rangoOpacidad" min="0" max="100" value="40"
+           class="cursor-pointer w-32 accent-blue-700">
+</label>
+    {{-- Contenedor del mapa --}}
+<div class="relative w-full h-[600px] rounded-lg border border-gray-300 overflow-hidden" wire:ignore>
+    {{-- Fondo con imagen y opacidad --}}
+    <div id="network-bg"
+         class="absolute inset-0 bg-gray-100 bg-center bg-cover bg-no-repeat transition-all duration-500"
+         style="opacity: 0.4;">
+    </div>
+
+    {{-- Canvas del mapa --}}
+    <div id="network" class="absolute inset-0 w-full h-full"></div>
+</div>
+
+
+<script>
+document.addEventListener('livewire:load', renderMapa);
+document.addEventListener('livewire:navigated', renderMapa);
+if (window.Livewire) {
+    Livewire.hook('morph.updated', () => setTimeout(renderMapa, 400));
+}
+
+function renderMapa() {
+    console.log("🚀 Script Vis.js ejecutado correctamente.");
+
+    const container = document.getElementById('network');
+    const background = document.getElementById('network-bg');
+
+    if (!container) {
+        console.warn("⚠️ No se encontró el contenedor #network.");
+        return;
+    }
+
+    if (typeof vis === 'undefined') {
+        console.error("❌ Vis.js no está disponible todavía.");
+        return;
+    }
+
+    const nodos = @json($nodos ?? []);
+    const relaciones = @json($relaciones ?? []);
+
+    console.log("🧩 Nodos recibidos:", nodos);
+    console.log("🔗 Relaciones recibidas:", relaciones);
+
+    const nodes = new vis.DataSet(
+        nodos.map(n => ({
+            id: Number(n.id),
+            label: n.label || 'Sin nombre',
+            color: n.color || '#FFD700',
+            font: {
+                color: n.colorLetra || '#111',
+                size: n.tamanoLetra ? Number(n.tamanoLetra) : 14
+            }
+        }))
+    );
+
+    const edges = new vis.DataSet(
+        relaciones.map(r => ({
+            from: Number(r.from),
+            to: Number(r.to),
+            color: { color: '#888' }
+        }))
+    );
+
+    const data = { nodes, edges };
+
+    const options = {
+        nodes: {
+            shape: 'circle',
+            borderWidth: 2,
+            shadow: true,
+            font: { face: 'Arial', align: 'center' },
+        },
+        edges: {
+            smooth: true,
+            width: 2,
+        },
+        physics: {
+            enabled: true,
+            stabilization: { iterations: 150 }
+        },
+        interaction: {
+            hover: true,
+            dragView: true,
+            zoomView: true
+        }
+    };
+
+    // Fondo del mapa
+    const fondo = @json($background_image);
+    const opacidad = @json($background_opacity ?? 0.4);
+
+    if (fondo && background) {
+        background.style.backgroundImage = `url('${fondo}')`;
+        background.style.opacity = opacidad;
+    }
+
+    const network = new vis.Network(container, data, options);
+    console.log("✅ Mapa mental renderizado correctamente.");
+
+    // Redibujar para asegurar que se vea
+    setTimeout(() => {
+        network.redraw();
+        network.fit({ animation: true });
+        console.log("🔄 Redibujo forzado ejecutado.");
+    }, 500);
+}
+</script>
+
+
+  <br>
+  @endif
   @if ($titulo==15)
   <br>
   <style>

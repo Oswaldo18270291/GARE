@@ -22,6 +22,7 @@
                     'titulo' => $RSubtitle->subtitle->id,
                     'risks' => $risks,
                     'boton' => $boton,
+
                 ]) 
     </form>
 

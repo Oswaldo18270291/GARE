@@ -855,13 +855,13 @@ inputFondo.addEventListener('change', (event) => {
 
     const reader = new FileReader();
   reader.onload = function (e) {
-      const imageUrl = e.target.result;
-      networkBackground.style.backgroundImage = `url('${imageUrl}')`;
-      networkBackground.style.opacity = '0.4';
+        const imageUrl = e.target.result;
+              networkBackground.style.backgroundImage = `url('${imageUrl}')`;
+                    networkBackground.style.opacity = '0.4';
 
-      // 🔹 Enviar a Livewire (guardar temporalmente)
-      Livewire.dispatch('setBackground', { base64: imageUrl });
-  };
+                          // 🔹 Enviar a Livewire (guardar temporalmente)
+                                Livewire.dispatch('setBackground', { base64: imageUrl });
+                                  };
     reader.readAsDataURL(file);
 });
 
