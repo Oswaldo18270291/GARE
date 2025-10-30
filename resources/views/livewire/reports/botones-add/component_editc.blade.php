@@ -457,7 +457,7 @@
   @endif
   @if($titulo==32)
 
-<div class="p-4">
+<div>
     @if (session('success'))
         <div class="bg-green-200 text-green-800 p-2 rounded mb-3">
             {{ session('success') }}
@@ -522,6 +522,7 @@
         </tbody>
     </table>
 </div>
+    <br>
   <h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
 
 <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
