@@ -87,18 +87,15 @@
            class="cursor-pointer w-32 accent-blue-700">
 </label>
     {{-- Contenedor del mapa --}}
-   <div class="relative w-full h-[600px] rounded-lg border border-gray-300 overflow-hidden">
+<div class="relative w-full h-[600px] rounded-lg border border-gray-300 overflow-hidden" wire:ignore>
     {{-- Fondo con imagen y opacidad --}}
     <div id="network-bg"
          class="absolute inset-0 bg-gray-100 bg-center bg-cover bg-no-repeat transition-all duration-500"
-         style="opacity: 0.4;"> {{-- 🔹 Ajusta opacidad aquí --}}
+         style="opacity: 0.4;">
     </div>
 
     {{-- Canvas del mapa --}}
-    <div id="network"
-         wire:ignore
-         class="absolute inset-0 w-full h-full">
-    </div>
+    <div id="network" class="absolute inset-0 w-full h-full"></div>
 </div>
 
 @once
