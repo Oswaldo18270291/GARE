@@ -677,49 +677,50 @@ crearGrafico(dataInicial, tipoInicial);
 @endpush
 
 <div class="p-4">
-    <h2 class="text-xl font-bold text-center text-blue-800 mb-4">
-        Mapa Mental - Interacción de Riesgos
-    </h2>
+    <div class="mb-6 flex items-center justify-center p-4 rounded-lg" style="background-color: rgba(39, 68, 112, 1);">
+        <h1 class=" text-white font-sans font-bond text-lg">MAPA MENTAL - INTERACCIÓN DE RIESGOS</h1>
+    </div>
 
     {{-- Agregar nodo --}}
     <div class="flex flex-wrap justify-center gap-3 mb-3">
         <input type="text" wire:model.defer="nuevoNodo"
                placeholder="Nombre del nodo"
-               class="border rounded px-2 py-1 text-sm focus:ring focus:ring-blue-300 w-40">
+               class="border rounded px-2 py-1 text-sm focus:ring focus:ring-blue-300 w-40"
+               style="border-color:rgba(31, 89, 177, 1);">
 
         <label class="flex items-center gap-1 text-sm">
-            🎨 Fondo:
-            <input type="color" wire:model="colorNodo" class="w-8 h-8 border rounded">
+            Fondo:
+            <input type="color" wire:model="colorNodo" class="w-8 h-8 border rounded" style="border-color:rgba(31, 89, 177, 1);">
         </label>
 
         <label class="flex items-center gap-1 text-sm">
-            🖋 Letra:
-            <input type="color" wire:model="colorLetra" class="w-8 h-8 border rounded">
+            Letra:
+            <input type="color" wire:model="colorLetra" class="w-8 h-8 border rounded" style="border-color:rgba(31, 89, 177, 1);">
         </label>
 
         <label class="flex items-center gap-1 text-sm">
-            🔠 Tamaño:
+            Tamaño:
             <input type="number" wire:model="tamanoLetra" min="8" max="30"
-                   class="w-16 border rounded px-1 py-0.5 text-center text-sm">
+                   class="w-16 border rounded px-1 py-0.5 text-center text-sm"style="border-color:rgba(31, 89, 177, 1);">
         </label>
 
         <button type="button"
                 wire:click="agregarNodoDesdeFront"
-                class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-800">
+                class="bg-sky-700 text-white px-3 py-1 rounded hover:bg-sky-800">
             Agregar Nodo
         </button>
     </div>
 
     {{-- Conectar nodos --}}
-    <div class="flex justify-center gap-3 mb-4">
-        <select wire:model="nodoDesde" class="border px-2 py-1 rounded text-sm">
+    <div class="flex flex-wrap justify-center gap-3 mb-3">
+        <select wire:model="nodoDesde" class="border px-2 py-1 rounded text-sm"style="border-color:rgba(31, 89, 177, 1);">
             <option value="">Desde...</option>
             @foreach ($nodos as $n)
                 <option value="{{ $n['id'] }}">{{ $n['label'] }}</option>
             @endforeach
         </select>
 
-        <select wire:model="nodoHasta" class="border px-2 py-1 rounded text-sm">
+        <select wire:model="nodoHasta" class="border px-2 py-1 rounded text-sm" style="border-color:rgba(31, 89, 177, 1);">
             <option value="">Hasta...</option>
             @foreach ($nodos as $n)
                 <option value="{{ $n['id'] }}">{{ $n['label'] }}</option>
@@ -728,44 +729,97 @@ crearGrafico(dataInicial, tipoInicial);
 
         <button type="button"
                 wire:click="conectarNodos"
-                class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-800">
+                class="bg-sky-700 text-white px-3 py-1 rounded hover:bg-sky-800">
             Conectar
         </button>
         {{-- Botones de eliminación --}}
         <div class="flex justify-center gap-3 mb-4">
             <button id="btnEliminarNodo"
-                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="bg-red-800 text-white px-3 py-1 rounded hover:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled>
-                🗑️ Eliminar Nodo Seleccionado
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="40"
+                      height="40"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#ffffffff"
+                      stroke-width="0.75"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <title>Eliminar Nodo Seleccionado</title>
+                      <path d="M9 12h6" />
+                      <path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" />
+                    </svg>
             </button>
 
             <button id="btnEliminarConexion"
-                    class="bg-orange-600 text-white px-3 py-1 rounded hover:bg-orange-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="text-white px-3 py-1 rounded hover:bg-orange-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style="background-color:rgba(219, 91, 32, 1);"
                     disabled>
-                🔗 Eliminar Conexión Seleccionada
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="40"
+                      height="40"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#ffffffff"
+                      stroke-width="0.75"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <title>Eliminar Conexión Seleccionada</title>
+                      <path d="M6 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                      <path d="M18 6m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                      <path d="M15.861 15.896a3 3 0 0 0 4.265 4.22m.578 -3.417a3.012 3.012 0 0 0 -1.507 -1.45" />
+                      <path d="M8.7 10.7l1.336 -.688m2.624 -1.352l2.64 -1.36" />
+                      <path d="M8.7 13.3l6.6 3.4" />
+                      <path d="M3 3l18 18" />
+                    </svg>
             </button>
-        </div>
-        <div class="flex justify-center items-center gap-3 mb-4">
-            <label class="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                🖼️ Fondo del mapa:
-                <input type="file" id="inputFondo" accept="image/*"
-                    class="text-sm border rounded p-1 cursor-pointer">
+            <label class="flex flex-col text-sm text-black">
+                <span class="mb-1">Fondo del mapa:</span>
+                <input type="file"
+                       id="inputFondo" 
+                       accept="image/*"
+                       class="text-gray-500 text-sm border rounded p-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400"
+                       style="border-color:rgba(31, 89, 177, 1);"
+                    >
             </label>
 
             <button id="btnQuitarFondo"
                     type="button"
                     class="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-800 disabled:opacity-50">
-                Quitar Fondo
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="40"
+                        height="Auto"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#ffffffff"
+                        stroke-width="1"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        >
+                        <title>Quitar fondo</title>
+                        <path d="M15 8h.01" />
+                        <path d="M13 21h-7a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v7" />
+                        <path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l3 3" />
+                        <path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0" />
+                        <path d="M22 22l-5 -5" />
+                        <path d="M17 22l5 -5" />
+                    </svg>
             </button>
         </div>
     </div>
 <label class="flex items-center gap-2 text-sm font-semibold text-gray-700">
-    🌫️ Opacidad:
+    Opacidad:
     <input type="range" id="rangoOpacidad" min="0" max="100" value="40"
            class="cursor-pointer w-32 accent-blue-700">
 </label>
     {{-- Contenedor del mapa --}}
-<div class="relative w-full h-[600px] rounded-lg border border-gray-300 overflow-hidden" wire:ignore>
+<div class="relative w-full h-[600px] rounded-lg border border-gray-300 overflow-hidden" wire:ignore style="border-color:rgba(31, 89, 177, 1);">
     {{-- Fondo con imagen y opacidad --}}
     <div id="network-bg"
          class="absolute inset-0 bg-gray-100 bg-center bg-cover bg-no-repeat transition-all duration-500"
