@@ -744,12 +744,37 @@ function inicializarGrafica() {
 @endonce
 
 <script>
-document.addEventListener('livewire:init', () => {
-    const container = document.getElementById('network');
-    if (!container || typeof vis === 'undefined') return;
+function renderMapa() {
+    console.log("🚀 Renderizando mapa mental (versión 2 adaptada)");
 
-    let nodes = new vis.DataSet(@json($nodos));
-    let edges = new vis.DataSet(@json($relaciones));
+    const container = document.getElementById('network');
+    const networkBackground = document.getElementById('network-bg');
+    const btnEliminarNodo = document.getElementById('btnEliminarNodo');
+    const btnEliminarConexion = document.getElementById('btnEliminarConexion');
+    const inputFondo = document.getElementById('inputFondo');
+    const btnQuitarFondo = document.getElementById('btnQuitarFondo');
+    const rangoOpacidad = document.getElementById('rangoOpacidad');
+
+    if (!container) {
+        console.warn("⚠️ No se encontró el contenedor #network.");
+        return;
+    }
+    if (typeof vis === 'undefined') {
+        console.error("❌ Vis.js no está disponible todavía.");
+        return;
+    }
+
+    // 🚫 Evita redibujar si ya se está renderizando
+    if (window.__renderingMapa) return;
+    window.__renderingMapa = true;
+    setTimeout(() => window.__renderingMapa = false, 500);
+
+    // === Datos del backend ===
+    const nodos = @json($nodos ?? []);
+    const relaciones = @json($relaciones ?? []);
+
+    const nodes = new vis.DataSet(nodos);
+    const edges = new vis.DataSet(relaciones);
 
     const data = { nodes, edges };
     const options = {
@@ -781,13 +806,9 @@ document.addEventListener('livewire:init', () => {
         interaction: { hover: true, multiselect: true, dragView: true, zoomView: true },
     };
 
-    let network = new vis.Network(container, data, options);
+    const network = new vis.Network(container, data, options);
 
-    // Botones de eliminar
-    const btnEliminarNodo = document.getElementById('btnEliminarNodo');
-    const btnEliminarConexion = document.getElementById('btnEliminarConexion');
-
-    // Actualizar desde Livewire
+    // === Actualizar desde Livewire ===
     window.Livewire.on('actualizarMapa', (payload) => {
         nodes.clear();
         edges.clear();
@@ -796,14 +817,14 @@ document.addEventListener('livewire:init', () => {
         network.fit({ animation: { duration: 300 } });
     });
 
-    // Mantener selección actual
+    // === Selección ===
     let seleccionActual = { nodo: null, conexion: null };
 
     network.on('selectNode', function (params) {
         seleccionActual.nodo = params.nodes[0];
         seleccionActual.conexion = null;
-        btnEliminarNodo.disabled = false;
-        btnEliminarConexion.disabled = true;
+        if (btnEliminarNodo) btnEliminarNodo.disabled = false;
+        if (btnEliminarConexion) btnEliminarConexion.disabled = true;
     });
 
     network.on('selectEdge', function (params) {
@@ -812,22 +833,22 @@ document.addEventListener('livewire:init', () => {
             const edgeData = edges.get(edgeId);
             seleccionActual.nodo = null;
             seleccionActual.conexion = edgeData;
-            btnEliminarNodo.disabled = true;
-            btnEliminarConexion.disabled = false;
+            if (btnEliminarNodo) btnEliminarNodo.disabled = true;
+            if (btnEliminarConexion) btnEliminarConexion.disabled = false;
         }
     });
 
     network.on('deselectNode', () => {
         seleccionActual.nodo = null;
-        btnEliminarNodo.disabled = true;
+        if (btnEliminarNodo) btnEliminarNodo.disabled = true;
     });
 
     network.on('deselectEdge', () => {
         seleccionActual.conexion = null;
-        btnEliminarConexion.disabled = true;
+        if (btnEliminarConexion) btnEliminarConexion.disabled = true;
     });
 
-    // Doble clic para renombrar
+    // === Doble clic para renombrar ===
     network.on('doubleClick', function (params) {
         if (params.nodes.length === 1) {
             const nodeId = params.nodes[0];
@@ -838,7 +859,7 @@ document.addEventListener('livewire:init', () => {
         }
     });
 
-    // Clic derecho (acciones rápidas)
+    // === Clic derecho (acciones rápidas) ===
     network.on('oncontext', function (params) {
         params.event.preventDefault();
         const nodeId = network.getNodeAt(params.pointer.DOM);
@@ -869,70 +890,86 @@ document.addEventListener('livewire:init', () => {
         }
     });
 
-    // Eliminar nodo con botón
-    btnEliminarNodo.addEventListener('click', () => {
-        if (seleccionActual.nodo) {
-            if (confirm("¿Eliminar nodo seleccionado y sus conexiones?")) {
-                @this.call('eliminarNodoSeleccionado', seleccionActual.nodo);
-                seleccionActual.nodo = null;
-                btnEliminarNodo.disabled = true;
+    // === Botones eliminar ===
+    if (btnEliminarNodo) {
+        btnEliminarNodo.addEventListener('click', () => {
+            if (seleccionActual.nodo) {
+                if (confirm("¿Eliminar nodo seleccionado y sus conexiones?")) {
+                    @this.call('eliminarNodoSeleccionado', seleccionActual.nodo);
+                    seleccionActual.nodo = null;
+                    btnEliminarNodo.disabled = true;
+                }
+            } else {
+                alert("Selecciona un nodo primero.");
             }
-        } else {
-            alert("Selecciona un nodo primero.");
-        }
-    });
+        });
+    }
 
-
-    // Eliminar conexión con botón  
-    btnEliminarConexion.addEventListener('click', () => {
-        if (seleccionActual.conexion) {
-            if (confirm("¿Eliminar SOLO la conexión seleccionada?")) {
-                @this.call(
-                    'eliminarRelacionSeleccionada',
-                    seleccionActual.conexion.from,
-                    seleccionActual.conexion.to
-                );
-                seleccionActual.conexion = null;
-                btnEliminarConexion.disabled = true;
-                network.unselectAll(); // 🔹 Limpia la selección visual
+    if (btnEliminarConexion) {
+        btnEliminarConexion.addEventListener('click', () => {
+            if (seleccionActual.conexion) {
+                if (confirm("¿Eliminar la conexión seleccionada?")) {
+                    @this.call(
+                        'eliminarRelacionSeleccionada',
+                        seleccionActual.conexion.from,
+                        seleccionActual.conexion.to
+                    );
+                    seleccionActual.conexion = null;
+                    btnEliminarConexion.disabled = true;
+                    network.unselectAll();
+                }
+            } else {
+                alert("Selecciona una conexión primero.");
             }
-        } else {
-            alert("Selecciona una conexión primero.");
-        }
-    });
+        });
+    }
 
+    // === Fondo personalizado y opacidad ===
+    if (inputFondo) {
+        inputFondo.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const imageUrl = e.target.result;
+                networkBackground.style.backgroundImage = `url('${imageUrl}')`;
+                networkBackground.style.opacity = '0.4';
+                Livewire.dispatch('setBackground', { base64: imageUrl });
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    if (btnQuitarFondo) {
+        btnQuitarFondo.addEventListener('click', () => {
+            networkBackground.style.backgroundImage = 'none';
+        });
+    }
+
+    if (rangoOpacidad) {
+        rangoOpacidad.addEventListener('input', () => {
+            const valor = rangoOpacidad.value / 100;
+            networkBackground.style.opacity = valor.toString();
+        });
+    }
+
+    // Redibujo forzado
+    setTimeout(() => {
+        network.redraw();
+        network.fit({ animation: true });
+    }, 400);
+}
+
+// === Ejecutar automáticamente sin recargar ===
+document.addEventListener("livewire:load", renderMapa);
+window.Livewire.hook('element.updated', (el, component) => {
+    if (el.id && el.id.includes('network')) {
+        setTimeout(renderMapa, 300);
+    }
 });
-// Fondo personalizado del mapa con opacidad
-const inputFondo = document.getElementById('inputFondo');
-const btnQuitarFondo = document.getElementById('btnQuitarFondo');
-const networkBackground = document.getElementById('network-bg');
-
-inputFondo.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-  reader.onload = function (e) {
-        const imageUrl = e.target.result;
-              networkBackground.style.backgroundImage = `url('${imageUrl}')`;
-                    networkBackground.style.opacity = '0.4';
-
-                          // 🔹 Enviar a Livewire (guardar temporalmente)
-                                Livewire.dispatch('setBackground', { base64: imageUrl });
-                                  };
-    reader.readAsDataURL(file);
-});
-
-btnQuitarFondo.addEventListener('click', () => {
-    networkBackground.style.backgroundImage = 'none';
-});
-const rangoOpacidad = document.getElementById('rangoOpacidad');
-rangoOpacidad.addEventListener('input', () => {
-    const valor = rangoOpacidad.value / 100;
-    networkBackground.style.opacity = valor.toString();
-});
-
+document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400));
 </script>
+
 
   <br>
   @endif

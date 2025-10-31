@@ -830,17 +830,9 @@ crearGrafico(dataInicial, tipoInicial);
     {{-- Canvas del mapa --}}
     <div id="network" class="absolute inset-0 w-full h-full"></div>
 </div>
-
-
 <script>
-document.addEventListener('livewire:load', renderMapa);
-document.addEventListener('livewire:navigated', renderMapa);
-if (window.Livewire) {
-    Livewire.hook('morph.updated', () => setTimeout(renderMapa, 400));
-}
-
 function renderMapa() {
-    console.log("🚀 Script Vis.js ejecutado correctamente.");
+    console.log("🚀 Renderizando mapa mental Vis.js");
 
     const container = document.getElementById('network');
     const background = document.getElementById('network-bg');
@@ -849,17 +841,20 @@ function renderMapa() {
         console.warn("⚠️ No se encontró el contenedor #network.");
         return;
     }
-
     if (typeof vis === 'undefined') {
         console.error("❌ Vis.js no está disponible todavía.");
         return;
     }
 
+    // 🚫 Evita redibujar si ya está en proceso
+    if (window.__renderingMapa) return;
+    window.__renderingMapa = true;
+    setTimeout(() => window.__renderingMapa = false, 500);
+
     const nodos = @json($nodos ?? []);
     const relaciones = @json($relaciones ?? []);
-
-    console.log("🧩 Nodos recibidos:", nodos);
-    console.log("🔗 Relaciones recibidas:", relaciones);
+    const fondo = @json($background_image ?? null);
+    const opacidad = @json($background_opacity ?? 0.4);
 
     const nodes = new vis.DataSet(
         nodos.map(n => ({
@@ -868,7 +863,9 @@ function renderMapa() {
             color: n.color || '#FFD700',
             font: {
                 color: n.colorLetra || '#111',
-                size: n.tamanoLetra ? Number(n.tamanoLetra) : 14
+                size: n.tamanoLetra ? Number(n.tamanoLetra) : 14,
+                face: 'Arial',
+                align: 'center'
             }
         }))
     );
@@ -882,32 +879,33 @@ function renderMapa() {
     );
 
     const data = { nodes, edges };
-
     const options = {
         nodes: {
             shape: 'circle',
+            size: 40,
             borderWidth: 2,
             shadow: true,
-            font: { face: 'Arial', align: 'center' },
+            color: {
+                background: '#FFD700',
+                border: '#b8860b',
+                highlight: { background: '#FFED4A', border: '#D97706' },
+            },
+            font: {
+                color: '#111',
+                face: 'Arial',
+                size: 14,
+                align: 'center',
+            },
         },
         edges: {
-            smooth: true,
+            color: { color: '#888' },
+            smooth: { enabled: true, type: 'dynamic' },
             width: 2,
+            selectionWidth: 4,
         },
-        physics: {
-            enabled: true,
-            stabilization: { iterations: 150 }
-        },
-        interaction: {
-            hover: true,
-            dragView: true,
-            zoomView: true
-        }
+        physics: { enabled: true, stabilization: { iterations: 150 } },
+        interaction: { hover: true, multiselect: true, dragView: true, zoomView: true },
     };
-
-    // Fondo del mapa
-    const fondo = @json($background_image);
-    const opacidad = @json($background_opacity ?? 0.4);
 
     if (fondo && background) {
         background.style.backgroundImage = `url('${fondo}')`;
@@ -915,15 +913,39 @@ function renderMapa() {
     }
 
     const network = new vis.Network(container, data, options);
-    console.log("✅ Mapa mental renderizado correctamente.");
+    console.log("✅ Mapa mental renderizado.");
 
-    // Redibujar para asegurar que se vea
+    // Redibuja suavemente
     setTimeout(() => {
         network.redraw();
         network.fit({ animation: true });
-        console.log("🔄 Redibujo forzado ejecutado.");
-    }, 500);
+    }, 300);
+
+    // 👇 Esto hace que se actualice cuando Livewire mande "actualizarMapa"
+    window.Livewire.on('actualizarMapa', (payload) => {
+        nodes.clear();
+        edges.clear();
+        if (payload?.nodos?.length) nodes.add(payload.nodos);
+        if (payload?.relaciones?.length) edges.add(payload.relaciones);
+        network.fit({ animation: { duration: 300 } });
+    });
 }
+
+// 🔹 Lógica para ejecutarse correctamente
+document.addEventListener("livewire:init", () => {
+    console.log("🔹 Livewire listo, esperando renderización...");
+});
+
+// 🔹 Este es el evento clave: ejecuta renderMapa cuando el componente ya se renderizó
+document.addEventListener("livewire:load", renderMapa);
+window.Livewire.hook('element.updated', (el, component) => {
+    if (el.id && el.id.includes('network')) {
+        setTimeout(renderMapa, 300);
+    }
+});
+
+// 🔹 También se re-renderiza si navegas dentro del mismo componente
+document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400));
 </script>
 
 
