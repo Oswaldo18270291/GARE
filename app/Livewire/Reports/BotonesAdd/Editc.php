@@ -54,7 +54,7 @@ class Editc extends Component
     
 public $nodos = [];
 public $relaciones = [];
-public $background_image = null;
+public $backgroundImage = null;
 public $background_opacity = 0.4;
 
     public function mount($id,$boton,$rp)
@@ -109,7 +109,7 @@ public $background_opacity = 0.4;
                 if ($mentalMap) {
                     $this->nodos = $mentalMap->nodos ?? [];
                     $this->relaciones = $mentalMap->relaciones ?? [];
-                    $this->background_image = $mentalMap->background_image ?? null;
+                    $this->backgroundImage = $mentalMap->background_image ?? null;
                     $this->background_opacity = $mentalMap->background_opacity ?? 0.4;
                     $this->dispatch('actualizarMapa', nodos: $this->nodos, relaciones: $this->relaciones);
 
@@ -545,23 +545,41 @@ public $nodoHasta = '';
 
 public function guardarMapaMental()
 {
+    $mentalMap = \App\Models\MentalMap::where('content_id', $this->content->id)->first();
+
+    $data = [
+        'nodos'              => $this->nodos,
+        'relaciones'         => $this->relaciones,
+        'background_opacity' => $this->background_opacity,
+    ];
+
+    // 🔹 Si se subió un nuevo fondo base64
+    if (!empty($this->background_image) && str_starts_with($this->background_image, 'data:image')) {
+        $fileName = 'fondo_' . $this->content->id . '_' . time() . '.png';
+        $path = storage_path('app/public/mental_maps/' . $fileName);
+
+        // Guardar el base64 como imagen física
+        $imageData = explode(',', $this->background_image)[1] ?? null;
+        if ($imageData) {
+            file_put_contents($path, base64_decode($imageData));
+            $data['background_image'] = 'storage/mental_maps/' . $fileName;
+            logger('🧩 Fondo guardado en archivo', ['path' => $data['background_image']]);
+        }
+    } 
+    // 🔹 Si no hay nueva imagen, conservar la existente
+    elseif ($mentalMap && $mentalMap->background_image) {
+        $data['background_image'] = $mentalMap->background_image;
+        logger('🧩 Conservando fondo anterior', ['path' => $data['background_image']]);
+    }
+
     \App\Models\MentalMap::updateOrCreate(
         ['content_id' => $this->content->id],
-        [
-            'nodos'              => $this->nodos,
-            'relaciones'         => $this->relaciones,
-            'background_image'   => $this->background_image,
-            'background_opacity' => $this->background_opacity,
-        ]
+        $data
     );
 
     session()->flash('success', '🧠 Mapa mental guardado correctamente.');
 }
-
-
-
-
-    public $backgroundImage;   // base64 del fondo
+// base64 del fondo
     public $backgroundOpacity = 0.4;
     /** ===== Helpers ===== */
 
@@ -726,12 +744,48 @@ public function guardarMapaMental()
         // 🔁 Actualiza el mapa sin tocar los demás enlaces
         $this->dispatch('actualizarMapa', nodos: $this->nodos, relaciones: $this->relaciones);
     }
-    #[On('setBackground')]
-    public function setBackground($payload)
-    {
-        // Maneja evento desde Livewire.dispatch('setBackground', { base64: imageUrl })
-        $this->background_image = $payload['base64'] ?? null;
+#[On('setBackground')]
+public function setBackground($base64)
+{
+    // 🧹 Si viene vacío, elimina el fondo actual
+    if (empty($base64)) {
+        if ($this->content) {
+            \App\Models\MentalMap::where('content_id', $this->content->id)
+                ->update(['background_image' => null]);
+        }
+
+        $this->backgroundImage  = null;
+        logger('🧹 Fondo eliminado correctamente');
+        return;
     }
+
+    // 🧩 Si viene un nuevo fondo base64 (string completo)
+    if (is_array($base64) && isset($base64['base64'])) {
+        $base64 = $base64['base64'];
+    }
+
+    if (!is_string($base64) || strpos($base64, 'data:image') === false) {
+        logger('⚠️ Formato inválido de fondo recibido');
+        return;
+    }
+
+    // ✅ Guardar directamente el string base64 completo en la base de datos
+    if ($this->content) {
+        \App\Models\MentalMap::updateOrCreate(
+            ['content_id' => $this->content->id],
+            ['background_image' => $base64]
+        );
+    }
+
+    $this->backgroundImage  = $base64;
+
+    logger('✅ Fondo guardado como base64 en BD', [
+        'len' => strlen($base64),
+        'inicio' => substr($base64, 0, 40),
+    ]);
+}
+
+
 
     public function render()
     {

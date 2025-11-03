@@ -497,7 +497,7 @@
                               min="1"
                               max="5"
                               step="1"
-                              required
+                              
                               oninput="this.value = Math.max(1, Math.min(5, this.value))"
                               wire:model.lazy="riesgos.{{ $i }}.{{ $campo }}"
                               wire:blur="recalcularRiesgosFila({{ $i }})"                              
@@ -832,10 +832,13 @@ crearGrafico(dataInicial, tipoInicial);
 </div>
 <script>
 function renderMapa() {
-    console.log("🚀 Renderizando mapa mental Vis.js");
-
     const container = document.getElementById('network');
-    const background = document.getElementById('network-bg');
+    const networkBackground = document.getElementById('network-bg');
+    const inputFondo = document.getElementById('inputFondo');
+    const btnQuitarFondo = document.getElementById('btnQuitarFondo');
+    const rangoOpacidad = document.getElementById('rangoOpacidad');
+    const btnEliminarNodo = document.getElementById('btnEliminarNodo');
+    const btnEliminarConexion = document.getElementById('btnEliminarConexion');
 
     if (!container) {
         console.warn("⚠️ No se encontró el contenedor #network.");
@@ -846,60 +849,44 @@ function renderMapa() {
         return;
     }
 
-    // 🚫 Evita redibujar si ya está en proceso
+    // 🚫 Evita redibujos múltiples
     if (window.__renderingMapa) return;
     window.__renderingMapa = true;
-    setTimeout(() => window.__renderingMapa = false, 500);
+    setTimeout(() => (window.__renderingMapa = false), 500);
 
+    // === Datos desde backend ===
     const nodos = @json($nodos ?? []);
     const relaciones = @json($relaciones ?? []);
     const fondo = @json($background_image ?? null);
     const opacidad = @json($background_opacity ?? 0.4);
 
-    const nodes = new vis.DataSet(
-        nodos.map(n => ({
-            id: Number(n.id),
-            label: n.label || 'Sin nombre',
-            color: n.color || '#FFD700',
-            font: {
-                color: n.colorLetra || '#111',
-                size: n.tamanoLetra ? Number(n.tamanoLetra) : 14,
-                face: 'Arial',
-                align: 'center'
-            }
-        }))
-    );
-
-    const edges = new vis.DataSet(
-        relaciones.map(r => ({
-            from: Number(r.from),
-            to: Number(r.to),
-            color: { color: '#888' }
-        }))
-    );
-
+    // === Inicialización de nodos y relaciones ===
+    const nodes = new vis.DataSet(nodos);
+    const edges = new vis.DataSet(relaciones);
     const data = { nodes, edges };
+
     const options = {
         nodes: {
-            shape: 'circle',
+            shape: "circle",
             size: 40,
             borderWidth: 2,
             shadow: true,
             color: {
-                background: '#FFD700',
-                border: '#b8860b',
-                highlight: { background: '#FFED4A', border: '#D97706' },
+                background: "#FFD700",
+                border: "#b8860b",
+                highlight: { background: "#FFED4A", border: "#D97706" },
             },
             font: {
-                color: '#111',
-                face: 'Arial',
+                color: "#111",
+                face: "Arial",
                 size: 14,
-                align: 'center',
+                vadjust: 0,
+                align: "center",
             },
         },
         edges: {
-            color: { color: '#888' },
-            smooth: { enabled: true, type: 'dynamic' },
+            color: { color: "#888" },
+            smooth: { enabled: true, type: "dynamic" },
             width: 2,
             selectionWidth: 4,
         },
@@ -907,46 +894,198 @@ function renderMapa() {
         interaction: { hover: true, multiselect: true, dragView: true, zoomView: true },
     };
 
-    if (fondo && background) {
-        background.style.backgroundImage = `url('${fondo}')`;
-        background.style.opacity = opacidad;
+    // === Fondo inicial ===
+    if (fondo && networkBackground) {
+        networkBackground.style.backgroundImage = `url('${fondo}')`;
+        networkBackground.style.opacity = opacidad;
     }
 
+    // === Crear red ===
     const network = new vis.Network(container, data, options);
-    console.log("✅ Mapa mental renderizado.");
 
-    // Redibuja suavemente
-    setTimeout(() => {
-        network.redraw();
-        network.fit({ animation: true });
-    }, 300);
-
-    // 👇 Esto hace que se actualice cuando Livewire mande "actualizarMapa"
-    window.Livewire.on('actualizarMapa', (payload) => {
+    // === Actualizar desde Livewire ===
+    window.Livewire.on("actualizarMapa", (payload) => {
         nodes.clear();
         edges.clear();
         if (payload?.nodos?.length) nodes.add(payload.nodos);
         if (payload?.relaciones?.length) edges.add(payload.relaciones);
         network.fit({ animation: { duration: 300 } });
     });
+
+    // === Selección ===
+    let seleccionActual = { nodo: null, conexion: null };
+
+    network.on("selectNode", (params) => {
+        seleccionActual.nodo = params.nodes[0];
+        seleccionActual.conexion = null;
+        if (btnEliminarNodo) btnEliminarNodo.disabled = false;
+        if (btnEliminarConexion) btnEliminarConexion.disabled = true;
+    });
+
+    network.on("selectEdge", (params) => {
+        if (params.edges.length > 0) {
+            const edgeId = params.edges[0];
+            const edgeData = edges.get(edgeId);
+            seleccionActual.nodo = null;
+            seleccionActual.conexion = edgeData;
+            if (btnEliminarNodo) btnEliminarNodo.disabled = true;
+            if (btnEliminarConexion) btnEliminarConexion.disabled = false;
+        }
+    });
+
+    network.on("deselectNode", () => {
+        seleccionActual.nodo = null;
+        if (btnEliminarNodo) btnEliminarNodo.disabled = true;
+    });
+
+    network.on("deselectEdge", () => {
+        seleccionActual.conexion = null;
+        if (btnEliminarConexion) btnEliminarConexion.disabled = true;
+    });
+
+    // === Doble clic: renombrar nodo ===
+    network.on("doubleClick", (params) => {
+        if (params.nodes.length === 1) {
+            const nodeId = params.nodes[0];
+            const nuevoNombre = prompt("Nuevo nombre para el nodo:");
+            if (nuevoNombre && nuevoNombre.trim() !== "") {
+                @this.call("actualizarNodo", nodeId, nuevoNombre.trim());
+            }
+        }
+    });
+
+    // === Clic derecho: acciones rápidas ===
+    network.on("oncontext", (params) => {
+        params.event.preventDefault();
+        const nodeId = network.getNodeAt(params.pointer.DOM);
+        if (!nodeId) return;
+
+        const opcion = prompt(
+            "Acción para el nodo:\n1. Cambiar color fondo\n2. Cambiar color de letra\n3. Eliminar nodo"
+        );
+
+        if (opcion === "1") {
+            const nuevoColor = prompt("Nuevo color de fondo (#RRGGBB):", "#FF0000");
+            if (nuevoColor && /^#([0-9A-F]{3}){1,2}$/i.test(nuevoColor.trim())) {
+                @this.call("actualizarColorNodo", nodeId, nuevoColor.trim());
+            }
+        } else if (opcion === "2") {
+            const nuevoColor = prompt("Nuevo color de letra (#RRGGBB):", "#000000");
+            if (nuevoColor && /^#([0-9A-F]{3}){1,2}$/i.test(nuevoColor.trim())) {
+                const nodo = nodes.get(nodeId);
+                if (nodo) {
+                    nodo.font.color = nuevoColor.trim();
+                    @this.call("actualizarNodo", nodeId, nodo.label);
+                }
+            }
+        } else if (opcion === "3") {
+            if (confirm("¿Seguro que deseas eliminar solo este nodo y sus conexiones?")) {
+                @this.call("eliminarNodoSeleccionado", nodeId);
+            }
+        }
+    });
+
+    // === Botones eliminar ===
+    if (btnEliminarNodo) {
+        btnEliminarNodo.addEventListener("click", () => {
+            if (seleccionActual.nodo) {
+                if (confirm("¿Eliminar nodo seleccionado y sus conexiones?")) {
+                    @this.call("eliminarNodoSeleccionado", seleccionActual.nodo);
+                    seleccionActual.nodo = null;
+                    btnEliminarNodo.disabled = true;
+                }
+            } else {
+                alert("Selecciona un nodo primero.");
+            }
+        });
+    }
+
+    if (btnEliminarConexion) {
+        btnEliminarConexion.addEventListener("click", () => {
+            if (seleccionActual.conexion) {
+                if (confirm("¿Eliminar la conexión seleccionada?")) {
+                    @this.call(
+                        "eliminarRelacionSeleccionada",
+                        seleccionActual.conexion.from,
+                        seleccionActual.conexion.to
+                    );
+                    seleccionActual.conexion = null;
+                    btnEliminarConexion.disabled = true;
+                    network.unselectAll();
+                }
+            } else {
+                alert("Selecciona una conexión primero.");
+            }
+        });
+    }
+
+    // === Fondo personalizado (crear/editar) ===
+    if (inputFondo) {
+        inputFondo.addEventListener("change", (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const imageUrl = e.target.result;
+                networkBackground.style.backgroundImage = `url('${imageUrl}')`;
+                networkBackground.style.opacity = "0.4";
+
+                if (window.Livewire) {
+                    const comps = Object.values(window.Livewire.components.componentsById || {});
+                    const comp = comps[0];
+                    if (comp) {
+                        comp.$wire.call('setBackground', imageUrl); // ✅ variable correcta
+                        console.log("✅ Fondo enviado correctamente (base64 detectado)");
+                    } else {
+                        console.warn("⚠️ No se encontró componente Livewire activo.");
+                    }
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    if (btnQuitarFondo) {
+        btnQuitarFondo.addEventListener("click", () => {
+            networkBackground.style.backgroundImage = "none";
+            if (window.Livewire) {
+                const comps = Object.values(window.Livewire.components.componentsById || {});
+                const comp = comps[0];
+                if (comp) {
+                    comp.$wire.call('setBackground', '');
+                    console.log("🧹 Fondo eliminado del componente Livewire.");
+                }
+            }
+        });
+    }
+
+    // === Opacidad dinámica ===
+    if (rangoOpacidad) {
+        rangoOpacidad.addEventListener("input", () => {
+            const valor = rangoOpacidad.value / 100;
+            networkBackground.style.opacity = valor.toString();
+        });
+    }
+
+    // === Redibujo ===
+    setTimeout(() => {
+        network.redraw();
+        network.fit({ animation: true });
+    }, 400);
 }
 
-// 🔹 Lógica para ejecutarse correctamente
-document.addEventListener("livewire:init", () => {
-    console.log("🔹 Livewire listo, esperando renderización...");
-});
-
-// 🔹 Este es el evento clave: ejecuta renderMapa cuando el componente ya se renderizó
+// === Hooks de Livewire ===
 document.addEventListener("livewire:load", renderMapa);
-window.Livewire.hook('element.updated', (el, component) => {
-    if (el.id && el.id.includes('network')) {
+window.Livewire.hook("element.updated", (el, component) => {
+    if (el.id && el.id.includes("network")) {
         setTimeout(renderMapa, 300);
     }
 });
-
-// 🔹 También se re-renderiza si navegas dentro del mismo componente
 document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400));
 </script>
+
+
 
 
   <br>

@@ -375,37 +375,37 @@
     <table class="w-full border-collapse text-center text-sm font-sans" style="border:1px solid black;">
         <thead>
             <tr style="background-color:#002060; color:white;">
-                <th rowspan="2" class="border p-2">No.</th>
-                <th rowspan="2" class="border p-2">Tipo de Riesgo</th>
-                <th colspan="5" class="border p-2">Criterios de Evaluación</th>
-                <th rowspan="2" class="border p-2">Total<br>Posible</th>
-                <th rowspan="2" class="border p-2">Cal.</th>
-                <th rowspan="2" class="border p-2">Clase de Riesgo</th>
-                <th rowspan="2" class="border p-2">Factor de ocurrencia<br>del riesgo</th>
+                <th rowspan="2" style="border:2px solid #001a4d;" class="border p-2">No.</th>
+                <th rowspan="2" style="border:2px solid #001a4d;" class="border p-2">Tipo de Riesgo</th>
+                <th colspan="5" style="border:2px solid #001a4d;" class="border p-2">Criterios de Evaluación</th>
+                <th rowspan="2" style="border:2px solid #001a4d;" class="border p-2">Total<br>Posible</th>
+                <th rowspan="2" style="border:2px solid #001a4d;" class="border p-2">Cal.</th>
+                <th rowspan="2" style="border:2px solid #001a4d;" class="border p-2">Clase de Riesgo</th>
+                <th rowspan="2" style="border:2px solid #001a4d;" class="border p-2">Factor de ocurrencia<br>del riesgo</th>
             </tr>
             <tr style="background-color:#002060; color:white;">
-                <th class="border p-1">Impacto en las Funciones</th>
-                <th class="border p-1">Impacto en la Organización</th>
-                <th class="border p-1">Extensión del Daño</th>
-                <th class="border p-1">Probabilidad de Materialización</th>
-                <th class="border p-1">Impacto Financiero</th>
+                <th style="border:2px solid #001a4d;" class="border p-1">Impacto en las Funciones</th>
+                <th style="border:2px solid #001a4d;" class="border p-1">Impacto en la Organización</th>
+                <th style="border:2px solid #001a4d;" class="border p-1">Extensión del Daño</th>
+                <th style="border:2px solid #001a4d;" class="border p-1">Probabilidad de Materialización</th>
+                <th style="border:2px solid #001a4d;" class="border p-1">Impacto Financiero</th>
             </tr>
         </thead>
 
         <tbody>
             @foreach ($riesgos as $i => $r)
                 <tr>
-                    <td class="border p-1">{{ $r['no'] }}</td>
-                    <td class="border p-1 text-left">{{ $r['riesgo'] }}</td>
+                    <td class="border p-1" style="border:2px solid #001a4d;">{{ $r['no'] }}</td>
+                    <td class="border p-1 text-left" style="border:2px solid #001a4d;">{{ $r['riesgo'] }}</td>
 
                     @foreach (['impacto_f','impacto_o','extension_d','probabilidad_m','impacto_fin'] as $campo)
-                        <td class="border p-1">
+                        <td class="border p-1" style="border:2px solid #001a4d;" >
                           <input 
                               type="number"
                               min="1"
                               max="5"
                               step="1"
-                              required
+                              
                               oninput="this.value = Math.max(1, Math.min(5, this.value))"
                               wire:model.lazy="riesgos.{{ $i }}.{{ $campo }}"
                               wire:blur="recalcularRiesgosFila({{ $i }})"                              
@@ -414,17 +414,18 @@
                         </td>
                     @endforeach
 
-                    <td class="border p-1">25</td>
-                    <td class="border p-1 font-semibold">{{ $r['cal'] ?? '' }}</td>
-                    <td class="border p-1 font-bold text-white"
-                        style="background-color:
+                    <td class="border p-1" style="border:2px solid #001a4d;">25</td>
+                    <td class="border p-1 font-semibold" style="border:2px solid #001a4d;">{{ $r['cal'] ?? '' }}</td>
+                    <td class="border p-1 font-bold text-white" 
+                        style="border:2px solid #001a4d;
+                        background-color:
                             {{ ($r['clase_riesgo'] ?? '') == 'MUY ALTO' ? '#ff0000' :
                                (($r['clase_riesgo'] ?? '') == 'ALTO' ? '#ff6600' :
                                (($r['clase_riesgo'] ?? '') == 'MEDIO' ? '#ffc000' :
                                (($r['clase_riesgo'] ?? '') == 'BAJO' ? '#00b050' : 'transparent'))) }}">
                         {{ $r['clase_riesgo'] ?? '' }}
                     </td>
-                    <td class="border p-1">{{ $r['factor_oc'] ?? '' }}</td>
+                    <td class="border p-1" style="border:2px solid #001a4d;">{{ $r['factor_oc'] ?? '' }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -745,7 +746,6 @@ function inicializarGrafica() {
 
 <script>
 function renderMapa() {
-    console.log("🚀 Renderizando mapa mental (versión 2 adaptada)");
 
     const container = document.getElementById('network');
     const networkBackground = document.getElementById('network-bg');
@@ -1106,11 +1106,12 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
   @if ($titulo==16)
   <h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
 @if(!empty($risks))
-  <br>
-  Características del Riesgo.
-  <div>
+
     <table id="tabla" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: left;">
           <!-- Pendientes -->
+      <tr style="background-color: #02085bff; font-weight: bold; text-align: center;">
+        <td colspan="3">  Características del Riesgo.</td>
+      </tr>
       <tr style="background-color: #ffc107; font-weight: bold; text-align: center;">
         <td colspan="3">Pendientes</td>
       </tr>
@@ -1280,104 +1281,420 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
 
   <br>
   @endif
+  @if ($titulo==33)
+<div class="relative flex flex-col items-center justify-center min-h-screen bg-white p-10 font-sans select-none">
+    <h1 class="text-3xl font-bold mb-8 text-[#002060] uppercase tracking-wide">
+        Análisis FODA
+    </h1>
+
+    <!-- 🟠 Círculo principal -->
+    <div class="relative w-[750px] h-[750px] rounded-full overflow-visible shadow-xl border-8 border-white">
+
+        <!-- 🟧 Fortalezas -->
+        <div class="absolute top-0 left-0 w-1/2 h-1/2 bg-[#F47B20] text-white 
+                    flex flex-col items-center justify-start text-center pt-10 rounded-tl-full border-r-8 border-b-8 border-white">
+              <h2 class="absolute text-xl font-bold tracking-wide"
+                  style="top: 250px; left: 160px;">
+                  OPORTUNIDADES
+              </h2>  
+        </div>
+
+        <!-- ⚫ Debilidades -->
+        <div class="absolute top-0 right-0 w-1/2 h-1/2 bg-[#808285] text-white 
+                    flex flex-col items-center justify-start text-center pt-10 rounded-tr-full border-l-8 border-b-8 border-white">
+              <h2 class="absolute text-xl font-bold tracking-wide"
+                  style="top: 250px; left: 20px;">
+                  DEBILIDADES
+              </h2>
+        </div>
+
+        <!-- 🟦 Oportunidades -->
+        <div class="absolute bottom-0 left-0 w-1/2 h-1/2 bg-[#0072BC] text-white 
+                    flex flex-col items-center justify-end text-center pb-10 rounded-bl-full border-r-8 border-t-8 border-white">
+              <h2 class="absolute text-xl font-bold tracking-wide"
+                  style="top: 80px; left: 150px;">
+                  OPORTUNIDADES
+              </h2>
+        </div>
+
+        <!-- 🟨 Amenazas -->
+        <div class="absolute bottom-0 right-0 w-1/2 h-1/2 bg-[#FDB913] text-white 
+                    flex flex-col items-center justify-end text-center pb-10 rounded-br-full border-l-8 border-t-8 border-white">
+              <h2 class="absolute text-xl font-bold tracking-wide"
+                  style="top: 80px; left: 20px;">
+                  AMENAZAS
+              </h2>
+        </div>
+
+        <!-- 🔁 Flechas centrales -->
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+            <div class="w-16 h-16 rounded-full bg-white shadow-md flex items-center justify-center">
+                  <img src="{{ asset('contenido/ciclo.png') }}" >
+            </div>
+        </div>
+
+        <!-- 📦 Cuadro Fortalezas -->
+        <div class="absolute top-[40px] left-[-100px] z-30 w-[260px] h-[130px] 
+                    border-2 border-[#F47B20] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
+            <textarea wire:model.defer="fortalezas"
+                      class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
+                      placeholder="• Escribe las fortalezas aquí..."></textarea>
+        </div>
+
+        <!-- 📦 Cuadro Debilidades -->
+        <div class="absolute top-[40px] right-[-100px] z-30 w-[260px] h-[130px] 
+                    border-2 border-[#808285] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
+            <textarea wire:model.defer="debilidades"
+                      class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
+                      placeholder="• Escribe las debilidades aquí..."></textarea>
+        </div>
+
+        <!-- 📦 Cuadro Oportunidades -->
+        <div class="absolute bottom-[40px] left-[-100px] z-30 w-[260px] h-[130px] 
+                    border-2 border-[#0072BC] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
+            <textarea wire:model.defer="oportunidades"
+                      class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
+                      placeholder="• Escribe las oportunidades aquí..."></textarea>
+        </div>
+
+        <!-- 📦 Cuadro Amenazas -->
+        <div class="absolute bottom-[40px] right-[-100px] z-30 w-[260px] h-[130px] 
+                    border-2 border-[#FDB913] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
+            <textarea wire:model.defer="amenazas"
+                      class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
+                      placeholder="• Escribe las amenazas aquí..."></textarea>
+        </div>
+    </div>
+</div>
+
+  @endif
   @if ($titulo==17)
+  <table class="w-full border-collapse text-center text-sm font-sans" style="border:1px solid black;">
+    <thead>
+      <tr style="background-color:#002060; color:white;">
+        <th class="border p-2 w-1/4">ACCIONES DIVERSAS</th>
+        <th class="border p-2 w-3/4">TRATAMIENTO GENERAL DE LOS RIESGOS IDENTIFICADOS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="border p-2 bg-[#10284A] text-white align-top">
+          Medidas preventivas actuales
+        </td>
+        <td class="border p-2 align-top">
+            <div 
+        x-data 
+        wire:ignore
+        x-init="
+            const init = () => {
+                if (typeof Quill === 'undefined') { return setTimeout(init, 150); }
 
-  5.1	Control Existente contra Control Ideal.
-  <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: center;">
-    <tr style="background-color: #0070C0; color: white; font-weight: bold;">
-      <td style="border: 1px solid black; padding: 6px;">Orden.</td>
-      <td style="border: 1px solid black; padding: 6px;">Control</td>
-      <td style="border: 1px solid black; padding: 6px;">Existente</td>
-      <td style="border: 1px solid black; padding: 6px;">Ideal</td>
-    </tr>
-    @foreach($su as $s)
-    <tr>
-      <td style="border: 1px solid black;">C01</td>
-      <td style="border: 1px solid black; text-align: left;">{{$s->subtitle->nombre}}</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">              
-      <input type="number" min="1" max="5"  class="w-12 text-center border">
-      </td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
-    @endforeach
+                const quill = new Quill($refs.editorTit, {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: {
+                            container: [
+                                [{ header: [1, 2, false] }],
+                                ['bold', 'italic', 'underline'],
+                                [{ 'align': [] }],
+                                [{ list: 'ordered' }, { list: 'bullet' }],
+                                ['clean']
+                            ]
+                        }
+                    }
+                });
 
+                const toolbar = quill.getModule('toolbar').container;
+                const editor  = quill.root;
+
+                // --- Botón 'a.' (lista alfabética)
+                const alphaButton = document.createElement('button');
+                alphaButton.innerHTML = `
+                    <svg viewBox='0 0 18 18'>
+                      <text x='4' y='14' font-size='13' font-family='Arial'>a.</text>
+                    </svg>`;
+                alphaButton.type = 'button';
+                alphaButton.classList.add('ql-alpha');
+                alphaButton.title = 'Lista alfabética';
+
+                const orderedBtn = toolbar.querySelector('.ql-list[value=ordered]');
+                orderedBtn?.insertAdjacentElement('afterend', alphaButton);
+
+                // Al hacer clic en 'a.' -> forzar alfabética
+                alphaButton.addEventListener('click', () => {
+                    const range = quill.getSelection();
+                    if (!range) return;
+
+                    const fmt = quill.getFormat(range);
+                    // si no es alfabética, convertir a ordenada y activar alpha-list
+                    if (!fmt.list || editor.classList.contains('alpha-list') === false) {
+                        quill.format('list', 'ordered');
+                        editor.classList.add('alpha-list');
+                        alphaButton.classList.add('ql-active');
+                    } else {
+                        // si ya está con alpha-list, quitar la lista
+                        quill.format('list', false);
+                        editor.classList.remove('alpha-list');
+                        alphaButton.classList.remove('ql-active');
+                    }
+                });
+
+                // Al hacer clic en el botón numerado -> quitar alpha-list
+                orderedBtn?.addEventListener('click', () => {
+                    // Deja que Quill aplique/toggle la lista ordenada…
+                    // y nosotros limpiamos la clase para volver a números
+                    editor.classList.remove('alpha-list');
+                    alphaButton.classList.remove('ql-active');
+                });
+
+                // También si cambia el formato y queda 'ordered', limpiamos alpha-list
+                quill.on('editor-change', () => {
+                    const range = quill.getSelection();
+                    if (!range) return;
+                    const fmt = quill.getFormat(range);
+                    if (fmt.list === 'ordered') {
+                        editor.classList.remove('alpha-list');
+                        alphaButton.classList.remove('ql-active');
+                    }
+                });
+
+                // CSS: números por defecto, letras cuando alpha-list está activo
+                const style = document.createElement('style');
+                style.innerHTML = `
+                  .ql-toolbar button.ql-alpha svg { width: 18px; height: 18px; }
+                  /* numeración normal (decimal) por defecto */
+                  .ql-editor ol > li::before { content: counter(list-0, decimal) '. '; }
+                  /* alfabético cuando está activa la clase */
+                  .ql-editor.alpha-list ol > li::before { content: counter(list-0, lower-alpha) '. '; }
+                  .ql-editor.alpha-list ol ol > li::before { content: counter(list-1, lower-alpha) '. '; }
+                  .ql-editor.alpha-list ol ol ol > li::before { content: counter(list-2, lower-alpha) '. '; }
+                  .ql-editor.alpha-list ol ol ol ol > li::before { content: counter(list-3, lower-alpha) '. '; }
+                  .ql-editor.alpha-list ol ol ol ol ol > li::before { content: counter(list-4, lower-alpha) '. '; }
+                `;
+                document.head.appendChild(style);
+
+                // Sincroniza con Livewire
+                quill.on('text-change', () => {
+                    $refs.textareaTit.value = quill.root.innerHTML;
+                    $refs.textareaTit.dispatchEvent(new Event('input'));
+                });
+            };
+            init();
+        "
+    >
+        <div x-ref="editorTit" style="height:200px; background:white;"></div>
+        <textarea x-ref="textareaTit" wire:model="contenido" class="hidden"></textarea>
+    </div>
+    </td>
+      </tr>
+      <tr>
+        <td class="border p-2 bg-[#10284A] text-white align-top">
+          Acciones / Planes por realizar
+        </td>
+        <td class="border p-2 align-top">
+          <div 
+            x-data 
+            wire:ignore
+            x-init="
+                const init = () => {
+                    if (typeof Quill === 'undefined') { return setTimeout(init, 150); }
+
+                    const quill = new Quill($refs.editorTit, {
+                        theme: 'snow',
+                        modules: {
+                            toolbar: {
+                                container: [
+                                    [{ header: [1, 2, false] }],
+                                    ['bold', 'italic', 'underline'],
+                                    [{ 'align': [] }],
+                                    [{ list: 'ordered' }, { list: 'bullet' }],
+                                    ['clean']
+                                ]
+                            }
+                        }
+                    });
+
+                    const toolbar = quill.getModule('toolbar').container;
+                    const editor  = quill.root;
+
+                    // --- Botón 'a.' (lista alfabética)
+                    const alphaButton = document.createElement('button');
+                    alphaButton.innerHTML = `
+                        <svg viewBox='0 0 18 18'>
+                          <text x='4' y='14' font-size='13' font-family='Arial'>a.</text>
+                        </svg>`;
+                    alphaButton.type = 'button';
+                    alphaButton.classList.add('ql-alpha');
+                    alphaButton.title = 'Lista alfabética';
+
+                    const orderedBtn = toolbar.querySelector('.ql-list[value=ordered]');
+                    orderedBtn?.insertAdjacentElement('afterend', alphaButton);
+
+                    // Al hacer clic en 'a.' -> forzar alfabética
+                    alphaButton.addEventListener('click', () => {
+                        const range = quill.getSelection();
+                        if (!range) return;
+
+                        const fmt = quill.getFormat(range);
+                        // si no es alfabética, convertir a ordenada y activar alpha-list
+                        if (!fmt.list || editor.classList.contains('alpha-list') === false) {
+                            quill.format('list', 'ordered');
+                            editor.classList.add('alpha-list');
+                            alphaButton.classList.add('ql-active');
+                        } else {
+                            // si ya está con alpha-list, quitar la lista
+                            quill.format('list', false);
+                            editor.classList.remove('alpha-list');
+                            alphaButton.classList.remove('ql-active');
+                        }
+                    });
+
+                    // Al hacer clic en el botón numerado -> quitar alpha-list
+                    orderedBtn?.addEventListener('click', () => {
+                        // Deja que Quill aplique/toggle la lista ordenada…
+                        // y nosotros limpiamos la clase para volver a números
+                        editor.classList.remove('alpha-list');
+                        alphaButton.classList.remove('ql-active');
+                    });
+
+                    // También si cambia el formato y queda 'ordered', limpiamos alpha-list
+                    quill.on('editor-change', () => {
+                        const range = quill.getSelection();
+                        if (!range) return;
+                        const fmt = quill.getFormat(range);
+                        if (fmt.list === 'ordered') {
+                            editor.classList.remove('alpha-list');
+                            alphaButton.classList.remove('ql-active');
+                        }
+                    });
+
+                    // CSS: números por defecto, letras cuando alpha-list está activo
+                    const style = document.createElement('style');
+                    style.innerHTML = `
+                      .ql-toolbar button.ql-alpha svg { width: 18px; height: 18px; }
+                      /* numeración normal (decimal) por defecto */
+                      .ql-editor ol > li::before { content: counter(list-0, decimal) '. '; }
+                      /* alfabético cuando está activa la clase */
+                      .ql-editor.alpha-list ol > li::before { content: counter(list-0, lower-alpha) '. '; }
+                      .ql-editor.alpha-list ol ol > li::before { content: counter(list-1, lower-alpha) '. '; }
+                      .ql-editor.alpha-list ol ol ol > li::before { content: counter(list-2, lower-alpha) '. '; }
+                      .ql-editor.alpha-list ol ol ol ol > li::before { content: counter(list-3, lower-alpha) '. '; }
+                      .ql-editor.alpha-list ol ol ol ol ol > li::before { content: counter(list-4, lower-alpha) '. '; }
+                    `;
+                    document.head.appendChild(style);
+
+                    // Sincroniza con Livewire
+                    quill.on('text-change', () => {
+                        $refs.textareaTit.value = quill.root.innerHTML;
+                        $refs.textareaTit.dispatchEvent(new Event('input'));
+                    });
+                };
+                init();
+            "
+        >
+            <div x-ref="editorTit" style="height:200px; background:white;"></div>
+            <textarea x-ref="textareaTit" wire:model="contenido" class="hidden"></textarea>
+        </div>
+        </td>
+      </tr>
+    </tbody>
   </table>
 
   <br>
   @endif
   @if ($titulo==18)
-  <h1>5.2	Organigrama de Controles.</h1>
-  <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt; text-align: left;">
-    <!-- Encabezado Humanos -->
-    <tr style="background-color: #0070C0; color: white; font-weight: bold;">
-      <td colspan="3" style="border: 1px solid black; padding: 6px;">Humanos</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">1</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C04</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Consultoría de seguridad (interna)</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">2</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C05</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Controlador de acceso</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">3</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C09</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Equipo de seguridad</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">4</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C01</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Brigada de primeros auxilios</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">5</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C03</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Consultoría de seguridad</td>
-    </tr>
+    <table class="w-full border-collapse text-center text-sm font-sans" 
+          style="border:2px solid #001a4d; border-collapse:collapse;">
+      <thead>
+        <tr style="background-color:#002060; color:white; border:2px solid #001a4d;">
+          <th style="border:2px solid #001a4d; padding:8px; width:5%;">No.</th>
+          <th style="border:2px solid #001a4d; padding:8px; width:15%;">Tipo de Riesgo</th>
+          <th style="border:2px solid #001a4d; padding:8px; width:25%;">Medidas preventivas actuales</th>
+          <th style="border:2px solid #001a4d; padding:8px; width:40%;">Acciones / Planes por realizar</th>
+          <th style="border:2px solid #001a4d; padding:8px; width:15%;">Estatus</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border:2px solid #001a4d;">
+          <td style="border:2px solid #001a4d; padding:6px;">R01</td>
+          <td style="border:2px solid #001a4d; padding:6px;">Intrusión</td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+        </tr>
+        <tr>
+          <td style="border:2px solid #001a4d; padding:6px;">R02</td>
+          <td style="border:2px solid #001a4d; padding:6px;">Invasión para ocupación de áreas adyacentes a instalación</td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+        </tr>
+        <tr>
+          <td style="border:2px solid #001a4d; padding:6px;">R03</td>
+          <td style="border:2px solid #001a4d; padding:6px;">Manifestaciones sociales y movimientos sindicales</td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+        </tr>
+        <tr>
+          <td style="border:2px solid #001a4d; padding:6px;">R04</td>
+          <td style="border:2px solid #001a4d; padding:6px;">Ciber ataque – Sistemas de la organización</td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+        </tr>
+        <tr>
+          <td style="border:2px solid #001a4d; padding:6px;">R05</td>
+          <td style="border:2px solid #001a4d; padding:6px;">Filtración de información</td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+        </tr>
+        <tr>
+          <td style="border:2px solid #001a4d; padding:6px;">R06</td>
+          <td style="border:2px solid #001a4d; padding:6px;">Emergencias médicas</td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+        </tr>
+        <tr>
+          <td style="border:2px solid #001a4d; padding:6px;">R07</td>
+          <td style="border:2px solid #001a4d; padding:6px;">Tempestad y/o lluvia con inundaciones alta intensidad</td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+        </tr>
+        <tr>
+          <td style="border:2px solid #001a4d; padding:6px;">R08</td>
+          <td style="border:2px solid #001a4d; padding:6px;">Lesiones</td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+        </tr>
+        <tr>
+          <td style="border:2px solid #001a4d; padding:6px;">R09</td>
+          <td style="border:2px solid #001a4d; padding:6px;">Amenazas a empleados</td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+        </tr>
+        <tr>
+          <td style="border:2px solid #001a4d; padding:6px;">R10</td>
+          <td style="border:2px solid #001a4d; padding:6px;">Incendio</td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+        </tr>
+        <tr>
+          <td style="border:2px solid #001a4d; padding:6px;">R11</td>
+          <td style="border:2px solid #001a4d; padding:6px;">Sismo</td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+          <td style="border:2px solid #001a4d; padding:6px;"></td>
+        </tr>
+      </tbody>
+    </table>
 
-    <!-- Encabezado Políticos -->
-    <tr style="background-color: #0070C0; color: white; font-weight: bold; font-style: italic;">
-      <td colspan="3" style="border: 1px solid black; padding: 6px;">Políticos y regulatorios.</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">1</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C06</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Cumplimentar leyes federales, provinciales/estaduales y/o municipales</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">2</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C08</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Cumplimentar regulaciones de organizaciones reguladoras</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">3</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C07</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Cumplimentar regulaciones de organizaciones reguladoras</td>
-    </tr>
-
-    <!-- Encabezado Procesos -->
-    <tr style="background-color: #0070C0; color: white; font-weight: bold; font-style: italic;">
-      <td colspan="3" style="border: 1px solid black; padding: 6px;">Procesos (Organizacionales)</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">1</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C02</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Comité integrado de gestión de riesgos corporativos</td>
-    </tr>
-
-    <!-- Encabezado Técnicos -->
-    <tr style="background-color: #0070C0; color: white; font-weight: bold; font-style: italic;">
-      <td colspan="3" style="border: 1px solid black; padding: 6px;">Técnicos (Físicos y Electrónicos).</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">1</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C10</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Sistemas y procesos contra ciber ataques</td>
-    </tr>
-  </table>
   <br>
   @endif
   @if (in_array($titulo, [20,21,22,23,24,25,26,27,28,29]))

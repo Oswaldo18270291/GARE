@@ -160,8 +160,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Convierte la gráfica a imagen base64
     const base64 = document.getElementById('grafica').toDataURL('image/png');
-    console.log("⚙️ Generando gráfica...");
-    console.log("Base64 length:", base64.length);
 
     // Envía la imagen al backend para guardarla
     await fetch("{{ route('guardar.imagen.grafica', $report->id) }}", {
@@ -172,8 +170,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         },
         body: JSON.stringify({ imagen: base64 })
     });
-
-    console.log("✅ Imagen enviada al servidor");
 
     // 🔹 Oculta el loader y redirige al PDF actualizado
     loader.style.display = 'none';
