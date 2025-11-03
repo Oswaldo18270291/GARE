@@ -47,6 +47,14 @@ class Index extends Component
 
         $this->resetPage();
     }
+    public function status($id)
+    {
+        $report = Report::findOrFail($id);
+        $report->status = false;
+        $report->save();
+        session()->flash('success', 'El informe se restaurado');
+        $this->redirectRoute('my_reports.index', navigate:true);
+    }
 
     public function render()
     {
