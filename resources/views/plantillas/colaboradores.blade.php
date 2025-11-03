@@ -40,6 +40,7 @@
       color: black; /* O el color que contraste con tu fondo */
       font-size: 12pt;
       margin-top: 50px;
+      line-height: 2.5;
     }
     @font-face {
         font-family: 'Arial Nova Light';
@@ -102,8 +103,7 @@
         </div>
     </div>
     <p>Secretario de Seguridad</p>
-    <p>{{auth()->user()->name}}</p>
-    <p>{{$reports->colaborador1}}</p>
+    <p>Dr. y P.A. Óscar Alberto Aparicio Avendaño</p>
     
   </div>
 </body>
