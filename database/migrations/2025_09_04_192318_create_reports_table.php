@@ -22,10 +22,10 @@ return new class extends Migration
             $table->date('fecha_analisis');
             $table->foreignId('user_id')->constrained('users'); //Creada
             $table->string('colaborador1');
-            $table->string('colaborador2')->nullable();;
-            $table->string('colaborador3')->nullable();;
-            $table->string('colaborador4')->nullable();;
-            $table->string('colaborador5')->nullable();;
+            $table->string('n_reviso')->nullable();;
+            $table->string('p_reviso')->nullable();;
+            $table->string('n_conforme')->nullable();;
+            $table->string('p_conforme')->nullable();;
             $table->string('logo')->nullable();
             $table->string('img')->nullable();
             $table->boolean('status')->default(false);
