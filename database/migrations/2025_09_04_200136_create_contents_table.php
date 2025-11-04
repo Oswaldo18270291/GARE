@@ -41,14 +41,16 @@ return new class extends Migration
             $table->string('leyenda3')->nullable();
             $table->string('grafica')->nullable();
             $table->string('img_grafica')->nullable();
-            $table->text('que')->nullable();
+            $table->string('grafica2')->nullable();
+            $table->string('img_grafica2')->nullable();
+            /* $table->text('que')->nullable();
             $table->text('como')->nullable();
             $table->text('quien')->nullable();
             $table->text('por_que')->nullable();
             $table->text('donde')->nullable();
             $table->string('cuanto')->nullable();
             $table->date('de')->nullable();
-            $table->date('hasta')->nullable();
+            $table->date('hasta')->nullable(); */
         });
     }
 

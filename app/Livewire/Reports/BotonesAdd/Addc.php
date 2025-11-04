@@ -37,6 +37,7 @@ class Addc extends Component
     public $path3;
     public $mosler;
     public $grafica='bar';
+
     public $c;
     public $risks;
 
@@ -218,7 +219,7 @@ class Addc extends Component
                 $data['hasta']  = $this->hasta;
             }
             // Si el nombre coincide, agrega la clave extra
-            if ($nl->subtitle_id === 32) {
+            if ($nl->subtitle_id === 32 && $nl->subtitle_id === 16 ) {
                 $data['grafica'] = $this->grafica;
             }
 
