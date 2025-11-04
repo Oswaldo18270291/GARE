@@ -1813,78 +1813,44 @@ if (window.Livewire) {
 
   @endif
   @if ($titulo==18)
-  <h1>5.2	Organigrama de Controles.</h1>
-  <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt; text-align: left;">
-    <!-- Encabezado Humanos -->
-    <tr style="background-color: #0070C0; color: white; font-weight: bold;">
-      <td colspan="3" style="border: 1px solid black; padding: 6px;">Humanos</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">1</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C04</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Consultoría de seguridad (interna)</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">2</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C05</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Controlador de acceso</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">3</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C09</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Equipo de seguridad</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">4</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C01</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Brigada de primeros auxilios</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">5</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C03</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Consultoría de seguridad</td>
-    </tr>
+  <table class="w-full border-collapse text-center text-sm font-sans" 
+          style="border:2px solid #001a4d; border-collapse:collapse;">
+      <thead>
+        <tr style="background-color:#002060; color:white; border:2px solid #001a4d;">
+          <th style="border:2px solid #001a4d; padding:8px; width:5%;">No.</th>
+          <th style="border:2px solid #001a4d; padding:8px; width:15%;">Tipo de Riesgo</th>
+          <th style="border:2px solid #001a4d; padding:8px; width:25%;">Medidas preventivas actuales</th>
+          <th style="border:2px solid #001a4d; padding:8px; width:40%;">Acciones / Planes por realizar</th>
+          <th style="border:2px solid #001a4d; padding:8px; width:15%;">Estatus</th>
+        </tr>
+      </thead>
+            <tbody>
+  @foreach ($riesgs as $i => $r)
+  <tr>
+    <td class="border p-1" style="border:2px solid #001a4d;">{{ $r['no'] }}</td>
+    <td class="border p-1 text-left" style="border:2px solid #001a4d;">{{ $r['riesgo'] }}</td>
 
-    <!-- Encabezado Políticos -->
-    <tr style="background-color: #0070C0; color: white; font-weight: bold; font-style: italic;">
-      <td colspan="3" style="border: 1px solid black; padding: 6px;">Políticos y regulatorios.</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">1</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C06</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Cumplimentar leyes federales, provinciales/estaduales y/o municipales</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">2</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C08</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Cumplimentar regulaciones de organizaciones reguladoras</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">3</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C07</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Cumplimentar regulaciones de organizaciones reguladoras</td>
-    </tr>
+    <td style="border:2px solid #001a4d; padding:6px;">
+      <textarea
+        wire:model.defer="riesgs.{{ $i }}.medidas_p"
+        class="w-full border border-outline bg-surface-alt px-2.5 py-2 text-sm focus:outline-primary"
+        placeholder="Coloca la información"></textarea>
+    </td>
 
-    <!-- Encabezado Procesos -->
-    <tr style="background-color: #0070C0; color: white; font-weight: bold; font-style: italic;">
-      <td colspan="3" style="border: 1px solid black; padding: 6px;">Procesos (Organizacionales)</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">1</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C02</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Comité integrado de gestión de riesgos corporativos</td>
-    </tr>
+    <td style="border:2px solid #001a4d; padding:6px;">
+      <textarea
+        wire:model.defer="riesgs.{{ $i }}.acciones_planes"
+        class="w-full border border-outline bg-surface-alt px-2.5 py-2 text-sm focus:outline-primary"
+        placeholder="Coloca la información"></textarea>
+    </td>
 
-    <!-- Encabezado Técnicos -->
-    <tr style="background-color: #0070C0; color: white; font-weight: bold; font-style: italic;">
-      <td colspan="3" style="border: 1px solid black; padding: 6px;">Técnicos (Físicos y Electrónicos).</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">1</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C10</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Sistemas y procesos contra ciber ataques</td>
-    </tr>
-  </table>
+    <td style="border:2px solid #001a4d; padding:6px;"></td>
+  </tr>
+  @endforeach
+</tbody>
+
+    </table>
+
   <br>
   @endif
   @if (in_array($titulo, [20,21,22,23,24,25,26,27,28,29]))

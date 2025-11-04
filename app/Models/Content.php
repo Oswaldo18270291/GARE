@@ -26,8 +26,16 @@ class Content extends Model
     {
         return $this->belongsTo(ReportTitle::class, 'r_t_id');
     }
-        public function analysisDiagrams()
-        {
-            return $this->hasMany(AnalysisDiagram::class, 'content_id');
-        }
+    public function analysisDiagrams()
+    {
+        return $this->hasMany(AnalysisDiagram::class, 'content_id');
+    }
+    public function organigramaControls()
+    {
+        return $this->hasMany(OrganigramaControl::class, 'content_id');
+    }
+    public function fodas()
+    {
+        return $this->hasMany(Foda::class, 'content_id');
+    }
 }
