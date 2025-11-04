@@ -323,6 +323,9 @@ public function updateRiesgosEvaluacion($contentId)
                 $data['grafica'] = $this->grafica;
                 $this->guardarRiesgos();
                  $this->guardarMapaMental();
+            }            if ($nl->subtitle_id === 16) {
+                $data['grafica'] = $this->grafica;
+
             }
             $name = Subtitle::where('id', $nl->subtitle_id)->value('id');
             if (in_array($name, [20, 21, 22, 23, 24, 25, 26, 27, 28, 29])) {

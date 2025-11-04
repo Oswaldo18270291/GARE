@@ -1265,7 +1265,9 @@ function renderRiesgosChart() {
 
     const riesgos = @json($risks->sortBy('no')->map(fn($r) => $r->no . ' - ' . $r->riesgo)->values());
     const riesg = @json($risks->sortBy('no')->map(fn($r) => $r->no)->values());
-    const ocurrencias = @json($risks->sortBy('no')->pluck('f_ocurrencia')->values());
+    const ocurrencias = @json($risks->sortBy('no')->pluck('factor_oc')->values());
+    // 🧩 Convertir "25%" → 25 (número)
+    const ocurrenciasNum = ocurrencias.map(v => parseFloat(String(v).replace('%', '')) || 0);
     const tipoInicial = @json($grafica);
 
     const colores = ocurrencias.map(v => {
@@ -1310,7 +1312,7 @@ function renderRiesgosChart() {
                 labe: riesg,
                 datasets: [{
                     label: 'Factor de ocurrencia',
-                    data: ocurrencias,
+                    data: ocurrenciasNum,
                     backgroundColor: colores
                 }]
             }
@@ -1318,7 +1320,7 @@ function renderRiesgosChart() {
                 labels: ['Factor de ocurrencia'],
                 datasets: riesgos.map((nombre, i) => ({
                     label: nombre,
-                    data: [ocurrencias[i]],
+                    data: [ocurrenciasNum[i]],
                     backgroundColor: colores[i],
                     numero: riesg[i],
                 }))

@@ -219,7 +219,7 @@ class Addc extends Component
                 $data['hasta']  = $this->hasta;
             }
             // Si el nombre coincide, agrega la clave extra
-            if ($nl->subtitle_id === 32 && $nl->subtitle_id === 16 ) {
+            if ($nl->subtitle_id === 32 || $nl->subtitle_id === 16 ) {
                 $data['grafica'] = $this->grafica;
             }
 
