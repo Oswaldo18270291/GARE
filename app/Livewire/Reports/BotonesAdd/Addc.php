@@ -24,6 +24,8 @@ class Addc extends Component
     public $RSection;
     public $boton;
     public $contenido;
+    public $contenido_m_p_a;
+    public $contenido_a_p;
     public $report;
     public $rp;
     public $img1;
@@ -221,6 +223,10 @@ class Addc extends Component
             // Si el nombre coincide, agrega la clave extra
             if ($nl->subtitle_id === 32 || $nl->subtitle_id === 16 ) {
                 $data['grafica'] = $this->grafica;
+            }            
+            if ($nl->subtitle_id === 17 ) {
+                $data['contenido_a_p'] = $this->contenido_a_p;
+                $data['contenido_m_p_a'] = $this->contenido_m_p_a;
             }
 
             // Finalmente crea el contenido

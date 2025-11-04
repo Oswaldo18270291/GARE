@@ -1651,7 +1651,7 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
         "
     >
         <div x-ref="editorTit" style="height:200px; background:white;"></div>
-        <textarea x-ref="textareaTit" wire:model="contenido" class="hidden"></textarea>
+        <textarea x-ref="textareaTit" wire:model="contenido_m_p_a" class="hidden"></textarea>
     </div>
     </td>
       </tr>
@@ -1761,7 +1761,7 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
             "
         >
             <div x-ref="editorTit" style="height:200px; background:white;"></div>
-            <textarea x-ref="textareaTit" wire:model="contenido" class="hidden"></textarea>
+            <textarea x-ref="textareaTit" wire:model="contenido_a_p" class="hidden"></textarea>
         </div>
         </td>
       </tr>

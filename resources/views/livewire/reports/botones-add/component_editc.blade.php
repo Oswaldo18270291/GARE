@@ -1577,87 +1577,240 @@ if (window.Livewire) {
   <br>
   @endif
   @if ($titulo==17)
-  5.1	Control Existente contra Control Ideal.
-  <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: center;">
-    <tr style="background-color: #0070C0; color: white; font-weight: bold;">
-      <td style="border: 1px solid black; padding: 6px;">Orden.</td>
-      <td style="border: 1px solid black; padding: 6px;">Control</td>
-      <td style="border: 1px solid black; padding: 6px;">Existente</td>
-      <td style="border: 1px solid black; padding: 6px;">Ideal</td>
-    </tr>
 
-    <tr>
-      <td style="border: 1px solid black;">C01</td>
-      <td style="border: 1px solid black; text-align: left;">Brigada de primeros auxilios</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">1</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
+ <table class="w-full border-collapse text-center text-sm font-sans" style="border:1px solid black;">
+    <thead>
+      <tr style="background-color:#002060; color:white;">
+        <th class="border p-2 w-1/4">ACCIONES DIVERSAS</th>
+        <th class="border p-2 w-3/4">TRATAMIENTO GENERAL DE LOS RIESGOS IDENTIFICADOS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="border p-2 bg-[#10284A] text-white align-top">
+          Medidas preventivas actuales
+        </td>
+        <td class="border p-2 align-top">
+            <div 
+        x-data 
+        wire:ignore
+        x-init="
+            const init = () => {
+                if (typeof Quill === 'undefined') { return setTimeout(init, 150); }
 
-    <tr>
-      <td style="border: 1px solid black;">C02</td>
-      <td style="border: 1px solid black; text-align: left;">Comité integrado de gestión de riesgos corporativos</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">3</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
+                const quill = new Quill($refs.editorTit, {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: {
+                            container: [
+                                [{ header: [1, 2, false] }],
+                                ['bold', 'italic', 'underline'],
+                                [{ 'align': [] }],
+                                [{ list: 'ordered' }, { list: 'bullet' }],
+                                ['clean']
+                            ]
+                        }
+                    }
+                });
+                quill.root.innerHTML = @js($contenido_m_p_a ?? '');
+                const toolbar = quill.getModule('toolbar').container;
+                const editor  = quill.root;
 
-    <tr>
-      <td style="border: 1px solid black;">C03</td>
-      <td style="border: 1px solid black; text-align: left;">Consultoría de seguridad (externa)</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">1</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
+                // --- Botón 'a.' (lista alfabética)
+                const alphaButton = document.createElement('button');
+                alphaButton.innerHTML = `
+                    <svg viewBox='0 0 18 18'>
+                      <text x='4' y='14' font-size='13' font-family='Arial'>a.</text>
+                    </svg>`;
+                alphaButton.type = 'button';
+                alphaButton.classList.add('ql-alpha');
+                alphaButton.title = 'Lista alfabética';
 
-    <tr>
-      <td style="border: 1px solid black;">C04</td>
-      <td style="border: 1px solid black; text-align: left;">Consultoría de seguridad (interna)</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">2</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
+                const orderedBtn = toolbar.querySelector('.ql-list[value=ordered]');
+                orderedBtn?.insertAdjacentElement('afterend', alphaButton);
 
-    <tr>
-      <td style="border: 1px solid black;">C05</td>
-      <td style="border: 1px solid black; text-align: left;">Controlador de acceso</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">1</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
+                // Al hacer clic en 'a.' -> forzar alfabética
+                alphaButton.addEventListener('click', () => {
+                    const range = quill.getSelection();
+                    if (!range) return;
 
-    <tr>
-      <td style="border: 1px solid black;">C06</td>
-      <td style="border: 1px solid black; text-align: left;">Cumplimentar leyes federales, provinciales/estaduales y/o municipales</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">2</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
+                    const fmt = quill.getFormat(range);
+                    // si no es alfabética, convertir a ordenada y activar alpha-list
+                    if (!fmt.list || editor.classList.contains('alpha-list') === false) {
+                        quill.format('list', 'ordered');
+                        editor.classList.add('alpha-list');
+                        alphaButton.classList.add('ql-active');
+                    } else {
+                        // si ya está con alpha-list, quitar la lista
+                        quill.format('list', false);
+                        editor.classList.remove('alpha-list');
+                        alphaButton.classList.remove('ql-active');
+                    }
+                });
 
-    <tr>
-      <td style="border: 1px solid black;">C07</td>
-      <td style="border: 1px solid black; text-align: left;">Cumplimentar regulaciones de organizaciones reguladoras</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">2</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
+                // Al hacer clic en el botón numerado -> quitar alpha-list
+                orderedBtn?.addEventListener('click', () => {
+                    // Deja que Quill aplique/toggle la lista ordenada…
+                    // y nosotros limpiamos la clase para volver a números
+                    editor.classList.remove('alpha-list');
+                    alphaButton.classList.remove('ql-active');
+                });
 
-    <tr>
-      <td style="border: 1px solid black;">C08</td>
-      <td style="border: 1px solid black; text-align: left;">Cumplimentar regulaciones de organizaciones reguladoras</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">2</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
+                // También si cambia el formato y queda 'ordered', limpiamos alpha-list
+                quill.on('editor-change', () => {
+                    const range = quill.getSelection();
+                    if (!range) return;
+                    const fmt = quill.getFormat(range);
+                    if (fmt.list === 'ordered') {
+                        editor.classList.remove('alpha-list');
+                        alphaButton.classList.remove('ql-active');
+                    }
+                });
 
-    <tr>
-      <td style="border: 1px solid black;">C09</td>
-      <td style="border: 1px solid black; text-align: left;">Equipo de seguridad</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">3</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
+                // CSS: números por defecto, letras cuando alpha-list está activo
+                const style = document.createElement('style');
+                style.innerHTML = `
+                  .ql-toolbar button.ql-alpha svg { width: 18px; height: 18px; }
+                  /* numeración normal (decimal) por defecto */
+                  .ql-editor ol > li::before { content: counter(list-0, decimal) '. '; }
+                  /* alfabético cuando está activa la clase */
+                  .ql-editor.alpha-list ol > li::before { content: counter(list-0, lower-alpha) '. '; }
+                  .ql-editor.alpha-list ol ol > li::before { content: counter(list-1, lower-alpha) '. '; }
+                  .ql-editor.alpha-list ol ol ol > li::before { content: counter(list-2, lower-alpha) '. '; }
+                  .ql-editor.alpha-list ol ol ol ol > li::before { content: counter(list-3, lower-alpha) '. '; }
+                  .ql-editor.alpha-list ol ol ol ol ol > li::before { content: counter(list-4, lower-alpha) '. '; }
+                `;
+                document.head.appendChild(style);
 
-    <tr>
-      <td style="border: 1px solid black;">C10</td>
-      <td style="border: 1px solid black; text-align: left;">Sistemas y procesos contra ciber ataques</td>
-      <td style="border: 1px solid black; background-color: yellow; font-weight: bold;">2</td>
-      <td style="border: 1px solid black;">5</td>
-    </tr>
+                // Sincroniza con Livewire
+                quill.on('text-change', () => {
+                    $refs.textareaTit.value = quill.root.innerHTML;
+                    $refs.textareaTit.dispatchEvent(new Event('input'));
+                });
+            };
+            init();
+        "
+    >
+        <div x-ref="editorTit" style="height:200px; background:white;"></div>
+        <textarea x-ref="textareaTit" wire:model="contenido_m_p_a" class="hidden"></textarea>
+    </div>
+    </td>
+      </tr>
+      <tr>
+        <td class="border p-2 bg-[#10284A] text-white align-top">
+          Acciones / Planes por realizar
+        </td>
+        <td class="border p-2 align-top">
+          <div 
+            x-data 
+            wire:ignore
+            x-init="
+                const init = () => {
+                    if (typeof Quill === 'undefined') { return setTimeout(init, 150); }
+
+                    const quill = new Quill($refs.editorTit, {
+                        theme: 'snow',
+                        modules: {
+                            toolbar: {
+                                container: [
+                                    [{ header: [1, 2, false] }],
+                                    ['bold', 'italic', 'underline'],
+                                    [{ 'align': [] }],
+                                    [{ list: 'ordered' }, { list: 'bullet' }],
+                                    ['clean']
+                                ]
+                            }
+                        }
+                    });
+                    quill.root.innerHTML = @js($contenido_a_p ?? '');
+                    const toolbar = quill.getModule('toolbar').container;
+                    const editor  = quill.root;
+
+                    // --- Botón 'a.' (lista alfabética)
+                    const alphaButton = document.createElement('button');
+                    alphaButton.innerHTML = `
+                        <svg viewBox='0 0 18 18'>
+                          <text x='4' y='14' font-size='13' font-family='Arial'>a.</text>
+                        </svg>`;
+                    alphaButton.type = 'button';
+                    alphaButton.classList.add('ql-alpha');
+                    alphaButton.title = 'Lista alfabética';
+
+                    const orderedBtn = toolbar.querySelector('.ql-list[value=ordered]');
+                    orderedBtn?.insertAdjacentElement('afterend', alphaButton);
+
+                    // Al hacer clic en 'a.' -> forzar alfabética
+                    alphaButton.addEventListener('click', () => {
+                        const range = quill.getSelection();
+                        if (!range) return;
+
+                        const fmt = quill.getFormat(range);
+                        // si no es alfabética, convertir a ordenada y activar alpha-list
+                        if (!fmt.list || editor.classList.contains('alpha-list') === false) {
+                            quill.format('list', 'ordered');
+                            editor.classList.add('alpha-list');
+                            alphaButton.classList.add('ql-active');
+                        } else {
+                            // si ya está con alpha-list, quitar la lista
+                            quill.format('list', false);
+                            editor.classList.remove('alpha-list');
+                            alphaButton.classList.remove('ql-active');
+                        }
+                    });
+
+                    // Al hacer clic en el botón numerado -> quitar alpha-list
+                    orderedBtn?.addEventListener('click', () => {
+                        // Deja que Quill aplique/toggle la lista ordenada…
+                        // y nosotros limpiamos la clase para volver a números
+                        editor.classList.remove('alpha-list');
+                        alphaButton.classList.remove('ql-active');
+                    });
+
+                    // También si cambia el formato y queda 'ordered', limpiamos alpha-list
+                    quill.on('editor-change', () => {
+                        const range = quill.getSelection();
+                        if (!range) return;
+                        const fmt = quill.getFormat(range);
+                        if (fmt.list === 'ordered') {
+                            editor.classList.remove('alpha-list');
+                            alphaButton.classList.remove('ql-active');
+                        }
+                    });
+
+                    // CSS: números por defecto, letras cuando alpha-list está activo
+                    const style = document.createElement('style');
+                    style.innerHTML = `
+                      .ql-toolbar button.ql-alpha svg { width: 18px; height: 18px; }
+                      /* numeración normal (decimal) por defecto */
+                      .ql-editor ol > li::before { content: counter(list-0, decimal) '. '; }
+                      /* alfabético cuando está activa la clase */
+                      .ql-editor.alpha-list ol > li::before { content: counter(list-0, lower-alpha) '. '; }
+                      .ql-editor.alpha-list ol ol > li::before { content: counter(list-1, lower-alpha) '. '; }
+                      .ql-editor.alpha-list ol ol ol > li::before { content: counter(list-2, lower-alpha) '. '; }
+                      .ql-editor.alpha-list ol ol ol ol > li::before { content: counter(list-3, lower-alpha) '. '; }
+                      .ql-editor.alpha-list ol ol ol ol ol > li::before { content: counter(list-4, lower-alpha) '. '; }
+                    `;
+                    document.head.appendChild(style);
+
+                    // Sincroniza con Livewire
+                    quill.on('text-change', () => {
+                        $refs.textareaTit.value = quill.root.innerHTML;
+                        $refs.textareaTit.dispatchEvent(new Event('input'));
+                    });
+                };
+                init();
+            "
+        >
+            <div x-ref="editorTit" style="height:200px; background:white;"></div>
+            <textarea x-ref="textareaTit" wire:model="contenido_a_p" class="hidden"></textarea>
+        </div>
+        </td>
+      </tr>
+    </tbody>
   </table>
 
   <br>
+
   @endif
   @if ($titulo==18)
   <h1>5.2	Organigrama de Controles.</h1>

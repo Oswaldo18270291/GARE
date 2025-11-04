@@ -21,6 +21,8 @@ class Editc extends Component
     public $RSection;
     public $content;
     public $contenido;
+    public $contenido_a_p;
+    public $contenido_m_p_a;
     public $img1;
     public $img2;
     public $img3;
@@ -137,6 +139,8 @@ public $background_opacity = 0.4;
             
            
             $this->contenido = $this->content->cont;
+            $this->contenido_m_p_a = $this->content->contenido_m_p_a;
+            $this->contenido_a_p = $this->content->contenido_a_p;
             $this->leyenda1 = $this->content->leyenda1;
             $this->leyenda2 = $this->content->leyenda2;
             $this->leyenda3 = $this->content->leyenda3;
@@ -323,9 +327,13 @@ public function updateRiesgosEvaluacion($contentId)
                 $data['grafica'] = $this->grafica;
                 $this->guardarRiesgos();
                  $this->guardarMapaMental();
-            }            if ($nl->subtitle_id === 16) {
+            }            
+            if ($nl->subtitle_id === 16) {
                 $data['grafica'] = $this->grafica;
-
+            }
+            if ($nl->subtitle_id === 17) {
+                $data['contenido_m_p_a'] = $this->contenido_m_p_a;
+                $data['contenido_a_p'] = $this->contenido_a_p;
             }
             $name = Subtitle::where('id', $nl->subtitle_id)->value('id');
             if (in_array($name, [20, 21, 22, 23, 24, 25, 26, 27, 28, 29])) {
