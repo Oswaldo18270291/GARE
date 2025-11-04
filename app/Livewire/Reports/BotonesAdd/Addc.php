@@ -9,6 +9,7 @@ use App\Models\AnalysisDiagram;
 use App\Models\Subtitle;
 use App\Models\Report;
 use App\Models\Content;
+use App\Models\Foda;
 use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
@@ -59,6 +60,12 @@ class Addc extends Component
     public $informacion = [];
     public $riesgos = [];
     public $rep;
+
+    public $fortalezas;
+    public $debilidades;
+    public $oportunidades;
+    public $amenzas;
+
     public function mount($id, $boton, $rp)
     {
         $report = Report::findOrFail($rp);
@@ -309,6 +316,15 @@ class Addc extends Component
                         'acciones_planes'  => $acciones,
                     ]);
                 }
+            }
+            if ($name == 33) {
+                Foda::create([
+                    'content_id'    =>  $content->id,
+                    'fortalezas'    =>  $this->fortalezas,
+                    'debilidades'   =>  $this->debilidades,
+                    'oportunidades' =>  $this->oportunidades,
+                    'amenzas'       =>  $this->amenzas,
+                ]);
             }
             session()->flash('cont', 'Se agrego contenido de Subtitulo con exito.');
             $this->redirectRoute('my_reports.addcontenido', ['id' => $id], navigate: true);

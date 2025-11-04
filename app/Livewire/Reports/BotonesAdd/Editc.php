@@ -5,6 +5,7 @@ namespace App\Livewire\Reports\BotonesAdd;
 use App\Models\AnalysisDiagram;
 use Livewire\Component;
 use App\Models\Content;
+use App\Models\Foda;
 use App\Models\OrganigramaControl;
 use Livewire\WithFileUploads;
 use App\Models\ReportTitle;
@@ -59,6 +60,11 @@ class Editc extends Component
     public $relaciones = [];
     public $backgroundImage = null;
     public $background_opacity = 0.4;
+
+    public $fortalezas;
+    public $debilidades;
+    public $oportunidades;
+    public $amenzas;
 
     public function mount($id,$boton,$rp)
     {
@@ -123,6 +129,13 @@ class Editc extends Component
     if ($subtitleId == 18) {
     $this->riesgs = OrganigramaControl::where('content_id', $this->content->id)->get()->toArray();
 
+    }
+    if ($subtitleId == 33) {
+    $this->riesgs = Foda::where('content_id', $this->content->id)->first();
+        $this->fortalezas = $this->riesgs->fortalezas;
+        $this->debilidades = $this->riesgs->debilidades;
+        $this->oportunidades = $this->riesgs->oportunidades;
+        $this->amenzas = $this->riesgs->amenzas;
     }
             $this->rep->titles = ReportTitle::where('report_id', $this->rep->id)->where('status',1)->get();
             // Cargamos valores existentes
@@ -345,6 +358,14 @@ public function updateRiesgosEvaluacion($contentId)
                         }
                     }
 
+            }
+            if ($nl->subtitle_id === 33) {
+                 Foda::where('id', $this->riesgs->id)->update([
+                                'fortalezas'    =>  $this->fortalezas,
+                                'debilidades'   =>  $this->debilidades,
+                                'oportunidades' =>  $this->oportunidades,
+                                'amenzas'       =>  $this->amenzas,
+                            ]);
             }
             $name = Subtitle::where('id', $nl->subtitle_id)->value('id');
             if (in_array($name, [20, 21, 22, 23, 24, 25, 26, 27, 28, 29])) {
