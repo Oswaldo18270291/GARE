@@ -364,7 +364,20 @@
     </div>
   @endif
   @if($titulo==32)
-
+<style>
+     /* 🔹 Encabezados verticales */
+    .vertical {
+        writing-mode: vertical-rl;
+        transform: rotate(360deg);
+        white-space: normal;      /* Permite saltos de línea */
+        word-break: break-word;   /* Corta palabras largas si es necesario */
+        text-align: center;
+        vertical-align: middle;
+        height: 140px;            /* Ajusta según tu diseño */
+        width: 30px;              /* 🔹 Reduce el ancho para forzar salto de línea */
+        padding: 0 4px;
+    }
+</style>
 <div>
     @if (session('success'))
         <div class="bg-green-200 text-green-800 p-2 rounded mb-3">
@@ -375,31 +388,31 @@
     <table class="w-full border-collapse text-center text-sm font-sans" style="border:1px solid black;">
         <thead>
             <tr style="background-color:#002060; color:white;">
-                <th rowspan="2" style="border:2px solid #001a4d;" class="border p-2">No.</th>
-                <th rowspan="2" style="border:2px solid #001a4d;" class="border p-2">Tipo de Riesgo</th>
-                <th colspan="5" style="border:2px solid #001a4d;" class="border p-2">Criterios de Evaluación</th>
-                <th rowspan="2" style="border:2px solid #001a4d;" class="border p-2">Total<br>Posible</th>
-                <th rowspan="2" style="border:2px solid #001a4d;" class="border p-2">Cal.</th>
-                <th rowspan="2" style="border:2px solid #001a4d;" class="border p-2">Clase de Riesgo</th>
-                <th rowspan="2" style="border:2px solid #001a4d;" class="border p-2">Factor de ocurrencia<br>del riesgo</th>
+                <th rowspan="2" style="border:2px solid #ffffffff;" class="border p-2">No.</th>
+                <th rowspan="2" style="border:2px solid #ffffffff;" class="border p-2">Tipo de Riesgo</th>
+                <th colspan="5" style="border:2px solid #ffffffff;" class="border p-2">Criterios de Evaluación</th>
+                <th rowspan="2" style="border:2px solid #ffffffff;" class="border p-2">Total<br>Posible</th>
+                <th rowspan="2" style="border:2px solid #ffffffff;" class="border p-2">Cal.</th>
+                <th rowspan="2" style="border:2px solid #ffffffff;" class="border p-2">Clase de Riesgo</th>
+                <th rowspan="2" style="border:2px solid #ffffffff;" class="border p-2">Factor de ocurrencia<br>del riesgo</th>
             </tr>
             <tr style="background-color:#002060; color:white;">
-                <th style="border:2px solid #001a4d;" class="border p-1">Impacto en las Funciones</th>
-                <th style="border:2px solid #001a4d;" class="border p-1">Impacto en la Organización</th>
-                <th style="border:2px solid #001a4d;" class="border p-1">Extensión del Daño</th>
-                <th style="border:2px solid #001a4d;" class="border p-1">Probabilidad de Materialización</th>
-                <th style="border:2px solid #001a4d;" class="border p-1">Impacto Financiero</th>
+                <th style="border:2px solid #ffffffff;" class="vertical">Impacto en las Funciones</th>
+                <th style="border:2px solid #ffffffff;" class="vertical">Impacto en la Organización</th>
+                <th style="border:2px solid #ffffffff;" class="vertical">Extensión del Daño</th>
+                <th style="border:2px solid #ffffffff;" class="vertical">Probabilidad de Materialización</th>
+                <th style="border:2px solid #ffffffff;" class="vertical">Impacto Financiero</th>
             </tr>
         </thead>
 
         <tbody>
             @foreach ($riesgos as $i => $r)
                 <tr>
-                    <td class="border p-1" style="border:2px solid #001a4d;">{{ $r['no'] }}</td>
-                    <td class="border p-1 text-left" style="border:2px solid #001a4d;">{{ $r['riesgo'] }}</td>
+                    <td class="border p-1" style="border:1px solid #001a4d;">{{ $r['no'] }}</td>
+                    <td class="border p-1 text-left" style="border:1px solid #001a4d;">{{ $r['riesgo'] }}</td>
 
                     @foreach (['impacto_f','impacto_o','extension_d','probabilidad_m','impacto_fin'] as $campo)
-                        <td class="border p-1" style="border:2px solid #001a4d;" >
+                        <td class="border p-1 font-bold" style="border:1px solid #001a4d;" >
                           <input 
                               type="number"
                               min="1"
@@ -414,18 +427,18 @@
                         </td>
                     @endforeach
 
-                    <td class="border p-1" style="border:2px solid #001a4d;">25</td>
-                    <td class="border p-1 font-semibold" style="border:2px solid #001a4d;">{{ $r['cal'] ?? '' }}</td>
-                    <td class="border p-1 font-bold text-white" 
-                        style="border:2px solid #001a4d;
+                    <td class="border p-1" style="border:1px solid #001a4d;">25</td>
+                    <td class="border p-1 font-semibold" style="border:1px solid #001a4d;">{{ $r['cal'] ?? '' }}</td>
+                    <td class="border p-1 font-bold text-black" 
+                        style="border:1px solid #001a4d;
                         background-color:
                             {{ ($r['clase_riesgo'] ?? '') == 'MUY ALTO' ? '#ff0000' :
                                (($r['clase_riesgo'] ?? '') == 'ALTO' ? '#ff6600' :
                                (($r['clase_riesgo'] ?? '') == 'MEDIO' ? '#ffc000' :
-                               (($r['clase_riesgo'] ?? '') == 'BAJO' ? '#00b050' : 'transparent'))) }}">
+                               (($r['clase_riesgo'] ?? '') == 'BAJO' ? '#75d5ecff' : 'transparent'))) }}">
                         {{ $r['clase_riesgo'] ?? '' }}
                     </td>
-                    <td class="border p-1" style="border:2px solid #001a4d;">{{ $r['factor_oc'] ?? '' }}</td>
+                    <td class="border p-1" style="border:1px solid #001a4d;">{{ number_format((float) ($r['factor_oc'] ?? 0), 2) . '%' }}</td>
                 </tr>
             @endforeach
         </tbody>
