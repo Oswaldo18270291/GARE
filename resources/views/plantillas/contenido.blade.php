@@ -92,7 +92,7 @@
         <!-- Contenido -->
         <div class="contenido">
             <div style="width: 100%; border-collapse: collapse; font-size: 12pt;">
-                @foreach ($reports->titles->sortBy('id') as $title)
+                @foreach ($reports->titles as $title)
                     <div>
                         {{-- Título --}}
                         <a style="display: block; font-weight: bold;">
@@ -256,7 +256,7 @@
                         @endforeach
 
                         {{-- Subtítulos dentro del título --}}
-                        @foreach ($title->subtitles->sortBy('id') as $subtitle)
+                        @foreach ($title->subtitles as $subtitle)
                             <a style="display: block; text-align: justify; font-weight: bold;">
                                 <span style="color: transparent; font-size: 0;">__MARKER_SUBTITLE_{{ $subtitle->id }}__</span>
                                 {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($subtitle->subtitle->nombre) }}
@@ -830,7 +830,7 @@
                                 @endif               
                             @endforeach
                             {{-- Secciones dentro del subtítulo --}}
-                            @foreach ($subtitle->sections->sortBy('id') as $section)
+                            @foreach ($subtitle->sections as $section)
                                 <a style="display: block; text-align: justify; font-weight: bold; text-indent: 0.88cm;">
                                     <span style="color: transparent; font-size: 0;">__MARKER_SECTION_{{ $section->id }}__</span>
                                     {{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($section->section->nombre) }}

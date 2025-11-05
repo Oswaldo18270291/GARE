@@ -39,19 +39,32 @@ class InformePdf extends Controller
         $this->authorize('update', $report);
 
         // 🔹 Cargar estructura completa
-        $report->titles = ReportTitle::where('report_id', $report->id)
-            ->where('status', 1)
+        $report->titles = ReportTitle::
+            with('title')
+            ->join('titles', 'report_titles.title_id','=','titles.id')
+            ->orderBy('titles.orden','asc')
+            ->where('report_titles.report_id', $report->id)
+            ->where('report_titles.status', 1)
             ->get();
 
         foreach ($report->titles as $title) {
             $title->content = Content::where('r_t_id', $title->id)->get();
-            $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->where('status', 1)->get();
+            $title->subtitles = ReportTitleSubtitle::
+            with('subtitle')
+            ->join('subtitles', 'report_title_subtitles.subtitle_id','=','subtitles.id')
+            ->orderBy('subtitles.orden','asc')
+            ->where('report_title_subtitles.r_t_id', $title->id)
+            ->where('report_title_subtitles.status', 1)
+            ->get();
 
             foreach ($title->subtitles as $subtitle) {
                 $subtitle->content = Content::where('r_t_s_id', $subtitle->id)->get();
-                $subtitle->sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)
-                    ->where('status', 1)
-                    ->get();
+                $subtitle->sections = ReportTitleSubtitleSection::with('section')
+                ->join('sections', 'report_title_subtitle_sections.section_id','=','sections.id')
+                ->orderBy('sections.orden','asc')
+                ->where('report_title_subtitle_sections.r_t_s_id', $subtitle->id)
+                ->where('report_title_subtitle_sections.status', 1)
+                ->get();
                 
 
                 foreach ($subtitle->sections as $section) {
@@ -73,11 +86,6 @@ class InformePdf extends Controller
             $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report]);
         }
         //$co = Content::where('r_t_s_id', $su->id)->first();
-
-
-
-
-
 
         // 🔹 Generar contenido con marcadores invisibles
         $pathContenido = storage_path("app/public/tmp_contenido_{$id}.pdf");

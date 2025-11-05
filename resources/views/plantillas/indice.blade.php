@@ -84,7 +84,7 @@
   <div class="contenido">
      <!--<h2 style="text-align: center; font-size: 16pt; margin-bottom: 20px;">ÍNDICE</h2>-->
     <table style="width: 100%; border-collapse: collapse; font-size: 10pt;">
-      @foreach ($reports->titles->sortBy('id') as $title)
+      @foreach ($reports->titles as $title)
         <tr>
           {{-- Título --}}
           <td style="text-align: justify; border-bottom: 1.5px dotted #000; display:flex">
@@ -94,7 +94,7 @@
         </tr>
 
         {{-- Subtítulos dentro del título --}}
-        @foreach ($title->subtitles->sortBy('id') as $subtitle)
+        @foreach ($title->subtitles as $subtitle)
         <tr>
           <td style=" padding-left: 15px; text-align: justify; border-bottom: 1px dotted #000; display:flex">
               <span>{{ $loop->parent->iteration }}.{{ $loop->iteration }}.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $subtitle->subtitle->nombre }}</span>
@@ -103,7 +103,7 @@
           </tr>
 
             {{-- Secciones dentro del subtítulo --}}
-          @foreach ($subtitle->sections->sortBy('id') as $section)
+          @foreach ($subtitle->sections as $section)
           <tr>
               <td style=" padding-left: 30px; ptext-align: justify;border-bottom: 1px dotted #000; display:flex">
                 <span>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $section->section->nombre }}</span>
