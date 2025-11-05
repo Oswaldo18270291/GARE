@@ -518,6 +518,7 @@
                                         </table>
                                     @endif   
                                      --}}
+                                    {{-- AQUI DEBE DE IR LA TABLA DE MATRIZ DE RIESGOS --}}
                                     @if ($cont->reportTitleSubtitle->subtitle_id==42)
                                         <table style="width: 100%; border-collapse: collapse; text-align: center; font-weight: bold;">
                                             <tr>
@@ -748,6 +749,7 @@
                                         </table>
                                     @endif
                                     --}}
+                                    {{-- AQUI DEBE DE IR LA TABLA DE MATRIZ DE RIESGOS --}}
                                     @if ($cont->reportTitleSubtitle->subtitle_id==42)
                                         <table style="width: 100%; border-collapse: collapse; text-align: center; font-weight: bold;">
                                             <tr>
