@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     
     const riesg = @json($risks->sortBy('no')->map(fn($r) => $r->no)->values());
     const riesgos = @json($risks->sortBy('no')->map(fn($r) => $r->no . ' - ' . $r->riesgo)->values());
-    const ocurrencias = @json($risks->sortBy('no')->pluck('f_ocurrencia')->values());
+    const ocurrencias = @json($risks->sortBy('no')->pluck('factor_oc')->values());
     const tipo = @json($grafica);
 
     const colores = ocurrencias.map(v => {
