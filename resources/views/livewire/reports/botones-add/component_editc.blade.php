@@ -1220,6 +1220,95 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
       @endif
 
   @endif
+
+   @if ($titulo==33)
+<div class="relative flex flex-col items-center justify-center min-h-screen bg-white p-10 font-sans select-none">
+    <h1 class="text-3xl font-bold mb-8 text-[#002060] uppercase tracking-wide">
+        Análisis FODA
+    </h1>
+
+    <!-- 🟠 Círculo principal -->
+    <div class="relative w-[750px] h-[750px] rounded-full overflow-visible shadow-xl border-8 border-white">
+
+        <!-- 🟧 Fortalezas -->
+        <div class="absolute top-0 left-0 w-1/2 h-1/2 bg-[#F47B20] text-white 
+                    flex flex-col items-center justify-start text-center pt-10 rounded-tl-full border-r-8 border-b-8 border-white">
+              <h2 class="absolute text-xl font-bold tracking-wide"
+                  style="top: 250px; left: 160px;">
+                  OPORTUNIDADES
+              </h2>  
+        </div>
+
+        <!-- ⚫ Debilidades -->
+        <div class="absolute top-0 right-0 w-1/2 h-1/2 bg-[#808285] text-white 
+                    flex flex-col items-center justify-start text-center pt-10 rounded-tr-full border-l-8 border-b-8 border-white">
+              <h2 class="absolute text-xl font-bold tracking-wide"
+                  style="top: 250px; left: 20px;">
+                  DEBILIDADES
+              </h2>
+        </div>
+
+        <!-- 🟦 Oportunidades -->
+        <div class="absolute bottom-0 left-0 w-1/2 h-1/2 bg-[#0072BC] text-white 
+                    flex flex-col items-center justify-end text-center pb-10 rounded-bl-full border-r-8 border-t-8 border-white">
+              <h2 class="absolute text-xl font-bold tracking-wide"
+                  style="top: 80px; left: 150px;">
+                  OPORTUNIDADES
+              </h2>
+        </div>
+
+        <!-- 🟨 Amenazas -->
+        <div class="absolute bottom-0 right-0 w-1/2 h-1/2 bg-[#FDB913] text-white 
+                    flex flex-col items-center justify-end text-center pb-10 rounded-br-full border-l-8 border-t-8 border-white">
+              <h2 class="absolute text-xl font-bold tracking-wide"
+                  style="top: 80px; left: 20px;">
+                  AMENAZAS
+              </h2>
+        </div>
+
+        <!-- 🔁 Flechas centrales -->
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+            <div class="w-16 h-16 rounded-full bg-white shadow-md flex items-center justify-center">
+                  <img src="{{ asset('contenido/ciclo.png') }}" >
+            </div>
+        </div>
+
+        <!-- 📦 Cuadro Fortalezas -->
+        <div class="absolute top-[40px] left-[-100px] z-30 w-[260px] h-[130px] 
+                    border-2 border-[#F47B20] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
+            <textarea wire:model.defer="fortalezas"
+                      class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
+                      placeholder="• Escribe las fortalezas aquí..."></textarea>
+        </div>
+
+        <!-- 📦 Cuadro Debilidades -->
+        <div class="absolute top-[40px] right-[-100px] z-30 w-[260px] h-[130px] 
+                    border-2 border-[#808285] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
+            <textarea wire:model.defer="debilidades"
+                      class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
+                      placeholder="• Escribe las debilidades aquí..."></textarea>
+        </div>
+
+        <!-- 📦 Cuadro Oportunidades -->
+        <div class="absolute bottom-[40px] left-[-100px] z-30 w-[260px] h-[130px] 
+                    border-2 border-[#0072BC] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
+            <textarea wire:model.defer="oportunidades"
+                      class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
+                      placeholder="• Escribe las oportunidades aquí..."></textarea>
+        </div>
+
+        <!-- 📦 Cuadro Amenazas -->
+        <div class="absolute bottom-[40px] right-[-100px] z-30 w-[260px] h-[130px] 
+                    border-2 border-[#FDB913] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
+            <textarea wire:model.defer="amenazas"
+                      class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
+                      placeholder="• Escribe las amenazas aquí..."></textarea>
+        </div>
+    </div>
+</div>
+
+  @endif
+  
   @if ($titulo==16)
   GRAFICA
   <h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
@@ -1813,78 +1902,44 @@ if (window.Livewire) {
 
   @endif
   @if ($titulo==18)
-  <h1>5.2	Organigrama de Controles.</h1>
-  <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt; text-align: left;">
-    <!-- Encabezado Humanos -->
-    <tr style="background-color: #0070C0; color: white; font-weight: bold;">
-      <td colspan="3" style="border: 1px solid black; padding: 6px;">Humanos</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">1</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C04</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Consultoría de seguridad (interna)</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">2</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C05</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Controlador de acceso</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">3</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C09</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Equipo de seguridad</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">4</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C01</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Brigada de primeros auxilios</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">5</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C03</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Consultoría de seguridad</td>
-    </tr>
+  <table class="w-full border-collapse text-center text-sm font-sans" 
+          style="border:2px solid #001a4d; border-collapse:collapse;">
+      <thead>
+        <tr style="background-color:#002060; color:white; border:2px solid #001a4d;">
+          <th style="border:2px solid #001a4d; padding:8px; width:5%;">No.</th>
+          <th style="border:2px solid #001a4d; padding:8px; width:15%;">Tipo de Riesgo</th>
+          <th style="border:2px solid #001a4d; padding:8px; width:25%;">Medidas preventivas actuales</th>
+          <th style="border:2px solid #001a4d; padding:8px; width:40%;">Acciones / Planes por realizar</th>
+          <th style="border:2px solid #001a4d; padding:8px; width:15%;">Estatus</th>
+        </tr>
+      </thead>
+            <tbody>
+  @foreach ($riesgs as $i => $r)
+  <tr>
+    <td class="border p-1" style="border:2px solid #001a4d;">{{ $r['no'] }}</td>
+    <td class="border p-1 text-left" style="border:2px solid #001a4d;">{{ $r['riesgo'] }}</td>
 
-    <!-- Encabezado Políticos -->
-    <tr style="background-color: #0070C0; color: white; font-weight: bold; font-style: italic;">
-      <td colspan="3" style="border: 1px solid black; padding: 6px;">Políticos y regulatorios.</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">1</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C06</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Cumplimentar leyes federales, provinciales/estaduales y/o municipales</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">2</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C08</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Cumplimentar regulaciones de organizaciones reguladoras</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">3</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C07</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Cumplimentar regulaciones de organizaciones reguladoras</td>
-    </tr>
+    <td style="border:2px solid #001a4d; padding:6px;">
+      <textarea
+        wire:model.defer="riesgs.{{ $i }}.medidas_p"
+        class="w-full border border-outline bg-surface-alt px-2.5 py-2 text-sm focus:outline-primary"
+        placeholder="Coloca la información"></textarea>
+    </td>
 
-    <!-- Encabezado Procesos -->
-    <tr style="background-color: #0070C0; color: white; font-weight: bold; font-style: italic;">
-      <td colspan="3" style="border: 1px solid black; padding: 6px;">Procesos (Organizacionales)</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">1</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C02</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Comité integrado de gestión de riesgos corporativos</td>
-    </tr>
+    <td style="border:2px solid #001a4d; padding:6px;">
+      <textarea
+        wire:model.defer="riesgs.{{ $i }}.acciones_planes"
+        class="w-full border border-outline bg-surface-alt px-2.5 py-2 text-sm focus:outline-primary"
+        placeholder="Coloca la información"></textarea>
+    </td>
 
-    <!-- Encabezado Técnicos -->
-    <tr style="background-color: #0070C0; color: white; font-weight: bold; font-style: italic;">
-      <td colspan="3" style="border: 1px solid black; padding: 6px;">Técnicos (Físicos y Electrónicos).</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid black; padding: 6px;">1</td>
-      <td style="border: 1px solid black; padding: 6px;"><b>C10</b></td>
-      <td style="border: 1px solid black; padding: 6px;">Sistemas y procesos contra ciber ataques</td>
-    </tr>
-  </table>
+    <td style="border:2px solid #001a4d; padding:6px;"></td>
+  </tr>
+  @endforeach
+</tbody>
+
+    </table>
+
   <br>
   @endif
   @if (in_array($titulo, [20,21,22,23,24,25,26,27,28,29]))

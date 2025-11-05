@@ -5,6 +5,8 @@ namespace App\Livewire\Reports\BotonesAdd;
 use App\Models\AnalysisDiagram;
 use Livewire\Component;
 use App\Models\Content;
+use App\Models\Foda;
+use App\Models\OrganigramaControl;
 use Livewire\WithFileUploads;
 use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
@@ -42,7 +44,7 @@ class Editc extends Component
     public $risks;
     public $riesgos = [];
     public $rep;
-
+    public $riesgs;
     public $que;
     public $como;
     public $quien;
@@ -51,13 +53,18 @@ class Editc extends Component
     public $cuanto;
     public $de;
     public $hasta;
-
-
+    public $acciones_planes;
+    public $medidas_p;
     
-public $nodos = [];
-public $relaciones = [];
-public $backgroundImage = null;
-public $background_opacity = 0.4;
+    public $nodos = [];
+    public $relaciones = [];
+    public $backgroundImage = null;
+    public $background_opacity = 0.4;
+
+    public $fortalezas;
+    public $debilidades;
+    public $oportunidades;
+    public $amenzas;
 
     public function mount($id,$boton,$rp)
     {
@@ -86,7 +93,6 @@ public $background_opacity = 0.4;
         // Si es el subtítulo 16 (criterios de evaluación)
         $subtitleId = ReportTitleSubtitle::where('id', $id)->value('subtitle_id');
         if ($subtitleId == 32) {
-
             $this->riesgos = AnalysisDiagram::where('content_id', $this->content->id)
                 ->orderBy('orden')
                 ->get()
@@ -107,7 +113,6 @@ public $background_opacity = 0.4;
                 })
                 ->toArray();
                 $mentalMap = \App\Models\MentalMap::where('content_id', $this->content->id)->first();
-
                 if ($mentalMap) {
                     $this->nodos = $mentalMap->nodos ?? [];
                     $this->relaciones = $mentalMap->relaciones ?? [];
@@ -117,11 +122,21 @@ public $background_opacity = 0.4;
 
                 }
         }
-        
+    }else 
+        {
+            $this->riesgos = [];
+        }
+    if ($subtitleId == 18) {
+    $this->riesgs = OrganigramaControl::where('content_id', $this->content->id)->get()->toArray();
 
-     }else {
-                $this->riesgos = [];
-            }
+    }
+    if ($subtitleId == 33) {
+    $this->riesgs = Foda::where('content_id', $this->content->id)->first();
+        $this->fortalezas = $this->riesgs->fortalezas;
+        $this->debilidades = $this->riesgs->debilidades;
+        $this->oportunidades = $this->riesgs->oportunidades;
+        $this->amenzas = $this->riesgs->amenzas;
+    }
             $this->rep->titles = ReportTitle::where('report_id', $this->rep->id)->where('status',1)->get();
             // Cargamos valores existentes
             foreach ($this->rep->titles as $title) 
@@ -136,8 +151,6 @@ public $background_opacity = 0.4;
              }
             }
             $this->cargarRiesgos();
-            
-           
             $this->contenido = $this->content->cont;
             $this->contenido_m_p_a = $this->content->contenido_m_p_a;
             $this->contenido_a_p = $this->content->contenido_a_p;
@@ -326,7 +339,7 @@ public function updateRiesgosEvaluacion($contentId)
             if ($nl->subtitle_id === 32) {
                 $data['grafica'] = $this->grafica;
                 $this->guardarRiesgos();
-                 $this->guardarMapaMental();
+                $this->guardarMapaMental();
             }            
             if ($nl->subtitle_id === 16) {
                 $data['grafica'] = $this->grafica;
@@ -334,6 +347,25 @@ public function updateRiesgosEvaluacion($contentId)
             if ($nl->subtitle_id === 17) {
                 $data['contenido_m_p_a'] = $this->contenido_m_p_a;
                 $data['contenido_a_p'] = $this->contenido_a_p;
+            }
+            if ($nl->subtitle_id === 18) {
+                foreach ($this->riesgs as $r) {
+                        if (isset($r['id'])) {
+                            OrganigramaControl::where('id', $r['id'])->update([
+                                'medidas_p' => $r['medidas_p'] ?? null,
+                                'acciones_planes' => $r['acciones_planes'] ?? null,
+                            ]);
+                        }
+                    }
+
+            }
+            if ($nl->subtitle_id === 33) {
+                 Foda::where('id', $this->riesgs->id)->update([
+                                'fortalezas'    =>  $this->fortalezas,
+                                'debilidades'   =>  $this->debilidades,
+                                'oportunidades' =>  $this->oportunidades,
+                                'amenzas'       =>  $this->amenzas,
+                            ]);
             }
             $name = Subtitle::where('id', $nl->subtitle_id)->value('id');
             if (in_array($name, [20, 21, 22, 23, 24, 25, 26, 27, 28, 29])) {
@@ -347,8 +379,6 @@ public function updateRiesgosEvaluacion($contentId)
             $data['hasta']  = $this->hasta;
         }
         }
-
-
         // Ahora actualiza el modelo
         $this->content->update($data);
         session()->flash('cont', '✅ Contenido actualizado correctamente.');

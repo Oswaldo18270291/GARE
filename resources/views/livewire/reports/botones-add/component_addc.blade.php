@@ -1783,83 +1783,29 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
         </tr>
       </thead>
       <tbody>
-        <tr style="border:2px solid #001a4d;">
-          <td style="border:2px solid #001a4d; padding:6px;">R01</td>
-          <td style="border:2px solid #001a4d; padding:6px;">Intrusión</td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-        </tr>
-        <tr>
-          <td style="border:2px solid #001a4d; padding:6px;">R02</td>
-          <td style="border:2px solid #001a4d; padding:6px;">Invasión para ocupación de áreas adyacentes a instalación</td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-        </tr>
-        <tr>
-          <td style="border:2px solid #001a4d; padding:6px;">R03</td>
-          <td style="border:2px solid #001a4d; padding:6px;">Manifestaciones sociales y movimientos sindicales</td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-        </tr>
-        <tr>
-          <td style="border:2px solid #001a4d; padding:6px;">R04</td>
-          <td style="border:2px solid #001a4d; padding:6px;">Ciber ataque – Sistemas de la organización</td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-        </tr>
-        <tr>
-          <td style="border:2px solid #001a4d; padding:6px;">R05</td>
-          <td style="border:2px solid #001a4d; padding:6px;">Filtración de información</td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-        </tr>
-        <tr>
-          <td style="border:2px solid #001a4d; padding:6px;">R06</td>
-          <td style="border:2px solid #001a4d; padding:6px;">Emergencias médicas</td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-        </tr>
-        <tr>
-          <td style="border:2px solid #001a4d; padding:6px;">R07</td>
-          <td style="border:2px solid #001a4d; padding:6px;">Tempestad y/o lluvia con inundaciones alta intensidad</td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-        </tr>
-        <tr>
-          <td style="border:2px solid #001a4d; padding:6px;">R08</td>
-          <td style="border:2px solid #001a4d; padding:6px;">Lesiones</td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-        </tr>
-        <tr>
-          <td style="border:2px solid #001a4d; padding:6px;">R09</td>
-          <td style="border:2px solid #001a4d; padding:6px;">Amenazas a empleados</td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-        </tr>
-        <tr>
-          <td style="border:2px solid #001a4d; padding:6px;">R10</td>
-          <td style="border:2px solid #001a4d; padding:6px;">Incendio</td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-        </tr>
-        <tr>
-          <td style="border:2px solid #001a4d; padding:6px;">R11</td>
-          <td style="border:2px solid #001a4d; padding:6px;">Sismo</td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-          <td style="border:2px solid #001a4d; padding:6px;"></td>
-        </tr>
+        @foreach ($riesgos as $i => $r)
+            <tr>
+                <td class="border p-1" style="border:2px solid #001a4d;">{{ $r['no'] }}</td>
+                <td class="border p-1 text-left" style="border:2px solid #001a4d;">{{ $r['riesgo'] }}</td>
+
+                <td style="border:2px solid #001a4d; padding:6px;">
+                    <textarea 
+                        wire:model.defer="informacion.{{ $i }}.medidas_p"
+                        class="w-full border border-outline bg-surface-alt px-2.5 py-2 text-sm focus:outline-primary"
+                        placeholder="Coloca la información"></textarea>
+                </td>
+
+                <td style="border:2px solid #001a4d; padding:6px;">
+                    <textarea 
+                        wire:model.defer="informacion.{{ $i }}.acciones_planes"
+                        class="w-full border border-outline bg-surface-alt px-2.5 py-2 text-sm focus:outline-primary"
+                        placeholder="Coloca la información"></textarea>
+                </td>
+
+                <td style="border:2px solid #001a4d; padding:6px;"></td>
+            </tr>
+        @endforeach
+
       </tbody>
     </table>
 

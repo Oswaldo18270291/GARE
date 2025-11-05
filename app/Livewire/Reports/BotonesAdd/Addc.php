@@ -9,10 +9,12 @@ use App\Models\AnalysisDiagram;
 use App\Models\Subtitle;
 use App\Models\Report;
 use App\Models\Content;
+use App\Models\Foda;
 use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
 use App\Models\MentalMap;
+use App\Models\OrganigramaControl;
 use Livewire\Attributes\On;
 
 class Addc extends Component
@@ -55,8 +57,15 @@ class Addc extends Component
     public $ti;
     public $su;
 
+    public $informacion = [];
     public $riesgos = [];
     public $rep;
+
+    public $fortalezas;
+    public $debilidades;
+    public $oportunidades;
+    public $amenzas;
+
     public function mount($id, $boton, $rp)
     {
         $report = Report::findOrFail($rp);
@@ -292,6 +301,30 @@ class Addc extends Component
                     $mapa->save();
                 }
 
+            }
+            if ($name == 18) {
+                foreach ($this->riesgos as $i => $riesgo) {
+                    // Tomar medidas y acciones si existen, si no, dejar como null
+                    $medidas = $this->informacion[$i]['medidas_p'] ?? null;
+                    $acciones = $this->informacion[$i]['acciones_planes'] ?? null;
+
+                    OrganigramaControl::create([
+                        'content_id'       => $content->id,
+                        'no'               => $riesgo['no'],
+                        'riesgo'           => $riesgo['riesgo'],
+                        'medidas_p'        => $medidas,
+                        'acciones_planes'  => $acciones,
+                    ]);
+                }
+            }
+            if ($name == 33) {
+                Foda::create([
+                    'content_id'    =>  $content->id,
+                    'fortalezas'    =>  $this->fortalezas,
+                    'debilidades'   =>  $this->debilidades,
+                    'oportunidades' =>  $this->oportunidades,
+                    'amenzas'       =>  $this->amenzas,
+                ]);
             }
             session()->flash('cont', 'Se agrego contenido de Subtitulo con exito.');
             $this->redirectRoute('my_reports.addcontenido', ['id' => $id], navigate: true);
@@ -687,6 +720,9 @@ $this->dispatch('actualizarGrafica', [
     {
         $this->backgroundImage = $base64;
     }
+
+
+
     public function render()
     {
         return view('livewire.reports.botones-add.addc', [
