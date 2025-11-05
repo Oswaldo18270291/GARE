@@ -101,122 +101,157 @@
                         </a>
                         <br>
                         @foreach ($title->content as $cont)
-                            @php
-                                $orientation = 'horizontal';
-
-                                if (!empty($cont->img1) && !empty($cont->img2) && !empty($cont->img3)) {
-                                    $path = storage_path('app/public/'.$cont->img1);
-                                    $orientation = 'vertical';
-
-                                    if (file_exists($path)) {
-                                        [$width, $height] = getimagesize($path);
-                                        $orientation = $width > $height ? 'horizontal' : 'vertical';
-                                    }
-                                }
-                            @endphp
                             @if (empty(trim($cont->cont)))
                                 @php
                                     $imgs = [];
-                                    foreach (['img1','img2','img3'] as $i) {
+
+                                    // Recolectar imágenes con su orientación
+                                    foreach (['img1', 'img2', 'img3'] as $i) {
                                         if (!empty($cont->{$i})) {
                                             $path = storage_path('app/public/'.$cont->{$i});
                                             $size = @getimagesize($path);
-                                            $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v'; // h=horizontal, v=vertical
+                                            $ori = ($size && $size[0] > $size[1]) ? 'h' : 'v'; // horizontal o vertical
+
                                             $imgs[] = [
                                                 'src' => $cont->{$i},
-                                                'leyenda' => $cont->{'leyenda'.substr($i,-1)},
+                                                'leyenda' => $cont->{'leyenda'.substr($i, -1)},
                                                 'o' => $ori,
                                             ];
                                         }
                                     }
-                                    $allV = count($imgs) && collect($imgs)->every(fn($x)=>$x['o']==='v');
-                                    $allH = count($imgs) && collect($imgs)->every(fn($x)=>$x['o']==='h');
+
+                                    // Determinar tipo general
+                                    $count = count($imgs);
+                                    $allV = $count && collect($imgs)->every(fn($x) => $x['o'] === 'v');
+                                    $allH = $count && collect($imgs)->every(fn($x) => $x['o'] === 'h');
                                 @endphp
 
-                                @if (count($imgs))
-                                <div style="margin-top:25px; text-align:center; overflow:hidden;">
-                                    @foreach ($imgs as $i=>$img)
-                                        @php
-                                            $styles = '';
+                                @if ($count)
+                                    <div style="margin-top:25px; text-align:center; overflow:hidden;">
+                                        @foreach ($imgs as $i => $img)
+                                            @php
+                                                $style = '';
 
-                                            if ($allV) {
-                                                // 3 en una línea
-                                                $styles = 'float:left; width:32%; margin:0 1% 12px;';   // 32*3 + 1%*4 = ~100%
-                                            } elseif ($allH) {
-                                                // 2 por fila; si hay 3, la 3ª centrada
-                                                if (count($imgs)==3 && $loop->last) {
-                                                    $styles = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                                                if ($count === 1) {
+                                                    // ✅ Solo una imagen → centrada
+                                                    $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                                                } elseif ($allV) {
+                                                    // ✅ Tres verticales → en una sola línea
+                                                    $style = 'float:left; width:32%; margin:0 1% 12px;';
+                                                } elseif ($allH) {
+                                                    // ✅ Dos o tres horizontales
+                                                    if ($count == 2) {
+                                                        $style = 'float:left; width:48%; margin:0 1% 12px;';
+                                                    } elseif ($count == 3 && $loop->last) {
+                                                        $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                                                    } else {
+                                                        $style = 'float:left; width:48%; margin:0 1% 12px;';
+                                                    }
                                                 } else {
-                                                    $styles = 'float:left; width:48%; margin:0 1% 12px;'; // 48 + 1 + 48 + 1 = 98%
+                                                    // ✅ Mixtas (por si acaso)
+                                                    $style = ($count == 3 && $loop->last)
+                                                        ? 'float:none; display:block; width:70%; margin:0 auto 12px;'
+                                                        : 'float:left; width:48%; margin:0 1% 12px;';
                                                 }
-                                            } else {
-                                                // Mixtas: dos por fila, la última (si es 3) centrada
-                                                $styles = (count($imgs)==3 && $loop->last)
-                                                    ? 'float:none; display:block; width:70%; margin:0 auto 12px;'
-                                                    : 'float:left; width:48%; margin:0 1% 12px;';
-                                            }
-                                        @endphp
+                                            @endphp
 
-                                        <div style="{{ $styles }} text-align:center;">
-                                            <p style="margin:0 0 6px; line-height:1.2;">
-                                                <b>Imagen {{ $imgNum++ }}</b><br>
-                                                <i>{{ $img['leyenda'] }}</i>
-                                            </p>
-                                            <img src="{{ storage_path('app/public/'.$img['src']) }}"
-                                                style="width:100%; height:auto; object-fit:contain;">
-                                        </div>
+                                            <div style="{{ $style }} text-align:center;">
+                                                {{-- Leyenda arriba --}}
+                                                <p style="margin:0 0 6px; line-height:1.2;">
+                                                    <b>Imagen {{ $imgNum++ }}</b><br>
+                                                    <i>{{ $img['leyenda'] }}</i>
+                                                </p>
 
-                                        {{-- Clear después de cada pareja cuando son horizontales puras (evita que la 3ª intente subir) --}}
-                                        @if ($allH && (($loop->iteration % 2) == 0) && !($loop->last && count($imgs)==3))
-                                            <div style="clear:both;"></div>
-                                        @endif
-                                    @endforeach
-                                    <div style="clear:both;"></div>
-                                </div>
+                                                {{-- Imagen --}}
+                                                <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                                                    style="width:100%; height:auto; object-fit:contain;">
+                                            </div>
+
+                                            {{-- Limpiar flotantes después de cada par de horizontales --}}
+                                            @if ($allH && (($loop->iteration % 2) == 0) && !($loop->last && $count == 3))
+                                                <div style="clear:both;"></div>
+                                            @endif
+                                        @endforeach
+                                        <div style="clear:both;"></div>
+                                    </div>
                                 @endif
                                 <br>
                             @else
                                 {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
+                                @php
+                                    $imgs = [];
 
-                                @if (!empty($cont->img1))
-                                    <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; text-align: center;">
-                                        <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
-                                            <b>Imagen {{ $imgNum++ }}</b><br>
-                                            <i>{{ $cont->leyenda1 }}</i>
-                                        </p>
-                                        <img src="{{ storage_path('app/public/'.$cont->img1) }}" 
-                                            style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                    max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                    object-fit: contain;"
-                                        >
-                                    </div>
-                                    @if (!empty($cont->img2))
-                                        <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; height: 100%; text-align: center;">
-                                            <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
-                                                <b>Imagen {{ $imgNum++ }}</b><br>
-                                                <i>{{ $cont->leyenda2 }}</i>
-                                            </p>
-                                            <img src="{{ storage_path('app/public/'.$cont->img2) }}" 
-                                                style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                        max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                        object-fit: contain;"
-                                            >
-                                        </div>
-                                        @if (!empty($cont->img3))
-                                            <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; height: 100%; text-align: center;">
-                                                <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
+                                    // Recolectar imágenes con su orientación
+                                    foreach (['img1', 'img2', 'img3'] as $i) {
+                                        if (!empty($cont->{$i})) {
+                                            $path = storage_path('app/public/'.$cont->{$i});
+                                            $size = @getimagesize($path);
+                                            $ori = ($size && $size[0] > $size[1]) ? 'h' : 'v'; // horizontal o vertical
+
+                                            $imgs[] = [
+                                                'src' => $cont->{$i},
+                                                'leyenda' => $cont->{'leyenda'.substr($i, -1)},
+                                                'o' => $ori,
+                                            ];
+                                        }
+                                    }
+
+                                    // Determinar tipo general
+                                    $count = count($imgs);
+                                    $allV = $count && collect($imgs)->every(fn($x) => $x['o'] === 'v');
+                                    $allH = $count && collect($imgs)->every(fn($x) => $x['o'] === 'h');
+                                @endphp
+
+                                @if ($count)
+                                    <div style="margin-top:25px; text-align:center; overflow:hidden;">
+                                        @foreach ($imgs as $i => $img)
+                                            @php
+                                                $style = '';
+
+                                                if ($count === 1) {
+                                                    // ✅ Solo una imagen → centrada
+                                                    $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                                                } elseif ($allV) {
+                                                    // ✅ Tres verticales → en una sola línea
+                                                    $style = 'float:left; width:32%; margin:0 1% 12px;';
+                                                } elseif ($allH) {
+                                                    // ✅ Dos o tres horizontales
+                                                    if ($count == 2) {
+                                                        $style = 'float:left; width:48%; margin:0 1% 12px;';
+                                                    } elseif ($count == 3 && $loop->last) {
+                                                        $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                                                    } else {
+                                                        $style = 'float:left; width:48%; margin:0 1% 12px;';
+                                                    }
+                                                } else {
+                                                    // ✅ Mixtas (por si acaso)
+                                                    $style = ($count == 3 && $loop->last)
+                                                        ? 'float:none; display:block; width:70%; margin:0 auto 12px;'
+                                                        : 'float:left; width:48%; margin:0 1% 12px;';
+                                                }
+                                            @endphp
+
+                                            <div style="{{ $style }} text-align:center;">
+                                                {{-- Leyenda arriba --}}
+                                                <p style="margin:0 0 6px; line-height:1.2;">
                                                     <b>Imagen {{ $imgNum++ }}</b><br>
-                                                    <i>{{ $cont->leyenda3 }}</i>
+                                                    <i>{{ $img['leyenda'] }}</i>
                                                 </p>
-                                                <img src="{{ storage_path('app/public/'.$cont->img3) }}" 
-                                                    style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                            max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                            object-fit: contain;"
-                                                >
+
+                                                {{-- Imagen --}}
+                                                <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                                                    style="width:100%; height:auto; object-fit:contain;">
                                             </div>
-                                        @endif
-                                    @endif
+
+                                            {{-- Limpiar flotantes después de cada par de horizontales --}}
+                                            @if ($allH && (($loop->iteration % 2) == 0) && !($loop->last && $count == 3))
+                                                <div style="clear:both;"></div>
+                                            @endif
+                                        @endforeach
+                                        <div style="clear:both;"></div>
+                                    </div>
                                 @endif
+                                <br>
                             @endif
                         @endforeach
 
@@ -228,58 +263,64 @@
                             </a>
                             <br>
                             @foreach ($subtitle->content as $cont)
-                                @php
-                                    $orientation = 'horizontal';
-
-                                    if (!empty($cont->img1) && !empty($cont->img2) && !empty($cont->img3)) {
-                                        $path = storage_path('app/public/'.$cont->img1);
-                                        $orientation = 'vertical';
-
-                                        if (file_exists($path)) {
-                                            [$width, $height] = getimagesize($path);
-                                            $orientation = $width > $height ? 'horizontal' : 'vertical';
-                                        }
-                                    }
-                                @endphp
                                 @if (empty(trim($cont->cont)))
-                                    @if (!empty($cont->img1))
-                                        <div style="display: flex; justify-content: center; align-items: center; text-align: center;">
-                                            <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
-                                                <b>Imagen {{ $imgNum++ }}</b><br>
-                                                <i>{{ $cont->leyenda1 }}</i>
-                                            </p>
-                                            <img src="{{ storage_path('app/public/'.$cont->img1) }}" 
-                                                style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                        max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                        object-fit: contain;"
-                                            >
-                                        </div>
-                                        @if (!empty($cont->img2))
-                                            <div style="display: flex; justify-content: center; align-items: center; height: 100%; text-align: center;">
-                                                <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
-                                                    <b>Imagen {{ $imgNum++ }}</b><br>
-                                                    <i>{{ $cont->leyenda2 }}</i>
-                                                </p>
-                                                <img src="{{ storage_path('app/public/'.$cont->img2) }}" 
-                                                    style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                            max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                            object-fit: contain;"
-                                                >
-                                            </div>
-                                            @if (!empty($cont->img3))
-                                                <div style="display: flex; justify-content: center; align-items: center; height: 100%; text-align: center;">
-                                                    <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
+                                    @php
+                                        $imgs = [];
+                                        foreach (['img1','img2','img3'] as $i) {
+                                            if (!empty($cont->{$i})) {
+                                                $path = storage_path('app/public/'.$cont->{$i});
+                                                $size = @getimagesize($path);
+                                                $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v'; // h=horizontal, v=vertical
+                                                $imgs[] = [
+                                                    'src' => $cont->{$i},
+                                                    'leyenda' => $cont->{'leyenda'.substr($i,-1)},
+                                                    'o' => $ori,
+                                                ];
+                                            }
+                                        }
+                                        $allV = count($imgs) && collect($imgs)->every(fn($x)=>$x['o']==='v');
+                                        $allH = count($imgs) && collect($imgs)->every(fn($x)=>$x['o']==='h');
+                                    @endphp
+
+                                    @if (count($imgs))
+                                        <div style="margin-top:25px; text-align:center; overflow:hidden;">
+                                            @foreach ($imgs as $i=>$img)
+                                                @php
+                                                    $styles = '';
+
+                                                    if ($allV) {
+                                                        // 3 en una línea
+                                                        $styles = 'float:left; width:32%; margin:0 1% 12px;';   // 32*3 + 1%*4 = ~100%
+                                                    } elseif ($allH) {
+                                                        // 2 por fila; si hay 3, la 3ª centrada
+                                                        if (count($imgs)==3 && $loop->last) {
+                                                            $styles = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                                                        } else {
+                                                            $styles = 'float:left; width:48%; margin:0 1% 12px;'; // 48 + 1 + 48 + 1 = 98%
+                                                        }
+                                                    } else {
+                                                        // Mixtas: dos por fila, la última (si es 3) centrada
+                                                        $styles = (count($imgs)==3 && $loop->last)
+                                                            ? 'float:none; display:block; width:70%; margin:0 auto 12px;'
+                                                            : 'float:left; width:48%; margin:0 1% 12px;';
+                                                    }
+                                                @endphp
+                                                <div style="{{ $styles }} text-align:center;">
+                                                    <p style="margin:0 0 6px; line-height:1.2;">
                                                         <b>Imagen {{ $imgNum++ }}</b><br>
-                                                        <i>{{ $cont->leyenda3 }}</i>
+                                                        <i>{{ $img['leyenda'] }}</i>
                                                     </p>
-                                                    <img src="{{ storage_path('app/public/'.$cont->img3) }}" 
-                                                        style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                                max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                                object-fit: contain;"
-                                                    >
+                                                    <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                                                        style="width:100%; height:auto; object-fit:contain;">
                                                 </div>
-                                            @endif
-                                        @endif
+
+                                                {{-- Clear después de cada pareja cuando son horizontales puras (evita que la 3ª intente subir) --}}
+                                                @if ($allH && (($loop->iteration % 2) == 0) && !($loop->last && count($imgs)==3))
+                                                    <div style="clear:both;"></div>
+                                                @endif
+                                            @endforeach
+                                            <div style="clear:both;"></div>
+                                        </div>
                                     @endif
                                     <br>
                                     {{--
@@ -556,46 +597,82 @@
                                     @endif            
                                 @else
                                     {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
-                                    
-                                    @if (!empty($cont->img1))
-                                        <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; text-align: center;">
-                                            <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
-                                                <b>Imagen {{ $imgNum++ }}</b><br>
-                                                <i>{{ $cont->leyenda1 }}</i>
-                                            </p>
-                                            <img src="{{ storage_path('app/public/'.$cont->img1) }}" 
-                                                style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                        max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                        object-fit: contain;"
-                                            >
-                                        </div>
-                                        @if (!empty($cont->img2))
-                                            <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; height: 100%; text-align: center;">
-                                                <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
-                                                    <b>Imagen {{ $imgNum++ }}</b><br>
-                                                    <i>{{ $cont->leyenda2 }}</i>
-                                                </p>
-                                                <img src="{{ storage_path('app/public/'.$cont->img2) }}" 
-                                                    style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                            max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                            object-fit: contain;"
-                                                >
-                                            </div>
-                                            @if (!empty($cont->img3))
-                                                <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; height: 100%; text-align: center;">
-                                                    <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
+
+                                    @php
+                                        $imgs = [];
+
+                                        // Recolectar imágenes con su orientación
+                                        foreach (['img1', 'img2', 'img3'] as $i) {
+                                            if (!empty($cont->{$i})) {
+                                                $path = storage_path('app/public/'.$cont->{$i});
+                                                $size = @getimagesize($path);
+                                                $ori = ($size && $size[0] > $size[1]) ? 'h' : 'v'; // horizontal o vertical
+
+                                                $imgs[] = [
+                                                    'src' => $cont->{$i},
+                                                    'leyenda' => $cont->{'leyenda'.substr($i, -1)},
+                                                    'o' => $ori,
+                                                ];
+                                            }
+                                        }
+
+                                        // Determinar tipo general
+                                        $count = count($imgs);
+                                        $allV = $count && collect($imgs)->every(fn($x) => $x['o'] === 'v');
+                                        $allH = $count && collect($imgs)->every(fn($x) => $x['o'] === 'h');
+                                    @endphp
+
+                                    @if ($count)
+                                        <div style="margin-top:25px; text-align:center; overflow:hidden;">
+                                            @foreach ($imgs as $i => $img)
+                                                @php
+                                                    $style = '';
+
+                                                    if ($count === 1) {
+                                                        // ✅ Solo una imagen → centrada
+                                                        $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                                                    } elseif ($allV) {
+                                                        // ✅ Tres verticales → en una sola línea
+                                                        $style = 'float:left; width:32%; margin:0 1% 12px;';
+                                                    } elseif ($allH) {
+                                                        // ✅ Dos o tres horizontales
+                                                        if ($count == 2) {
+                                                            $style = 'float:left; width:48%; margin:0 1% 12px;';
+                                                        } elseif ($count == 3 && $loop->last) {
+                                                            $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                                                        } else {
+                                                            $style = 'float:left; width:48%; margin:0 1% 12px;';
+                                                        }
+                                                    } else {
+                                                        // ✅ Mixtas (por si acaso)
+                                                        $style = ($count == 3 && $loop->last)
+                                                            ? 'float:none; display:block; width:70%; margin:0 auto 12px;'
+                                                            : 'float:left; width:48%; margin:0 1% 12px;';
+                                                    }
+                                                @endphp
+
+                                                <div style="{{ $style }} text-align:center;">
+                                                    {{-- Leyenda arriba --}}
+                                                    <p style="margin:0 0 6px; line-height:1.2;">
                                                         <b>Imagen {{ $imgNum++ }}</b><br>
-                                                        <i>{{ $cont->leyenda3 }}</i>
+                                                        <i>{{ $img['leyenda'] }}</i>
                                                     </p>
-                                                    <img src="{{ storage_path('app/public/'.$cont->img3) }}" 
-                                                        style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                                max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                                object-fit: contain;"
-                                                    >
+
+                                                    {{-- Imagen --}}
+                                                    <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                                                        style="width:100%; height:auto; object-fit:contain;">
                                                 </div>
-                                            @endif
-                                        @endif
+
+                                                {{-- Limpiar flotantes después de cada par de horizontales --}}
+                                                @if ($allH && (($loop->iteration % 2) == 0) && !($loop->last && $count == 3))
+                                                    <div style="clear:both;"></div>
+                                                @endif
+                                            @endforeach
+                                            <div style="clear:both;"></div>
+                                        </div>
                                     @endif
+
+                                    <br>
 
                                     {{-- Tabla de análisis y evaluación de riesgos --}}
                                     {{--
@@ -691,10 +768,10 @@
                                             </tr>
                                             <tr>
                                                 <td style="border: 1px dashed #999; padding: 8px;">
-                                                    <br>
+                                                    <br><br
                                                 </td>
                                                 <td style="border: 1px dashed #999; padding: 8px;">
-                                                    <br>
+                                                    <br><br>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -707,10 +784,10 @@
                                             </tr>
                                             <tr>
                                                 <td style="border: 1px dashed #999; padding: 8px;">
-                                                    <br><br>
+                                                    <br>
                                                 </td>
                                                 <td style="border: 1px dashed #999; padding: 8px;">
-                                                    <br><br>
+                                                    <br>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -731,10 +808,10 @@
                                             </tr>
                                             <tr>
                                                 <td style="border: 1px dashed #999; padding: 8px;">
-                                                    <br>
+                                                    <br><br>
                                                 </td>
                                                 <td style="border: 1px dashed #999; padding: 8px;">
-                                                    <br>
+                                                    <br><br>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -758,102 +835,158 @@
                                 </a>
                                 <br>
                                 @foreach ($section->content as $cont)
-                                    @php
-                                        $orientation = 'horizontal';
-
-                                        if (!empty($cont->img1) && !empty($cont->img2) && !empty($cont->img3)) {
-                                            $path = storage_path('app/public/'.$cont->img1);
-                                            $orientation = 'vertical';
-
-                                            if (file_exists($path)) {
-                                                [$width, $height] = getimagesize($path);
-                                                $orientation = $width > $height ? 'horizontal' : 'vertical';
-                                            }
-                                        }
-                                    @endphp
                                     @if (empty(trim($cont->cont)))
-                                        @if (!empty($cont->img1))1
-                                            <div style="display: flex; justify-content: center; align-items: center; text-align: center;">
-                                                <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
-                                                    <b>Imagen {{ $imgNum++ }}</b><br>
-                                                    <i>{{ $cont->leyenda1 }}</i>
-                                                </p>
-                                                <img src="{{ storage_path('app/public/'.$cont->img1) }}" 
-                                                    style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                            max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                            object-fit: contain;"
-                                                >
-                                            </div>
-                                            @if (!empty($cont->img2))2
-                                                <div style="display: flex; justify-content: center; align-items: center; height: 100%; text-align: center;">
-                                                    <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
-                                                        <b>Imagen {{ $imgNum++ }}</b><br>
-                                                        <i>{{ $cont->leyenda2 }}</i>
-                                                    </p>
-                                                    <img src="{{ storage_path('app/public/'.$cont->img2) }}" 
-                                                        style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                                max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                                object-fit: contain;"
-                                                    >
-                                                </div>
-                                                @if (!empty($cont->img3))3
-                                                    <div style="display: flex; justify-content: center; align-items: center; height: 100%; text-align: center;">
-                                                        <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
+                                        @php
+                                            $imgs = [];
+
+                                            // Recolectar imágenes con su orientación
+                                            foreach (['img1', 'img2', 'img3'] as $i) {
+                                                if (!empty($cont->{$i})) {
+                                                    $path = storage_path('app/public/'.$cont->{$i});
+                                                    $size = @getimagesize($path);
+                                                    $ori = ($size && $size[0] > $size[1]) ? 'h' : 'v'; // horizontal o vertical
+
+                                                    $imgs[] = [
+                                                        'src' => $cont->{$i},
+                                                        'leyenda' => $cont->{'leyenda'.substr($i, -1)},
+                                                        'o' => $ori,
+                                                    ];
+                                                }
+                                            }
+
+                                            // Determinar tipo general
+                                            $count = count($imgs);
+                                            $allV = $count && collect($imgs)->every(fn($x) => $x['o'] === 'v');
+                                            $allH = $count && collect($imgs)->every(fn($x) => $x['o'] === 'h');
+                                        @endphp
+
+                                        @if ($count)
+                                            <div style="margin-top:25px; text-align:center; overflow:hidden;">
+                                                @foreach ($imgs as $i => $img)
+                                                    @php
+                                                        $style = '';
+
+                                                        if ($count === 1) {
+                                                            // ✅ Solo una imagen → centrada
+                                                            $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                                                        } elseif ($allV) {
+                                                            // ✅ Tres verticales → en una sola línea
+                                                            $style = 'float:left; width:32%; margin:0 1% 12px;';
+                                                        } elseif ($allH) {
+                                                            // ✅ Dos o tres horizontales
+                                                            if ($count == 2) {
+                                                                $style = 'float:left; width:48%; margin:0 1% 12px;';
+                                                            } elseif ($count == 3 && $loop->last) {
+                                                                $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                                                            } else {
+                                                                $style = 'float:left; width:48%; margin:0 1% 12px;';
+                                                            }
+                                                        } else {
+                                                            // ✅ Mixtas (por si acaso)
+                                                            $style = ($count == 3 && $loop->last)
+                                                                ? 'float:none; display:block; width:70%; margin:0 auto 12px;'
+                                                                : 'float:left; width:48%; margin:0 1% 12px;';
+                                                        }
+                                                    @endphp
+
+                                                    <div style="{{ $style }} text-align:center;">
+                                                        {{-- Leyenda arriba --}}
+                                                        <p style="margin:0 0 6px; line-height:1.2;">
                                                             <b>Imagen {{ $imgNum++ }}</b><br>
-                                                            <i>{{ $cont->leyenda3 }}</i>
+                                                            <i>{{ $img['leyenda'] }}</i>
                                                         </p>
-                                                        <img src="{{ storage_path('app/public/'.$cont->img3) }}" 
-                                                            style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                                    max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                                    object-fit: contain;"
-                                                        >
+
+                                                        {{-- Imagen --}}
+                                                        <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                                                            style="width:100%; height:auto; object-fit:contain;">
                                                     </div>
-                                                @endif
-                                            @endif
+
+                                                    {{-- Limpiar flotantes después de cada par de horizontales --}}
+                                                    @if ($allH && (($loop->iteration % 2) == 0) && !($loop->last && $count == 3))
+                                                        <div style="clear:both;"></div>
+                                                    @endif
+                                                @endforeach
+                                                <div style="clear:both;"></div>
+                                            </div>
                                         @endif
                                             <br>
                                     @else
                                         {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
 
-                                        @if (!empty($cont->img1))
-                                            <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; text-align: center;">
-                                                <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
-                                                    <b>Imagen {{ $imgNum++ }}</b><br>
-                                                    <i>{{ $cont->leyenda1 }}</i>
-                                                </p>
-                                                <img src="{{ storage_path('app/public/'.$cont->img1) }}" 
-                                                    style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                            max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                            object-fit: contain;"
-                                                >
-                                            </div>
-                                            @if (!empty($cont->img2))
-                                                <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; height: 100%; text-align: center;">
-                                                    <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
-                                                        <b>Imagen {{ $imgNum++ }}</b><br>
-                                                        <i>{{ $cont->leyenda2 }}</i>
-                                                    </p>
-                                                    <img src="{{ storage_path('app/public/'.$cont->img2) }}" 
-                                                        style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                                max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                                object-fit: contain;"
-                                                    >
-                                                </div>
-                                                @if (!empty($cont->img3))
-                                                    <div style="page-break-before: always; display: flex; justify-content: center; align-items: center; height: 100%; text-align: center;">
-                                                        <p style="margin: 0; text-align: center; line-height: 1; text-indent: 0;">
+                                        @php
+                                            $imgs = [];
+
+                                            // Recolectar imágenes con su orientación
+                                            foreach (['img1', 'img2', 'img3'] as $i) {
+                                                if (!empty($cont->{$i})) {
+                                                    $path = storage_path('app/public/'.$cont->{$i});
+                                                    $size = @getimagesize($path);
+                                                    $ori = ($size && $size[0] > $size[1]) ? 'h' : 'v'; // horizontal o vertical
+
+                                                    $imgs[] = [
+                                                        'src' => $cont->{$i},
+                                                        'leyenda' => $cont->{'leyenda'.substr($i, -1)},
+                                                        'o' => $ori,
+                                                    ];
+                                                }
+                                            }
+
+                                            // Determinar tipo general
+                                            $count = count($imgs);
+                                            $allV = $count && collect($imgs)->every(fn($x) => $x['o'] === 'v');
+                                            $allH = $count && collect($imgs)->every(fn($x) => $x['o'] === 'h');
+                                        @endphp
+
+                                        @if ($count)
+                                            <div style="margin-top:25px; text-align:center; overflow:hidden;">
+                                                @foreach ($imgs as $i => $img)
+                                                    @php
+                                                        $style = '';
+
+                                                        if ($count === 1) {
+                                                            // ✅ Solo una imagen → centrada
+                                                            $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                                                        } elseif ($allV) {
+                                                            // ✅ Tres verticales → en una sola línea
+                                                            $style = 'float:left; width:32%; margin:0 1% 12px;';
+                                                        } elseif ($allH) {
+                                                            // ✅ Dos o tres horizontales
+                                                            if ($count == 2) {
+                                                                $style = 'float:left; width:48%; margin:0 1% 12px;';
+                                                            } elseif ($count == 3 && $loop->last) {
+                                                                $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                                                            } else {
+                                                                $style = 'float:left; width:48%; margin:0 1% 12px;';
+                                                            }
+                                                        } else {
+                                                            // ✅ Mixtas (por si acaso)
+                                                            $style = ($count == 3 && $loop->last)
+                                                                ? 'float:none; display:block; width:70%; margin:0 auto 12px;'
+                                                                : 'float:left; width:48%; margin:0 1% 12px;';
+                                                        }
+                                                    @endphp
+
+                                                    <div style="{{ $style }} text-align:center;">
+                                                        {{-- Leyenda arriba --}}
+                                                        <p style="margin:0 0 6px; line-height:1.2;">
                                                             <b>Imagen {{ $imgNum++ }}</b><br>
-                                                            <i>{{ $cont->leyenda3 }}</i>
+                                                            <i>{{ $img['leyenda'] }}</i>
                                                         </p>
-                                                        <img src="{{ storage_path('app/public/'.$cont->img3) }}" 
-                                                            style= "max-width: {{ $orientation == 'horizontal' ? '100%' : '80%' }};
-                                                                    max-height: {{ $orientation == 'horizontal' ? '80%' : '100%' }};
-                                                                    object-fit: contain;"
-                                                        >
+
+                                                        {{-- Imagen --}}
+                                                        <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                                                            style="width:100%; height:auto; object-fit:contain;">
                                                     </div>
-                                                @endif
-                                            @endif
+
+                                                    {{-- Limpiar flotantes después de cada par de horizontales --}}
+                                                    @if ($allH && (($loop->iteration % 2) == 0) && !($loop->last && $count == 3))
+                                                        <div style="clear:both;"></div>
+                                                    @endif
+                                                @endforeach
+                                                <div style="clear:both;"></div>
+                                            </div>
                                         @endif
+                                        <br>
                                     @endif
                                 @endforeach
                             @endforeach
