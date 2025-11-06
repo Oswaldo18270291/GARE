@@ -204,7 +204,9 @@
 
 <div class="flex flex-col gap-4 p-4 bg-white rounded border" style="border-color:rgba(31, 89, 177, 1);">
     <span class="text-lg font-semibold text-center" style="color:#0f4a75;">Selecciona una portada</span>
-
+@error('img_portada')
+    <span class="text-red-500 text-sm">{{ $message }}</span>
+@enderror
  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 place-items-center">
     @for ($i = 1; $i <= 5; $i++)
         <label 
@@ -216,6 +218,7 @@
                 wire:model="img_portada"
                 value="{{ 'img_portada/portada' . $i . '.png' }}"
                 class="hidden peer"
+                required
             />
 
             {{-- Imagen de portada --}}
