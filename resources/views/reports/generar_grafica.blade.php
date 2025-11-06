@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     loader.style.display = 'none';
-    window.location.href = "{{ route('reporte.pdf', $report->id) }}";
+    window.location.href = "{{ route('reporte.generarMapa', $report->id) }}";
 });
 </script>
 

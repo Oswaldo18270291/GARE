@@ -41,6 +41,7 @@ return new class extends Migration
             $table->string('leyenda3')->nullable();
             $table->string('grafica')->nullable();
             $table->string('img_grafica')->nullable();
+            $table->string('img_mapa')->nullable();
             $table->text('contenido_m_p_a')->nullable();
             $table->text('contenido_a_p')->nullable();
             /* $table->text('que')->nullable();

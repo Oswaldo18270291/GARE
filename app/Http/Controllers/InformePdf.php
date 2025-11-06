@@ -8,7 +8,7 @@ use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
 use App\Models\ReportTitleSubtitleSection;
 use App\Models\AnalysisDiagram;
-
+use App\Models\MentalMap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -28,6 +28,7 @@ class InformePdf extends Controller
         public $su2;
         public $co2;
         public $diagrama;
+        public $mapa_m;
 
     use AuthorizesRequests;
 
@@ -262,5 +263,91 @@ class InformePdf extends Controller
 
     return response()->json(['success' => true]);
     }
+
+
+
+    public $nodos=[];
+    public $relaciones;
+    public $background_image;
+    public $background_opacity;
+
+    public function generarMapa($id)
+{
+
+    $report = Report::findOrFail($id);
+
+    // 🔹 Buscar el contenido correspondiente al mapa mental
+    $ti = ReportTitle::where('report_id', $report->id)
+        ->where('title_id', 4)
+        ->where('status', 1)
+        ->first();
+
+    $su = ReportTitleSubtitle::where('r_t_id', $ti->id)
+        ->where('subtitle_id', 32)
+        ->where('status', 1)
+        ->first();
+
+    $content = Content::where('r_t_s_id', $su->id)->first();
+
+    if (!$content) {
+        return redirect()->route('reporte.pdf', ['id' => $id]);
+    }else{
+        $mapa_m = MentalMap::where('content_id',$content->id)->first();
+    }
+
+    // 🔹 Datos del mapa mental
+    $nodos = $mapa_m->nodos ?? '[]';
+    $relaciones = $mapa_m->relaciones ?? '[]';
+    $background_image = $mapa_m->background_image ?? null;
+    $background_opacity = $mapa_m->background_opacity ?? 0.4;
+
+    return view('reports.generar_mapa', compact(
+        'report',
+        'nodos',
+        'relaciones',
+        'background_image',
+        'background_opacity'
+    ));
+}
+
+public function guardarImagenMapa(Request $request, $id)
+{
+   
+    $report = Report::findOrFail($id);
+
+    $ti = ReportTitle::where('report_id', $report->id)
+        ->where('title_id', 4)
+        ->where('status', 1)
+        ->first();
+
+    $su = ReportTitleSubtitle::where('r_t_id', $ti->id)
+        ->where('subtitle_id', 32)
+        ->where('status', 1)
+        ->first();
+
+    $content = Content::where('r_t_s_id', $su->id)->first();
+
+    if (!$content) {
+        return response()->json(['error' => 'Contenido no encontrado'], 404);
+    }
+
+    $base64 = $request->imagen;
+    $nombre = 'mapa_reporte_' . $id . '.png';
+    $ruta = 'mapas/' . $nombre;
+
+    // Eliminar anterior si existe
+    if (Storage::disk('public')->exists($ruta)) {
+        Storage::disk('public')->delete($ruta);
+    }
+
+    // Guardar nueva imagen
+    $imagen = str_replace('data:image/png;base64,', '', $base64);
+    Storage::disk('public')->put($ruta, base64_decode($imagen));
+
+    // Actualizar BD
+    $content->update(['img_mapa' => $ruta]);
+
+    return response()->json(['success' => true]);
+}
 
 }
