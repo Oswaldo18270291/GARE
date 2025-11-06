@@ -32,12 +32,12 @@
 }
 </style>
 
-<!-- 🔹 CONTENEDOR COMPLETO (título + fondo + red) -->
+<!-- 🔹 CONTENEDOR FUERA DE PANTALLA -->
 <div id="network-wrapper" style="
-  position:relative;
+  position:absolute;
+  top:-2000px; left:0; /* 👈 esto lo oculta visualmente */
   width:1000px;
   height:780px;
-  margin:40px auto;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -60,13 +60,14 @@
     letter-spacing:1px;
     z-index:3;
   ">
-    Mapa Mental - Interacción de Riesgos en Instalaciones <br> {{ $report->nombre_empresa }}
+    Mapa Mental - Interacción de Riesgos en Instalaciones <br>
+    {{ $report->nombre_empresa }}
   </div>
 
-  <!-- 🔹 Capa del fondo -->
+  <!-- 🔹 Fondo -->
   <div id="network-bg" style="
     position:absolute;
-    top:80px; /* 🔹 ahora inicia debajo del texto */
+    top:80px;
     left:0; right:0; bottom:0;
     z-index:0;
     background-size:cover;
@@ -78,13 +79,12 @@
   <!-- 🔹 Canvas del mapa -->
   <div id="network" style="
     position:absolute;
-    top:120px; /* 🔹 igual que el fondo */
+    top:120px;
     left:0; right:0; bottom:0;
     z-index:2;
     background:transparent;">
   </div>
 </div>
-
 
 <script>
 document.addEventListener('DOMContentLoaded', async function () {
@@ -118,28 +118,27 @@ document.addEventListener('DOMContentLoaded', async function () {
     interaction: { dragView: true, zoomView: true, dragNodes: false, selectable: false }
   };
 
-  // 🖼️ Fondo separado con opacidad independiente
   if (fondo) {
     bgLayer.style.backgroundImage = `url('${fondo}')`;
     bgLayer.style.opacity = opacidad;
   }
 
-  // Crear la red de nodos
   const network = new vis.Network(container, { nodes, edges }, options);
 
-  // Esperar a que vis.js termine de renderizar
+  // Esperar a que se renderice bien el mapa
   await new Promise(resolve => setTimeout(resolve, 2000));
 
-  // 📸 Capturar todo el contenedor (título + fondo + nodos)
+  // 📸 Capturar todo el contenido (aunque esté fuera de pantalla)
   const canvasImage = await html2canvas(wrapper, {
     useCORS: true,
     backgroundColor: null,
     scale: 2,
+    logging: false
   });
 
   const dataUrl = canvasImage.toDataURL("image/png");
 
-  // 💾 Guardar la imagen generada
+  // 💾 Guardar imagen
   await fetch("{{ route('reporte.guardarMapa', $report->id) }}", {
     method: "POST",
     headers: {
@@ -149,7 +148,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     body: JSON.stringify({ imagen: dataUrl })
   });
 
-  loader.style.display = "none";
+  // ✅ Ir directamente al PDF
   window.location.href = "{{ route('reporte.pdf', $report->id) }}";
 });
 </script>

@@ -594,6 +594,47 @@
                                         @endif
                                         
                                     @endif
+
+                                    @if($cont->reportTitleSubtitle->subtitle_id==15)
+                                        <table id="tabla" style=" border-collapse: collapse;">
+                                            <!-- Encabezado Cibernéticos -->
+                                            <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
+                                                <td colspan="2" style="padding: 4px;">Cibernéticos</td>
+                                            </tr>
+                                            <tbody id="ciberneticos" wire:ignore>
+                                                @foreach ($diagrama->where('tipo_riesgo', 'ciberneticos')->sortBy('orden') as $r)
+                                                    <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                                                        <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">{{ $r->orden }}</td>
+                                                        <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                            <!-- Encabezado Naturales -->
+                                            <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
+                                                <td colspan="2" style="padding: 4px;">Naturales</td>
+                                            </tr>
+                                            <tbody id="naturales" wire:ignore>
+                                                @foreach ($diagrama->where('tipo_riesgo', 'naturales')->sortBy('orden') as $r)
+                                                    <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                                                        <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">{{ $r->orden }}</td>
+                                                        <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                            <!-- Encabezado Sociales -->
+                                            <tr style="background-color: #0f4a75ff; font-weight: bold; color: white; border: 1px solid #000000ff;">
+                                                <td colspan="2" style="padding: 4px;">Sociales (Personas)</td>
+                                            </tr>
+                                            <tbody id="sociales" wire:ignore>
+                                                @foreach ($diagrama->where('tipo_riesgo', 'sociales')->sortBy('orden') as $r)
+                                                    <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                                                        <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;"">{{ $r->orden }}</td>
+                                                        <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    @endif
                                     @if ($cont->reportTitleSubtitle->subtitle_id==42)
                                         <table style="width: 100%; border-collapse: collapse; text-align: center; font-weight: bold;">
                                             <tr>
