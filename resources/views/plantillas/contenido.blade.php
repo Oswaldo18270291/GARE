@@ -584,7 +584,10 @@
 
 
                                         @if(!empty($cont->img_grafica))
+                                        <div class="justify-center items-center bg-blue-100 place-items-center">
+
                                             <img src="storage/{{ $cont->img_grafica }}" style="page-break-before: always; margin-top: 1.5cm;"/>
+                                        </div>
                                         @endif
                                         
                                     @endif
@@ -819,9 +822,7 @@
                                     @endif
                                     --}}
                                     {{-- AQUI DEBE DE IR LA TABLA DE MATRIZ DE RIESGOS --}}
-                                    @if($cont->reportTitleSubtitle->subtitle_id==32)
-                                        Matriz de riesgo  2
-                                    @endif
+
                                     @if ($cont->reportTitleSubtitle->subtitle_id==42)
                                         <table style="width: 100%; border-collapse: collapse; text-align: center; font-weight: bold;">
                                             <tr>

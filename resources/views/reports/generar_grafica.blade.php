@@ -4,62 +4,54 @@
   <meta charset="UTF-8">
   <title>Generar gráfica</title>
   <!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- Plugin 3D -->
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-3d"></script>
-<!-- ECharts -->
-<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-
+  <!-- Plugins -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 </head>
 <body style="background:#fff;">
-<!-- 🔹 Pantalla de carga -->
-<div id="loader" style="
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(255,255,255,0.95);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    font-family: 'Segoe UI', sans-serif;
-    color: #0f4a75;
-">
-    <div class="spinner" style="
-        border: 6px solid #f3f3f3;
-        border-top: 6px solid #0f4a75;
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        animation: spin 1s linear infinite;
-    "></div>
-    <p style="margin-top: 20px; font-size: 18px; font-weight: 600;">
-        Generando gráfica, por favor espere...
-    </p>
-</div>
+  <!-- 🔹 Pantalla de carga -->
+  <div id="loader" style="
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(255,255,255,0.95);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      font-family: 'Segoe UI', sans-serif;
+      color: #0f4a75;
+  ">
+      <div class="spinner" style="
+          border: 6px solid #f3f3f3;
+          border-top: 6px solid #0f4a75;
+          border-radius: 50%;
+          width: 60px;
+          height: 60px;
+          animation: spin 1s linear infinite;
+      "></div>
+      <p style="margin-top: 20px; font-size: 18px; font-weight: 600;">
+          Generando gráfica, por favor espere...
+      </p>
+  </div>
 
-<!-- 🔹 Animación del spinner -->
-<style>
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-</style>
+  <style>
+  @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+  }
+  </style>
 
-<!-- 🔹 Tu canvas (oculto) -->
+  <!-- 🔹 Canvas -->
+  <canvas id="grafica" width="500" height="300" style="display:none;"></canvas>
 
-
-<canvas id="grafica" width="600" height="300" style="display:none;"></canvas>
-
-<script>
+  <script>
 document.addEventListener('DOMContentLoaded', async function () {
-    const loader = document.getElementById('loader'); // referencia al loader
-    const ctx = document.getElementById('grafica').getContext('2d');
-    
+    const loader = document.getElementById('loader');
+    const canvas = document.getElementById('grafica');
+    const ctx = canvas.getContext('2d');
+
     const riesg = @json($risks->sortBy('no')->map(fn($r) => $r->no)->values());
     const riesgos = @json($risks->sortBy('no')->map(fn($r) => $r->no . ' - ' . $r->riesgo)->values());
     const ocurrencias = @json($risks->sortBy('no')->pluck('factor_oc')->values());
@@ -73,6 +65,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     const esCircular = ['pie', 'doughnut', 'polarArea'].includes(tipo);
+    const esHorizontal = tipo === 'bar' && false;
+
+    // 🟢 Aumentar tamaño del canvas para gráficas circulares
+    if (esCircular) {
+        canvas.width = 480;
+        canvas.height = 480;
+    } else {
+        canvas.width = 500;
+        canvas.height = 300;
+    }
 
     const dataConfig = esCircular
       ? {
@@ -90,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             label: nombre,
             data: [ocurrencias[i]],
             backgroundColor: colores[i],
-            numero: riesg[i],   
+            numero: riesg[i],
           }))
         };
 
@@ -98,70 +100,57 @@ document.addEventListener('DOMContentLoaded', async function () {
         type: tipo,
         data: dataConfig,
         options: {
+            layout: { padding: { top: 20 } },
             responsive: false,
             maintainAspectRatio: false,
             animation: false,
+            indexAxis: esHorizontal ? 'y' : 'x',
             plugins: {
+                title: {
+                    display: true,
+                    text: 'Gráfica de exposición general',
+                    color: '#000',
+                    font: { size: 14, family: 'Segoe UI' },
+                    padding: { top: 2, bottom: 20 }
+                },
                 legend: {
                     display: true,
                     position: 'bottom',
-                    labels: {
-                        color: '#000',
-                        font: { size: 12, weight: 'bold' },
-                        boxWidth: 15,
-                        padding: 8
-                    }
+                    labels: { color: '#000', font: { size: 10 }, boxWidth: 15, padding: 8 }
                 },
                 datalabels: {
                     display: true,
                     color: '#000',
                     anchor: tipo === 'bar' ? 'end' : 'center',
                     align: tipo === 'bar' ? 'end' : 'center',
-                    font: { weight: 'bold', size: 10 },
+                    font: { size: esCircular ? 11 : 9 }, // 🟢 Etiquetas más grandes en circular
                     formatter: (value, ctx) => {
                         if (esCircular) {
                             return `${ctx.chart.data.labe[ctx.dataIndex]}\n(${value})`;
                         } else {
                             const dataset = ctx.chart.data.datasets[ctx.datasetIndex];
-                            return `${dataset.numero} (${value})`;
+                            return `${dataset.numero}[${value}]`;
                         }
                     }
                 }
             },
-            scales: esCircular ? {} : {
-                x: {
-                    ticks: { color: '#000', font: { size: 11 } },
-                    grid: { display: false }
-                },
-                y: {
-                    beginAtZero: true,
-                    max: 100,
-                    ticks: { color: '#000', font: { size: 11 } },
-                    grid: { color: '#ddd' }
-                }
-            }
+            scales: esCircular ? {} : esHorizontal
+              ? {
+                  x: { beginAtZero: true, max: 100, grace: '10%', ticks: { color: '#000', font: { size: 9 } }, grid: { color: '#ddd' } },
+                  y: { ticks: { color: '#000', font: { size: 9 } }, grid: { display: false } }
+              }
+              : {
+                  x: { ticks: { color: '#000', font: { size: 9 } }, grid: { display: false } },
+                  y: { beginAtZero: true, max: 100, grace: '10%', ticks: { color: '#000', font: { size: 9 } }, grid: { color: '#ddd' } }
+              }
         },
         plugins: [ChartDataLabels]
     });
 
-    // Espera que se renderice todo
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // 🔹 Redimensionar la imagen antes de exportar
-    const originalCanvas = document.getElementById('grafica');
-    const scaledCanvas = document.createElement('canvas');
-    const scale = 0.7; // reduce al 70%
-    scaledCanvas.width = originalCanvas.width * scale;
-    scaledCanvas.height = originalCanvas.height * scale;
+    const base64 = canvas.toDataURL('image/png');
 
-    const scaledCtx = scaledCanvas.getContext('2d');
-    scaledCtx.scale(scale, scale);
-    scaledCtx.drawImage(originalCanvas, 0, 0);
-
-    // Convierte la gráfica a imagen base64
-    const base64 = document.getElementById('grafica').toDataURL('image/png');
-
-    // Envía la imagen al backend para guardarla
     await fetch("{{ route('guardar.imagen.grafica', $report->id) }}", {
         method: 'POST',
         headers: {
@@ -171,13 +160,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         body: JSON.stringify({ imagen: base64 })
     });
 
-    // 🔹 Oculta el loader y redirige al PDF actualizado
     loader.style.display = 'none';
     window.location.href = "{{ route('reporte.pdf', $report->id) }}";
 });
 </script>
-
-
 
 </body>
 </html>
