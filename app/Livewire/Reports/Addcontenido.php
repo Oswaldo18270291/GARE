@@ -88,7 +88,7 @@ class Addcontenido extends Component
             AnalysisDiagram::where('content_id', $content->id)->delete();
 
 
-            foreach (['img1', 'img2', 'img3'] as $imgField) {
+            foreach (['img1', 'img2', 'img3','img_grafica'] as $imgField) {
                 if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
                     Storage::disk('public')->delete($content->$imgField);
                 }
