@@ -588,9 +588,10 @@ let chartInstance = null; // 👈 fuera de la función
         const ocurrencias = riesgos.map(r => parseFloat(r.factor_oc) || 0);
 
         const colores = ocurrencias.map(v => {
-            if (v >= 80) return "rgba(206, 0, 0, 0.9)";
-            if (v >= 60) return "rgba(235, 231, 0, 0.9)";
-            if (v >= 40) return "rgba(4, 121, 0, 0.9)";
+            if (v >= 84) return "#ff0000";
+            if (v >= 64) return "#ff6600";
+            if (v >= 44) return "#ffc000";
+            if (v >= 1) return "#75d5ecff";
             return "rgba(102, 209, 98, 0.9)";
         });
 
@@ -924,7 +925,7 @@ function renderMapa() {
             selectionWidth: 4,
         },
         physics: { enabled: true, stabilization: { iterations: 150 } },
-        interaction: { hover: true, multiselect: true, dragView: true, zoomView: true },
+        interaction: { hover: true, multiselect: true, dragView: true, zoomView: true, navigationButtons: true },
     };
 
     // === Fondo inicial ===
