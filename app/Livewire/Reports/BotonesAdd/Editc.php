@@ -94,7 +94,7 @@ class Editc extends Component
         $subtitleId = ReportTitleSubtitle::where('id', $id)->value('subtitle_id');
         if ($subtitleId == 32) {
             $this->riesgos = AnalysisDiagram::where('content_id', $this->content->id)
-                ->orderBy('orden')
+                ->orderBy('no')
                 ->get()
                 ->map(function ($r) {
                     return [

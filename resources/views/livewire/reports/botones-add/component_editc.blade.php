@@ -537,10 +537,9 @@
     </table>
 </div>
     <br>
-  <h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
-
-<div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-    <label for="chartType" class="w-fit pl-0.5 text-sm">Tipo de gráfico:</label>
+<div class="justify-center items-center bg-blue-100 place-items-center">
+<div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark items-center">
+    <label for="chartType" class="w-fit pl-0.5 text-xl text-black" >Tipo de gráfico:</label>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
         <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
     </svg>
@@ -596,7 +595,13 @@ let chartInstance = null; // 👈 fuera de la función
         });
 
         const esCircular = ['pie', 'doughnut', 'polarArea'].includes(tipo);
-
+        if (esCircular) {
+            canvas.width = 700;
+            canvas.height = 700;
+        } else {
+            canvas.width = 1000;
+            canvas.height = 500;
+        }
         const dataConfig = esCircular
             ? {
                 labels: etiquetas,
@@ -623,10 +628,24 @@ let chartInstance = null; // 👈 fuera de la función
             type: tipo,
             data: dataConfig,
             options: {
+                layout: { padding: { top: 20 } },
                 responsive: false,
                 maintainAspectRatio: false,
                 animation: false,
                 plugins: {
+                title: {
+                    display: true,           // 🔹 Activa el título
+                    text: 'Gráfica de exposición general', // 🔹 Texto del título
+                    color: '#000000ff',        // 🔹 Color del texto
+                    font: {
+                    size: 14,              // 🔹 Tamaño del texto       
+                    family: 'Segoe UI'     // 🔹 Fuente
+                    },
+                    padding: {
+                    top: 2,               // 🔹 Espacio arriba
+                    bottom: 20             // 🔹 Espacio entre el título y la gráfica
+                    }
+                },
                     legend: {
                         display: true,
                         position: 'bottom',
@@ -655,7 +674,7 @@ let chartInstance = null; // 👈 fuera de la función
                     }
                 },
                 scales: esCircular ? {} : {
-                    y: { beginAtZero: true, max: 120, ticks: { color: '#000' } },
+                    y: { beginAtZero: true, max: 100, ticks: { color: '#000' } },
                     x: { ticks: { color: '#000' }, grid: { display: false } }
                 }
             },
@@ -690,7 +709,7 @@ crearGrafico(dataInicial, tipoInicial);
 
 </script>
 @endpush
-
+</div>
 <div class="p-4">
     <div class="mb-6 flex items-center justify-center p-4 rounded-lg" style="background-color: rgba(39, 68, 112, 1);">
         <h1 class=" text-white font-sans font-bond text-lg">MAPA MENTAL - INTERACCIÓN DE RIESGOS</h1>

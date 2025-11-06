@@ -456,7 +456,7 @@ public function guardarOrden2($risks)
 
     $total = array_sum(array_map(fn($c)=> (int)($fila[$c] ?? 0), $campos));
     $fila['cal'] = $total;
-    $fila['factor_oc'] = $total > 0 ? round(($total/25)*100) . '%' : '0%';
+    $fila['factor_oc'] = $total > 0 ? round(($total/25)*100) : '0';
 
     if ($total >= 21)       $fila['clase_riesgo'] = 'MUY ALTO';
     elseif ($total >= 16)   $fila['clase_riesgo'] = 'ALTO';

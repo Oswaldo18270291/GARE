@@ -42,9 +42,10 @@ class InformePdf extends Controller
         $report->titles = ReportTitle::
             with('title')
             ->join('titles', 'report_titles.title_id','=','titles.id')
-            ->orderBy('titles.orden','asc')
+            ->select('titles.*','report_titles.*')
             ->where('report_titles.report_id', $report->id)
             ->where('report_titles.status', 1)
+            ->orderBy('titles.orden','asc')
             ->get();
 
         foreach ($report->titles as $title) {
@@ -52,15 +53,17 @@ class InformePdf extends Controller
             $title->subtitles = ReportTitleSubtitle::
             with('subtitle')
             ->join('subtitles', 'report_title_subtitles.subtitle_id','=','subtitles.id')
-            ->orderBy('subtitles.orden','asc')
+            ->select('subtitles.*','report_title_subtitles.*')
             ->where('report_title_subtitles.r_t_id', $title->id)
             ->where('report_title_subtitles.status', 1)
+            ->orderBy('subtitles.orden','asc')
             ->get();
 
             foreach ($title->subtitles as $subtitle) {
                 $subtitle->content = Content::where('r_t_s_id', $subtitle->id)->get();
                 $subtitle->sections = ReportTitleSubtitleSection::with('section')
                 ->join('sections', 'report_title_subtitle_sections.section_id','=','sections.id')
+                ->select('sections.*','report_title_subtitle_sections.*')
                 ->orderBy('sections.orden','asc')
                 ->where('report_title_subtitle_sections.r_t_s_id', $subtitle->id)
                 ->where('report_title_subtitle_sections.status', 1)
@@ -77,11 +80,13 @@ class InformePdf extends Controller
         ->where('status', 1)
         ->first();
 
-        $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 14 )     
+        $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 32 )     
         ->where('status', 1)->first();
-        if(!empty($su)){
-           // $diagrama = AnalysisDiagram::where('content_id', $co->id)->get();        
-           // $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report, 'diagrama'=>$diagrama]);
+        $co = Content::where('r_t_s_id', $su->id)->first();
+
+        if(!empty($co)){
+            $diagrama = AnalysisDiagram::where('content_id', $co->id)->get();        
+            $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report, 'diagrama'=>$diagrama]);
         }else{
             $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report]);
         }
@@ -198,44 +203,44 @@ class InformePdf extends Controller
         $ti = ReportTitle::where('report_id', $report->id)->where('title_id', 4 )             
         ->where('status', 1)
         ->first();
-        $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 14 )     
+        $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 32 )     
         ->where('status', 1)->first();
 
-        
-        if(!empty($su)){
+        $co = Content::where('r_t_s_id', $su->id)->first();
+        if(!empty($co)){
 
-        //$risks = AnalysisDiagram::where('content_id',$co->id)->orderBy('no')->get();
-        //$grafica = $co2->grafica ?? 'bar';
+        $risks = AnalysisDiagram::where('content_id',$co->id)->orderBy('no')->get();
+        $grafica = $co->grafica ?? 'bar';
         // 👉 Esta vista no se mostrará al usuario, solo genera la gráfica en background
         return view('reports.generar_grafica', compact('report', 'risks', 'grafica'));
         }else{
            return redirect()->route('reporte.pdf', ['id' => $id]);
         }
 
-        $co = Content::where('r_t_s_id', $su->id)->first();
-
-
+        
+        /*
         $ti2 = ReportTitle::where('report_id', $report->id)->where('title_id', 4 )             
         ->where('status', 1)
         ->first();
         $su2 = ReportTitleSubtitle::where('r_t_id', $ti2->id)->where('subtitle_id', 16 )     
         ->where('status', 1)->first();
         $co2 = Content::where('r_t_s_id', $su2->id)->first();
-
+        */
 
 
 
     }
 
     public function guardarImagenGrafica(Request $request, $id)
-{
+    {
 
     $report = Report::findOrFail($id);
+    
     $ti = ReportTitle::where('report_id', $report->id)->where('title_id', 4 )             
     ->where('status', 1)
     ->first();
 
-    $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 16 )     
+    $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 32 )     
     ->where('status', 1)->first();
     $content = Content::where('r_t_s_id', $su->id)->first(); // o según tu relación
 
@@ -256,6 +261,6 @@ class InformePdf extends Controller
     $content->update(['img_grafica' => 'graficas/'.$nombre]);
 
     return response()->json(['success' => true]);
-}
+    }
 
 }

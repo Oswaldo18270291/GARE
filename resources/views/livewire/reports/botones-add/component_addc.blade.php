@@ -445,8 +445,7 @@
     </table>
 </div>
 <br>
-  <h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
-
+<div class="justify-center items-center bg-blue-100 place-items-center">
 <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
     <label for="chartType" class="w-fit pl-0.5 text-sm">Tipo de gráfico:</label>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
@@ -469,7 +468,7 @@
 <br>
 <!-- Contenedor del gráfico -->
 <div wire:ignore>
-    <canvas id="riesgosChart" width="800" height="400"></canvas>
+    <canvas id="riesgosChart" width="1000" height="500"></canvas>
 </div>
 
 @push('scripts')
@@ -531,10 +530,24 @@ function inicializarGrafica() {
             type: tipo,
             data: dataConfig,
             options: {
+                layout: { padding: { top: 20 } },
                 responsive: false,
                 maintainAspectRatio: false,
                 animation: false,
                 plugins: {
+                title: {
+                    display: true,           // 🔹 Activa el título
+                    text: 'Gráfica de exposición general', // 🔹 Texto del título
+                    color: '#000000ff',        // 🔹 Color del texto
+                    font: {
+                    size: 14,              // 🔹 Tamaño del texto       
+                    family: 'Segoe UI'     // 🔹 Fuente
+                    },
+                    padding: {
+                    top: 2,               // 🔹 Espacio arriba
+                    bottom: 20             // 🔹 Espacio entre el título y la gráfica
+                    }
+                },
                     legend: {
                         display: true,
                         position: 'bottom',
@@ -563,7 +576,7 @@ function inicializarGrafica() {
                     }
                 },
                 scales: esCircular ? {} : {
-                    y: { beginAtZero: true, max: 120, ticks: { color: '#000' } },
+                    y: { beginAtZero: true, max: 100, ticks: { color: '#000' } },
                     x: { ticks: { color: '#000' }, grid: { display: false } }
                 }
             },
@@ -595,6 +608,7 @@ function inicializarGrafica() {
 
 </script>
 @endpush
+</div>
 
 <div class="p-4">
     <div class="mb-6 flex items-center justify-center p-4 rounded-lg" style="background-color: rgba(39, 68, 112, 1);">
