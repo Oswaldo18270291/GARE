@@ -584,7 +584,7 @@
 
                                         @if(!empty($cont->img_mapa))
                                             <div class="justify-center items-center bg-blue-100 place-items-center">
-                                                <img src="storage/{{ $cont->img_mapa }}" style="page-break-before: always; margin-top: 0.5cm;width: 18cm; height: auto;"/>
+                                                <img src="storage/{{ $cont->img_mapa }}" style="page-break-before: always; margin-top: 0.5cm;width: 16.5cm; height: auto;"/>
                                             </div>
                                         @endif
                                         @if(!empty($cont->img_grafica))
