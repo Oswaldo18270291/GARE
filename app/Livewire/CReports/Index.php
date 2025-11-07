@@ -36,9 +36,12 @@ class Index extends Component
     public function store()
     {
         $this->validate([
+             'img_portada' => 'required',
             'logo' => 'required|image|max:5120',
             'img' => 'required|image|max:5120',
             'portada_custom' => 'nullable|image|max:5120', // 🔹 Validación opcional
+       ] , [
+            'img_portada.required' => 'Debes seleccionar una portada.',
         ]);
 
         // Guardar imágenes
