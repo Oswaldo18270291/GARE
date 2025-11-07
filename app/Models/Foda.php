@@ -15,7 +15,7 @@ class Foda extends Model
         'fortalezas',
         'debilidades',
         'oportunidades',
-        'amenzas',
+        'amenazas',
     ];
 
     public function content()

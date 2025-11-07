@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('fortalezas')->nullable();
             $table->text('debilidades')->nullable();
             $table->text('oportunidades')->nullable();
-            $table->text('amenzas')->nullable();
+            $table->text('amenazas')->nullable();
             $table->timestamps();
         });
     }

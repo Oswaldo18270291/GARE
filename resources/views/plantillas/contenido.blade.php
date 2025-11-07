@@ -556,7 +556,7 @@
                                                 </thead>
 
                                                 <tbody>
-                                                    @foreach ($diagrama as $diag)
+                                                    @foreach ($diagrama->sortBy('no') as $diag)
                                                         <tr>
                                                             <td class="border p-1" style="border:1px solid #001a4d;">{{ $diag->no }}</td>
                                                             <td class="border p-1 text-left" style="border:1px solid #001a4d;">{{ $diag->riesgo }}</td>
@@ -635,6 +635,321 @@
                                             </tbody>
                                         </table>
                                     @endif
+
+                                        
+                                     @if($cont->reportTitleSubtitle->subtitle_id==16)
+                                     {{--ACA VA LA OTRA GRAFICAAAAA --}}
+                                        <style>
+                                            .bg-green { background-color: #15803d; }  /* Verde oscuro */
+                                            .bg-yellow { background-color: #facc15; color: black; } /* Amarillo */
+                                            .bg-red { background-color: #dc2626; }   /* Rojo */
+
+                                            /* Colores de fondo de celdas */
+                                            .cell-green { background-color: #bbf7d0; }   /* Verde claro */
+                                            .cell-yellow { background-color: #fef9c3; }  /* Amarillo claro */
+                                            .cell-red { background-color: #fecaca; }     /* Rojo claro */
+                                            ul {
+                                            margin: 0;
+                                            padding-left: 18px;
+                                            }
+
+                                            li {
+                                            margin-bottom: 3px;
+                                            }
+
+                                            p {
+                                            margin: 0;
+                                            }
+                                            .bg-green { background-color: #15803d; }  /* Verde oscuro */
+                                            .bg-yellow { background-color: #facc15; color: black; } /* Amarillo */
+                                            .bg-red { background-color: #dc2626; }   /* Rojo */
+
+                                            /* Colores de fondo de celdas */
+                                            .cell-green { background-color: #bbf7d0; }   /* Verde claro */
+                                            .cell-yellow { background-color: #fef9c3; }  /* Amarillo claro */
+                                            .cell-red { background-color: #fecaca; }     /* Rojo claro */
+                                        </style>
+                                        <table style ="font-size: 11pt;">
+                                            <thead>
+                                                <tr>
+                                                    <th class="bg-green">Rango Normal<br>(Zona de Seguridad)</th>
+                                                    <th class="bg-yellow">Rango Intermedio<br>(Zona de Atención)</th>
+                                                    <th class="bg-red">Rango de atención inmediata<br>(Zona intolerable)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                           
+                                                    <td class="cell-green">
+                                                        @php
+                                                            $riesgosNormales = $diagrama->where('c_riesgo', 'normal')->sortBy('orden2');
+                                                        @endphp
+                                                        @if ($riesgosNormales->count() > 0)
+                                                            <ul>
+                                                                @foreach ($riesgosNormales as $r)
+                                                                    <li style="text-align: justify; line-height: 1.4em;">{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        @endif
+                                                    </td>
+
+                                                    <td class="cell-yellow">
+                                                        @php
+                                                            $riesgosIntermedios = $diagrama->where('c_riesgo', 'intermedio')->sortBy('orden2');
+                                                        @endphp
+                                                        @if ($riesgosIntermedios->count() > 0)
+                                                            <ul>
+                                                                @foreach ($riesgosIntermedios as $r)
+                                                                    <li style="text-align: justify; line-height: 1.4em;">{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        @endif
+                                                    </td>
+                                                    <td class="cell-red">
+                                                        @php
+                                                            $riesgosInmediatos = $diagrama->where('c_riesgo', 'inmediato')->sortBy('orden2');
+                                                        @endphp
+                                                        @if ($riesgosInmediatos->count() > 0)
+                                                            <ul>
+                                                                @foreach ($riesgosInmediatos as $r)
+                                                                    <li style="text-align: justify; line-height: 1.4em;">{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="bg-green" style="line-height: 1.4em;">
+                                                        <p>
+                                                            Este rango representa riesgos de baja probabilidad y bajo impacto. Los eventos situados
+                                                            en este rango normalmente se consideran aceptables y dentro de los límites normales de
+                                                            operación. Las consecuencias, si ocurren, serían bajas y fácilmente controladas por la
+                                                            organización. Normalmente, no se necesita ninguna acción correctiva inmediata, pero se
+                                                            deben mantener los controles actuales y monitorear continuamente los riesgos para
+                                                            garantizar que permanezcan dentro de esta zona de seguridad.
+                                                        </p>
+                                                    </td>
+
+                                                    <td class="bg-yellow" style="line-height: 1.4em;">
+                                                        <p>
+                                                            En este rango, los riesgos presentan una probabilidad y/o impactos moderados. Los eventos
+                                                            en el área intermedia requieren atención, ya que pueden causar perturbaciones
+                                                            significativas en la operación, aunque no de manera catastrófica. Se recomiendan medidas
+                                                            preventivas o correctivas para mitigar el impacto o la probabilidad de ocurrencia, con un
+                                                            monitoreo constante para evitar que migren al área de riesgo intolerable.
+                                                        </p>
+                                                    </td>
+
+                                                    <td class="bg-red" style="line-height: 1.4em;">
+                                                        <p>
+                                                            Este rango representa riesgos de alta probabilidad y/o alto impacto, siendo considerados
+                                                            inaceptables y requieren intervención inmediata. Cualquier evento en este rango puede
+                                                            causar graves consecuencias para la organización, comprometiendo seriamente sus objetivos
+                                                            y/o procesos. La mitigación de estos riesgos debe ser la máxima prioridad y se requieren
+                                                            acciones inmediatas para reducir el impacto y/o la probabilidad de ocurrencia.
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    @endif   
+                                    @if($cont->reportTitleSubtitle->subtitle_id==17)
+                                    <table class="w-full border-collapse text-center text-sm font-sans" style="border:1px solid black;">
+                                        <thead>
+                                        <tr style="background-color:#002060; color:white;">
+                                            <th class="border p-4 w-1/4">ACCIONES DIVERSAS</th>
+                                            <th class="border p-4 w-3/4">TRATAMIENTO GENERAL DE LOS RIESGOS IDENTIFICADOS</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td class="border p-2 bg-[#10284A] text-white align-top">
+                                            Medidas preventivas actuales
+                                            </td>
+                                            <td class="border p-2 align-top">
+                                            {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->contenido_m_p_a))) !!}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border p-2 bg-[#10284A] text-white align-top">
+                                            Acciones / Planes por realizar
+                                            </td>
+                                            <td class="border p-2 align-top">
+                                                {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->contenido_a_p))) !!}   
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                    @endif
+
+                                    @if ($cont->reportTitleSubtitle->subtitle_id==18)
+                                    <table class="w-full border-collapse text-center text-sm font-sans" 
+                                            style="border:1px solid #ffffffff; border-collapse:collapse;">
+                                        <thead>
+                                            <tr class="bg-[#002060] font-bold text-center border border-dotted border-white">
+                                                <td colspan="5" class="border border-dotted border-white px-1 p-4 font-bold text-white">ORGANIGRAMA DE CONTROLES GENERALES DE ACTUACIÓN</td>
+                                            </tr>
+                                            <tr style="background-color:#002060; color:white; border:1px solid #001a4d;">
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:5%;">No.</th>
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:15%;">Tipo de Riesgo</th>
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:25%;">Medidas preventivas actuales</th>
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:40%;">Acciones / Planes por realizar</th>
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:15%;">Estatus</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($cont->organigramaControls as $organigrama)
+                                            <tr>
+                                                <td class="border p-1" style="border:1px solid #000000ff;">{{ $organigrama->no }}</td>
+                                                <td class="border p-1 text-left" style="border:1px solid #000000ff;">{{ $organigrama->riesgo}}</td>
+
+                                                <td style="border:1px solid #000000ff; padding:6px;">
+                                                    {{ $organigrama->medidas_p }}
+                                                </td>
+
+                                                <td style="border:1px solid #000000ff; padding:6px;">
+                                                    {{ $organigrama->acciones_planes }}
+                                                </td>
+                                                <td style="border:1px solid #000000ff; padding:6px;"></td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    @endif
+
+                                    @if ($cont->reportTitleSubtitle->subtitle_id==33)
+                                        <style>
+.foda-wrapper {
+    position: relative;
+    width: 100%;
+    display: block;           /* ✅ fuerza al bloque a ocupar su propio espacio vertical */
+    height: auto;             /* ✅ se ajusta al contenido */
+    page-break-inside: avoid; /* ✅ evita que se divida en páginas */
+    text-align: center;
+    margin-top: 40px;   
+    margin-bottom: 40px;      /* ✅ agrega espacio antes para no invadir texto anterior */
+}
+
+                                        /* Contenedor general */
+                                        .foda-container {
+                                            position: relative;
+                                            width: 450px;
+                                            height: 450px;
+                                            margin: 0 auto;
+                                            page-break-inside: avoid; /* ✅ No separar en páginas */
+                                        }
+
+                                        /* Círculo principal */
+                                        .foda-circle {
+                                            position: relative;
+                                            width:  450px;
+                                            height: 450px;
+                                            border-radius: 50%;
+                                            overflow: hidden;
+                                            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+                                        }
+
+                                        /* Cuadrantes */
+                                        .fortalezas, .debilidades, .oportunidades, .amenazas {
+                                            position: absolute;
+                                            width: 50%;
+                                            height: 50%;
+                                            color: white;
+                                            font-weight: bold;
+                                            display: flex;
+                                            justify-content: center;
+                                            align-items: center;
+                                            text-align: center;
+                                            font-size: 18px;
+                                            letter-spacing: 1px;
+                                        }
+
+                                        .fortalezas { background: #F47B20; top: -2; left: -2; border-top-left-radius: 100%; }
+                                        .debilidades { background: #808285; top: -2; right: -2; border-top-right-radius: 100%; }
+                                        .oportunidades { background: #0072BC; bottom: -2; left: -2; border-bottom-left-radius: 100%; }
+                                        .amenazas { background: #FDB913; bottom: -2; right: -2; border-bottom-right-radius: 100%; }
+
+                                        /* Flecha central */
+                                        .center {
+                                            position: absolute;
+                                            top: 50%; left: 50%;
+                                            transform: translate(-50%, -50%);
+                                            z-index: 10;
+                                        }
+
+                                        .center img {
+                                            width: 80px;
+                                            height: 80px;
+                                        }
+
+                                        /* Cuadros de texto */
+                                        .box {
+                                            position: absolute;
+                                            width: 230px;
+                                            background: rgba(255, 255, 255, 0.38);
+                                            border: 2px solid;
+                                            border-radius: 12px;
+                                            padding: 10px 15px;
+                                            text-align: left;
+                                            font-size: 13px;
+                                            line-height: 1.4;
+                                            z-index: 20;
+                                        }
+
+                                        /* Posiciones ancladas al círculo */
+                                        .fort-box { top: -50px; left: -120px; border-color: #F47B20; }
+                                        .deb-box  { top: -50px; right: -120px; border-color: #808285; }
+                                        .opo-box  { bottom: -50px; left: -120px; border-color: #0072BC; }
+                                        .ame-box  { bottom: -50px; right: -120px; border-color: #FDB913; }
+
+                                        .box ul {
+                                            margin: 0;
+                                            padding-left: 18px;
+                                            color: #002060;
+                                        }
+
+                                        .box li {
+                                            margin-bottom: 5px;
+                                        }
+
+                                        </style>
+
+                                        <div class="foda-wrapper">
+
+                                <div style="page-break-inside: avoid; display:inline-block; text-align:center; width:100%;">
+                                    <div class="foda-container">
+
+                                        <!-- 🔵 Círculo -->
+                                        <div class="foda-circle">
+                                            <div class="fortalezas"><br><br><br><br><br><br>FORTALEZAS</div>
+                                            <div class="debilidades"><br><br><br><br><br><br>DEBILIDADES</div>
+                                            <div class="oportunidades"><br><br><br>OPORTUNIDADES</div>
+                                            <div class="amenazas"><br><br><br>AMENAZAS</div>
+
+                                            <div class="center">
+                                                <img style="display: flex; " src="contenido/ciclo.png">
+                                            </div>
+                                        </div>
+
+                                        <!-- 📋 Cuadros transparentes anclados -->
+                                        <div class="box fort-box">
+                                            {{ $cont->fodas->first()?->fortalezas ?? 'Sin información' }}
+                                        </div>
+                                        <div class="box deb-box">
+                                            {{ $cont->fodas->first()?->debilidades ?? 'Sin información' }}
+                                        </div>
+                                        <div class="box opo-box">
+                                            {{ $cont->fodas->first()?->oportunidades ?? 'Sin información' }}
+                                        </div>
+                                        <div class="box ame-box">
+                                            {{ $cont->fodas->first()?->amenazas ?? 'Sin información' }}
+                                        </div>
+                                    </div>
+                                </div>
+                                 </div>
+                                    @endif
+
                                     @if ($cont->reportTitleSubtitle->subtitle_id==42)
                                         <table style="width: 100%; border-collapse: collapse; text-align: center; font-weight: bold;">
                                             <tr>
@@ -887,7 +1202,7 @@
                                             </tr>
                                             <tr>
                                                 <td style="border: 1px dashed #999; padding: 8px;">
-                                                    <br><br
+                                                    <br><br>
                                                 </td>
                                                 <td style="border: 1px dashed #999; padding: 8px;">
                                                     <br><br>

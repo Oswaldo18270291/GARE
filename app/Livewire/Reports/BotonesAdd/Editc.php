@@ -64,7 +64,7 @@ class Editc extends Component
     public $fortalezas;
     public $debilidades;
     public $oportunidades;
-    public $amenzas;
+    public $amenazas;
 
     public function mount($id,$boton,$rp)
     {
@@ -135,7 +135,7 @@ class Editc extends Component
         $this->fortalezas = $this->riesgs->fortalezas;
         $this->debilidades = $this->riesgs->debilidades;
         $this->oportunidades = $this->riesgs->oportunidades;
-        $this->amenzas = $this->riesgs->amenzas;
+        $this->amenazas = $this->riesgs->amenazas;
     }
             $this->rep->titles = ReportTitle::where('report_id', $this->rep->id)->where('status',1)->get();
             // Cargamos valores existentes
@@ -364,7 +364,7 @@ public function updateRiesgosEvaluacion($contentId)
                                 'fortalezas'    =>  $this->fortalezas,
                                 'debilidades'   =>  $this->debilidades,
                                 'oportunidades' =>  $this->oportunidades,
-                                'amenzas'       =>  $this->amenzas,
+                                'amenazas'       =>  $this->amenazas,
                             ]);
             }
             $name = Subtitle::where('id', $nl->subtitle_id)->value('id');

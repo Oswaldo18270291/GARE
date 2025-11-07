@@ -64,7 +64,7 @@ class Addc extends Component
     public $fortalezas;
     public $debilidades;
     public $oportunidades;
-    public $amenzas;
+    public $amenazas;
 
     public function mount($id, $boton, $rp)
     {
@@ -323,7 +323,7 @@ class Addc extends Component
                     'fortalezas'    =>  $this->fortalezas,
                     'debilidades'   =>  $this->debilidades,
                     'oportunidades' =>  $this->oportunidades,
-                    'amenzas'       =>  $this->amenzas,
+                    'amenazas'       =>  $this->amenazas,
                 ]);
             }
             session()->flash('cont', 'Se agrego contenido de Subtitulo con exito.');
