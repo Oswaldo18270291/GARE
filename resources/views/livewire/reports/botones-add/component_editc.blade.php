@@ -387,7 +387,6 @@
     @endif
 @if($boton=='sub')
   @if ($titulo==14)
-  4.1.1.	Mosler: Informe.
     <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: center;">
       <tr style="background-color: #0f4a75ff; color: white; font-weight: bold;">
         <td style="border: 1px solid black; padding: 5px;">No.</td>
@@ -1269,7 +1268,7 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
                     flex flex-col items-center justify-start text-center pt-10 rounded-tl-full border-r-8 border-b-8 border-white">
               <h2 class="absolute text-xl font-bold tracking-wide"
                   style="top: 250px; left: 160px;">
-                  OPORTUNIDADES
+                  FORTALEZAS
               </h2>  
         </div>
 
@@ -1344,8 +1343,6 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
   @endif
   
   @if ($titulo==16)
-  GRAFICA
-  <h4>4.1.3 Nivel de Riesgo - Gráfico de Consecuencia x Factor de Ocurrencia</h4>
 @if(!empty($risks))
 
  <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
@@ -1525,12 +1522,13 @@ if (window.Livewire) {
 </script>
 @endpush
 
-
-  Características del Riesgo.
   <div>
     <table id="tabla" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; text-align: left;">
-          <!-- Pendientes -->
-      <tr style="background-color: #ffc107; font-weight: bold; text-align: center;">
+        <tr class="border border-black" style="background-color: #02085bff; font-weight: bold; text-align: left;">
+            <td colspan="3" class="p-3" style="color: white;">  Características del Riesgo.</td>
+        </tr>
+        <!-- Pendientes -->
+      <tr class="border border-black" style="background-color: #ffc107; font-weight: bold; text-align: center;">
         <td colspan="3">Pendientes</td>
       </tr>
       <tr>
@@ -1704,8 +1702,8 @@ if (window.Livewire) {
  <table class="w-full border-collapse text-center text-sm font-sans" style="border:1px solid black;">
     <thead>
       <tr style="background-color:#002060; color:white;">
-        <th class="border p-2 w-1/4">ACCIONES DIVERSAS</th>
-        <th class="border p-2 w-3/4">TRATAMIENTO GENERAL DE LOS RIESGOS IDENTIFICADOS</th>
+        <th class="border p-4 w-1/4">ACCIONES DIVERSAS</th>
+        <th class="border p-4 w-3/4">TRATAMIENTO GENERAL DE LOS RIESGOS IDENTIFICADOS</th>
       </tr>
     </thead>
     <tbody>
@@ -1940,7 +1938,7 @@ if (window.Livewire) {
           style="border:1px solid #ffffffff; border-collapse:collapse;">
       <thead>
         <tr class="bg-[#002060] font-bold text-center border border-dotted border-white">
-            <td colspan="5" class="border border-dotted border-white px-1 py-1 font-bold text-white">ORGANIGRAMA DE CONTROLES GENERALES DE ACTUACIÓN</td>
+            <td colspan="5" class="border border-dotted border-white px-1 p-4 font-bold text-white">ORGANIGRAMA DE CONTROLES GENERALES DE ACTUACIÓN</td>
         </tr>
         <tr style="background-color:#002060; color:white; border:1px solid #001a4d;">
           <th style="border:1px solid #ffffffff; padding:8px; width:5%;">No.</th>
