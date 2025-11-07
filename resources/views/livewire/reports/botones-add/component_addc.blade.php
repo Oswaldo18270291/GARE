@@ -445,7 +445,7 @@
     </table>
 </div>
 <br>
-<div class="justify-center items-center bg-blue-100 place-items-center">
+<div class="justify-center items-center place-items-center">
 <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
     <label for="chartType" class="w-fit pl-0.5 text-sm">Tipo de gráfico:</label>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
@@ -468,7 +468,7 @@
 <br>
 <!-- Contenedor del gráfico -->
 <div wire:ignore>
-    <canvas id="riesgosChart" width="1000" height="500"></canvas>
+    <canvas id="riesgosChart" width="900" height="450"></canvas>
 </div>
 
 @push('scripts')
@@ -612,7 +612,7 @@ function inicializarGrafica() {
 </div>
 
 <div class="p-4">
-    <div class="mb-6 flex items-center justify-center p-4 rounded-lg" style="background-color: rgba(39, 68, 112, 1);">
+    <div class="mb-6 flex items-center justify-center p-4 rounded-lg" style="background-color: rgba(113, 150, 206, 1);">
         <h1 class=" text-white font-sans font-bond text-lg">MAPA MENTAL - INTERACCIÓN DE RIESGOS</h1>
         </div>
 
@@ -1800,37 +1800,40 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
   @endif
   @if ($titulo==18)
     <table class="w-full border-collapse text-center text-sm font-sans" 
-          style="border:2px solid #001a4d; border-collapse:collapse;">
+          style="border:1px solid #001a4d; border-collapse:collapse;">
       <thead>
-        <tr style="background-color:#002060; color:white; border:2px solid #001a4d;">
-          <th style="border:2px solid #001a4d; padding:8px; width:5%;">No.</th>
-          <th style="border:2px solid #001a4d; padding:8px; width:15%;">Tipo de Riesgo</th>
-          <th style="border:2px solid #001a4d; padding:8px; width:25%;">Medidas preventivas actuales</th>
-          <th style="border:2px solid #001a4d; padding:8px; width:40%;">Acciones / Planes por realizar</th>
-          <th style="border:2px solid #001a4d; padding:8px; width:15%;">Estatus</th>
+        <tr class="bg-[#002060] font-bold text-center border border-dotted border-white">
+            <td colspan="5" class="border border-dotted border-white px-2 py-1 font-bold text-white">ORGANIGRAMA DE CONTROLES GENERALES DE ACTUACIÓN</td>
+        </tr>
+        <tr style="background-color:#002060; color:white; border:1px solid #001a4d;">
+          <th style="border:1px solid #ffffffff; padding:8px; width:5%;">No.</th>
+          <th style="border:1px solid #ffffffff; padding:8px; width:15%;">Tipo de Riesgo</th>
+          <th style="border:1px solid #ffffffff; padding:8px; width:25%;">Medidas preventivas actuales</th>
+          <th style="border:1px solid #ffffffff; padding:8px; width:40%;">Acciones / Planes por realizar</th>
+          <th style="border:1px solid #ffffffff; padding:8px; width:15%;">Estatus</th>
         </tr>
       </thead>
       <tbody>
         @foreach ($riesgos as $i => $r)
             <tr>
-                <td class="border p-1" style="border:2px solid #001a4d;">{{ $r['no'] }}</td>
-                <td class="border p-1 text-left" style="border:2px solid #001a4d;">{{ $r['riesgo'] }}</td>
+                <td class="border p-1" style="border:1px solid #000000ff;">{{ $r['no'] }}</td>
+                <td class="border p-1 text-left" style="border:1px solid #000000ff;">{{ $r['riesgo'] }}</td>
 
-                <td style="border:2px solid #001a4d; padding:6px;">
+                <td style="border:1px solid #000000ff; padding:6px;">
                     <textarea 
                         wire:model.defer="informacion.{{ $i }}.medidas_p"
                         class="w-full border border-outline bg-surface-alt px-2.5 py-2 text-sm focus:outline-primary"
                         placeholder="Coloca la información"></textarea>
                 </td>
 
-                <td style="border:2px solid #001a4d; padding:6px;">
+                <td style="border:1px solid #000000ff; padding:6px;">
                     <textarea 
                         wire:model.defer="informacion.{{ $i }}.acciones_planes"
                         class="w-full border border-outline bg-surface-alt px-2.5 py-2 text-sm focus:outline-primary"
                         placeholder="Coloca la información"></textarea>
                 </td>
 
-                <td style="border:2px solid #001a4d; padding:6px;"></td>
+                <td style="border:1px solid #000000ff; padding:6px;"></td>
             </tr>
         @endforeach
 
@@ -2182,6 +2185,84 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
             </tbody>
         </table>
         </div>
+    @endif
+    <br>
+    @if ($titulo==42)
+        <table style="width: 100%; border-collapse: collapse; text-align: center; font-weight: bold;">
+            <tr>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    Revisó:
+                </td>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    Elaboró:
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    Director Jurídico H. Congreso de Chiapas
+                </td>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    Subsecretario de Servicios Estratégicos de Seguridad
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    <br><br>
+                </td>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    <br><br>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    Lic. Roberto René Pinto Rojas
+                </td>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    Comisario Jefe Dr. Rafael Rincón Valencia
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    <br>
+                </td>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    <br>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    Conforme:
+                </td>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    Autorizó:
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    Presidenta del H. Congreso de Chiapas
+                </td>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    Secretario de Seguridad del Pueblo de Chiapas
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    <br><br>
+                </td>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    <br><br>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    Diputada Presidenta<br>
+                    <span>Dip. Alejandra Gómez Mendoza</span>
+                </td>
+                <td style="border: 1px dashed #999; padding: 8px;">
+                    Dr. y P.A. Oscar Alberto Aparicio Avendaño
+                </td>
+            </tr>
+        </table>
     @endif
     <br>
     <button type="submit" class="inline-flex justify-center items-center gap-2 rounded-radius bg-success border border-success px-4 py-2 text-sm font-medium text-on-success transition hover:opacity-75">
