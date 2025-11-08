@@ -820,16 +820,16 @@
 
                                     @if ($cont->reportTitleSubtitle->subtitle_id==33)
                                         <style>
-.foda-wrapper {
-    position: relative;
-    width: 100%;
-    display: block;           /* ✅ fuerza al bloque a ocupar su propio espacio vertical */
-    height: auto;             /* ✅ se ajusta al contenido */
-    page-break-inside: avoid; /* ✅ evita que se divida en páginas */
-    text-align: center;
-    margin-top: 40px;   
-    margin-bottom: 40px;      /* ✅ agrega espacio antes para no invadir texto anterior */
-}
+                                        .foda-wrapper {
+                                            position: relative;
+                                            width: 100%;
+                                            display: block;           /* ✅ fuerza al bloque a ocupar su propio espacio vertical */
+                                            height: auto;             /* ✅ se ajusta al contenido */
+                                            page-break-inside: avoid; /* ✅ evita que se divida en páginas */
+                                            text-align: center;
+                                            margin-top: 40px;   
+                                            margin-bottom: 40px;      /* ✅ agrega espacio antes para no invadir texto anterior */
+                                        }
 
                                         /* Contenedor general */
                                         .foda-container {
@@ -893,8 +893,9 @@
                                             padding: 10px 15px;
                                             text-align: left;
                                             font-size: 13px;
-                                            line-height: 1.4;
+                                            /* line-height: 1.4;*/
                                             z-index: 20;
+                                            flex-direction: column-reverse;
                                         }
 
                                         /* Posiciones ancladas al círculo */
@@ -934,16 +935,16 @@
 
                                         <!-- 📋 Cuadros transparentes anclados -->
                                         <div class="box fort-box">
-                                            {{ $cont->fodas->first()?->fortalezas ?? 'Sin información' }}
+                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->fortalezas ?? 'Sin información')))) !!}
                                         </div>
                                         <div class="box deb-box">
-                                            {{ $cont->fodas->first()?->debilidades ?? 'Sin información' }}
+                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->debilidades ?? 'Sin información')))) !!}
                                         </div>
                                         <div class="box opo-box">
-                                            {{ $cont->fodas->first()?->oportunidades ?? 'Sin información' }}
+                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->oportunidades ?? 'Sin información')))) !!}
                                         </div>
                                         <div class="box ame-box">
-                                            {{ $cont->fodas->first()?->amenazas ?? 'Sin información' }}
+                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->amenazas ?? 'Sin información')))) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -1181,6 +1182,139 @@
                                     @endif
                                     --}}
                                     {{-- AQUI DEBE DE IR LA TABLA DE MATRIZ DE RIESGOS --}}
+                                    
+                                    @if ($cont->reportTitleSubtitle->subtitle_id==33)
+                                        <style>
+                                        .foda-wrapper {
+                                            position: relative;
+                                            width: 100%;
+                                            display: block;           /* ✅ fuerza al bloque a ocupar su propio espacio vertical */
+                                            height: auto;             /* ✅ se ajusta al contenido */
+                                            page-break-inside: avoid; /* ✅ evita que se divida en páginas */
+                                            text-align: center;
+                                            margin-top: 40px;   
+                                            margin-bottom: 40px;      /* ✅ agrega espacio antes para no invadir texto anterior */
+                                        }
+
+                                        /* Contenedor general */
+                                        .foda-container {
+                                            position: relative;
+                                            width: 450px;
+                                            height: 450px;
+                                            margin: 0 auto;
+                                            page-break-inside: avoid; /* ✅ No separar en páginas */
+                                        }
+
+                                        /* Círculo principal */
+                                        .foda-circle {
+                                            position: relative;
+                                            width:  450px;
+                                            height: 450px;
+                                            border-radius: 50%;
+                                            overflow: hidden;
+                                            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+                                        }
+
+                                        /* Cuadrantes */
+                                        .fortalezas, .debilidades, .oportunidades, .amenazas {
+                                            position: absolute;
+                                            width: 50%;
+                                            height: 50%;
+                                            color: white;
+                                            font-weight: bold;
+                                            display: flex;
+                                            justify-content: center;
+                                            align-items: center;
+                                            text-align: center;
+                                            font-size: 18px;
+                                            letter-spacing: 1px;
+                                        }
+
+                                        .fortalezas { background: #F47B20; top: -2; left: -2; border-top-left-radius: 100%; }
+                                        .debilidades { background: #808285; top: -2; right: -2; border-top-right-radius: 100%; }
+                                        .oportunidades { background: #0072BC; bottom: -2; left: -2; border-bottom-left-radius: 100%; }
+                                        .amenazas { background: #FDB913; bottom: -2; right: -2; border-bottom-right-radius: 100%; }
+
+                                        /* Flecha central */
+                                        .center {
+                                            position: absolute;
+                                            top: 50%; left: 50%;
+                                            transform: translate(-50%, -50%);
+                                            z-index: 10;
+                                        }
+
+                                        .center img {
+                                            width: 80px;
+                                            height: 80px;
+                                        }
+
+                                        /* Cuadros de texto */
+                                        .box {
+                                            position: absolute;
+                                            width: 230px;
+                                            background: rgba(255, 255, 255, 0.38);
+                                            border: 2px solid;
+                                            border-radius: 12px;
+                                            padding: 10px 15px;
+                                            text-align: left;
+                                            font-size: 13px;
+                                            /* line-height: 1.4;*/
+                                            z-index: 20;
+                                            flex-direction: column-reverse;
+                                        }
+
+                                        /* Posiciones ancladas al círculo */
+                                        .fort-box { top: -50px; left: -120px; border-color: #F47B20; }
+                                        .deb-box  { top: -50px; right: -120px; border-color: #808285; }
+                                        .opo-box  { bottom: -50px; left: -120px; border-color: #0072BC; }
+                                        .ame-box  { bottom: -50px; right: -120px; border-color: #FDB913; }
+
+                                        .box ul {
+                                            margin: 0;
+                                            padding-left: 18px;
+                                            color: #002060;
+                                        }
+
+                                        .box li {
+                                            margin-bottom: 5px;
+                                        }
+
+                                        </style>
+
+                                        <div class="foda-wrapper">
+
+                                <div style="page-break-inside: avoid; display:inline-block; text-align:center; width:100%;">
+                                    <div class="foda-container">
+
+                                        <!-- 🔵 Círculo -->
+                                        <div class="foda-circle">
+                                            <div class="fortalezas"><br><br><br><br><br><br>FORTALEZAS</div>
+                                            <div class="debilidades"><br><br><br><br><br><br>DEBILIDADES</div>
+                                            <div class="oportunidades"><br><br><br>OPORTUNIDADES</div>
+                                            <div class="amenazas"><br><br><br>AMENAZAS</div>
+
+                                            <div class="center">
+                                                <img style="display: flex; " src="contenido/ciclo.png">
+                                            </div>
+                                        </div>
+
+                                        <!-- 📋 Cuadros transparentes anclados -->
+                                        <div class="box fort-box">
+                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->fortalezas ?? 'Sin información')))) !!}
+                                        </div>
+                                        <div class="box deb-box">
+                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->debilidades ?? 'Sin información')))) !!}
+                                        </div>
+                                        <div class="box opo-box">
+                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->oportunidades ?? 'Sin información')))) !!}
+                                        </div>
+                                        <div class="box ame-box">
+                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->amenazas ?? 'Sin información')))) !!}
+                                        </div>
+                                    </div>
+                                </div>
+                                 </div>
+                                    @endif
 
                                     @if ($cont->reportTitleSubtitle->subtitle_id==42)
                                         <table style="width: 100%; border-collapse: collapse; text-align: center; font-weight: bold;">
