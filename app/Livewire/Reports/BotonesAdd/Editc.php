@@ -66,6 +66,13 @@ class Editc extends Component
     public $oportunidades;
     public $amenazas;
 
+    public $puesto_r;
+    public $nombre_r;
+    public $puesto_e;
+    public $nombre_e;
+    public $puesto_c;
+    public $nombre_c;
+
     public function mount($id,$boton,$rp)
     {
     $report = Report::findOrFail($rp);
@@ -170,6 +177,15 @@ class Editc extends Component
             $this->cuanto = $this->content->cuanto;
             $this->de = $this->content->de;
             $this->hasta = $this->content->hasta;
+
+            $this->puesto_r = $this->content->puesto_r;
+            $this->nombre_r = $this->content->nombre_r;
+            $this->puesto_e = $this->content->puesto_e;
+            $this->nombre_e = $this->content->nombre_e;
+            $this->puesto_c = $this->content->puesto_c;
+            $this->nombre_c = $this->content->nombre_c;
+            
+
             $this->RSubtitle = ReportTitleSubtitle::findOrFail($id);
             $this->dispatch('actualizarMapa', nodos: $this->nodos, relaciones: $this->relaciones);
         } else if($boton == 'sec'){
@@ -347,6 +363,13 @@ public function updateRiesgosEvaluacion($contentId)
             if ($nl->subtitle_id === 17) {
                 $data['contenido_m_p_a'] = $this->contenido_m_p_a;
                 $data['contenido_a_p'] = $this->contenido_a_p;
+            }if ($nl->subtitle_id === 42 ) {
+                $data['puesto_r'] = $this->puesto_r;
+                $data['nombre_r'] = $this->nombre_r;
+                $data['puesto_e'] = $this->puesto_e;
+                $data['nombre_e'] = $this->nombre_e;
+                $data['puesto_c'] = $this->puesto_c;
+                $data['nombre_c'] = $this->nombre_c;
             }
             if ($nl->subtitle_id === 18) {
                 foreach ($this->riesgs as $r) {
