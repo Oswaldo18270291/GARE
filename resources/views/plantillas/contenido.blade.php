@@ -176,6 +176,46 @@
                                     </div>
                                 @endif
                                 <br>
+                                @if($cont->reportTitle->title_id==12)
+                                <table class="w-full border-collapse text-center text-sm font-sans" 
+                                        style="border:1px solid #ffffffff; border-collapse:collapse;">
+                                    <thead>
+                                        <tr class="bg-[#002060] font-bold text-center border border-dotted border-white">
+                                            <td colspan="5" class="border border-dotted border-white px-1 p-4 font-bold text-white">COTIZACIONES DE SISTEMAS TECNOLÓGICOS</td>
+                                        </tr>
+                                        <tr style="background-color:#002060; color:white; border:1px solid #001a4d;">
+                                        <th style="border:1px solid #ffffffff; padding:8px;">EMPRESA</th>
+                                        <th style="border:1px solid #ffffffff; padding:8px;">CONCEPTO</th>
+                                        <th style="border:1px solid #ffffffff; padding:8px;">CANT.</th>
+                                        <th style="border:1px solid #ffffffff; padding:8px;">COSTO SIN IVA</th>
+                                        <th style="border:1px solid #ffffffff; padding:8px;">COMENTARIOS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="border border-dotted border-black py-1"></td>
+                                            <td class="border border-dotted border-black text-left px-2"></td>
+                                            <td class="border border-dotted border-black text-left px-2"></td>
+                                            <td class="border border-dotted border-black"></td>
+                                            <td class="border border-dotted border-black font-bold"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border border-dotted border-black py-1"></td>
+                                            <td class="border border-dotted border-black text-left px-2"></td>
+                                            <td class="border border-dotted border-black text-left px-2"></td>
+                                            <td class="border border-dotted border-black"></td>
+                                            <td class="border border-dotted border-black font-bold"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border border-dotted border-black py-1"></td>
+                                            <td class="border border-dotted border-black text-left px-2"></td>
+                                            <td class="border border-dotted border-black text-left px-2"></td>
+                                            <td class="border border-dotted border-black"></td>
+                                            <td class="border border-dotted border-black font-bold"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                @endif
                             @else
                                 {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
                                 @php
@@ -520,55 +560,51 @@
                                      --}}
                                     {{-- AQUI DEBE DE IR LA TABLA DE MATRIZ DE RIESGOS --}}
                                     @if($cont->reportTitleSubtitle->subtitle_id==32)
-                                        <style>
-                                            /* 🔹 Encabezados verticales */
-                                            .vertical {
-                                                writing-mode: vertical-rl;
-                                                transform: rotate(360deg);
-                                                white-space: normal;      /* Permite saltos de línea */
-                                                word-break: break-word;   /* Corta palabras largas si es necesario */
-                                                text-align: center;
-                                                vertical-align: middle;
-                                                height: 140px;            /* Ajusta según tu diseño */
-                                                width: 30px;              /* 🔹 Reduce el ancho para forzar salto de línea */
-                                                padding: 0 4px;
-                                            }
-                                        </style>
                                         <div>
-                                            <table class="w-full border-collapse text-center text-sm font-sans " style="border:1px solid black;">
+                                            <table class="w-full text-center font-sans" style="border-collapse: collapse; width: 100%; font-size: 10pt; ">
                                                 <thead>
                                                     <tr style="background-color:#002060; color:white;">
-                                                        <th rowspan="2" style="border:2px solid #ffffffff;" class="border p-2">No.</th>
-                                                        <th rowspan="2" style="border:2px solid #ffffffff;" class="border p-2">Tipo de Riesgo</th>
-                                                        <th colspan="5" style="border:2px solid #ffffffff;" class="border p-2">Criterios de Evaluación</th>
-                                                        <th rowspan="2" style="border:2px solid #ffffffff;" class="border p-2">Total<br>Posible</th>
-                                                        <th rowspan="2" style="border:2px solid #ffffffff;" class="border p-2">Cal.</th>
-                                                        <th rowspan="2" style="border:2px solid #ffffffff;" class="border p-2">Clase de Riesgo</th>
-                                                        <th rowspan="2" style="border:2px solid #ffffffff;" class="border p-2">Factor de ocurrencia<br>del riesgo</th>
+                                                        <th rowspan="2" style="border:1px solid #ffffffff;" class="border p-2">No.</th>
+                                                        <th rowspan="2" style="border:1px solid #ffffffff;" class="border p-2">Tipo de Riesgo</th>
+                                                        <th colspan="5" style="border:1px solid #ffffffff;" class="border p-2">Criterios de Evaluación</th>
+                                                        <th rowspan="2" style="border:1px solid #ffffffff;" class="border p-2">Total<br>Posible</th>
+                                                        <th rowspan="2" style="border:1px solid #ffffffff;" class="border p-2">Cal.</th>
+                                                        <th rowspan="2" style="border:1px solid #ffffffff;" class="border p-2">Clase de Riesgo</th>
+                                                        <th rowspan="2" style="border:1px solid #ffffffff;" class="border p-2">Factor de ocurrencia<br>del riesgo</th>
                                                     </tr>
                                                     <tr style="background-color:#002060; color:white;">
-                                                        <th style="border:2px solid #ffffffff;" class="vertical">Impacto en las Funciones</th>
-                                                        <th style="border:2px solid #ffffffff;" class="vertical">Impacto en la Organización</th>
-                                                        <th style="border:2px solid #ffffffff;" class="vertical">Extensión del Daño</th>
-                                                        <th style="border:2px solid #ffffffff;" class="vertical">Probabilidad de Materialización</th>
-                                                        <th style="border:2px solid #ffffffff;" class="vertical">Impacto Financiero</th>
+                                                        <th style="border:1px solid #ffffffff;">
+                                                            <img src="contenido/img_matriz/funciones.png" width="30">
+                                                        </th>
+                                                        <th style="border:1px solid #ffffffff;">
+                                                            <img src="contenido/img_matriz/organizacion.png" width="30">
+                                                        </th>
+                                                        <th style="border:1px solid #ffffffff;">
+                                                            <img src="contenido/img_matriz/ext_daño.png" width="30">
+                                                        </th>
+                                                        <th style="border:1px solid #ffffffff;">
+                                                            <img src="contenido/img_matriz/materializacion.png" width="30">
+                                                        </th>
+                                                        <th style="border:1px solid #ffffffff;">
+                                                            <img src="contenido/img_matriz/financiero.png" width="30">
+                                                        </th>
                                                     </tr>
                                                 </thead>
 
                                                 <tbody>
                                                     @foreach ($diagrama->sortBy('no') as $diag)
                                                         <tr>
-                                                            <td class="border p-1" style="border:1px solid #001a4d;">{{ $diag->no }}</td>
-                                                            <td class="border p-1 text-left" style="border:1px solid #001a4d;">{{ $diag->riesgo }}</td>
-                                                            <td class="border p-1 font-bold" style="border:1px solid #001a4d;">{{ $diag->impacto_f }}</td>
-                                                            <td class="border p-1 font-bold" style="border:1px solid #001a4d;">{{ $diag->impacto_o }}</td>
-                                                            <td class="border p-1 font-bold" style="border:1px solid #001a4d;">{{ $diag->extension_d }}</td>
-                                                            <td class="border p-1 font-bold" style="border:1px solid #001a4d;">{{ $diag->probabilidad_m }}</td>
-                                                            <td class="border p-1 font-bold" style="border:1px solid #001a4d;">{{ $diag->impacto_fin }}</td>
-                                                            <td class="border p-1" style="border:1px solid #001a4d;">25</td>
-                                                            <td class="border p-1 font-semibold" style="border:1px solid #001a4d;">{{ $diag->cal }}</td>
-                                                            <td class="border p-1 font-bold text-black"
-                                                                style=" border:1px solid #001a4d;
+                                                            <td style="border: 1px solid #000; padding: 4px;">{{ $diag->no }}</td>
+                                                            <td style="border: 1px solid #000; padding: 4px;">{{ $diag->riesgo }}</td>
+                                                            <td style="border: 1px solid #000; text-align: center">{{ $diag->impacto_f }}</td>
+                                                            <td style="border: 1px solid #000; text-align: center">{{ $diag->impacto_o }}</td>
+                                                            <td style="border: 1px solid #000; text-align: center">{{ $diag->extension_d }}</td>
+                                                            <td style="border: 1px solid #000; text-align: center">{{ $diag->probabilidad_m }}</td>
+                                                            <td style="border: 1px solid #000; text-align: center">{{ $diag->impacto_fin }}</td>
+                                                            <td style="border: 1px solid #000; text-align: center">25</td>
+                                                            <td style="border: 1px solid #000; text-align: center">{{ $diag->cal }}</td>
+                                                            <td
+                                                                style=" border: 1px solid #000; text-align: center
                                                                 background-color:
                                                                     {{ ($diag->clase_riesgo ?? '') == 'MUY ALTO' ? '#ff0000' :
                                                                     (($diag->clase_riesgo ?? '') == 'ALTO' ? '#ff6600' :
@@ -576,7 +612,7 @@
                                                                     (($diag->clase_riesgo ?? '') == 'BAJO' ? '#75d5ecff' : 'transparent'))) }}">
                                                                 {{ $diag->clase_riesgo ?? '' }}
                                                             </td>
-                                                            <td class="border p-1" style="border:1px solid #001a4d;">{{ number_format((float) ( $diag->factor_oc ?? 0), 2) . '%' }}</td>
+                                                            <td style="border: 1px solid #000; text-align: center">{{ number_format((float) ( $diag->factor_oc ?? 0), 2) . '%' }}</td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -1182,7 +1218,77 @@
                                     @endif
                                     --}}
                                     {{-- AQUI DEBE DE IR LA TABLA DE MATRIZ DE RIESGOS --}}
-                                    
+                                    @if($cont->reportTitleSubtitle->subtitle_id==32)
+                                        <div>
+                                            <table class="w-full text-center font-sans" style="border-collapse: collapse; width: 100%; font-size: 10pt; ">
+                                                <thead>
+                                                    <tr style="background-color:#002060; color:white;">
+                                                        <th rowspan="2" style="border:1px solid #ffffffff;" class="border p-2">No.</th>
+                                                        <th rowspan="2" style="border:1px solid #ffffffff;" class="border p-2">Tipo de Riesgo</th>
+                                                        <th colspan="5" style="border:1px solid #ffffffff;" class="border p-2">Criterios de Evaluación</th>
+                                                        <th rowspan="2" style="border:1px solid #ffffffff;" class="border p-2">Total<br>Posible</th>
+                                                        <th rowspan="2" style="border:1px solid #ffffffff;" class="border p-2">Cal.</th>
+                                                        <th rowspan="2" style="border:1px solid #ffffffff;" class="border p-2">Clase de Riesgo</th>
+                                                        <th rowspan="2" style="border:1px solid #ffffffff;" class="border p-2">Factor de ocurrencia<br>del riesgo</th>
+                                                    </tr>
+                                                    <tr style="background-color:#002060; color:white;">
+                                                        <th style="border:1px solid #ffffffff;">
+                                                            <img src="contenido/img_matriz/funciones.png" width="30">
+                                                        </th>
+                                                        <th style="border:1px solid #ffffffff;">
+                                                            <img src="contenido/img_matriz/organizacion.png" width="30">
+                                                        </th>
+                                                        <th style="border:1px solid #ffffffff;">
+                                                            <img src="contenido/img_matriz/ext_daño.png" width="30">
+                                                        </th>
+                                                        <th style="border:1px solid #ffffffff;">
+                                                            <img src="contenido/img_matriz/materializacion.png" width="30">
+                                                        </th>
+                                                        <th style="border:1px solid #ffffffff;">
+                                                            <img src="contenido/img_matriz/financiero.png" width="30">
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    @foreach ($diagrama->sortBy('no') as $diag)
+                                                        <tr>
+                                                            <td style="border: 1px solid #000; padding: 4px;">{{ $diag->no }}</td>
+                                                            <td style="border: 1px solid #000; padding: 4px;">{{ $diag->riesgo }}</td>
+                                                            <td style="border: 1px solid #000; text-align: center">{{ $diag->impacto_f }}</td>
+                                                            <td style="border: 1px solid #000; text-align: center">{{ $diag->impacto_o }}</td>
+                                                            <td style="border: 1px solid #000; text-align: center">{{ $diag->extension_d }}</td>
+                                                            <td style="border: 1px solid #000; text-align: center">{{ $diag->probabilidad_m }}</td>
+                                                            <td style="border: 1px solid #000; text-align: center">{{ $diag->impacto_fin }}</td>
+                                                            <td style="border: 1px solid #000; text-align: center">25</td>
+                                                            <td style="border: 1px solid #000; text-align: center">{{ $diag->cal }}</td>
+                                                            <td
+                                                                style=" border: 1px solid #000; text-align: center
+                                                                background-color:
+                                                                    {{ ($diag->clase_riesgo ?? '') == 'MUY ALTO' ? '#ff0000' :
+                                                                    (($diag->clase_riesgo ?? '') == 'ALTO' ? '#ff6600' :
+                                                                    (($diag->clase_riesgo ?? '') == 'MEDIO' ? '#ffc000' :
+                                                                    (($diag->clase_riesgo ?? '') == 'BAJO' ? '#75d5ecff' : 'transparent'))) }}">
+                                                                {{ $diag->clase_riesgo ?? '' }}
+                                                            </td>
+                                                            <td style="border: 1px solid #000; text-align: center">{{ number_format((float) ( $diag->factor_oc ?? 0), 2) . '%' }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+
+                                        @if(!empty($cont->img_mapa))
+                                            <div class="justify-center items-center bg-blue-100 place-items-center">
+                                                <img src="storage/{{ $cont->img_mapa }}" style="page-break-before: always; margin-top: 0.5cm;width: 16.5cm; height: auto;"/>
+                                            </div>
+                                        @endif
+                                        @if(!empty($cont->img_grafica))
+                                            <div class="justify-center items-center bg-blue-100 place-items-center">
+                                                <img src="storage/{{ $cont->img_grafica }}" style="page-break-before: always; margin-top: 1.5cm;"/>
+                                            </div>
+                                        @endif
+                                        
+                                    @endif
                                     @if ($cont->reportTitleSubtitle->subtitle_id==33)
                                         <style>
                                         .foda-wrapper {
