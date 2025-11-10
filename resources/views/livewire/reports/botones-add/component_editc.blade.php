@@ -2060,6 +2060,269 @@ if (window.Livewire) {
   @endif
 @endif
     <br>
+    @if($titulo==38)
+        <!-- 📋 RECOMENDACIONES Y ACCIONES DE SEGURIDAD FÍSICA -->
+        <div class="border w-full font-sans">
+        <!-- Encabezado principal -->
+        <table class="w-full border-collapse text-center text-xm border border-dotted border-white text-[16px]">
+            <thead>
+                <tr class="bg-[#002060] text-white font-bold text-sm border border-dotted border-white text-[16px]">
+                    <th colspan="9" class="border border-dotted border-white py-2" style="border:2px #ffffffff;">RECOMENDACIONES Y ACCIONES DE SEGURIDAD FÍSICA</th>
+                </tr>
+                <tr class="text-white font-bold">
+                    <th class="bg-[#002060] border border-dotted border-white px-2 py-1">ALTO<br>/<br>URGENTE<br>LO ANTES POSIBLE</th>
+                    <th class="bg-[#C00000] border border-dotted border-white px-2 py-1">URGENTE</th>
+                    <th class="bg-[#002060] border border-dotted border-white px-2 py-1"> </th>
+                    <th class="bg-[#002060] border border-dotted border-white px-2 py-1">MEDIANO<br>/<br>IMPORTANTE<br>EN EL CORTO TIEMPO</th>
+                    <th class="bg-[#FFFF00] text-black border border-dotted border-white px-2 py-1">MEDIO</th>
+                    <th class="bg-[#002060] border border-dotted border-white px-2 py-1"> </th>
+                    <th class="bg-[#002060] border border-dotted border-white px-2 py-1">BAJO<br>/<br>OBLIGATORIA<br>REALIZAR A MEDIANO PLAZO</th>
+                    <th class="bg-[#00B0F0] border border-dotted border-white px-2 py-1">BAJO</th>
+                    <th class="bg-[#002060] border border-dotted border-white px-2 py-1"> </th>
+                </tr>
+            </thead>
+        </table>
+        <!-- Contenido de la tabla -->
+        <table class="w-full text-center text-xs border border-dotted border-white text-[16px]">
+            <thead>
+                <tr class="bg-[#002060] text-white">
+                    <th class="border border-dotted border-white py-1">NO.</th>
+                    <th class="border border-dotted border-white py-1">TEMA</th>
+                    <th class="border border-dotted border-white py-1">ACCIÓN</th>
+                    <th class="border border-dotted border-white py-1">TIENE<br>COSTO</th>
+                    <th class="border border-dotted border-white py-1">NIVEL DE<br>PRIORIDAD</th>
+                </tr>
+            </thead>
+            <tbody class="border border-dotted border-black">
+                <!-- 🔹 Sección Seguridad Física -->
+                <tr class="bg-[#FDE9D9] font-bold text-center border border-dotted border-black">
+                    <td colspan="5" class="py-1 font-bold border border-dotted border-black">SEGURIDAD FÍSICA</td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Protección Perimetral</td>
+                    <td class="border border-dotted border-black text-left" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Manual de Operaciones de Seguridad Escolar</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Rondines internos y perimetrales</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Instalación de señalizaciones diversas</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <!-- 🔹 Sección TECNOLOGÍA DE SEGURIDAD -->
+                <tr class="bg-[#FDE9D9] font-bold text-center">
+                    <td colspan="5" class="border border-dotted border-black px-2 py-1 font-bold">TECNOLOGÍA DE SEGURIDAD</td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Controles de Acceso</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Sistemas de revisiones</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Centro de Monitoreo de CCTV</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Cámaras de CCTV</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Mapeo de las cámaras de CCTV</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">SITE / IT</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Tour de Guardias</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Sistema de Alarmas de Seguridad</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Radios de comunicación interna</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <!-- 🔹 Sección uardias de Seguridad -->
+                <tr class="bg-[#FDE9D9] font-bold text-center border border-dotted border-black">
+                    <td colspan="5" class="border border-dotted border-black px-2 py-1 font-bold">GUARDIAS DE SEGURIDAD</td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Entrevistas del personal</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Verificación de perfiles</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Incremento de elementos asignados</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <!-- 🔹 Sección Capacitación -->
+                <tr class="bg-[#FDE9D9] font-bold text-center border border-dotted border-black">
+                    <td colspan="5" class="border border-dotted border-black px-2 py-1 font-bold">CAPACITACIÓN</td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Capacitación del personal</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <!-- 🔹 Sección Procedimientos diversos -->
+                <tr class="bg-[#FDE9D9] font-bold text-center border border-dotted border-black">
+                    <td colspan="5" class="border border-dotted border-black px-2 py-1 font-bold">PROCEDIMIENTOS DIVERSOS</td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Manejo de materiales peligrosos</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Cuarto eléctrico</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <!-- 🔹 Sección Programas preventivos -->
+                <tr class="bg-[#FDE9D9] font-bold text-center border border-dotted border-black">
+                    <td colspan="5" class="border border-dotted border-black px-2 py-1 font-bold">PROGRAMAS PREVENTIVOS</td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Mantenimiento de SITE / IT</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">SITE - Instalación de sistema vs incendios</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Poda de árboles y vegentación</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Control de llaves</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Programa de mantenimieto del Auditorio</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Programa de mantenimiento preventivo de iluminación</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <!-- 🔹 Sección Otros -->
+                <tr class="bg-[#FDE9D9] font-bold text-center border border-dotted border-black">
+                    <td colspan="5" class="border border-dotted border-black px-2 py-1 font-bold">OTROS DIVERSOS</td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Comité de Gestión de Riesgos Institucionales</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Asesoría y coordinación permanente de Seguridad por parte de la SSP</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+                <tr>
+                    <td class="border border-dotted border-black py-1"></td>
+                    <td class="border border-dotted border-black text-left px-2">Puerta de acceso al estacionamiento de la instalación</td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    @endif
+    <br>
     @if ($titulo==42)
         <table style="width: 100%; border-collapse: collapse; text-align: center; font-weight: bold;">
             <tr>

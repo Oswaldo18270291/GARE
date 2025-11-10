@@ -1963,30 +1963,30 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Protección Perimetral</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Manual de Operaciones de Seguridad Escolar</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Rondines internos y perimetrales</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Instalación de señalizaciones diversas</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <!-- 🔹 Sección TECNOLOGÍA DE SEGURIDAD -->
                 <tr class="bg-[#FDE9D9] font-bold text-center">
@@ -1995,65 +1995,65 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Controles de Acceso</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Sistemas de revisiones</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Centro de Monitoreo de CCTV</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Cámaras de CCTV</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Mapeo de las cámaras de CCTV</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">SITE / IT</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Tour de Guardias</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Sistema de Alarmas de Seguridad</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Radios de comunicación interna</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <!-- 🔹 Sección uardias de Seguridad -->
                 <tr class="bg-[#FDE9D9] font-bold text-center border border-dotted border-black">
@@ -2062,23 +2062,23 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Entrevistas del personal</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Verificación de perfiles</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Incremento de elementos asignados</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <!-- 🔹 Sección Capacitación -->
                 <tr class="bg-[#FDE9D9] font-bold text-center border border-dotted border-black">
@@ -2087,9 +2087,9 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Capacitación del personal</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <!-- 🔹 Sección Procedimientos diversos -->
                 <tr class="bg-[#FDE9D9] font-bold text-center border border-dotted border-black">
@@ -2098,16 +2098,16 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Manejo de materiales peligrosos</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Cuarto eléctrico</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <!-- 🔹 Sección Programas preventivos -->
                 <tr class="bg-[#FDE9D9] font-bold text-center border border-dotted border-black">
@@ -2116,44 +2116,44 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Mantenimiento de SITE / IT</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">SITE - Instalación de sistema vs incendios</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Poda de árboles y vegentación</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Control de llaves</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Programa de mantenimieto del Auditorio</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Programa de mantenimiento preventivo de iluminación</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <!-- 🔹 Sección Otros -->
                 <tr class="bg-[#FDE9D9] font-bold text-center border border-dotted border-black">
@@ -2162,23 +2162,23 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Comité de Gestión de Riesgos Institucionales</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Asesoría y coordinación permanente de Seguridad por parte de la SSP</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
                 <tr>
                     <td class="border border-dotted border-black py-1"></td>
                     <td class="border border-dotted border-black text-left px-2">Puerta de acceso al estacionamiento de la instalación</td>
-                    <td class="border border-dotted border-black text-left px-2"></td>
-                    <td class="border border-dotted border-black"></td>
-                    <td class="border border-dotted border-black font-bold"></td>
+                    <td class="border border-dotted border-black text-left px-2" width="700"></td>
+                    <td class="border border-dotted border-black" width="100"></td>
+                    <td class="border border-dotted border-black font-bold" width="100"></td>
                 </tr>
             </tbody>
         </table>
