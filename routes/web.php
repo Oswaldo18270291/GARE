@@ -58,9 +58,9 @@ Route::get('my_reports/addcontent/addc/{id}/{boton}/{rp}', Addc::class)->name('m
 Route::get('my_reports/addcontent/editc/{id}/{boton}/{rp}', Editc::class)->name('my_reports.addcontenido.Editc')
 ->middleware('permission:editar contenido');
 
-Route::get('my_reports/addcontent/addc/{id}/{boton}/{rp}', AddcExtends::class)->name('my_reports.addcontenido.Addc_extends')
+Route::get('my_reports/addcontent/addc_extends/{id}/{boton}/{rp}', AddcExtends::class)->name('my_reports.addcontenido.Addc_extends')
 ->middleware('permission:agregar contenido');
-Route::get('my_reports/addcontent/editc/{id}/{boton}/{rp}', EditExtends::class)->name('my_reports.addcontenido.Edit_extends')
+Route::get('my_reports/addcontent/editc_extends/{id}/{boton}/{rp}', EditExtends::class)->name('my_reports.addcontenido.Edit_extends')
 ->middleware('permission:editar contenido');
 
 
