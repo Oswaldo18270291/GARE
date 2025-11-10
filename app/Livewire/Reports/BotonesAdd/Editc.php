@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Reports\BotonesAdd;
 
+use App\Models\AccionSeguridad;
 use App\Models\AnalysisDiagram;
 use Livewire\Component;
 use App\Models\Content;
@@ -73,6 +74,8 @@ class Editc extends Component
     public $puesto_c;
     public $nombre_c;
 
+    public $acciones;
+
     public function mount($id,$boton,$rp)
     {
     $report = Report::findOrFail($rp);
@@ -143,7 +146,31 @@ class Editc extends Component
         $this->debilidades = $this->riesgs->debilidades;
         $this->oportunidades = $this->riesgs->oportunidades;
         $this->amenazas = $this->riesgs->amenazas;
-    }
+    } if ($subtitleId === 38 ) {
+                $contenido = Content::where('r_t_s_id', $id)->first();
+                if ($contenido && AccionSeguridad::where('content_id', $contenido->id)->exists()) {
+                    // Ya hay registros guardados → los traemos agrupados por sección
+                    $acciones = AccionSeguridad::where('content_id', $contenido->id)
+                        ->orderBy('no')
+                        ->get()
+                        ->groupBy('seccion')
+                        ->toArray();
+
+                    // Formatear a estructura esperada (por índice)
+                    $this->acciones = [];
+                    foreach ($acciones as $seccion => $items) {
+                        $this->acciones[$seccion] = array_map(function ($item) {
+                            return [
+                                'no'       => $item['no'],
+                                'tema'     => $item['tema'],
+                                'accion'   => $item['accion'],
+                                't_costo'  => $item['t_costo'],
+                                'nivel_p'  => $item['nivel_p'],
+                            ];
+                        }, $items);
+                    }
+                }
+            }
             $this->rep->titles = ReportTitle::where('report_id', $this->rep->id)->where('status',1)->get();
             // Cargamos valores existentes
             foreach ($this->rep->titles as $title) 
@@ -389,6 +416,33 @@ public function updateRiesgosEvaluacion($contentId)
                                 'oportunidades' =>  $this->oportunidades,
                                 'amenazas'       =>  $this->amenazas,
                             ]);
+            }if ($nl->subtitle_id === 38) {
+                $now = now();
+                $contenido = Content::where('r_t_s_id', $nl->id)->first();
+
+                if ($contenido) {
+                    // 🔹 Recorremos todas las secciones y temas del arreglo Livewire
+                    foreach ($this->acciones as $seccion => $temas) {
+                        foreach ($temas as $r) {
+                            // Intentamos encontrar el registro existente
+                            $accion = \App\Models\AccionSeguridad::where('content_id', $contenido->id)
+                                ->where('no', $r['no'])
+                                ->where('tema', $r['tema'])
+                                ->first();
+
+                            if ($accion) {
+                                // 🔸 Actualizar registro existente
+                                $accion->update([
+                                    'accion'   => $r['accion'] ?? null,
+                                    't_costo'  => $r['t_costo'] ?? null,
+                                    'nivel_p'  => $r['nivel_p'] ?? null,
+                                    'updated_at' => $now,
+                                ]);
+                            }
+                        }
+                    }
+                }
+            
             }
             $name = Subtitle::where('id', $nl->subtitle_id)->value('id');
             if (in_array($name, [20, 21, 22, 23, 24, 25, 26, 27, 28, 29])) {

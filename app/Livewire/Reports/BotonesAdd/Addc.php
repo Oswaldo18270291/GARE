@@ -805,6 +805,8 @@ $this->dispatch('actualizarGrafica', [
         $this->backgroundImage = $base64;
     }
 
+    
+
 
     public function render()
     {

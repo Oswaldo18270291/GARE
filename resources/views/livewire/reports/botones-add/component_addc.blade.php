@@ -2039,18 +2039,11 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
                         </td>
 
                         {{-- Nivel de prioridad --}}
-                        <td class="border border-dotted border-black font-bold align-top text-center" width="100"
-                            x-data="{
-                                nivel: @entangle('acciones.' . $titulo . '.' . $index . '.nivel_p').defer
-                            }"
-                            :class="{
-                                'bg-[#C00000]': nivel === 'urgente',
-                                'bg-[#FFFF00]': nivel === 'medio',
-                                'bg-[#00B0F0]': nivel === 'bajo'
-                            }"
-                        >
-                            <select class="border rounded px-2 py-1 text-sm w-full"
-                                x-model="nivel"
+                        <td class="nivel-celda border border-dotted border-black font-bold align-top text-center" width="100">
+                            <select 
+                                class="border rounded px-2 py-1 text-sm w-full"
+                                wire:model.defer="acciones.{{ $titulo }}.{{ $index }}.nivel_p"
+                                onchange="cambiarColorCelda(this)"
                             >
                                 <option value="" hidden>Seleccione…</option>
                                 <option value="bajo">Bajo</option>
@@ -2058,8 +2051,29 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
                                 <option value="urgente">Urgente</option>
                             </select>
 
-                            <div class="mt-1 uppercase" x-text="nivel"></div>
+                            <div class="mt-1 uppercase">{{ $r['nivel_p'] }}</div>
                         </td>
+
+                        <script>
+                        function cambiarColorCelda(select) {
+                            const td = select.closest('td');
+                            td.classList.remove('bg-[#C00000]', 'text-white', 'bg-[#FFFF00]', 'text-black', 'bg-[#00B0F0]');
+                            switch (select.value) {
+                                case 'urgente':
+                                    td.classList.add('bg-[#C00000]', 'text-black');
+                                    break;
+                                case 'medio':
+                                    td.classList.add('bg-[#FFFF00]', 'text-black');
+                                    break;
+                                case 'bajo':
+                                    td.classList.add('bg-[#00B0F0]', 'text-black');
+                                    break;
+                            }
+                        }
+                        </script>
+
+
+
 
                     </tr>
                 @endforeach
