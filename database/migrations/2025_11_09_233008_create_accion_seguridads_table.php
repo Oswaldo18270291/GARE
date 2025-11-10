@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('content_id')->constrained()->onDelete('cascade');
+            $table->string('tit')->nullable();
             $table->string('tema')->nullable();
             $table->text('accion')->nullable();
             $table->string('t_costo')->nullable();

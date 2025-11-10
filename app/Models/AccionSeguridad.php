@@ -12,6 +12,7 @@ class AccionSeguridad extends Model
 
     protected $fillable = [
         'content_id',
+        'tit',
         'tema',
         'accion',
         't_costo',

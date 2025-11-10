@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Reports\BotonesAdd;
 
+use App\Models\AccionSeguridad;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -72,6 +73,7 @@ class Addc extends Component
     public $nombre_e;
     public $puesto_c;
     public $nombre_c;
+    public $acciones;
 
     public function mount($id, $boton, $rp)
     {
@@ -116,7 +118,50 @@ class Addc extends Component
 
             //TERMINA MATRIZ DE RIESGO
 
-
+        $this->acciones = [
+                'SEGURIDAD FÍSICA' => [
+                    ['no' => 1, 'tema' => 'Protección Perimetral', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 2, 'tema' => 'Manual de Operaciones de Seguridad Escolar', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 3, 'tema' => 'Rondines internos y perimetrales', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 4, 'tema' => 'Instalación de señalizaciones diversas', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                ],
+                'TECNOLOGÍA DE SEGURIDAD' => [
+                    ['no' => 5, 'tema' => 'Controles de Acceso', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 6, 'tema' => 'Sistemas de revisiones', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 7, 'tema' => 'Centro de Monitoreo de CCTV', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 8, 'tema' => 'Cámaras de CCTV', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 9, 'tema' => 'Mapeo de las cámaras de CCTV', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 10, 'tema' => 'SITE / IT', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 11, 'tema' => 'Tour de Guardias', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 12, 'tema' => 'Sistema de Alarmas de Seguridad', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 13, 'tema' => 'Radios de comunicación interna', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                ],
+                'GUARDIAS DE SEGURIDAD' => [
+                    ['no' => 14, 'tema' => 'Entrevistas del personal', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 15, 'tema' => 'Verificación de perfiles', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 16, 'tema' => 'Incremento de elementos asignados', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                ],
+                'CAPACITACIÓN' => [
+                    ['no' => 17, 'tema' => 'Capacitación del personal', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                ],
+                'PROCEDIMIENTOS DIVERSOS' => [
+                    ['no' => 18, 'tema' => 'Manejo de materiales peligrosos', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 19, 'tema' => 'Cuarto eléctrico', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                ],
+                'PROGRAMAS PREVENTIVOS' => [
+                    ['no' => 20, 'tema' => 'Mantenimiento de SITE / IT', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 21, 'tema' => 'SITE – Instalación de sistema vs incendios', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 22, 'tema' => 'Poda de árboles y vegetación', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 23, 'tema' => 'Control de llaves', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 24, 'tema' => 'Programa de mantenimiento del Auditorio', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 25, 'tema' => 'Programa de mantenimiento preventivo de iluminación', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                ],
+                'OTROS DIVERSOS' => [
+                    ['no' => 26, 'tema' => 'Comité de Gestión de Riesgos Institucionales', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 27, 'tema' => 'Asesoría y coordinación permanente de Seguridad por parte de la SSP', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                    ['no' => 28, 'tema' => 'Puerta de acceso al estacionamiento de la instalación', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
+                ],
+            ];
             
             $this->RSubtitle = ReportTitleSubtitle::findOrFail($id);
             $this->rep->titles = ReportTitle::where('report_id', $this->rep->id)->where('status',1)->get();
@@ -340,6 +385,30 @@ class Addc extends Component
                     'oportunidades' =>  $this->oportunidades,
                     'amenazas'       =>  $this->amenazas,
                 ]);
+            }
+            if ($name == 38) {
+                $now = now();
+                    $rows = [];
+
+                    foreach ($this->acciones as $seccion => $temas) {
+                        foreach ($temas as $r) {
+                            $rows[] = [
+                                'content_id' => $content->id,
+                                'no'         => $r['no'],
+                                'tit'    => $seccion,
+                                'tema'       => $r['tema'],
+                                'accion'     => $r['accion'] ?? null,
+                                't_costo'    => $r['t_costo'] ?? null,
+                                'nivel_p'    => $r['nivel_p'] ?? null,
+                                'created_at' => $now,
+                                'updated_at' => $now,
+                            ];
+                        }
+                    }
+
+                    if (!empty($rows)) {
+                        \App\Models\AccionSeguridad::insert($rows);
+                    }
             }
             session()->flash('cont', 'Se agrego contenido de Subtitulo con exito.');
             $this->redirectRoute('my_reports.addcontenido', ['id' => $id], navigate: true);
@@ -735,7 +804,6 @@ $this->dispatch('actualizarGrafica', [
     {
         $this->backgroundImage = $base64;
     }
-
 
 
     public function render()
