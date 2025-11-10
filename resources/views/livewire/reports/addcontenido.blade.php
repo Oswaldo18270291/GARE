@@ -25,6 +25,7 @@
                 </button>
             </div>
         </div>
+                <br>
     @endif
 @if (session('eliminar'))
         <div x-data="{ alertIsVisible: true }" 
@@ -74,6 +75,18 @@
                         {{ $loop->iteration }}. {{ $title->title->nombre }}
                     </h2>
                     <div class="flex space-x-2">
+                        @if($title->title->id===12)
+                        <button
+                            class="px-3 py-1 border border-emerald-600 rounded 
+                                text-emerald-600 
+                                hover:bg-emerald-600 hover:text-white 
+                                disabled:bg-gray-400 disabled:text-gray-200 disabled:border-gray-400 disabled:cursor-not-allowed"
+                            wire:click="Addc_extend('{{$title->id}}','tit','{{ $report->id }}')"
+                            @if(\App\Models\Content::where('r_t_id', $title->id)->exists()) disabled @endif
+                            >
+                            Agregar
+                        </button>
+                        @else
                         <button
                             class="px-3 py-1 border border-emerald-600 rounded 
                                 text-emerald-600 
@@ -84,6 +97,21 @@
                             >
                             Agregar
                         </button>
+                        @endif
+                          @if($title->title->id===12)
+                        <button 
+                            class="px-3 py-1 border rounded 
+                                @if(\App\Models\Content::where('r_t_id', $title->id)->doesntExist()) 
+                                    border-gray-400 text-gray-400 bg-gray-100 cursor-not-allowed 
+                                @else 
+                                    border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white 
+                                @endif" 
+                            wire:click="Editc_extend({{ $title->id }}, 'tit', {{ $report->id }})"
+                            @if(\App\Models\Content::where('r_t_id', $title->id)->doesntExist()) disabled @endif
+                        > 
+                            Editar
+                        </button>
+                        @else
                         <button 
                             class="px-3 py-1 border rounded 
                                 @if(\App\Models\Content::where('r_t_id', $title->id)->doesntExist()) 
@@ -96,6 +124,7 @@
                         > 
                             Editar
                         </button>
+                        @endif
                          <button   
                                  class="px-3 py-1 border rounded 
                                 @if(\App\Models\Content::where('r_t_id', $title->id)->doesntExist()) 

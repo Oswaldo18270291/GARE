@@ -51,6 +51,24 @@ class Addcontenido extends Component
         }
     }
 
+    public function Addc_extend($id, $boton,$rp)
+    {
+        $this->redirectRoute('my_reports.addcontenido.Addc_extends', [
+            'id' => $id, 
+            'boton' => $boton,
+            'rp' => $rp,
+        ], navigate: true);
+    }
+
+    public function Editc_extend($id, $boton,$rp)
+    {
+        $this->redirectRoute('my_reports.addcontenido.Edit_extends', [
+            'id' => $id, 
+            'boton' => $boton,
+            'rp' => $rp,
+        ], navigate: true);
+    }
+
     public function Addc($id, $boton,$rp)
     {
         $this->redirectRoute('my_reports.addcontenido.Addc', [
@@ -68,18 +86,39 @@ class Addcontenido extends Component
             'rp' => $rp,
         ], navigate: true);
     }
-
+    public $RTitle;
+    public $contents;
     public function deleteContent($id,$boton,$rp){
         
         if($boton == 'tit'){
             $content = Content::where('r_t_id', $id)->first();
+            $RTitle =ReportTitle::findOrFail($id);
 
+            if ($RTitle->title_id == 12) {
+            $contents = Content::where('r_t_id', $id)->get();
+            foreach ($contents as $content) {
+                // Eliminar imágenes del JSON (img1)
+                $imagenes = json_decode($content->img1, true) ?? [];
+                foreach ($imagenes as $img) {
+                    if (!empty($img['src']) && Storage::disk('public')->exists($img['src'])) {
+                        Storage::disk('public')->delete($img['src']);
+                    }
+                }
+
+
+                // Eliminar el registro completo
+                $content->delete();
+            }
+        }else{
+            
             foreach (['img1', 'img2', 'img3'] as $imgField) {
                 if ($content->$imgField && Storage::disk('public')->exists($content->$imgField)) {
                     Storage::disk('public')->delete($content->$imgField);
                 }
             }
-            $content->delete();
+                 $content->delete();
+        }
+       
             session()->flash('eliminar', 'El contenido se eliminó correctamente.');
             $this->redirectRoute('my_reports.addcontenido',['id' => $rp], navigate:true);
 

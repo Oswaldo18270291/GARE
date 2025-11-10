@@ -19,6 +19,9 @@ use App\Livewire\Reports\BotonesAdd\AddC;
 use App\Livewire\Reports\BotonesAdd\Editc;
 use App\Livewire\Admin\Users;
 use App\Http\Controllers\Dashboard;
+use App\Livewire\Reports\BotonesAdd\AddcExtends;
+use App\Livewire\Reports\BotonesAdd\EditExtends;
+
 /*Route::get('/', function () {
     return view('welcome');
 })->name('home');*/
@@ -54,6 +57,13 @@ Route::get('my_reports/addcontent/addc/{id}/{boton}/{rp}', Addc::class)->name('m
 ->middleware('permission:agregar contenido');
 Route::get('my_reports/addcontent/editc/{id}/{boton}/{rp}', Editc::class)->name('my_reports.addcontenido.Editc')
 ->middleware('permission:editar contenido');
+
+Route::get('my_reports/addcontent/addc/{id}/{boton}/{rp}', AddcExtends::class)->name('my_reports.addcontenido.Addc_extends')
+->middleware('permission:agregar contenido');
+Route::get('my_reports/addcontent/editc/{id}/{boton}/{rp}', EditExtends::class)->name('my_reports.addcontenido.Edit_extends')
+->middleware('permission:editar contenido');
+
+
 Route::get('my_reports/editstructure/{id}', Editestructura::class)->name('my_reports.editestructura')
 ->middleware('permission:editar informes');
 //Route::get('/portada', portada::class)->name('plantillas.portada');

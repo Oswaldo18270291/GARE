@@ -44,6 +44,7 @@ return new class extends Migration
             $table->string('img_mapa')->nullable();
             $table->text('contenido_m_p_a')->nullable();
             $table->text('contenido_a_p')->nullable();
+            $table->integer('bloque_num')->nullable();
             /* $table->text('que')->nullable();
             $table->text('como')->nullable();
             $table->text('quien')->nullable();
