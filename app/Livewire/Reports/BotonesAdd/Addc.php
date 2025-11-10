@@ -66,6 +66,13 @@ class Addc extends Component
     public $oportunidades;
     public $amenazas;
 
+    public $puesto_r;
+    public $nombre_r;
+    public $puesto_e;
+    public $nombre_e;
+    public $puesto_c;
+    public $nombre_c;
+
     public function mount($id, $boton, $rp)
     {
         $report = Report::findOrFail($rp);
@@ -236,7 +243,15 @@ class Addc extends Component
             if ($nl->subtitle_id === 17 ) {
                 $data['contenido_a_p'] = $this->contenido_a_p;
                 $data['contenido_m_p_a'] = $this->contenido_m_p_a;
+            }if ($nl->subtitle_id === 42 ) {
+                $data['puesto_r'] = $this->puesto_r;
+                $data['nombre_r'] = $this->nombre_r;
+                $data['puesto_e'] = $this->puesto_e;
+                $data['nombre_e'] = $this->nombre_e;
+                $data['puesto_c'] = $this->puesto_c;
+                $data['nombre_c'] = $this->nombre_c;
             }
+
 
             // Finalmente crea el contenido
             $content = Content::create($data);

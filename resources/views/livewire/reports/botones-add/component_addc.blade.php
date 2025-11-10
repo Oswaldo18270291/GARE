@@ -2197,10 +2197,16 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
             </tr>
             <tr>
                 <td style="border: 1px dashed #999; padding: 8px;">
-                    Director Jurídico H. Congreso de Chiapas
+                <input wire:model="puesto_r" id="puesto_r" type="text"
+               class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
+               placeholder="Ingrese el puesto del revisor"
+               style="border-color:rgba(31, 89, 177, 1);" />
                 </td>
                 <td style="border: 1px dashed #999; padding: 8px;">
-                    Subsecretario de Servicios Estratégicos de Seguridad
+                <input wire:model="puesto_e" id="puesto_e" type="text"
+               class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
+               placeholder="Ingrese el puesto de quien elaboró"
+               style="border-color:rgba(31, 89, 177, 1);" />
                 </td>
             </tr>
             <tr>
@@ -2213,10 +2219,16 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
             </tr>
             <tr>
                 <td style="border: 1px dashed #999; padding: 8px;">
-                    Lic. Roberto René Pinto Rojas
+                <input wire:model="nombre_r" id="nombre_r" type="text"
+               class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
+               placeholder="Ingrese el nombre de quien revisó"
+               style="border-color:rgba(31, 89, 177, 1);" />
                 </td>
                 <td style="border: 1px dashed #999; padding: 8px;">
-                    Comisario Jefe Dr. Rafael Rincón Valencia
+                <input wire:model="nombre_e" id="nombre_e" type="text"
+               class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
+               placeholder="Ingrese el nombre de quien elaboró"
+               style="border-color:rgba(31, 89, 177, 1);" />
                 </td>
             </tr>
             <tr>
@@ -2237,7 +2249,10 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
             </tr>
             <tr>
                 <td style="border: 1px dashed #999; padding: 8px;">
-                    Presidenta del H. Congreso de Chiapas
+                <input wire:model="puesto_c" id="puesto_c" type="text"
+               class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
+               placeholder="Ingrese el puesto del conforme"
+               style="border-color:rgba(31, 89, 177, 1);" />
                 </td>
                 <td style="border: 1px dashed #999; padding: 8px;">
                     Secretario de Seguridad del Pueblo de Chiapas
@@ -2253,8 +2268,10 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
             </tr>
             <tr>
                 <td style="border: 1px dashed #999; padding: 8px;">
-                    Diputada Presidenta<br>
-                    <span>Dip. Alejandra Gómez Mendoza</span>
+                <input wire:model="nombre_c" id="nombre_c" type="text"
+               class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
+               placeholder="Ingrese el nombre del conforme"
+               style="border-color:rgba(31, 89, 177, 1);" />
                 </td>
                 <td style="border: 1px dashed #999; padding: 8px;">
                     Dr. y P.A. Oscar Alberto Aparicio Avendaño

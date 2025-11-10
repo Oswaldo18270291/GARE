@@ -45,6 +45,14 @@ return new class extends Migration
             $table->text('contenido_m_p_a')->nullable();
             $table->text('contenido_a_p')->nullable();
             $table->integer('bloque_num')->nullable();
+
+            $table->string('puesto_r')->nullable();
+            $table->string('nombre_r')->nullable();
+            $table->string('puesto_e')->nullable();
+            $table->string('nombre_e')->nullable();
+            $table->string('puesto_c')->nullable();
+            $table->string('nombre_c')->nullable();
+
             /* $table->text('que')->nullable();
             $table->text('como')->nullable();
             $table->text('quien')->nullable();
