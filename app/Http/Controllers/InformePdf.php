@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Schema;
 use App\Models\Content;
 use App\Models\Report;
 use App\Models\ReportTitle;
@@ -198,71 +198,112 @@ class InformePdf extends Controller
             ->header('Content-Disposition', "inline; filename=\"$filename\"");
     }
 
-        public function generarGrafica($id)
-    {
-        $report = Report::findOrFail($id);
-        $ti = ReportTitle::where('report_id', $report->id)->where('title_id', 4 )             
+ public function generarGraficas($id)
+{
+    $report = Report::findOrFail($id);
+
+    $ti = ReportTitle::where('report_id', $report->id)
+        ->where('title_id', 4)
         ->where('status', 1)
         ->first();
-        $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 32 )     
-        ->where('status', 1)->first();
 
-        $co = Content::where('r_t_s_id', $su->id)->first();
-        if(!empty($co)){
-
-        $risks = AnalysisDiagram::where('content_id',$co->id)->orderBy('no')->get();
-        $grafica = $co->grafica ?? 'bar';
-        // 👉 Esta vista no se mostrará al usuario, solo genera la gráfica en background
-        return view('reports.generar_grafica', compact('report', 'risks', 'grafica'));
-        }else{
-           return redirect()->route('reporte.pdf', ['id' => $id]);
-        }
-
-        
-        /*
-        $ti2 = ReportTitle::where('report_id', $report->id)->where('title_id', 4 )             
-        ->where('status', 1)
-        ->first();
-        $su2 = ReportTitleSubtitle::where('r_t_id', $ti2->id)->where('subtitle_id', 16 )     
-        ->where('status', 1)->first();
-        $co2 = Content::where('r_t_s_id', $su2->id)->first();
-        */
-
-
-
+    if (!$ti) {
+        return redirect()->route('reporte.pdf', ['id' => $id]);
     }
 
-    public function guardarImagenGrafica(Request $request, $id)
-    {
+    // 🔹 Subtítulo 32
+    $su32 = ReportTitleSubtitle::where('r_t_id', $ti->id)
+        ->where('subtitle_id', 32)
+        ->where('status', 1)
+        ->first();
+
+    $co32 = $su32 ? Content::where('r_t_s_id', $su32->id)->first() : null;
+
+    // 🔹 Subtítulo 16
+    $su16 = ReportTitleSubtitle::where('r_t_id', $ti->id)
+        ->where('subtitle_id', 16)
+        ->where('status', 1)
+        ->first();
+
+    $co16 = $su16 ? Content::where('r_t_s_id', $su16->id)->first() : null;
+    // 🔹 Preparamos los datos de ambas gráficas
+    $graficas = [];
+
+    if ($co32) {
+        $graficas[] = [
+            'subtitleId' => 32,
+            'risks' => AnalysisDiagram::where('content_id', $co32->id)->orderBy('no')->get(),
+            'tipo' => $co32->grafica ?? 'bar',
+        ];
+    }
+
+    if ($co16) {
+        $graficas[] = [
+            'subtitleId' => 16,
+            'risks' => AnalysisDiagram::where('content_id', $co32->id)->orderBy('no')->get(),
+            'tipo' => $co16->grafica ?? 'bar',
+        ];
+    }
+
+    if (empty($graficas)) {
+        return redirect()->route('reporte.pdf', ['id' => $id]);
+    }
+
+    return view('reports.generar_grafica', compact('report', 'graficas'));
+}
+
+
+public function guardarImagenGrafica(Request $request, $id)
+{
+    $subtitleId = (int) $request->input('subtitleId', 32);
 
     $report = Report::findOrFail($id);
-    
-    $ti = ReportTitle::where('report_id', $report->id)->where('title_id', 4 )             
-    ->where('status', 1)
-    ->first();
 
-    $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 32 )     
-    ->where('status', 1)->first();
-    $content = Content::where('r_t_s_id', $su->id)->first(); // o según tu relación
+    $ti = ReportTitle::where('report_id', $report->id)
+        ->where('title_id', 4)
+        ->where('status', 1)
+        ->first();
+
+    $su = ReportTitleSubtitle::where('r_t_id', $ti->id)
+        ->where('subtitle_id', $subtitleId)
+        ->where('status', 1)
+        ->first();
+
+    $content = Content::where('r_t_s_id', $su->id)->first();
+    if (!$content) {
+        return response()->json(['error' => 'Contenido no encontrado'], 404);
+    }
 
     $base64 = $request->imagen;
-    $nombre = 'grafica_reporte_'.$id.'.png';
-    $ruta = 'graficas/'.$nombre;
+    $nombre = "grafica_reporte_{$id}_sub{$subtitleId}.png";
+    $ruta   = "graficas/{$nombre}";
 
-    // Eliminar la anterior si existe
-    if (Storage::exists($ruta)) {
-        Storage::delete($ruta);
+    if (Storage::disk('public')->exists($ruta)) {
+        Storage::disk('public')->delete($ruta);
     }
 
-    // Guardar nueva
     $imagen = str_replace('data:image/png;base64,', '', $base64);
-    Storage::disk('public')->put('graficas/'.$nombre, base64_decode($imagen));
+    Storage::disk('public')->put($ruta, base64_decode($imagen));
 
-    // Actualizar en BD
-    $content->update(['img_grafica' => 'graficas/'.$nombre]);
+    // Puedes usar un solo campo (img_grafica) o separar por subtítulo:
+    // $campo = $subtitleId == 16 ? 'img_grafica_16' : 'img_grafica_32';
+    // $content->update([$campo => $ruta]);
 
-    return response()->json(['success' => true]);
+    // genérico (si solo tienes un campo):
+    // $content->update(['img_grafica' => $ruta]);
+
+    // Recomendado: si quieres almacenar por subtítulo, asegúrate de tener ambas columnas:
+    if (Schema::hasColumn('contents', 'img_grafica_16') && Schema::hasColumn('contents', 'img_grafica_32')) {
+        $campo = $subtitleId == 16 ? 'img_grafica_16' : 'img_grafica_32';
+        $content->update([$campo => $ruta]);
+    } else {
+        // fallback genérico
+        $content->update(['img_grafica' => $ruta]);
     }
+
+    return response()->json(['success' => true, 'ruta' => $ruta]);
+}
+
 
 
 

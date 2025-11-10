@@ -131,7 +131,7 @@
                                     </svg>
                                 </button>
                                <button 
-                                    onclick="window.location.href='{{ route('reporte.generarGrafica', $report->id) }}'" 
+                                    onclick="window.location.href='{{ route('reporte.generarGraficas', $report->id) }}'" 
                                     class="text-red-800 hover:text-red-600 cursor-pointer transition-colors duration-200"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" 

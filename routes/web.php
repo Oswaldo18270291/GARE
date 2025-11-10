@@ -69,9 +69,19 @@ Route::get('my_reports/editstructure/{id}', Editestructura::class)->name('my_rep
 //Route::get('/portada', portada::class)->name('plantillas.portada');
 
 
-Route::get('/reporte/generar-grafica/{id}', [InformePdf::class, 'generarGrafica'])->name('reporte.generarGrafica');
+//Route::get('/reporte/generar-grafica/{id}', [InformePdf::class, 'generarGrafica'])->name('reporte.generarGrafica');
+//Route::post('/reporte/guardar-imagen/{id}', [InformePdf::class, 'guardarImagenGrafica'])->name('guardar.imagen.grafica');
+
+// genera AMBAS gráficas (32 y 16) en una sola vista
+Route::get('/reporte/generar-graficas/{id}', [InformePdf::class, 'generarGraficas'])
+    ->name('reporte.generarGraficas');
+
+// guardar imagen (reutiliza tu actual, solo agregamos subtitleId en el body)
+Route::post('/reporte/guardar-grafica/{id}', [InformePdf::class, 'guardarImagenGrafica'])
+    ->name('guardar.imagen.grafica');
+
+
 Route::get('/reporte/pdf/{id}', [InformePdf::class, 'generar'])->name('reporte.pdf');
-Route::post('/reporte/guardar-imagen/{id}', [InformePdf::class, 'guardarImagenGrafica'])->name('guardar.imagen.grafica');
 Route::get('reportes/{id}/generar-mapa', [InformePdf::class, 'generarMapa'])->name('reporte.generarMapa');
 Route::post('reportes/{id}/guardar-mapa', [InformePdf::class, 'guardarImagenMapa'])->name('reporte.guardarMapa');
 
