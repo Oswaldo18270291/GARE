@@ -40,4 +40,8 @@ class Content extends Model
     {
         return $this->hasMany(Foda::class, 'content_id');
     }
+        public function accionSeguridad()
+    {
+        return $this->hasMany(AccionSeguridad::class, 'content_id');
+    }
 }
