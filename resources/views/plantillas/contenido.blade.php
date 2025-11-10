@@ -177,44 +177,93 @@
                                 @endif
                                 <br>
                                 @if($cont->reportTitle->title_id==12)
-                                <table class="w-full border-collapse text-center text-sm font-sans" 
-                                        style="border:1px solid #ffffffff; border-collapse:collapse;">
+                                <div style="page-break-before: always;">
+                                <table class="w-full border-collapse font-sans" style="border:1px solid #001a4d; border-collapse:collapse;">
                                     <thead>
-                                        <tr class="bg-[#002060] font-bold text-center border border-dotted border-white">
-                                            <td colspan="5" class="border border-dotted border-white px-1 p-4 font-bold text-white">COTIZACIONES DE SISTEMAS TECNOLÓGICOS</td>
+                                        <tr class=" border border-dotted border-white text-center">
+                                            <td colspan="5" class="border border-dotted border-white px-1 p-4 font-bold" style="font-size: 10pt; font-weight:bold; background-color:#002060; color:white; text-align: center;">COTIZACIONES DE SISTEMAS TECNOLÓGICOS</td>
                                         </tr>
-                                        <tr style="background-color:#002060; color:white; border:1px solid #001a4d;">
-                                        <th style="border:1px solid #ffffffff; padding:8px;">EMPRESA</th>
-                                        <th style="border:1px solid #ffffffff; padding:8px;">CONCEPTO</th>
-                                        <th style="border:1px solid #ffffffff; padding:8px;">CANT.</th>
-                                        <th style="border:1px solid #ffffffff; padding:8px;">COSTO SIN IVA</th>
-                                        <th style="border:1px solid #ffffffff; padding:8px;">COMENTARIOS</th>
+                                        <tr style="background-color:#002060; color:white; border:1px solid #001a4d; font-size: 10pt;">
+                                        <th style="border:1px solid #ffffffff; padding:8px; ">EMPRESA</th>
+                                        <th style="border:1px solid #ffffffff; padding:8px; ">CONCEPTO</th>
+                                        <th style="border:1px solid #ffffffff; padding:8px; ">CANT.</th>
+                                        <th style="border:1px solid #ffffffff; padding:8px; ">COSTO SIN IVA</th>
+                                        <th style="border:1px solid #ffffffff; padding:8px; ">COMENTARIOS</th>
                                         </tr>
                                     </thead>
+
                                     <tbody>
-                                        <tr>
-                                            <td class="border border-dotted border-black py-1"></td>
-                                            <td class="border border-dotted border-black text-left px-2"></td>
-                                            <td class="border border-dotted border-black text-left px-2"></td>
-                                            <td class="border border-dotted border-black"></td>
-                                            <td class="border border-dotted border-black font-bold"></td>
+                                        <!-- 🔹 Empresa 1 -->
+                                        <tr style="background-color: #949494ff;">
+                                            <td rowspan="2" class="border p-2 font-semibold text-left align-top" style="border:1px solid black; padding:8px; font-size: 8pt;">JIG TECNOLOGÍAS INTEGRALES APLICADAS</td>
+                                            <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• MÁQUINA DE INSPECCIÓN DE RX MODELO: ISD SG650S-4CVI / MARCA HIKVISION</td>
+                                            <td class="border p-2 font-semibold" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">1</td>
+                                            <td class="border p-2 font-semibold" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$37,120 USD<br>$742,400 MXN</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
                                         </tr>
-                                        <tr>
-                                            <td class="border border-dotted border-black py-1"></td>
-                                            <td class="border border-dotted border-black text-left px-2"></td>
-                                            <td class="border border-dotted border-black text-left px-2"></td>
-                                            <td class="border border-dotted border-black"></td>
-                                            <td class="border border-dotted border-black font-bold"></td>
+                                        <tr style="background-color: #949494ff;">
+                                            <td class="border p-2 text-left" style="border:1px solid black; font-size: 8pt; padding:8px;">• ARCO DETECTOR METALES MODELO: PD6500I / MARCA GARRETT</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$11,252 USD<br>$225,040 MXN</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
                                         </tr>
-                                        <tr>
-                                            <td class="border border-dotted border-black py-1"></td>
-                                            <td class="border border-dotted border-black text-left px-2"></td>
-                                            <td class="border border-dotted border-black text-left px-2"></td>
-                                            <td class="border border-dotted border-black"></td>
-                                            <td class="border border-dotted border-black font-bold"></td>
+
+                                        <!-- 🔹 Empresa 2 -->
+                                        <tr style="background-color: #fdff97ff;">
+                                            <td rowspan="4" class="border p-2 font-semibold text-left align-top" style="border:1px solid black; font-size: 8pt; padding:8px;">IMPACTO SISTEMAS Y COMUNICACIONES</td>
+                                            <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• MÁQUINA DE INSPECCIÓN DE RX</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">1</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$363,940 MXN</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
+                                        </tr >
+                                        <tr style="background-color: #fdff97ff;">
+                                            <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• ARCO DETECTOR METALES 18 ZONAS</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$49,928 MXN</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
+                                        </tr>
+                                        <tr style="background-color: #fdff97ff;">
+                                            <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• CÁMARAS / NVR / PUERTOS / CABLEADO / ETC</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">31</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$252,732 MXN</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
+                                        </tr>
+                                        <tr style="background-color: #fdff97ff;">
+                                            <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• CENTRO DE MONITOREO / NÚCLEO CEMENTO / ESTACIÓN DE TRABAJO / MONITOR 50” / SILLA / INSTALACIÓN ELÉCTRICA / PUERTA DE SEGURIDAD</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">1</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$52,400 MXN</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
+                                        </tr>
+
+                                        <!-- 🔹 Empresa 3 -->
+                                        <tr style="background-color: #9fece2ff;">
+                                            <td rowspan="4" class="border p-2 font-semibold text-left align-top" style="border:1px solid #001a4d; font-size: 8pt; padding:8px;">CUSTODIA CORPORATIVA</td>
+                                            <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• MÁQUINA DE INSPECCIÓN DE RX MODELO: AP5030</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">1</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$207,472 MXN</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
+                                        </tr>
+                                        <tr style="background-color: #9fece2ff;">
+                                            <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• ARCO DETECTOR DE METALES MODELO: APWESC33 / 33 ZONAS</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$61,605 MXN</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
+                                        </tr>
+                                        <tr style="background-color: #9fece2ff;">
+                                            <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• MÁQUINA DE INSPECCIÓN DE RX MODELO: AP5030</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$40,000 MXN</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">RENTA MENSUAL</td>
+                                        </tr>
+                                        <tr style="background-color: #9fece2ff;">
+                                            <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• ARCO DETECTOR DE METALES MODELO: APWESC33 / 33 ZONAS</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$20,000 MXN</td>
+                                            <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">RENTA MENSUAL</td>
                                         </tr>
                                     </tbody>
-                                </table>
+                                    </table>
+                                    </div>
                                 @endif
                             @else
                                 {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
@@ -292,6 +341,95 @@
                                     </div>
                                 @endif
                                 <br>
+                                @if($cont->reportTitle->title_id==12)
+                                    <div style="page-break-before: always;">
+                                        <table class="w-full border-collapse font-sans" style="border:1px solid #001a4d; border-collapse:collapse;">
+                                            <thead>
+                                                <tr class=" border border-dotted border-white text-center">
+                                                    <td colspan="5" class="border border-dotted border-white px-1 p-4 font-bold" style="font-size: 10pt; font-weight:bold; background-color:#002060; color:white; text-align: center;">COTIZACIONES DE SISTEMAS TECNOLÓGICOS</td>
+                                                </tr>
+                                                <tr style="background-color:#002060; color:white; border:1px solid #001a4d; font-size: 10pt;">
+                                                <th style="border:1px solid #ffffffff; padding:8px; ">EMPRESA</th>
+                                                <th style="border:1px solid #ffffffff; padding:8px; ">CONCEPTO</th>
+                                                <th style="border:1px solid #ffffffff; padding:8px; ">CANT.</th>
+                                                <th style="border:1px solid #ffffffff; padding:8px; ">COSTO SIN IVA</th>
+                                                <th style="border:1px solid #ffffffff; padding:8px; ">COMENTARIOS</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <!-- 🔹 Empresa 1 -->
+                                                <tr style="background-color: #949494ff;">
+                                                    <td rowspan="2" class="border p-2 font-semibold text-left align-top" style="border:1px solid black; padding:8px; font-size: 8pt;">JIG TECNOLOGÍAS INTEGRALES APLICADAS</td>
+                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• MÁQUINA DE INSPECCIÓN DE RX MODELO: ISD SG650S-4CVI / MARCA HIKVISION</td>
+                                                    <td class="border p-2 font-semibold" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">1</td>
+                                                    <td class="border p-2 font-semibold" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$37,120 USD<br>$742,400 MXN</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
+                                                </tr>
+                                                <tr style="background-color: #949494ff;">
+                                                    <td class="border p-2 text-left" style="border:1px solid black; font-size: 8pt; padding:8px;">• ARCO DETECTOR METALES MODELO: PD6500I / MARCA GARRETT</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$11,252 USD<br>$225,040 MXN</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
+                                                </tr>
+
+                                                <!-- 🔹 Empresa 2 -->
+                                                <tr style="background-color: #fdff97ff;">
+                                                    <td rowspan="4" class="border p-2 font-semibold text-left align-top" style="border:1px solid black; font-size: 8pt; padding:8px;">IMPACTO SISTEMAS Y COMUNICACIONES</td>
+                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• MÁQUINA DE INSPECCIÓN DE RX</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">1</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$363,940 MXN</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
+                                                </tr >
+                                                <tr style="background-color: #fdff97ff;">
+                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• ARCO DETECTOR METALES 18 ZONAS</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$49,928 MXN</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
+                                                </tr>
+                                                <tr style="background-color: #fdff97ff;">
+                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• CÁMARAS / NVR / PUERTOS / CABLEADO / ETC</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">31</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$252,732 MXN</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
+                                                </tr>
+                                                <tr style="background-color: #fdff97ff;">
+                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• CENTRO DE MONITOREO / NÚCLEO CEMENTO / ESTACIÓN DE TRABAJO / MONITOR 50” / SILLA / INSTALACIÓN ELÉCTRICA / PUERTA DE SEGURIDAD</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">1</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$52,400 MXN</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
+                                                </tr>
+
+                                                <!-- 🔹 Empresa 3 -->
+                                                <tr style="background-color: #9fece2ff;">
+                                                    <td rowspan="4" class="border p-2 font-semibold text-left align-top" style="border:1px solid #001a4d; font-size: 8pt; padding:8px;">CUSTODIA CORPORATIVA</td>
+                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• MÁQUINA DE INSPECCIÓN DE RX MODELO: AP5030</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">1</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$207,472 MXN</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
+                                                </tr>
+                                                <tr style="background-color: #9fece2ff;">
+                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• ARCO DETECTOR DE METALES MODELO: APWESC33 / 33 ZONAS</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$61,605 MXN</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
+                                                </tr>
+                                                <tr style="background-color: #9fece2ff;">
+                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• MÁQUINA DE INSPECCIÓN DE RX MODELO: AP5030</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$40,000 MXN</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">RENTA MENSUAL</td>
+                                                </tr>
+                                                <tr style="background-color: #9fece2ff;">
+                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• ARCO DETECTOR DE METALES MODELO: APWESC33 / 33 ZONAS</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$20,000 MXN</td>
+                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">RENTA MENSUAL</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @endif
                             @endif
                         @endforeach
 
