@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Storage;
 class AddcExtends extends Component
 {
     use WithFileUploads;
-
+    public $empresas = [];
     public $RTitle;
     public $RSubtitle;
     public $RSection;
@@ -48,7 +48,7 @@ class AddcExtends extends Component
         } elseif ($boton == 'sec') {
             $this->RSection = ReportTitleSubtitleSection::findOrFail($id);
         }
-
+        $this->empresas = [];
         // Inicializa con un bloque base
         $this->bloques = [
             [
@@ -154,6 +154,46 @@ public function store($id, $boton, $rp)
 
 }
 
+    public function agregarEmpresa()
+    {
+        $this->empresas[] = [
+            'nombre' => '',
+            'color' => '#ffffff',
+            'items' => [
+                [
+                    'concepto' => '',
+                    'cantidad' => '',
+                    'costo' => '',
+                    'comentarios' => '',
+                ]
+            ],
+        ];
+    }
+
+    // 🔹 Agregar una fila de producto a una empresa
+    public function agregarItem($index)
+    {
+        $this->empresas[$index]['items'][] = [
+            'concepto' => '',
+            'cantidad' => '',
+            'costo' => '',
+            'comentarios' => '',
+        ];
+    }
+
+    // 🔹 Eliminar fila específica dentro de una empresa
+    public function eliminarItem($empresaIndex, $itemIndex)
+    {
+        unset($this->empresas[$empresaIndex]['items'][$itemIndex]);
+        $this->empresas[$empresaIndex]['items'] = array_values($this->empresas[$empresaIndex]['items']);
+    }
+
+    // 🔹 Eliminar empresa completa
+    public function eliminarEmpresa($index)
+    {
+        unset($this->empresas[$index]);
+        $this->empresas = array_values($this->empresas);
+    }
 
 
 

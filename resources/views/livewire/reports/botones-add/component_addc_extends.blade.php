@@ -4,6 +4,111 @@
         class="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800 mb-4">
         + Agregar bloque
     </button>
+<div class="p-4">
+    <div class="flex justify-end mb-4">
+        {{-- 🔹 Botón principal para agregar empresa --}}
+        <button type="button" wire:click="agregarEmpresa"
+            class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-4 py-2 rounded">
+            + Agregar Empresa
+        </button>
+    </div>
+
+    <table class="w-full border-collapse font-sans text-sm" style="border:1px solid #001a4d;">
+        <thead>
+            <tr class="text-center bg-[#002060] text-white">
+                <th colspan="5" class="p-2 font-bold text-base">COTIZACIONES DE SISTEMAS TECNOLÓGICOS</th>
+            </tr>
+            <tr class="bg-[#002060] text-white">
+                <th class="p-2 border">EMPRESA</th>
+                <th class="p-2 border">CONCEPTO</th>
+                <th class="p-2 border">CANT.</th>
+                <th class="p-2 border">COSTO SIN IVA</th>
+                <th class="p-2 border">COMENTARIOS</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @forelse ($empresas as $eIndex => $empresa)
+                @foreach ($empresa['items'] as $iIndex => $item)
+                    <tr style="background-color: {{ $empresa['color'] }};">
+                        {{-- 🔹 Columna de empresa solo en la primera fila --}}
+                        @if ($iIndex == 0)
+                            <td rowspan="{{ count($empresa['items']) }}" class="border font-semibold align-top p-2 text-left">
+                                <input type="text"
+                                    wire:model="empresas.{{ $eIndex }}.nombre"
+                                    placeholder="Nombre de la empresa"
+                                    class="w-full text-xs border rounded p-1 mb-2">
+
+                                <div class="flex items-center gap-2 mb-2">
+                                    <label class="text-xs">Color:</label>
+                                    <input type="color" wire:model="empresas.{{ $eIndex }}.color"
+                                        class="w-6 h-6 cursor-pointer">
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    {{-- ✅ botones tipo="button" para evitar submit --}}
+                                    <button type="button" wire:click="agregarItem({{ $eIndex }})"
+                                        class="text-xs bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded">
+                                        + Agregar Fila
+                                    </button>
+
+                                    <button type="button" wire:click="eliminarEmpresa({{ $eIndex }})"
+                                        class="text-xs bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded">
+                                        Eliminar Empresa
+                                    </button>
+                                </div>
+                            </td>
+                        @endif
+
+                        {{-- Concepto --}}
+                        <td class="border p-1">
+                            <input type="text"
+                                wire:model="empresas.{{ $eIndex }}.items.{{ $iIndex }}.concepto"
+                                placeholder="Concepto"
+                                class="w-full text-xs border rounded p-1">
+                        </td>
+
+                        {{-- Cantidad --}}
+                        <td class="border p-1 text-center">
+                            <input type="text"
+                                wire:model="empresas.{{ $eIndex }}.items.{{ $iIndex }}.cantidad"
+                                placeholder="#"
+                                class="w-16 text-xs border rounded p-1 text-center">
+                        </td>
+
+                        {{-- Costo --}}
+                        <td class="border p-1 text-center">
+                            <input type="text"
+                                wire:model="empresas.{{ $eIndex }}.items.{{ $iIndex }}.costo"
+                                placeholder="$"
+                                class="w-32 text-xs border rounded p-1 text-center">
+                        </td>
+
+                        {{-- Comentarios --}}
+                        <td class="border p-1 text-center">
+                            <input type="text"
+                                wire:model="empresas.{{ $eIndex }}.items.{{ $iIndex }}.comentarios"
+                                placeholder="Comentarios"
+                                class="w-full text-xs border rounded p-1 text-center mb-1">
+
+                            {{-- ❌ eliminar fila --}}
+                            <button type="button" wire:click="eliminarItem({{ $eIndex }}, {{ $iIndex }})"
+                                class="text-xs text-red-700 font-bold hover:underline">
+                                ✕
+                            </button>
+                        </td>
+                    </tr>
+                @endforeach
+            @empty
+                <tr>
+                    <td colspan="5" class="text-center text-gray-500 italic p-4">
+                        No hay empresas registradas. Usa el botón “+ Agregar Empresa”.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
     @foreach ($bloques as $i => $bloque)
         <div class="border rounded-lg p-4 bg-white shadow space-y-4 mb-4">
