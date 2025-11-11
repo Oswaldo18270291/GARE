@@ -32,58 +32,67 @@ if (!function_exists('fix_quill_lists')) {
     {
         if (!$html) return $html;
 
-        // 🔹 Unir <ol> consecutivos
+        // Unir <ol> consecutivos
         $html = preg_replace('/<\/ol>\s*<ol[^>]*>/', '', $html);
 
-        // 🔹 Estilos que respetan jerarquía (1., a., i.)
         $style = '
             <style>
-                /* Nivel 1 */
+                /* ===== Listas ordenadas ===== */
                 ol {
-                    counter-reset: item;
-                    list-style-type: none;
-                    padding-left: 1.5em;
+                    list-style: none;
+                    padding-left: 2em;
+                    margin: 0 0 0.5em 0;
+                    counter-reset: item alpha roman;
                 }
+
                 ol > li {
-                    counter-increment: item;
-                    margin-bottom: 4px;
+                    position: relative;
+                    padding-left: 1.8em;
                     text-align: justify;
+                    margin-bottom: 4px;
+                    counter-increment: item;
                 }
+
+                /* 🔹 Nivel 0 → decimal (1., 2., 3.) */
                 ol > li::before {
-                    content: counter(item, decimal) ". ";
-                    font-weight: normal;
+                    content: counter(item, decimal) ".";
+                    position: absolute;
+                    left: 0;
+                    width: 1.2em;
+                    text-align: right;
                 }
 
-                /* Nivel 2 */
-                ol ol {
-                    counter-reset: subitem;
-                    list-style-type: none;
-                    margin-left: 1.5em;
+                /* 🔹 Nivel 1 → alfabético (a., b., c.) */
+                ol > li.ql-indent-1 {
+                    counter-increment: alpha;
+                    padding-left: 2.2em;   /* más espacio entre número y texto */
                 }
-                ol ol > li {
-                    counter-increment: subitem;
-                }
-                ol ol > li::before {
-                    content: counter(subitem, lower-alpha) ". ";
+                ol > li.ql-indent-1::before {
+                    content: counter(alpha, lower-alpha) ".";
+                    left: 0.3em;           /* mueve ligeramente la letra */
                 }
 
-                /* Nivel 3 */
-                ol ol ol {
-                    counter-reset: subsubitem;
-                    margin-left: 1.5em;
+                /* 🔹 Nivel 2 → romano (i., ii., iii.) */
+                ol > li.ql-indent-2 {
+                    counter-increment: roman;
+                    padding-left: 4.4em;   /* sangría adicional */
                 }
-                ol ol ol > li {
-                    counter-increment: subsubitem;
-                }
-                ol ol ol > li::before {
-                    content: counter(subsubitem, lower-roman) ". ";
+                ol > li.ql-indent-2::before {
+                    content: counter(roman, lower-roman) ".";
+                    left: 2.5em;           /* mueve el número romano junto con el texto */
                 }
 
-                /* 🔹 Sublistas <ul> */
+                /* ===== Viñetas ===== */
                 ul {
                     list-style-type: disc;
+                    list-style-position: outside;
                     margin-left: 2em;
                     padding-left: 0.5em;
+                    text-align: justify;
+                }
+
+                ul > li {
+                    margin-bottom: 4px;
                 }
             </style>
         ';
