@@ -13,7 +13,8 @@ class EmpresaCotizacion extends Model
 
     public function detalles()
     {
-        return $this->hasMany(DetalleCotizacion::class, 'empresa_id');
+        return $this->hasMany(DetalleCotizacion::class, 'empresa_id')
+                    ->orderBy('orden');
     }
 
     public function content()

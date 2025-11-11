@@ -50,7 +50,12 @@ class InformePdf extends Controller
             ->get();
 
         foreach ($report->titles as $title) {
-            $title->content = Content::where('r_t_id', $title->id)->get();
+            $title->content = Content::with([
+                'cotizaciones.detalles' // ✅ carga empresas y detalles
+                ])
+                ->where('r_t_id', $title->id)
+                ->orderBy('bloque_num')
+                ->get();
             $title->subtitles = ReportTitleSubtitle::
             with('subtitle')
             ->join('subtitles', 'report_title_subtitles.subtitle_id','=','subtitles.id')
