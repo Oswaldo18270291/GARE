@@ -391,4 +391,22 @@ public function guardarImagenMapa(Request $request, $id)
     return response()->json(['success' => true]);
 }
 
+public function descargar($id)
+{
+    $report = Report::findOrFail($id);
+
+    if (!$report->pdf_path) {
+        return back()->with('error', 'El PDF no está disponible.');
+    }
+
+    $filePath = storage_path('app/public/' . $report->pdf_path);
+
+    if (!file_exists($filePath)) {
+        return back()->with('error', 'El archivo PDF no existe en el servidor.');
+    }
+
+    return response()->download($filePath, basename($filePath));
+}
+
+
 }

@@ -101,3 +101,5 @@ Route::get('/admin/allreports', TodosReportes::class)->name('admin.todosreportes
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/users', Users::class)->name('admin.users');
 });
+
+Route::get('/reportes/{id}/descargar', [InformePdf::class, 'descargar'])->name('reportes.descargar');
