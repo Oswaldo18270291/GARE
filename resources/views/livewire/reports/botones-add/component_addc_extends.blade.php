@@ -124,7 +124,9 @@
     wire:ignore
     x-init="
         const init = () => {
-            if (typeof Quill === 'undefined') { return setTimeout(init, 150); }
+            if (typeof Quill === 'undefined') { 
+                return setTimeout(init, 150); 
+            }
 
             const quill = new Quill($refs.editorTit, {
                 theme: 'snow',
@@ -135,81 +137,18 @@
                             ['bold', 'italic', 'underline'],
                             [{ 'align': [] }],
                             [{ list: 'ordered' }, { list: 'bullet' }],
+                            [{ script: 'sub' }, { script: 'super' }],
                             ['clean']
                         ]
                     }
                 }
             });
 
-            const toolbar = quill.getModule('toolbar').container;
-            const editor  = quill.root;
+            quill.root.innerHTML = @js($contenido ?? '');
 
-            // --- Botón 'a.' (lista alfabética)
-            const alphaButton = document.createElement('button');
-            alphaButton.innerHTML = `
-                <svg viewBox='0 0 18 18'>
-                  <text x='4' y='14' font-size='13' font-family='Arial'>a.</text>
-                </svg>`;
-            alphaButton.type = 'button';
-            alphaButton.classList.add('ql-alpha');
-            alphaButton.title = 'Lista alfabética';
-
-            const orderedBtn = toolbar.querySelector('.ql-list[value=ordered]');
-            orderedBtn?.insertAdjacentElement('afterend', alphaButton);
-
-            // Al hacer clic en 'a.' -> forzar alfabética
-            alphaButton.addEventListener('click', () => {
-                const range = quill.getSelection();
-                if (!range) return;
-
-                const fmt = quill.getFormat(range);
-                if (!fmt.list || editor.classList.contains('alpha-list') === false) {
-                    quill.format('list', 'ordered');
-                    editor.classList.add('alpha-list');
-                    alphaButton.classList.add('ql-active');
-                } else {
-                    quill.format('list', false);
-                    editor.classList.remove('alpha-list');
-                    alphaButton.classList.remove('ql-active');
-                }
-            });
-
-            // Al hacer clic en el botón numerado -> quitar alpha-list
-            orderedBtn?.addEventListener('click', () => {
-                editor.classList.remove('alpha-list');
-                alphaButton.classList.remove('ql-active');
-            });
-
-            // Detectar cambios de formato
-            quill.on('editor-change', () => {
-                const range = quill.getSelection();
-                if (!range) return;
-                const fmt = quill.getFormat(range);
-                if (fmt.list === 'ordered') {
-                    editor.classList.remove('alpha-list');
-                    alphaButton.classList.remove('ql-active');
-                }
-            });
-
-            // --- CSS personalizado para listas alfabéticas
-            const style = document.createElement('style');
-            style.innerHTML = `
-              .ql-toolbar button.ql-alpha svg { width: 18px; height: 18px; }
-              .ql-editor ol > li::before { content: counter(list-0, decimal) '. '; }
-              .ql-editor.alpha-list ol > li::before { content: counter(list-0, lower-alpha) '. '; }
-              .ql-editor.alpha-list ol ol > li::before { content: counter(list-1, lower-alpha) '. '; }
-              .ql-editor.alpha-list ol ol ol > li::before { content: counter(list-2, lower-alpha) '. '; }
-              .ql-editor.alpha-list ol ol ol ol > li::before { content: counter(list-3, lower-alpha) '. '; }
-              .ql-editor.alpha-list ol ol ol ol ol > li::before { content: counter(list-4, lower-alpha) '. '; }
-            `;
-            document.head.appendChild(style);
-
-            // --- Cargar contenido existente del bloque
-            quill.root.innerHTML = @js($bloque['contenido'] ?? '');
-
-            // --- Sincroniza con Livewire
             quill.on('text-change', () => {
-                $refs.textareaTit.value = quill.root.innerHTML;
+                const html = quill.root.innerHTML;
+                $refs.textareaTit.value = html;
                 $refs.textareaTit.dispatchEvent(new Event('input'));
             });
         };
