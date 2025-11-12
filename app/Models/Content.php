@@ -20,7 +20,7 @@ class Content extends Model
         return $this->belongsTo(ReportTitleSubtitleSection::class, 'r_t_s_s_id');
     }
 
-        public function reportTitleSubtitle()
+    public function reportTitleSubtitle()
     {
         return $this->belongsTo(ReportTitleSubtitle::class, 'r_t_s_id');
     }
@@ -40,13 +40,16 @@ class Content extends Model
     {
         return $this->hasMany(Foda::class, 'content_id');
     }
-        public function accionSeguridad()
+    public function accionSeguridad()
     {
         return $this->hasMany(AccionSeguridad::class, 'content_id');
     }
-            public function cotizaciones()
+    public function cotizaciones()
     {
         return $this->hasMany(EmpresaCotizacion::class, 'content_id')->orderBy('orden');
     }
-
+    public function referencias()
+    {
+        return $this->hasMany(ContentReference::class);
+    }
 }
