@@ -1,14 +1,9 @@
 <div>
-    {{-- Botón agregar bloque --}}
-    <button type="button" wire:click="agregarBloque"
-        class="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800 mb-4">
-        + Agregar bloque
-    </button>
 <div class="p-4">
     <div class="flex justify-end mb-4">
         {{-- 🔹 Botón principal para agregar empresa --}}
         <button type="button" wire:click="agregarEmpresa"
-            class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-4 py-2 rounded">
+            class="bg-teal-600 hover:bg-teal-800 text-white font-semibold px-4 py-2 rounded">
             + Agregar Empresa
         </button>
     </div>
@@ -30,10 +25,10 @@
         <tbody>
             @forelse ($empresas as $eIndex => $empresa)
                 @foreach ($empresa['items'] as $iIndex => $item)
-                    <tr style="background-color: {{ $empresa['color'] }};">
+                    <tr class="text-[12pt] border" style="background-color: {{ $empresa['color'] }}; border:1px solid #000000ff;">
                         {{-- 🔹 Columna de empresa solo en la primera fila --}}
                         @if ($iIndex == 0)
-                            <td rowspan="{{ count($empresa['items']) }}" class="border font-semibold align-top p-2 text-left">
+                            <td rowspan="{{ count($empresa['items']) }}" class="border font-semibold align-top p-2 text-left" style="border:1px solid #000000ff;">
                                 <input type="text"
                                     wire:model="empresas.{{ $eIndex }}.nombre"
                                     placeholder="Nombre de la empresa"
@@ -61,7 +56,7 @@
                         @endif
 
                         {{-- Concepto --}}
-                        <td class="border p-1">
+                        <td class="border p-1" style="border:1px solid #000000ff;">
                             <input type="text"
                                 wire:model="empresas.{{ $eIndex }}.items.{{ $iIndex }}.concepto"
                                 placeholder="Concepto"
@@ -69,7 +64,7 @@
                         </td>
 
                         {{-- Cantidad --}}
-                        <td class="border p-1 text-center">
+                        <td class="border p-1 text-center" style="border:1px solid #000000ff;">
                             <input type="text"
                                 wire:model="empresas.{{ $eIndex }}.items.{{ $iIndex }}.cantidad"
                                 placeholder="#"
@@ -77,7 +72,7 @@
                         </td>
 
                         {{-- Costo --}}
-                        <td class="border p-1 text-center">
+                        <td class="border p-1 text-center" style="border:1px solid #000000ff;">
                             <input type="text"
                                 wire:model="empresas.{{ $eIndex }}.items.{{ $iIndex }}.costo"
                                 placeholder="$"
@@ -85,7 +80,7 @@
                         </td>
 
                         {{-- Comentarios --}}
-                        <td class="border p-1 text-center">
+                        <td class="border p-1 text-center" style="border:1px solid #000000ff;">
                             <input type="text"
                                 wire:model="empresas.{{ $eIndex }}.items.{{ $iIndex }}.comentarios"
                                 placeholder="Comentarios"
@@ -94,7 +89,32 @@
                             {{-- ❌ eliminar fila --}}
                             <button type="button" wire:click="eliminarItem({{ $eIndex }}, {{ $iIndex }})"
                                 class="text-xs text-red-700 font-bold hover:underline">
-                                ✕
+                                <!--
+                                    tags: [table, row, data-table, spreadsheet, table-structure, row-wise, information, grid, table-row-wise, dataset]
+                                    category: Database
+                                    version: "2.24"
+                                    unicode: "fb00"
+                                    -->
+                                    <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="40"
+                                    height="40"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="#cf0909ff"
+                                    stroke-width="0.7"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    >
+                                    <path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14z" />
+                                    <path d="M9 3l-6 6" />
+                                    <path d="M14 3l-7 7" />
+                                    <path d="M19 3l-7 7" />
+                                    <path d="M21 6l-4 4" />
+                                    <path d="M3 10h18" />
+                                    <path d="M10 10v11" />
+                                    </svg>
+
                             </button>
                         </td>
                     </tr>
@@ -118,49 +138,46 @@
                     class="text-red-600 hover:underline">🗑 Eliminar</button>
             </div>
 
-   {{-- Editor Quill adaptado para múltiples bloques --}}
-<div 
-    x-data 
-    wire:ignore
-    x-init="
-        const init = () => {
-            if (typeof Quill === 'undefined') { 
-                return setTimeout(init, 150); 
-            }
-
-            const quill = new Quill($refs.editorTit, {
-                theme: 'snow',
-                modules: {
-                    toolbar: {
-                        container: [
-                            [{ header: [1, 2, false] }],
-                            ['bold', 'italic', 'underline'],
-                            [{ 'align': [] }],
-                            [{ list: 'ordered' }, { list: 'bullet' }],
-                            [{ script: 'sub' }, { script: 'super' }],
-                            ['clean']
-                        ]
+        {{-- Editor Quill adaptado para múltiples bloques --}}
+        <div 
+            x-data 
+            wire:ignore
+            x-init="
+                const init = () => {
+                    if (typeof Quill === 'undefined') { 
+                        return setTimeout(init, 150); 
                     }
-                }
-            });
 
-            quill.root.innerHTML = @js($contenido ?? '');
+                    const quill = new Quill($refs.editorTit, {
+                        theme: 'snow',
+                        modules: {
+                            toolbar: {
+                                container: [
+                                    [{ header: [1, 2, false] }],
+                                    ['bold', 'italic', 'underline'],
+                                    [{ 'align': [] }],
+                                    [{ list: 'ordered' }, { list: 'bullet' }],
+                                    [{ script: 'sub' }, { script: 'super' }],
+                                    ['clean']
+                                ]
+                            }
+                        }
+                    });
 
-            quill.on('text-change', () => {
-                const html = quill.root.innerHTML;
-                $refs.textareaTit.value = html;
-                $refs.textareaTit.dispatchEvent(new Event('input'));
-            });
-        };
-        init();
-    "
->
-    <div x-ref="editorTit" style="height:200px; background:white;"></div>
-    <textarea x-ref="textareaTit" wire:model="bloques.{{ $i }}.contenido" class="hidden"></textarea>
-</div>
+                    quill.root.innerHTML = @js($contenido ?? '');
 
-
-
+                    quill.on('text-change', () => {
+                        const html = quill.root.innerHTML;
+                        $refs.textareaTit.value = html;
+                        $refs.textareaTit.dispatchEvent(new Event('input'));
+                    });
+                };
+                init();
+            "
+        >
+            <div x-ref="editorTit" style="height:200px; background:white;"></div>
+            <textarea x-ref="textareaTit" wire:model="bloques.{{ $i }}.contenido" class="hidden"></textarea>
+        </div>
 
             {{-- Imágenes --}}
             <div class="space-y-4">
@@ -193,6 +210,12 @@
             </div>
         </div>
     @endforeach
+
+    {{-- Botón agregar bloque --}}
+    <button type="button" wire:click="agregarBloque"
+        class="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800 mb-4">
+        + Agregar bloque
+    </button>
 
     {{-- Botón guardar --}}
     <div class="text-center pt-4">
