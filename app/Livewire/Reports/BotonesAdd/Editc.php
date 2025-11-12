@@ -6,6 +6,7 @@ use App\Models\AccionSeguridad;
 use App\Models\AnalysisDiagram;
 use Livewire\Component;
 use App\Models\Content;
+use App\Models\ContentReference;
 use App\Models\Foda;
 use App\Models\OrganigramaControl;
 use Livewire\WithFileUploads;
@@ -15,6 +16,7 @@ use App\Models\ReportTitleSubtitleSection;
 use App\Models\Report;
 use App\Models\Subtitle;
 use Livewire\Attributes\On;
+use Illuminate\Support\Facades\DB;
 
 class Editc extends Component
 {
@@ -73,8 +75,9 @@ class Editc extends Component
     public $nombre_e;
     public $puesto_c;
     public $nombre_c;
-
+    public $referencias = [];
     public $acciones;
+    public $referenciasNuevas = [];
 
     public function mount($id,$boton,$rp)
     {
@@ -84,7 +87,7 @@ class Editc extends Component
     $this->rep = Report::findOrFail($rp);
     $this->authorize('update', $report); // 👈 ahora sí se evalúa la policy
         if($boton == 'tit'){
-            $this->content = Content::where('r_t_id', $id)->first();
+        $this->content = Content::with('referencias')->where('r_t_id', $id)->first();
             // Cargamos valores existentes
             
             $this->contenido = $this->content->cont;
@@ -98,7 +101,7 @@ class Editc extends Component
             $this->RTitle = ReportTitle::findOrFail($id);
         } elseif($boton == 'sub'){
             $this->RTitle = null;
-            $this->content = Content::where('r_t_s_id', $id)->first();
+            $this->content = Content::with('referencias')->where('r_t_s_id', $id)->first();
     if ($this->content) {
         // Si es el subtítulo 16 (criterios de evaluación)
         $subtitleId = ReportTitleSubtitle::where('id', $id)->value('subtitle_id');
@@ -218,7 +221,7 @@ class Editc extends Component
         } else if($boton == 'sec'){
             $this->RTitle = null;
             $this->RSubtitle = null;
-            $this->content = Content::where('r_t_s_s_id', $id)->first();
+            $this->content = Content::with('referencias')->where('r_t_s_s_id', $id)->first();
             // Cargamos valores existentes
             
             $this->contenido = $this->content->cont;
@@ -230,8 +233,14 @@ class Editc extends Component
             $this->oldImg2 = $this->content->img2;
             $this->oldImg3 = $this->content->img3;
             $this->RSection = ReportTitleSubtitleSection::findOrFail($id);
+            
 
         } 
+            $this->contenido =  $this->content->cont;
+            $this->referencias = $this->content->referencias->map(fn($r) => [
+                'num' => $r->numero,
+                'texto' => $r->texto,
+            ])->toArray();
 
     }
 
@@ -458,6 +467,19 @@ public function updateRiesgosEvaluacion($contentId)
         }
         // Ahora actualiza el modelo
         $this->content->update($data);
+        if (!empty($this->referencias)) {
+            ContentReference::where('content_id', $this->content->id)->delete();
+
+            foreach ($this->referenciasNuevas as $ref) {
+                ContentReference::create([
+                    'content_id' => $this->content->id,
+                    'numero' => $ref['num'],
+                    'texto' => $ref['texto'],
+                ]);
+            }
+                $this->referenciasNuevas = [];
+
+        }
         session()->flash('cont', '✅ Contenido actualizado correctamente.');
         return redirect()->route('my_reports.addcontenido', ['id' =>$rp]);
     }
@@ -901,6 +923,142 @@ public function setBackground($base64)
         'len' => strlen($base64),
         'inicio' => substr($base64, 0, 40),
     ]);
+}
+public function getNextReferenceNumber($reportId)
+{
+    return \App\Models\ContentReference::nextNumberForReport($reportId);
+}
+public function renumerarReferenciasReporte($reportId)
+{
+    $refs = \App\Models\ContentReference::renumerarPorReporte($reportId);
+    return $refs->map(fn($r) => [
+        'num' => $r->numero,
+        'texto' => $r->texto,
+    ]);
+}
+
+public function eliminarYRenumerarReferencia(int $reportId, int $numero)
+{
+    $map = [];
+    $refEliminada = false;
+
+    DB::transaction(function () use ($reportId, $numero, &$map, &$refEliminada) {
+
+        // 1) Eliminar la referencia con ese número global en el reporte
+        $ref = \App\Models\ContentReference::query()
+            ->where('numero', $numero)
+            ->whereHas('content', function ($q) use ($reportId) {
+                $q->whereHas('reportTitle', fn($r) => $r->where('report_id', $reportId))
+                  ->orWhereHas('reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId))
+                  ->orWhereHas('reportTitleSubtitleSection.reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId));
+            })
+            ->first();
+
+        if ($ref) {
+            $ref->delete();
+            $refEliminada = true;
+        }
+
+        // 2) Traer todas las referencias del reporte, ordenadas por numero
+        $todas = \App\Models\ContentReference::query()
+            ->whereHas('content', function ($q) use ($reportId) {
+                $q->whereHas('reportTitle', fn($r) => $r->where('report_id', $reportId))
+                  ->orWhereHas('reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId))
+                  ->orWhereHas('reportTitleSubtitleSection.reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId));
+            })
+            ->orderBy('numero')
+            ->get();
+
+        // 3) Construir mapa old=>new (el eliminado va a null)
+        //    y reescribir los numeros (1..N)
+        $map = [];
+        $i = 1;
+        if ($refEliminada) {
+            $map[$numero] = null; // el que se elimina
+        }
+        foreach ($todas as $r) {
+            $old = (int)$r->numero;
+            if (!isset($map[$old])) { // solo si no estaba marcado null
+                $map[$old] = $i;
+            }
+            if ($r->numero != $map[$old]) {
+                $r->numero = $map[$old];
+                $r->save();
+            }
+            $i++;
+        }
+
+        // 4) Reescribir el HTML de TODOS los contenidos del reporte con el mapa
+        $contenidos = \App\Models\Content::query()
+            ->whereHas('reportTitle', fn($r) => $r->where('report_id', $reportId))
+            ->orWhereHas('reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId))
+            ->orWhereHas('reportTitleSubtitleSection.reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId))
+            ->get();
+
+        foreach ($contenidos as $c) {
+            $nuevo = $this->renumerarHtmlConMapa($c->cont ?? '', $map);
+            if ($nuevo !== $c->cont) {
+                $c->cont = $nuevo;
+                $c->save();
+            }
+        }
+    });
+
+    // 5) Devolver referencias y mapa actualizado al front
+    $refsActuales = \App\Models\ContentReference::query()
+        ->whereHas('content', function ($q) use ($reportId) {
+            $q->whereHas('reportTitle', fn($r) => $r->where('report_id', $reportId))
+              ->orWhereHas('reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId))
+              ->orWhereHas('reportTitleSubtitleSection.reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId));
+        })
+        ->orderBy('numero')
+        ->get()
+        ->map(fn($r) => ['num' => (int)$r->numero, 'texto' => $r->texto])
+        ->toArray();
+
+    // Actualiza el estado público si lo usas en el componente
+    $this->referencias = $refsActuales;
+
+    return [
+        'map' => $map,                 // p.ej. {3:null, 4:3, 5:4, ...}
+        'referencias' => $refsActuales // lista normalizada
+    ];
+}
+
+/**
+ * Reescribe todos los <span class="ref" data-num="X"><sup>[X]</sup></span> según $map.
+ * Si el map[X] = null → elimina el span.
+ */
+private function renumerarHtmlConMapa(string $html, array $map): string
+{
+    if ($html === '' || empty($map)) return $html;
+
+    // Reemplazo seguro con callback
+    $pat = '/<span\s+class=["\']ref["\']([^>]*)data-num=["\'](\d+)["\']([^>]*)>\s*<sup>\[(\d+)\]<\/sup>\s*<\/span>/i';
+
+    $nuevo = preg_replace_callback($pat, function ($m) use ($map) {
+        $oldAttrNum = (int)$m[2]; // data-num
+        // $m[4] es el número dentro del <sup>[X]</sup> (lo validamos también)
+        if (!array_key_exists($oldAttrNum, $map)) {
+            // No hay cambio para este número
+            return $m[0];
+        }
+        $nuevoNum = $map[$oldAttrNum];
+        if ($nuevoNum === null) {
+            // Se elimina el span completo
+            return '';
+        }
+        // Reescribir el data-num y el <sup>[X]</sup>
+        $reemplazo = $m[0];
+        // data-num="old" -> data-num="new"
+        $reemplazo = preg_replace('/data-num=["\']'.$oldAttrNum.'["\']/', 'data-num="'.$nuevoNum.'"', $reemplazo);
+        // [old] -> [new]
+        $reemplazo = preg_replace('/\['.$oldAttrNum.'\]/', '['.$nuevoNum.']', $reemplazo);
+
+        return $reemplazo;
+    }, $html);
+
+    return $nuevo ?? $html;
 }
 
 

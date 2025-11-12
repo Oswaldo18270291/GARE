@@ -35,4 +35,21 @@ class ContentReference extends Model
 
         return $max ? $max + 1 : 1;
     }
+
+    public static function renumerarPorReporte($reportId)
+    {
+        $refs = self::whereHas('content', function ($q) use ($reportId) {
+            $q->whereHas('reportTitle', fn($r) => $r->where('report_id', $reportId))
+            ->orWhereHas('reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId))
+            ->orWhereHas('reportTitleSubtitleSection.reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId));
+        })
+        ->orderBy('id')
+        ->get();
+
+        foreach ($refs as $i => $ref) {
+            $ref->update(['numero' => $i + 1]);
+        }
+
+        return $refs;
+    }
 }

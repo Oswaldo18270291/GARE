@@ -7,6 +7,7 @@
         const init = async () => {
             if (typeof Quill === 'undefined') return setTimeout(init, 150);
 
+            // 🟢 Inicializar Quill
             const quill = new Quill($refs.editorTit, {
                 theme: 'snow',
                 modules: {
@@ -14,7 +15,7 @@
                         container: [
                             [{ header: [1, 2, false] }],
                             ['bold', 'italic', 'underline'],
-                            [{ 'align': [] }],
+                            [{ align: [] }],
                             [{ list: 'ordered' }, { list: 'bullet' }],
                             [{ script: 'sub' }, { script: 'super' }],
                             ['clean']
@@ -23,58 +24,162 @@
                 }
             });
 
-            // 🔹 Cargar contenido previo (si existe)
             quill.root.innerHTML = @js($contenido ?? '');
 
-            // 🔹 Variables base
+            // Variables base
             const reporteId = {{ $rp }};
             const contenidoId = '{{ $contentId ?? 'nuevo' }}';
 
-            // 🔹 Estructuras globales
-            window.referenciasPorReporte = window.referenciasPorReporte || {};
-            window.referenciasPorReporte[reporteId] = window.referenciasPorReporte[reporteId] || {};
-            window.referenciasPorReporte[reporteId][contenidoId] = window.referenciasPorReporte[reporteId][contenidoId] || [];
+            // 🔹 Arreglo local solo para este editor
+            window.referenciasActuales = [];
 
-            // 🔹 Inicializar contador local por reporte
-            window.ultimoNumeroReferencia = window.ultimoNumeroReferencia || {};
-            if (!window.ultimoNumeroReferencia[reporteId]) {
-                // Pide al backend el siguiente número global real solo una vez
-                window.ultimoNumeroReferencia[reporteId] = await $wire.call('getNextReferenceNumber', reporteId) - 1;
-            }
+            // 🔹 Obtener el último número global (desde BD)
+            let ultimoNumero = await $wire.call('getNextReferenceNumber', reporteId) - 1;
 
-            // 🔹 Crear botón Ref
+            // 🧩 Toolbar
             const toolbar = quill.getModule('toolbar').container;
-            const refButton = document.createElement('button');
-            refButton.type = 'button';
-            refButton.innerHTML = 'Ref';
-            refButton.title = 'Agregar referencia';
+            const refGroup = document.createElement('span');
+            refGroup.classList.add('ql-formats');
 
-            refButton.onclick = async (event) => {
-                event.preventDefault();
-
+            // 🔖 Botón agregar referencia
+            const addRefBtn = document.createElement('button');
+            addRefBtn.type = 'button';
+            addRefBtn.title = 'Agregar referencia';
+            addRefBtn.innerHTML = '🔖';
+            addRefBtn.onclick = (e) => {
+                e.preventDefault();
                 const texto = prompt('Introduce la referencia o URL:');
                 if (!texto) return;
 
-                // 🔸 Incrementa contador local y usa el nuevo número
-                window.ultimoNumeroReferencia[reporteId] += 1;
-                const num = window.ultimoNumeroReferencia[reporteId];
+                ultimoNumero += 1;
+                const num = ultimoNumero;
+                const refHtml = `<span class='ref' data-num='${num}' style='color:#0f4a75; cursor:pointer;'><sup>[${num}]</sup></span>`;
+                const range = quill.getSelection(true);
+                quill.clipboard.dangerouslyPasteHTML(range.index, refHtml);
 
-                // 🔹 Inserta el superíndice visual
-                const refHtml = `<span class='ref' data-num='${num}'><sup>[${num}]</sup></span>`;
-                const sel = quill.getSelection();
-                const index = sel ? sel.index : quill.getLength();
-                quill.clipboard.dangerouslyPasteHTML(index, refHtml);
-
-                // 🔹 Guarda la referencia en memoria local
-                window.referenciasPorReporte[reporteId][contenidoId].push({ num, texto });
-
-                // 🔹 Envía solo las referencias de este contenido a Livewire
-                const refsDeEsteContenido = window.referenciasPorReporte[reporteId][contenidoId];
-                $wire.set('referencias', refsDeEsteContenido);
+                window.referenciasActuales.push({ num, texto });
+                $wire.set('referencias', window.referenciasActuales);
             };
-            toolbar.appendChild(refButton);
+            refGroup.appendChild(addRefBtn);
 
-            // 🔹 Sincronizar contenido con Livewire
+            // ✏️ Botón editar referencia
+            const editBtn = document.createElement('button');
+            editBtn.type = 'button';
+            editBtn.title = 'Editar referencia';
+            editBtn.innerHTML = '✏️';
+            editBtn.onclick = () => {
+                const refs = window.referenciasActuales;
+                if (refs.length === 0) return alert('No hay referencias para editar.');
+
+                abrirModal('editar', refs);
+            };
+            refGroup.appendChild(editBtn);
+
+            // 🗑️ Botón eliminar referencia
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.title = 'Eliminar referencia';
+            deleteBtn.innerHTML = '🗑️';
+            deleteBtn.onclick = () => {
+                const refs = window.referenciasActuales;
+                if (refs.length === 0) return alert('No hay referencias para eliminar.');
+
+                abrirModal('eliminar', refs);
+            };
+            refGroup.appendChild(deleteBtn);
+
+            toolbar.appendChild(refGroup);
+
+            // 🧩 Modal para editar / eliminar
+            const modal = document.createElement('div');
+            modal.id = 'refModal';
+            modal.classList.add('hidden');
+            Object.assign(modal.style, {
+                position: 'fixed',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                zIndex: '9999',
+                background: 'white',
+                border: '1px solid #ccc',
+                borderRadius: '8px',
+                padding: '20px',
+                boxShadow: '0 5px 20px rgba(0,0,0,0.2)',
+                width: '320px',
+                textAlign: 'center'
+            });
+            document.body.appendChild(modal);
+
+            const abrirModal = (accion, refs) => {
+                modal.innerHTML = '';
+                modal.classList.remove('hidden');
+
+                const title = document.createElement('h2');
+                title.textContent = accion === 'editar' ? 'Editar referencia' : 'Eliminar referencia';
+                title.style.fontWeight = 'bold';
+                title.style.fontSize = '16px';
+                modal.appendChild(title);
+
+                const select = document.createElement('select');
+                select.id = 'refSelect';
+                select.style.cssText = 'width:100%; margin-top:10px; padding:5px; border:1px solid #ccc; border-radius:4px;';
+                select.innerHTML = refs.map(r => `<option value='${r.num}'>[${r.num}] ${r.texto}</option>`).join('');
+                modal.appendChild(select);
+
+                if (accion === 'editar') {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.id = 'refEditText';
+                    input.placeholder = 'Nuevo texto';
+                    input.style.cssText = 'width:100%; margin-top:10px; padding:5px; border:1px solid #ccc; border-radius:4px;';
+                    modal.appendChild(input);
+                }
+
+                const btnDiv = document.createElement('div');
+                btnDiv.style.marginTop = '15px';
+                btnDiv.style.display = 'flex';
+                btnDiv.style.justifyContent = 'center';
+                btnDiv.style.gap = '10px';
+
+                const saveBtn = document.createElement('button');
+                saveBtn.type = 'button';
+                saveBtn.textContent = accion === 'editar' ? 'Guardar' : 'Eliminar';
+                saveBtn.style.cssText = accion === 'editar'
+                    ? 'background:#0f4a75; color:white; padding:5px 10px; border-radius:5px;'
+                    : 'background:#c0392b; color:white; padding:5px 10px; border-radius:5px;';
+
+                const cancelBtn = document.createElement('button');
+                cancelBtn.type = 'button';
+                cancelBtn.textContent = 'Cancelar';
+                cancelBtn.style.cssText = 'background:#ccc; padding:5px 10px; border-radius:5px;';
+
+                btnDiv.appendChild(saveBtn);
+                btnDiv.appendChild(cancelBtn);
+                modal.appendChild(btnDiv);
+
+                cancelBtn.onclick = () => modal.classList.add('hidden');
+
+                saveBtn.onclick = () => {
+                    const num = select.value;
+                    if (accion === 'editar') {
+                        const nuevoTexto = modal.querySelector('#refEditText').value.trim();
+                        if (!nuevoTexto) return alert('Debes escribir un texto nuevo.');
+                        const refObj = refs.find(r => r.num == num);
+                        if (refObj) refObj.texto = nuevoTexto;
+                    } else {
+                        const index = refs.findIndex(r => r.num == num);
+                        if (index !== -1) {
+                            refs.splice(index, 1);
+                            const span = quill.root.querySelector(`.ref[data-num='${num}']`);
+                            if (span) span.outerHTML = '';
+                        }
+                    }
+                    $wire.set('referencias', refs);
+                    modal.classList.add('hidden');
+                };
+            };
+
+            // 🔄 Sincronizar contenido con Livewire
             quill.on('text-change', () => {
                 const html = quill.root.innerHTML;
                 $refs.textareaTit.value = html;
@@ -84,13 +189,9 @@
         init();
     "
 >
-    <div x-ref="editorTit" style="height:200px; background:white;"></div>
+    <div x-ref="editorTit" style="height:220px; background:white;"></div>
     <textarea x-ref="textareaTit" wire:model="contenido" class="hidden"></textarea>
 </div>
-
-
-
-
 
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
