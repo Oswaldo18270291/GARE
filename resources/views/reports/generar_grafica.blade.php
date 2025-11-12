@@ -119,9 +119,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     await renderAndSave(defs[i], i, defs.length);
   }
 
-  progress.innerText = "Gráficas generadas. Abriendo PDF...";
-  window.location.href = "{{ route('reporte.pdf', $report->id) }}";
-});
+  progress.innerText = "Cargando...";
+  window.location.href = "{{ route('reporte.generarMapa', $report->id) }}";});
 </script>
 
 </body>
