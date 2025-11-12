@@ -31,186 +31,227 @@ class InformePdf extends Controller
         public $mapa_m;
 
     use AuthorizesRequests;
+public function generar($id)
+{
+    $this->reports = Report::findOrFail($id);
+    $report = Report::findOrFail($id);
+    $this->authorize('update', $report);
 
-    public function generar($id)
-    {
-        $this->reports = Report::findOrFail($id);
+    // 🔹 Cargar estructura completa
+    $report->titles = ReportTitle::with('title')
+        ->join('titles', 'report_titles.title_id', '=', 'titles.id')
+        ->select('titles.*', 'report_titles.*')
+        ->where('report_titles.report_id', $report->id)
+        ->where('report_titles.status', 1)
+        ->orderBy('titles.orden', 'asc')
+        ->get();
 
-        $report = Report::findOrFail($id);
-        $this->authorize('update', $report);
-
-        // 🔹 Cargar estructura completa
-        $report->titles = ReportTitle::
-            with('title')
-            ->join('titles', 'report_titles.title_id','=','titles.id')
-            ->select('titles.*','report_titles.*')
-            ->where('report_titles.report_id', $report->id)
-            ->where('report_titles.status', 1)
-            ->orderBy('titles.orden','asc')
+    foreach ($report->titles as $title) {
+        $title->content = Content::with(['cotizaciones.detalles'])
+            ->where('r_t_id', $title->id)
+            ->orderBy('bloque_num')
             ->get();
 
-        foreach ($report->titles as $title) {
-            $title->content = Content::with([
-                'cotizaciones.detalles' // ✅ carga empresas y detalles
-                ])
-                ->where('r_t_id', $title->id)
-                ->orderBy('bloque_num')
-                ->get();
-            $title->subtitles = ReportTitleSubtitle::
-            with('subtitle')
-            ->join('subtitles', 'report_title_subtitles.subtitle_id','=','subtitles.id')
-            ->select('subtitles.*','report_title_subtitles.*')
+        $title->subtitles = ReportTitleSubtitle::with('subtitle')
+            ->join('subtitles', 'report_title_subtitles.subtitle_id', '=', 'subtitles.id')
+            ->select('subtitles.*', 'report_title_subtitles.*')
             ->where('report_title_subtitles.r_t_id', $title->id)
             ->where('report_title_subtitles.status', 1)
-            ->orderBy('subtitles.orden','asc')
+            ->orderBy('subtitles.orden', 'asc')
             ->get();
 
-            foreach ($title->subtitles as $subtitle) {
-                $subtitle->content = Content::with(['accionSeguridad' => function ($q) {
-                    $q->orderBy('no');
-                }])
+        foreach ($title->subtitles as $subtitle) {
+            $subtitle->content = Content::with(['accionSeguridad' => function ($q) {
+                $q->orderBy('no');
+            }])
                 ->where('r_t_s_id', $subtitle->id)
                 ->get();
 
-                foreach ($subtitle->content as $cont) {
-                    $cont->accionSeguridad = $cont->accionSeguridad->groupBy('tit');
-                }
+            foreach ($subtitle->content as $cont) {
+                $cont->accionSeguridad = $cont->accionSeguridad->groupBy('tit');
+            }
 
-                $subtitle->sections = ReportTitleSubtitleSection::with('section')
-                ->join('sections', 'report_title_subtitle_sections.section_id','=','sections.id')
-                ->select('sections.*','report_title_subtitle_sections.*')
-                ->orderBy('sections.orden','asc')
+            $subtitle->sections = ReportTitleSubtitleSection::with('section')
+                ->join('sections', 'report_title_subtitle_sections.section_id', '=', 'sections.id')
+                ->select('sections.*', 'report_title_subtitle_sections.*')
+                ->orderBy('sections.orden', 'asc')
                 ->where('report_title_subtitle_sections.r_t_s_id', $subtitle->id)
                 ->where('report_title_subtitle_sections.status', 1)
                 ->get();
-                
 
-                foreach ($subtitle->sections as $section) {
-                    $section->content = Content::where('r_t_s_s_id', $section->id)->get();
-                }
+            foreach ($subtitle->sections as $section) {
+                $section->content = Content::where('r_t_s_s_id', $section->id)->get();
             }
         }
-
-        $ti = ReportTitle::where('report_id', $report->id)->where('title_id', 4 )             
-        ->where('status', 1)
-        ->first();
-
-        $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 32 )     
-        ->where('status', 1)->first();
-        $co = Content::where('r_t_s_id', $su->id)->first();
-
-        if(!empty($co)){
-            $diagrama = AnalysisDiagram::where('content_id', $co->id)->get();        
-            $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report, 'diagrama'=>$diagrama]);
-        }else{
-            $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report]);
-        }
-        //$co = Content::where('r_t_s_id', $su->id)->first();
-
-        // 🔹 Generar contenido con marcadores invisibles
-        $pathContenido = storage_path("app/public/tmp_contenido_{$id}.pdf");
-        file_put_contents($pathContenido, $pdfContenido->output());
-
-        // 🔹 Analizar el PDF con Smalot\PdfParser
-        $parser = new Parser();
-        $pdf = $parser->parseFile($pathContenido);
-
-        $markers = [];
-        $pageNumber = 1;
-        foreach ($pdf->getPages() as $page) {
-            $text = $page->getText();
-
-            // Detectar títulos
-            foreach ($report->titles as $title) {
-                if (strpos($text, "__MARKER_TITLE_{$title->id}__") !== false) {
-                    $markers["TITLE_{$title->id}"] = $pageNumber;
-                }
-
-                // Detectar subtítulos
-                foreach ($title->subtitles as $subtitle) {
-                    if (strpos($text, "__MARKER_SUBTITLE_{$subtitle->id}__") !== false) {
-                        $markers["SUBTITLE_{$subtitle->id}"] = $pageNumber;
-                    }
-
-                    // Detectar secciones
-                    foreach ($subtitle->sections as $section) {
-                        if (strpos($text, "__MARKER_SECTION_{$section->id}__") !== false) {
-                            $markers["SECTION_{$section->id}"] = $pageNumber;
-                        }
-                    }
-                }
-            }
-            $pageNumber++;
-        }
-
-        // 🔹 Generar las demás plantillas
-        $pdfPortada = Pdf::loadView('plantillas.portada',  [
-            'reports' => $report,
-        ])->output();
-        $pdfColaboradores = Pdf::loadView('plantillas.colaboradores', [
-            'reports' => $report,
-        ])->output();
-
-        // 🔹 Pasamos los markers al índice
-        $pdfIndice = Pdf::loadView('plantillas.indice', [
-            'reports' => $report,
-            'markers' => $markers
-        ])->output();
-
-        // 🔹 Fusionar todos los PDFs con FPDI
-        $pdf = new class extends Fpdi {
-            public $pageNumber = 0;
-            public $totalPages = 0;
-            public $paginar = false;
-
-            public function Footer()
-            {
-                if ($this->paginar && $this->pageNumber > 0) {
-                    $this->SetY(-15);
-                    $this->SetFont('helvetica', '', 10);
-                    $this->Cell(0, 10, 'Página ' . $this->pageNumber . ' de ' . $this->totalPages, 0, 0, 'C');
-                }
-            }
-        };
-
-        $pdf->SetCreator('Laravel');
-        $pdf->SetAuthor('SSP');
-        $pdf->SetTitle('Informe ' . $report->id);
-        $pdf->SetMargins(15, 15, 15);
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(true);
-
-        $allDocs = [
-            ['doc' => $pdfPortada, 'paginar' => false],
-            ['doc' => $pdfColaboradores, 'paginar' => false],
-            ['doc' => $pdfIndice, 'paginar' => false],
-            ['doc' => file_get_contents($pathContenido), 'paginar' => true],
-        ];
-
-        foreach ($allDocs as $item) {
-            $pdf->paginar = $item['paginar'];
-            $pageCount = $pdf->setSourceFile(PdfParserStreamReader::createByString($item['doc']));
-
-            if ($pdf->paginar) {
-                $pdf->totalPages = $pageCount;
-                $pdf->pageNumber = 0;
-            }
-
-            for ($page = 1; $page <= $pageCount; $page++) {
-                $tpl = $pdf->importPage($page);
-                $size = $pdf->getTemplateSize($tpl);
-
-                $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
-                $pdf->useTemplate($tpl);
-                if ($pdf->paginar) $pdf->pageNumber++;
-            }
-        }
-
-        $filename = "Informe_{$report->id}.pdf";
-        return response($pdf->Output($filename, 'S'), 200)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', "inline; filename=\"$filename\"");
     }
+
+    // 🔹 Diagrama opcional
+    $ti = ReportTitle::where('report_id', $report->id)->where('title_id', 4)
+        ->where('status', 1)->first();
+
+    $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 32)
+        ->where('status', 1)->first();
+
+    $co = Content::where('r_t_s_id', $su->id)->first();
+
+    if (!empty($co)) {
+        $diagrama = AnalysisDiagram::where('content_id', $co->id)->get();
+        $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report, 'diagrama' => $diagrama]);
+    } else {
+        $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report]);
+    }
+
+    // 🔹 Guardar PDF temporal del contenido
+    $pathContenido = storage_path("app/public/tmp_contenido_{$id}.pdf");
+    file_put_contents($pathContenido, $pdfContenido->output());
+
+    // 🔹 Analizar el PDF con Smalot\PdfParser
+    $parser = new Parser();
+    $pdfParsed = $parser->parseFile($pathContenido);
+
+    $markers = [];
+    $contentMarkers = [];
+    $pageNumber = 1;
+
+    foreach ($pdfParsed->getPages() as $page) {
+        $text = $page->getText();
+
+        // Detectar marcadores de títulos/subtítulos/secciones
+        foreach ($report->titles as $title) {
+            if (strpos($text, "__MARKER_TITLE_{$title->id}__") !== false) {
+                $markers["TITLE_{$title->id}"] = $pageNumber;
+            }
+            foreach ($title->subtitles as $subtitle) {
+                if (strpos($text, "__MARKER_SUBTITLE_{$subtitle->id}__") !== false) {
+                    $markers["SUBTITLE_{$subtitle->id}"] = $pageNumber;
+                }
+                foreach ($subtitle->sections as $section) {
+                    if (strpos($text, "__MARKER_SECTION_{$section->id}__") !== false) {
+                        $markers["SECTION_{$section->id}"] = $pageNumber;
+                    }
+                }
+            }
+        }
+
+        // 🔹 Detectar marcadores de contenido
+        if (preg_match_all('/__MARKER_CONTENT_(\d+)__/', $text, $matches)) {
+            foreach ($matches[1] as $contentId) {
+                $contentMarkers[$pageNumber][] = $contentId;
+            }
+        }
+
+        $pageNumber++;
+    }
+
+    // 🔹 Buscar referencias por página (usando content_id)
+    $referenciasPorPagina = [];
+
+    foreach ($pdfParsed->getPages() as $pageNumber => $page) {
+        $text = $page->getText();
+
+        if (!empty($contentMarkers[$pageNumber + 1])) {
+            foreach ($contentMarkers[$pageNumber + 1] as $contentId) {
+                $refs = \App\Models\ContentReference::where('content_id', $contentId)->get();
+
+                foreach ($refs as $ref) {
+                    if (strpos($text, '[' . $ref->numero . ']') !== false) {
+                        $referenciasPorPagina[$pageNumber + 1][] = '[' . $ref->numero . '] ' . $ref->texto;
+                    }
+                }
+            }
+        }
+    }
+
+    // 🔹 Generar las demás plantillas
+    $pdfPortada = Pdf::loadView('plantillas.portada', ['reports' => $report])->output();
+    $pdfColaboradores = Pdf::loadView('plantillas.colaboradores', ['reports' => $report])->output();
+    $pdfIndice = Pdf::loadView('plantillas.indice', ['reports' => $report, 'markers' => $markers])->output();
+
+    // 🔹 Fusionar PDFs con pie de referencias
+    $pdf = new class($referenciasPorPagina) extends Fpdi {
+        public $pageNumber = 0;
+        public $totalPages = 0;
+        public $paginar = false;
+        public $referenciasPorPagina = [];
+
+        public function __construct($referencias)
+        {
+            parent::__construct();
+            $this->referenciasPorPagina = $referencias;
+        }
+
+        public function Footer()
+        {
+            if ($this->paginar && $this->pageNumber > 0) {
+                $page = $this->pageNumber;
+
+                // 🔹 Mostrar referencias si existen en esta página
+                if (isset($this->referenciasPorPagina[$page])) {
+                    // Ajustamos el punto inicial un poco más arriba
+                    $this->SetY(-32);
+
+                    // 🔹 Dibujar línea gris horizontal sobre las referencias
+                    $this->SetDrawColor(150, 150, 150); // color gris
+                    $this->Line(15, $this->GetY(), 90, $this->GetY()); // línea de margen a margen
+
+                    // 🔹 Texto de referencias
+                    $this->Ln(2);
+                    $this->SetFont('helvetica', '', 8);
+                    $this->SetTextColor(60, 60, 60);
+                    foreach ($this->referenciasPorPagina[$page] as $refTexto) {
+                        $this->MultiCell(0, 4, $refTexto, 0, 'L');
+                    }
+
+                    $this->Ln(2);
+                }
+
+                // 🔹 Número de página
+                $this->SetY(-12);
+                $this->SetFont('helvetica', 'I', 9);
+                $this->SetTextColor(0, 0, 0);
+                $this->Cell(0, 8, 'Página ' . $this->pageNumber . ' de ' . $this->totalPages, 0, 0, 'C');
+            }
+        }
+    };
+
+    $pdf->SetCreator('Laravel');
+    $pdf->SetAuthor('SSP');
+    $pdf->SetTitle('Informe ' . $report->id);
+    $pdf->SetMargins(15, 15, 15);
+    $pdf->setPrintHeader(false);
+    $pdf->setPrintFooter(true);
+
+    $allDocs = [
+        ['doc' => $pdfPortada, 'paginar' => false],
+        ['doc' => $pdfColaboradores, 'paginar' => false],
+        ['doc' => $pdfIndice, 'paginar' => false],
+        ['doc' => file_get_contents($pathContenido), 'paginar' => true],
+    ];
+
+    foreach ($allDocs as $item) {
+        $pdf->paginar = $item['paginar'];
+        $pageCount = $pdf->setSourceFile(PdfParserStreamReader::createByString($item['doc']));
+
+        if ($pdf->paginar) {
+            $pdf->totalPages = $pageCount;
+            $pdf->pageNumber = 0;
+        }
+
+        for ($page = 1; $page <= $pageCount; $page++) {
+            $tpl = $pdf->importPage($page);
+            $size = $pdf->getTemplateSize($tpl);
+
+            $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
+            $pdf->useTemplate($tpl);
+            if ($pdf->paginar) $pdf->pageNumber++;
+        }
+    }
+
+    $filename = "Informe_{$report->id}.pdf";
+    return response($pdf->Output($filename, 'S'), 200)
+        ->header('Content-Type', 'application/pdf')
+        ->header('Content-Disposition', "inline; filename=\"$filename\"");
+}
 
  public function generarGraficas($id)
 {
