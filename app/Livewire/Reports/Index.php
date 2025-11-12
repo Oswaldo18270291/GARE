@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Livewire\Reports;
+
+use App\Http\Controllers\InformePdf;
 use Illuminate\Support\Facades\Auth;
 
 use Livewire\WithPagination;
@@ -18,8 +20,21 @@ class Index extends Component
     public function status($id)
     {
         $report = Report::findOrFail($id);
-        $report->status = true;
-        $report->save();
+
+        // 1️⃣ Generar el PDF con tu método existente
+        $pdfController = new InformePdf();
+        $pdf = $pdfController->generar($id);
+
+        // 2️⃣ Guardar el archivo físico
+        $nombre = "Informe_{$report->nombre_empresa}.pdf";
+        $rutaRelativa = "reports/{$nombre}";
+        Storage::disk('public')->put($rutaRelativa, $pdf->getOriginalContent());
+
+        // 3️⃣ Actualizar el estado del reporte
+        $report->update([
+            'pdf_path' => $rutaRelativa,
+            'status' => true,
+        ]);
         session()->flash('success', 'El informe se ha finalizado');
         $this->redirectRoute('history.index', navigate:true);
     }

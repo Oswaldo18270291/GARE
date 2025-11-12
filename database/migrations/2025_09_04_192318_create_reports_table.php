@@ -32,6 +32,8 @@ return new class extends Migration
             $table->string('clasificacion');    
             $table->string('folio')->nullable();
             $table->string('img_portada');
+            $table->string('pdf_path')->nullable();
+
         });
     }
 
