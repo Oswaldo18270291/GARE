@@ -44,4 +44,9 @@ class Content extends Model
     {
         return $this->hasMany(AccionSeguridad::class, 'content_id');
     }
+            public function empresas()
+    {
+        return $this->hasMany(EmpresaCotizacion::class, 'content_id');
+    }
+
 }

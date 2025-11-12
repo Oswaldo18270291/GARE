@@ -8,6 +8,8 @@ use App\Models\AnalysisDiagram;
 use App\Models\Subtitle;
 use App\Models\Report;
 use App\Models\Content;
+use App\Models\DetalleCotizacion;
+use App\Models\EmpresaCotizacion;
 use App\Models\Foda;
 use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
@@ -94,16 +96,22 @@ class AddcExtends extends Component
         $this->bloques[$bloqueIndex]['imagenes'] = array_values($this->bloques[$bloqueIndex]['imagenes']);
     }
 
+
+
 public function store($id, $boton, $rp)
 {
     $report = Report::findOrFail($rp);
     $this->authorize('update', $report);
 
+    $primerContent = null; // 🔹 Aquí guardaremos el primer Content creado
+
+    // =======================================================
+    // 🔹 1️⃣ Guardar todos los bloques normalmente
+    // =======================================================
     foreach ($this->bloques as $bloqueIndex => $bloque) {
         $contenido = $bloque['contenido'] ?? '';
         $imagenes = [];
 
-        // 🔹 Guardar imágenes del bloque
         foreach ($bloque['imagenes'] as $imagenIndex => $imagen) {
             $ruta = null;
             $leyenda = $imagen['leyenda'] ?? null;
@@ -116,7 +124,6 @@ public function store($id, $boton, $rp)
                     Storage::disk('public')->makeDirectory('img_extends');
                 }
 
-                // Guardar con nombre único
                 $filename = 'bloque' . ($bloqueIndex + 1) . '_img' . ($imagenIndex + 1) . '_' . uniqid() . '.' . $imagen['img']->getClientOriginalExtension();
                 $ruta = $imagen['img']->storeAs('img_extends', $filename, 'public');
             }
@@ -128,15 +135,15 @@ public function store($id, $boton, $rp)
             ];
         }
 
-        // 🔹 Datos del bloque con número y orden
+        // Datos del bloque
         $data = [
             'cont' => $contenido,
             'img1' => json_encode($imagenes, JSON_UNESCAPED_UNICODE),
-            'orden' => $bloqueIndex + 1,    // orden visual
-            'bloque_num' => $bloqueIndex + 1 // número del bloque (nuevo campo)
+            'orden' => $bloqueIndex + 1,
+            'bloque_num' => $bloqueIndex + 1,
         ];
 
-        // 🔹 Relación según tipo de botón
+        // Relación según el tipo
         if ($boton == 'tit' && $this->RTitle) {
             $data['r_t_id'] = $this->RTitle->id;
         } elseif ($boton == 'sub' && $this->RSubtitle) {
@@ -145,14 +152,51 @@ public function store($id, $boton, $rp)
             $data['r_t_s_s_id'] = $this->RSection->id;
         }
 
-        // ✅ Guardar bloque
-        Content::create($data);
+        // Guardar bloque
+        $content = Content::create($data);
+
+        // 🔹 Solo si es el primer bloque, lo guardamos para usarlo en las cotizaciones
+        if ($bloqueIndex === 0) {
+            $primerContent = $content;
+        }
     }
 
-        session()->flash('cont', 'Se agrego contenido de Titulo con exito.');
-        $this->redirectRoute('my_reports.addcontenido', ['id' => $report->id], navigate: true);
+    // =======================================================
+    // 🔹 2️⃣ Guardar las cotizaciones SOLO UNA VEZ
+    // =======================================================
+    if ($primerContent) {
+        // Eliminar cotizaciones anteriores para ese Content
+        EmpresaCotizacion::where('content_id', $primerContent->id)->delete();
 
+            foreach ($this->empresas as $eIndex => $empresa) {
+                $empresaModel = EmpresaCotizacion::create([
+                    'content_id' => $primerContent->id,
+                    'nombre' => $empresa['nombre'],
+                    'color' => $empresa['color'],
+                    'orden' => $eIndex + 1, // ✅ guardar orden
+                ]);
+
+            // Crear filas (detalles)
+            foreach ($empresa['items'] as $iIndex => $item) {
+                DetalleCotizacion::create([
+                    'empresa_id' => $empresaModel->id,
+                    'concepto' => $item['concepto'],
+                    'cantidad' => $item['cantidad'],
+                    'costo' => $item['costo'],
+                    'comentarios' => $item['comentarios'],
+                    'orden' => $iIndex + 1, // ✅ guardar orden dentro de la empresa
+                ]);
+            }
+        }
+    }
+
+    // =======================================================
+    // 🔹 3️⃣ Finalizar
+    // =======================================================
+    session()->flash('cont', 'Se agregó el contenido y las cotizaciones correctamente.');
+    $this->redirectRoute('my_reports.addcontenido', ['id' => $report->id], navigate: true);
 }
+
 
     public function agregarEmpresa()
     {
