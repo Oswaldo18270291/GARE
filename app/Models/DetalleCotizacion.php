@@ -14,6 +14,6 @@ class DetalleCotizacion extends Model
 
     public function empresa()
     {
-        return $this->belongsTo(EmpresaCotizacion::class);
+        return $this->belongsTo(EmpresaCotizacion::class, 'empresa_id');
     }
 }

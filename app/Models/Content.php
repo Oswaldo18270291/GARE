@@ -44,9 +44,9 @@ class Content extends Model
     {
         return $this->hasMany(AccionSeguridad::class, 'content_id');
     }
-            public function empresas()
+            public function cotizaciones()
     {
-        return $this->hasMany(EmpresaCotizacion::class, 'content_id');
+        return $this->hasMany(EmpresaCotizacion::class, 'content_id')->orderBy('orden');
     }
 
 }
