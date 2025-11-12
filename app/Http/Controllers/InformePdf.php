@@ -66,7 +66,16 @@ class InformePdf extends Controller
             ->get();
 
             foreach ($title->subtitles as $subtitle) {
-                $subtitle->content = Content::where('r_t_s_id', $subtitle->id)->get();
+                $subtitle->content = Content::with(['accionSeguridad' => function ($q) {
+                    $q->orderBy('no');
+                }])
+                ->where('r_t_s_id', $subtitle->id)
+                ->get();
+
+                foreach ($subtitle->content as $cont) {
+                    $cont->accionSeguridad = $cont->accionSeguridad->groupBy('tit');
+                }
+
                 $subtitle->sections = ReportTitleSubtitleSection::with('section')
                 ->join('sections', 'report_title_subtitle_sections.section_id','=','sections.id')
                 ->select('sections.*','report_title_subtitle_sections.*')
