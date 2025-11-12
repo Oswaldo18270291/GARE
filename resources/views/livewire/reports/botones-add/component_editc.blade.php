@@ -1,106 +1,41 @@
 <div>
     <!-- Bloque Quill -->
     <div 
-      x-data 
-      wire:ignore
-      x-init="
-          const init = () => {
-              if (typeof Quill === 'undefined') { return setTimeout(init, 150); }
+        x-data 
+        wire:ignore
+        x-init="
+            const init = () => {
+                if (typeof Quill === 'undefined') { 
+                    return setTimeout(init, 150); 
+                }
 
-              const quill = new Quill($refs.editorTit, {
-                  theme: 'snow',
-                  modules: {
-                      toolbar: {
-                          container: [
-                              [{ header: [1, 2, false] }],
-                              ['bold', 'italic', 'underline'],
-                              [{ 'align': [] }],
-                              [{ list: 'ordered' }, { list: 'bullet' }],
-                              ['clean']
-                          ]
-                      }
-                  }
-              });
-              quill.root.innerHTML = @js($contenido ?? '');
+                const quill = new Quill($refs.editorTit, {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: {
+                            container: [
+                                [{ header: [1, 2, false] }],
+                                ['bold', 'italic', 'underline'],
+                                [{ 'align': [] }],
+                                [{ list: 'ordered' }, { list: 'bullet' }],
+                                [{ script: 'sub' }, { script: 'super' }],
+                                ['clean']
+                            ]
+                        }
+                    }
+                });
 
-              const toolbar = quill.getModule('toolbar').container;
-              const editor  = quill.root;
+                quill.root.innerHTML = @js($contenido ?? '');
 
-              // --- Botón 'a.' (lista alfabética)
-              const alphaButton = document.createElement('button');
-              alphaButton.innerHTML = `
-                  <svg viewBox='0 0 18 18'>
-                    <text x='4' y='14' font-size='13' font-family='Arial'>a.</text>
-                  </svg>`;
-              alphaButton.type = 'button';
-              alphaButton.classList.add('ql-alpha');
-              alphaButton.title = 'Lista alfabética';
-
-              const orderedBtn = toolbar.querySelector('.ql-list[value=ordered]');
-              orderedBtn?.insertAdjacentElement('afterend', alphaButton);
-
-              // Al hacer clic en 'a.' -> forzar alfabética
-              alphaButton.addEventListener('click', () => {
-                  const range = quill.getSelection();
-                  if (!range) return;
-
-                  const fmt = quill.getFormat(range);
-                  // si no es alfabética, convertir a ordenada y activar alpha-list
-                  if (!fmt.list || editor.classList.contains('alpha-list') === false) {
-                      quill.format('list', 'ordered');
-                      editor.classList.add('alpha-list');
-                      alphaButton.classList.add('ql-active');
-                  } else {
-                      // si ya está con alpha-list, quitar la lista
-                      quill.format('list', false);
-                      editor.classList.remove('alpha-list');
-                      alphaButton.classList.remove('ql-active');
-                  }
-              });
-
-              // Al hacer clic en el botón numerado -> quitar alpha-list
-              orderedBtn?.addEventListener('click', () => {
-                  // Deja que Quill aplique/toggle la lista ordenada…
-                  // y nosotros limpiamos la clase para volver a números
-                  editor.classList.remove('alpha-list');
-                  alphaButton.classList.remove('ql-active');
-              });
-
-              // También si cambia el formato y queda 'ordered', limpiamos alpha-list
-              quill.on('editor-change', () => {
-                  const range = quill.getSelection();
-                  if (!range) return;
-                  const fmt = quill.getFormat(range);
-                  if (fmt.list === 'ordered') {
-                      editor.classList.remove('alpha-list');
-                      alphaButton.classList.remove('ql-active');
-                  }
-              });
-
-              // CSS: números por defecto, letras cuando alpha-list está activo
-              const style = document.createElement('style');
-              style.innerHTML = `
-                .ql-toolbar button.ql-alpha svg { width: 18px; height: 18px; }
-                /* numeración normal (decimal) por defecto */
-                .ql-editor ol > li::before { content: counter(list-0, decimal) '. '; }
-                /* alfabético cuando está activa la clase */
-                .ql-editor.alpha-list ol > li::before { content: counter(list-0, lower-alpha) '. '; }
-                .ql-editor.alpha-list ol ol > li::before { content: counter(list-1, lower-alpha) '. '; }
-                .ql-editor.alpha-list ol ol ol > li::before { content: counter(list-2, lower-alpha) '. '; }
-                .ql-editor.alpha-list ol ol ol ol > li::before { content: counter(list-3, lower-alpha) '. '; }
-                .ql-editor.alpha-list ol ol ol ol ol > li::before { content: counter(list-4, lower-alpha) '. '; }
-              `;
-              document.head.appendChild(style);
-
-              // Sincroniza con Livewire
-              quill.on('text-change', () => {
-                  $refs.textareaTit.value = quill.root.innerHTML;
-                  $refs.textareaTit.dispatchEvent(new Event('input'));
-              });
-          };
-          init();
-      "
-  >
+                quill.on('text-change', () => {
+                    const html = quill.root.innerHTML;
+                    $refs.textareaTit.value = html;
+                    $refs.textareaTit.dispatchEvent(new Event('input'));
+                });
+            };
+            init();
+        "
+    >
       <div x-ref="editorTit" style="height:200px; background:white;"></div>
       <textarea x-ref="textareaTit" wire:model="contenido" class="hidden"></textarea>
   </div>
@@ -1713,105 +1648,40 @@ if (window.Livewire) {
         </td>
         <td class="border p-2 align-top">
             <div 
-        x-data 
-        wire:ignore
-        x-init="
-            const init = () => {
-                if (typeof Quill === 'undefined') { return setTimeout(init, 150); }
-
-                const quill = new Quill($refs.editorTit, {
-                    theme: 'snow',
-                    modules: {
-                        toolbar: {
-                            container: [
-                                [{ header: [1, 2, false] }],
-                                ['bold', 'italic', 'underline'],
-                                [{ 'align': [] }],
-                                [{ list: 'ordered' }, { list: 'bullet' }],
-                                ['clean']
-                            ]
+                x-data 
+                wire:ignore
+                x-init="
+                    const init = () => {
+                        if (typeof Quill === 'undefined') { 
+                            return setTimeout(init, 150); 
                         }
-                    }
-                });
-                quill.root.innerHTML = @js($contenido_m_p_a ?? '');
-                const toolbar = quill.getModule('toolbar').container;
-                const editor  = quill.root;
 
-                // --- Botón 'a.' (lista alfabética)
-                const alphaButton = document.createElement('button');
-                alphaButton.innerHTML = `
-                    <svg viewBox='0 0 18 18'>
-                      <text x='4' y='14' font-size='13' font-family='Arial'>a.</text>
-                    </svg>`;
-                alphaButton.type = 'button';
-                alphaButton.classList.add('ql-alpha');
-                alphaButton.title = 'Lista alfabética';
+                        const quill = new Quill($refs.editorTit, {
+                            theme: 'snow',
+                            modules: {
+                                toolbar: {
+                                    container: [
+                                        [{ header: [1, 2, false] }],
+                                        ['bold', 'italic', 'underline'],
+                                        [{ 'align': [] }],
+                                        [{ list: 'ordered' }, { list: 'bullet' }],
+                                        ['clean']
+                                    ]
+                                }
+                            }
+                        });
 
-                const orderedBtn = toolbar.querySelector('.ql-list[value=ordered]');
-                orderedBtn?.insertAdjacentElement('afterend', alphaButton);
+                        quill.root.innerHTML = @js($contenido ?? '');
 
-                // Al hacer clic en 'a.' -> forzar alfabética
-                alphaButton.addEventListener('click', () => {
-                    const range = quill.getSelection();
-                    if (!range) return;
-
-                    const fmt = quill.getFormat(range);
-                    // si no es alfabética, convertir a ordenada y activar alpha-list
-                    if (!fmt.list || editor.classList.contains('alpha-list') === false) {
-                        quill.format('list', 'ordered');
-                        editor.classList.add('alpha-list');
-                        alphaButton.classList.add('ql-active');
-                    } else {
-                        // si ya está con alpha-list, quitar la lista
-                        quill.format('list', false);
-                        editor.classList.remove('alpha-list');
-                        alphaButton.classList.remove('ql-active');
-                    }
-                });
-
-                // Al hacer clic en el botón numerado -> quitar alpha-list
-                orderedBtn?.addEventListener('click', () => {
-                    // Deja que Quill aplique/toggle la lista ordenada…
-                    // y nosotros limpiamos la clase para volver a números
-                    editor.classList.remove('alpha-list');
-                    alphaButton.classList.remove('ql-active');
-                });
-
-                // También si cambia el formato y queda 'ordered', limpiamos alpha-list
-                quill.on('editor-change', () => {
-                    const range = quill.getSelection();
-                    if (!range) return;
-                    const fmt = quill.getFormat(range);
-                    if (fmt.list === 'ordered') {
-                        editor.classList.remove('alpha-list');
-                        alphaButton.classList.remove('ql-active');
-                    }
-                });
-
-                // CSS: números por defecto, letras cuando alpha-list está activo
-                const style = document.createElement('style');
-                style.innerHTML = `
-                  .ql-toolbar button.ql-alpha svg { width: 18px; height: 18px; }
-                  /* numeración normal (decimal) por defecto */
-                  .ql-editor ol > li::before { content: counter(list-0, decimal) '. '; }
-                  /* alfabético cuando está activa la clase */
-                  .ql-editor.alpha-list ol > li::before { content: counter(list-0, lower-alpha) '. '; }
-                  .ql-editor.alpha-list ol ol > li::before { content: counter(list-1, lower-alpha) '. '; }
-                  .ql-editor.alpha-list ol ol ol > li::before { content: counter(list-2, lower-alpha) '. '; }
-                  .ql-editor.alpha-list ol ol ol ol > li::before { content: counter(list-3, lower-alpha) '. '; }
-                  .ql-editor.alpha-list ol ol ol ol ol > li::before { content: counter(list-4, lower-alpha) '. '; }
-                `;
-                document.head.appendChild(style);
-
-                // Sincroniza con Livewire
-                quill.on('text-change', () => {
-                    $refs.textareaTit.value = quill.root.innerHTML;
-                    $refs.textareaTit.dispatchEvent(new Event('input'));
-                });
-            };
-            init();
-        "
-    >
+                        quill.on('text-change', () => {
+                            const html = quill.root.innerHTML;
+                            $refs.textareaTit.value = html;
+                            $refs.textareaTit.dispatchEvent(new Event('input'));
+                        });
+                    };
+                    init();
+                "
+            >
         <div x-ref="editorTit" style="height:200px; background:white;"></div>
         <textarea x-ref="textareaTit" wire:model="contenido_m_p_a" class="hidden"></textarea>
     </div>
@@ -1827,7 +1697,9 @@ if (window.Livewire) {
             wire:ignore
             x-init="
                 const init = () => {
-                    if (typeof Quill === 'undefined') { return setTimeout(init, 150); }
+                    if (typeof Quill === 'undefined') { 
+                        return setTimeout(init, 150); 
+                    }
 
                     const quill = new Quill($refs.editorTit, {
                         theme: 'snow',
@@ -1843,79 +1715,12 @@ if (window.Livewire) {
                             }
                         }
                     });
-                    quill.root.innerHTML = @js($contenido_a_p ?? '');
-                    const toolbar = quill.getModule('toolbar').container;
-                    const editor  = quill.root;
 
-                    // --- Botón 'a.' (lista alfabética)
-                    const alphaButton = document.createElement('button');
-                    alphaButton.innerHTML = `
-                        <svg viewBox='0 0 18 18'>
-                          <text x='4' y='14' font-size='13' font-family='Arial'>a.</text>
-                        </svg>`;
-                    alphaButton.type = 'button';
-                    alphaButton.classList.add('ql-alpha');
-                    alphaButton.title = 'Lista alfabética';
+                    quill.root.innerHTML = @js($contenido ?? '');
 
-                    const orderedBtn = toolbar.querySelector('.ql-list[value=ordered]');
-                    orderedBtn?.insertAdjacentElement('afterend', alphaButton);
-
-                    // Al hacer clic en 'a.' -> forzar alfabética
-                    alphaButton.addEventListener('click', () => {
-                        const range = quill.getSelection();
-                        if (!range) return;
-
-                        const fmt = quill.getFormat(range);
-                        // si no es alfabética, convertir a ordenada y activar alpha-list
-                        if (!fmt.list || editor.classList.contains('alpha-list') === false) {
-                            quill.format('list', 'ordered');
-                            editor.classList.add('alpha-list');
-                            alphaButton.classList.add('ql-active');
-                        } else {
-                            // si ya está con alpha-list, quitar la lista
-                            quill.format('list', false);
-                            editor.classList.remove('alpha-list');
-                            alphaButton.classList.remove('ql-active');
-                        }
-                    });
-
-                    // Al hacer clic en el botón numerado -> quitar alpha-list
-                    orderedBtn?.addEventListener('click', () => {
-                        // Deja que Quill aplique/toggle la lista ordenada…
-                        // y nosotros limpiamos la clase para volver a números
-                        editor.classList.remove('alpha-list');
-                        alphaButton.classList.remove('ql-active');
-                    });
-
-                    // También si cambia el formato y queda 'ordered', limpiamos alpha-list
-                    quill.on('editor-change', () => {
-                        const range = quill.getSelection();
-                        if (!range) return;
-                        const fmt = quill.getFormat(range);
-                        if (fmt.list === 'ordered') {
-                            editor.classList.remove('alpha-list');
-                            alphaButton.classList.remove('ql-active');
-                        }
-                    });
-
-                    // CSS: números por defecto, letras cuando alpha-list está activo
-                    const style = document.createElement('style');
-                    style.innerHTML = `
-                      .ql-toolbar button.ql-alpha svg { width: 18px; height: 18px; }
-                      /* numeración normal (decimal) por defecto */
-                      .ql-editor ol > li::before { content: counter(list-0, decimal) '. '; }
-                      /* alfabético cuando está activa la clase */
-                      .ql-editor.alpha-list ol > li::before { content: counter(list-0, lower-alpha) '. '; }
-                      .ql-editor.alpha-list ol ol > li::before { content: counter(list-1, lower-alpha) '. '; }
-                      .ql-editor.alpha-list ol ol ol > li::before { content: counter(list-2, lower-alpha) '. '; }
-                      .ql-editor.alpha-list ol ol ol ol > li::before { content: counter(list-3, lower-alpha) '. '; }
-                      .ql-editor.alpha-list ol ol ol ol ol > li::before { content: counter(list-4, lower-alpha) '. '; }
-                    `;
-                    document.head.appendChild(style);
-
-                    // Sincroniza con Livewire
                     quill.on('text-change', () => {
-                        $refs.textareaTit.value = quill.root.innerHTML;
+                        const html = quill.root.innerHTML;
+                        $refs.textareaTit.value = html;
                         $refs.textareaTit.dispatchEvent(new Event('input'));
                     });
                 };

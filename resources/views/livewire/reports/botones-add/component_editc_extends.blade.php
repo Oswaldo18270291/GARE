@@ -103,6 +103,7 @@
                                     ['bold', 'italic', 'underline'],
                                     [{ 'align': [] }],
                                     [{ list: 'ordered' }, { list: 'bullet' }],
+                                    [{ script: 'sub' }, { script: 'super' }],
                                     ['clean']
                                 ]
                             }
