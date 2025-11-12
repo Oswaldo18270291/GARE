@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 
 class Editc extends Component
 {
+    public $contentId; 
     use WithFileUploads;
     public $RTitle;
     public $RSubtitle;
@@ -236,6 +237,7 @@ class Editc extends Component
             
 
         } 
+            $this->contentId = $this->content->id; // 👈 aquí lo asignas
             $this->contenido =  $this->content->cont;
             $this->referencias = $this->content->referencias->map(fn($r) => [
                 'num' => $r->numero,
@@ -467,19 +469,27 @@ public function updateRiesgosEvaluacion($contentId)
         }
         // Ahora actualiza el modelo
         $this->content->update($data);
-        if (!empty($this->referencias)) {
-            ContentReference::where('content_id', $this->content->id)->delete();
-
+        // ✅ Actualizar referencias solo si hay cambios reales
+        if (!empty($this->referenciasNuevas)) {
             foreach ($this->referenciasNuevas as $ref) {
-                ContentReference::create([
-                    'content_id' => $this->content->id,
-                    'numero' => $ref['num'],
-                    'texto' => $ref['texto'],
-                ]);
-            }
-                $this->referenciasNuevas = [];
+                // Verifica que no exista ya antes de crear
+                $existe = ContentReference::where('content_id', $this->content->id)
+                    ->where('numero', $ref['num'])
+                    ->exists();
 
+                if (! $existe) {
+                    ContentReference::create([
+                        'content_id' => $this->content->id,
+                        'numero'     => $ref['num'],
+                        'texto'      => $ref['texto'],
+                    ]);
+                }
+            }
+
+            // Limpia las temporales
+            $this->referenciasNuevas = [];
         }
+
         session()->flash('cont', '✅ Contenido actualizado correctamente.');
         return redirect()->route('my_reports.addcontenido', ['id' =>$rp]);
     }
@@ -1112,6 +1122,86 @@ private function renumerarHtmlConMapa(string $html, array $map): string
 
     return $nuevo ?? $html;
 }
+public function insertarReferenciaIntermedia(int $reportId, int $contentId, string $texto = '')
+{
+    $contenidoActual = \App\Models\Content::find($contentId);
+    if (!$contenidoActual) {
+        throw new \Exception("Contenido no encontrado.");
+    }
+
+    // 🔹 Obtener todos los contenidos del reporte en orden
+    $contenidos = \App\Models\Content::query()
+        ->whereHas('reportTitle', fn($r) => $r->where('report_id', $reportId))
+        ->orWhereHas('reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId))
+        ->orWhereHas('reportTitleSubtitleSection.reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId))
+        ->orderBy('id')
+        ->get();
+
+    $orden = $contenidos->pluck('id')->search($contentId);
+    if ($orden === false) {
+        throw new \Exception("El contenido no pertenece al reporte.");
+    }
+
+    // 🔹 Determinar el último número dentro de este contenido
+    $maxLocal = \App\Models\ContentReference::where('content_id', $contentId)->max('numero') ?? 0;
+    $nuevoNum = $maxLocal + 1;
+
+    // 🔹 Recorre todas las referencias posteriores (+1)
+    $refsPosteriores = \App\Models\ContentReference::query()
+        ->whereHas('content', function ($q) use ($contenidos, $orden) {
+            $q->whereIn('id', $contenidos->slice($orden + 1)->pluck('id'));
+        })
+        ->orderBy('numero', 'desc')
+        ->get();
+
+    foreach ($refsPosteriores as $r) {
+        $r->numero = $r->numero + 1;
+        $r->save();
+    }
+
+    // 🔹 Actualiza los contenidos posteriores
+    $this->incrementarSupEnContenidos($contenidos->slice($orden + 1), $nuevoNum);
+
+    // ✅ Crear la nueva referencia en BD directamente
+    if ($texto !== '') {
+        \App\Models\ContentReference::create([
+            'content_id' => $contentId,
+            'numero'     => $nuevoNum,
+            'texto'      => $texto,
+        ]);
+    }
+
+    return $nuevoNum;
+}
+
+/**
+ * 🔁 Incrementa en +1 los números de <sup>[n]</sup> >= $desde en una colección de contenidos
+ */
+private function incrementarSupEnContenidos($contenidos, int $desde)
+{
+    foreach ($contenidos as $c) {
+        if (! str_contains($c->cont ?? '', '<sup')) continue;
+
+        $nuevo = preg_replace_callback(
+            '/<sup[^>]*>\s*\[(\d+)\]\s*<\/sup>/i',
+            function ($m) use ($desde) {
+                $num = (int)$m[1];
+                if ($num >= $desde) {
+                    $nuevoNum = $num + 1;
+                    return str_replace('['.$num.']', '['.$nuevoNum.']', $m[0]);
+                }
+                return $m[0];
+            },
+            $c->cont
+        );
+
+        if ($nuevo !== $c->cont) {
+            $c->cont = $nuevo;
+            $c->save();
+        }
+    }
+}
+
 
 
 

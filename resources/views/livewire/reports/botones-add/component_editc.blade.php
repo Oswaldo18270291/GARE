@@ -7,6 +7,7 @@
         const init = async () => {
             if (typeof Quill === 'undefined') return setTimeout(init, 150);
 
+            // 🟢 Inicializa el editor
             const quill = new Quill($refs.editorTit, {
                 theme: 'snow',
                 modules: {
@@ -26,42 +27,45 @@
             quill.root.innerHTML = @js($contenido ?? '');
 
             const reporteId = {{ $rp }};
+            const contenidoId = {{ $contentId ?? 0 }};
             window.referenciasActuales = @js($referencias ?? []);
-            let ultimoNumero = await $wire.call('getNextReferenceNumber', reporteId) - 1;
 
             const toolbar = quill.getModule('toolbar').container;
             const refGroup = document.createElement('span');
             refGroup.classList.add('ql-formats');
 
-            /* =====================
+            /* ===========================
                🔖 AGREGAR REFERENCIA
-            ===================== */
+            ============================ */
             const addRefBtn = document.createElement('button');
             addRefBtn.type = 'button';
             addRefBtn.title = 'Agregar referencia';
             addRefBtn.innerHTML = '🔖';
             addRefBtn.onclick = async (e) => {
                 e.preventDefault();
+
                 const texto = prompt('Introduce la referencia o URL:');
                 if (!texto) return;
 
-                ultimoNumero = await $wire.call('getNextReferenceNumber', reporteId);
-                const num = ultimoNumero;
+                // 🚀 Nuevo número de referencia (intermedia si aplica)
+                const num = await $wire.call('insertarReferenciaIntermedia', reporteId, contenidoId, texto);
 
-                const refHtml = `<span class='ref' data-num='${num}' style='color:#0f4a75; cursor:pointer;'><sup>[${num}]</sup></span>`;
+                // Insertar visualmente
+                const refHtml = `<sup style='color:#0f4a75; cursor:pointer;'>[${num}]</sup>`;
                 const range = quill.getSelection(true);
                 quill.clipboard.dangerouslyPasteHTML(range.index, refHtml);
 
+                // Agregar al array local
                 window.referenciasActuales.push({ num, texto });
                 await $wire.set('referencias', window.referenciasActuales);
-                await $wire.set('referenciasNuevas', [{ num, texto }]);
-                alert('Referencia agregada ✅');
+
+                alert(`Referencia [${num}] agregada ✅`);
             };
             refGroup.appendChild(addRefBtn);
 
-            /* =====================
+            /* ===========================
                ✏️ EDITAR REFERENCIA
-            ===================== */
+            ============================ */
             const editBtn = document.createElement('button');
             editBtn.type = 'button';
             editBtn.title = 'Editar referencia';
@@ -72,9 +76,9 @@
             };
             refGroup.appendChild(editBtn);
 
-            /* =====================
+            /* ===========================
                🗑️ ELIMINAR REFERENCIA
-            ===================== */
+            ============================ */
             const deleteBtn = document.createElement('button');
             deleteBtn.type = 'button';
             deleteBtn.title = 'Eliminar referencia';
@@ -87,9 +91,9 @@
 
             toolbar.appendChild(refGroup);
 
-            /* =====================
+            /* ===========================
                🪟 MODAL FLOTANTE
-            ===================== */
+            ============================ */
             const modal = document.createElement('div');
             modal.id = 'refModal';
             modal.classList.add('hidden');
@@ -124,7 +128,9 @@
                 const select = document.createElement('select');
                 select.id = 'refSelect';
                 select.style.cssText = 'width:100%; margin-top:10px; padding:6px; border:1px solid #ccc; border-radius:5px;';
-                select.innerHTML = window.referenciasActuales.map(r => `<option value='${r.num}'>[${r.num}] ${r.texto}</option>`).join('');
+                select.innerHTML = window.referenciasActuales
+                    .map(r => `<option value='${r.num}'>[${r.num}] ${r.texto}</option>`)
+                    .join('');
                 modal.appendChild(select);
 
                 if (accion === 'editar') {
@@ -174,36 +180,35 @@
                         return;
                     }
 
-                    // 🔥 ELIMINAR + RENOMBRAR GLOBAL EN BD
+                    // 🧹 ELIMINAR + RENOMBRAR GLOBAL
                     const result = await $wire.call('eliminarYRenumerarReferencia', reporteId, parseInt(num,10));
                     const map = result.map || {};
                     const nuevasRefs = result.referencias || [];
 
-                    // 1️⃣ Actualiza los spans del editor actual
-                    Array.from(quill.root.querySelectorAll('.ref')).forEach((span) => {
-                        const oldNum = parseInt(span.dataset.num, 10);
+                    // Actualiza los sup dentro del editor actual
+                    Array.from(quill.root.querySelectorAll('sup')).forEach((sup) => {
+                        const match = sup.innerText.match(/\[(\d+)\]/);
+                        if (!match) return;
+                        const oldNum = parseInt(match[1], 10);
                         if (!(oldNum in map)) return;
                         const newNum = map[oldNum];
                         if (newNum === null) {
-                            span.remove();
+                            sup.remove();
                         } else {
-                            span.dataset.num = newNum;
-                            const sup = span.querySelector('sup');
-                            if (sup) sup.innerText = `[${newNum}]`;
+                            sup.innerText = `[${newNum}]`;
                         }
                     });
 
-                    // 2️⃣ Actualiza arreglo local + Livewire
+                    // Actualiza Livewire
                     window.referenciasActuales = nuevasRefs;
                     await $wire.set('referencias', window.referenciasActuales);
-                    await $wire.set('referenciasNuevas', []);
 
-                    alert('Referencia eliminada y renumerada en TODO el reporte ✅');
+                    alert('Referencia eliminada y renumerada globalmente ✅');
                     modal.classList.add('hidden');
                 };
             };
 
-            // 🔄 Sincronizar contenido del Quill con Livewire
+            // 🔄 Sincroniza contenido con Livewire
             quill.on('text-change', () => {
                 const html = quill.root.innerHTML;
                 $refs.textareaTit.value = html;
@@ -216,6 +221,7 @@
     <div x-ref="editorTit" style="height:220px; background:white;"></div>
     <textarea x-ref="textareaTit" wire:model="contenido" class="hidden"></textarea>
 </div>
+
 
 
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
