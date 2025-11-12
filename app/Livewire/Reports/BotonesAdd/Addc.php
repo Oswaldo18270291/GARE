@@ -10,6 +10,7 @@ use App\Models\AnalysisDiagram;
 use App\Models\Subtitle;
 use App\Models\Report;
 use App\Models\Content;
+use App\Models\ContentReference;
 use App\Models\Foda;
 use App\Models\ReportTitle;
 use App\Models\ReportTitleSubtitle;
@@ -21,7 +22,7 @@ use Livewire\Attributes\On;
 class Addc extends Component
 {
     use WithFileUploads;
-
+    public $referencias = [];
     public $RTitle;
     public $RSubtitle;
     public $RSection;
@@ -255,8 +256,8 @@ class Addc extends Component
                 'leyenda3' => $this->leyenda3,
             ]);
 
+
             session()->flash('cont', 'Se agrego contenido de Titulo con exito.');
-            $this->redirectRoute('my_reports.addcontenido', ['id' => $id], navigate: true);
 
         } elseif ($boton == 'sub') {
         $nl = ReportTitleSubtitle::findOrFail($id_);
@@ -300,6 +301,8 @@ class Addc extends Component
 
             // Finalmente crea el contenido
             $content = Content::create($data);
+            // 🔹 Guardar referencias asociadas al contenido
+
             if ($name == 14) {
             $rows = [];
             $now = now();
@@ -411,7 +414,6 @@ class Addc extends Component
                     }
             }
             session()->flash('cont', 'Se agrego contenido de Subtitulo con exito.');
-            $this->redirectRoute('my_reports.addcontenido', ['id' => $id], navigate: true);
 
         } elseif ($boton == 'sec') {
             $content =Content::create([
@@ -426,8 +428,43 @@ class Addc extends Component
             ]);
 
             session()->flash('cont', 'Se agrego contenido de Sección con exito.');
-            $this->redirectRoute('my_reports.addcontenido', ['id' => $id], navigate: true);
         }
+            if (!empty($this->referencias)) {
+            // 1️⃣ Eliminar referencias previas SOLO de este contenido
+            ContentReference::where('content_id', $content->id)->delete();
+
+            // 2️⃣ Obtener el siguiente número global real
+            $nextNum = ContentReference::nextNumberForReport($this->rep->id);
+
+            // 3️⃣ Insertar nuevas referencias evitando duplicados de texto
+            foreach ($this->referencias as $ref) {
+                $texto = trim($ref['texto'] ?? '');
+                if ($texto === '') continue;
+
+                // Si ya existe la misma referencia (mismo texto) en el mismo reporte, sáltala
+                $existe = ContentReference::where('texto', $texto)
+                    ->whereHas('content', function ($q) {
+                        $q->whereHas('reportTitle', fn($r) => $r->where('report_id', $this->rep->id))
+                        ->orWhereHas('reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $this->rep->id))
+                        ->orWhereHas('reportTitleSubtitleSection.reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $this->rep->id));
+                    })
+                    ->exists();
+
+                if (!$existe) {
+                    ContentReference::create([
+                        'content_id' => $content->id,
+                        'numero'     => $nextNum,
+                        'texto'      => $texto,
+                    ]);
+                    $nextNum++;
+                }
+            }
+        }
+
+
+        $this->redirectRoute('my_reports.addcontenido', ['id' => $id], navigate: true);
+
+
     }
 
     #[On('guardarOrden')]
@@ -806,7 +843,10 @@ $this->dispatch('actualizarGrafica', [
     }
 
     
-
+    public function getNextReferenceNumber($reportId)
+    {
+        return \App\Models\ContentReference::nextNumberForReport($reportId);
+    }
 
     public function render()
     {

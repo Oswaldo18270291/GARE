@@ -1,44 +1,96 @@
 <div>    
     <!-- Bloque Quill -->
-    <div 
-        x-data 
-        wire:ignore
-        x-init="
-            const init = () => {
-                if (typeof Quill === 'undefined') { 
-                    return setTimeout(init, 150); 
-                }
+<div 
+    x-data 
+    wire:ignore
+    x-init="
+        const init = async () => {
+            if (typeof Quill === 'undefined') return setTimeout(init, 150);
 
-                const quill = new Quill($refs.editorTit, {
-                    theme: 'snow',
-                    modules: {
-                        toolbar: {
-                            container: [
-                                [{ header: [1, 2, false] }],
-                                ['bold', 'italic', 'underline'],
-                                [{ 'align': [] }],
-                                [{ list: 'ordered' }, { list: 'bullet' }],
-                                [{ script: 'sub' }, { script: 'super' }],
-                                ['clean']
-                            ]
-                        }
+            const quill = new Quill($refs.editorTit, {
+                theme: 'snow',
+                modules: {
+                    toolbar: {
+                        container: [
+                            [{ header: [1, 2, false] }],
+                            ['bold', 'italic', 'underline'],
+                            [{ 'align': [] }],
+                            [{ list: 'ordered' }, { list: 'bullet' }],
+                            [{ script: 'sub' }, { script: 'super' }],
+                            ['clean']
+                        ]
                     }
-                });
+                }
+            });
 
-                quill.root.innerHTML = @js($contenido ?? '');
+            // 🔹 Cargar contenido previo (si existe)
+            quill.root.innerHTML = @js($contenido ?? '');
 
-                quill.on('text-change', () => {
-                    const html = quill.root.innerHTML;
-                    $refs.textareaTit.value = html;
-                    $refs.textareaTit.dispatchEvent(new Event('input'));
-                });
+            // 🔹 Variables base
+            const reporteId = {{ $rp }};
+            const contenidoId = '{{ $contentId ?? 'nuevo' }}';
+
+            // 🔹 Estructuras globales
+            window.referenciasPorReporte = window.referenciasPorReporte || {};
+            window.referenciasPorReporte[reporteId] = window.referenciasPorReporte[reporteId] || {};
+            window.referenciasPorReporte[reporteId][contenidoId] = window.referenciasPorReporte[reporteId][contenidoId] || [];
+
+            // 🔹 Inicializar contador local por reporte
+            window.ultimoNumeroReferencia = window.ultimoNumeroReferencia || {};
+            if (!window.ultimoNumeroReferencia[reporteId]) {
+                // Pide al backend el siguiente número global real solo una vez
+                window.ultimoNumeroReferencia[reporteId] = await $wire.call('getNextReferenceNumber', reporteId) - 1;
+            }
+
+            // 🔹 Crear botón Ref
+            const toolbar = quill.getModule('toolbar').container;
+            const refButton = document.createElement('button');
+            refButton.type = 'button';
+            refButton.innerHTML = 'Ref';
+            refButton.title = 'Agregar referencia';
+
+            refButton.onclick = async (event) => {
+                event.preventDefault();
+
+                const texto = prompt('Introduce la referencia o URL:');
+                if (!texto) return;
+
+                // 🔸 Incrementa contador local y usa el nuevo número
+                window.ultimoNumeroReferencia[reporteId] += 1;
+                const num = window.ultimoNumeroReferencia[reporteId];
+
+                // 🔹 Inserta el superíndice visual
+                const refHtml = `<span class='ref' data-num='${num}'><sup>[${num}]</sup></span>`;
+                const sel = quill.getSelection();
+                const index = sel ? sel.index : quill.getLength();
+                quill.clipboard.dangerouslyPasteHTML(index, refHtml);
+
+                // 🔹 Guarda la referencia en memoria local
+                window.referenciasPorReporte[reporteId][contenidoId].push({ num, texto });
+
+                // 🔹 Envía solo las referencias de este contenido a Livewire
+                const refsDeEsteContenido = window.referenciasPorReporte[reporteId][contenidoId];
+                $wire.set('referencias', refsDeEsteContenido);
             };
-            init();
-        "
-    >
+            toolbar.appendChild(refButton);
+
+            // 🔹 Sincronizar contenido con Livewire
+            quill.on('text-change', () => {
+                const html = quill.root.innerHTML;
+                $refs.textareaTit.value = html;
+                $refs.textareaTit.dispatchEvent(new Event('input'));
+            });
+        };
+        init();
+    "
+>
     <div x-ref="editorTit" style="height:200px; background:white;"></div>
     <textarea x-ref="textareaTit" wire:model="contenido" class="hidden"></textarea>
 </div>
+
+
+
+
 
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
