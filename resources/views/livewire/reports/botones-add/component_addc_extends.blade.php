@@ -1,17 +1,9 @@
 <div>
 <div class="p-4">
-    <div class="flex justify-end mb-4">
-        {{-- 🔹 Botón principal para agregar empresa --}}
-        <button type="button" wire:click="agregarEmpresa"
-            class="bg-teal-600 hover:bg-teal-800 text-white font-semibold px-4 py-2 rounded">
-            + Agregar Empresa
-        </button>
-    </div>
-
     <table class="w-full border-collapse font-sans text-sm" style="border:1px solid #001a4d;">
         <thead>
             <tr class="text-center bg-[#002060] text-white">
-                <th colspan="5" class="p-2 font-bold text-base">COTIZACIONES DE SISTEMAS TECNOLÓGICOS</th>
+                <th colspan="6" class="p-2 font-bold text-base">COTIZACIONES DE SISTEMAS TECNOLÓGICOS</th>
             </tr>
             <tr class="bg-[#002060] text-white">
                 <th class="p-2 border">EMPRESA</th>
@@ -19,6 +11,7 @@
                 <th class="p-2 border">CANT.</th>
                 <th class="p-2 border">COSTO SIN IVA</th>
                 <th class="p-2 border">COMENTARIOS</th>
+                <th class="p-2 border"></th>
             </tr>
         </thead>
 
@@ -32,7 +25,8 @@
                                 <input type="text"
                                     wire:model="empresas.{{ $eIndex }}.nombre"
                                     placeholder="Nombre de la empresa"
-                                    class="w-full text-xs border rounded p-1 mb-2">
+                                    class="w-full text-xs border rounded p-1 mb-2"
+                                    style="border-color:rgba(31, 89, 177, 1);">
 
                                 <div class="flex items-center gap-2 mb-2">
                                     <label class="text-xs">Color:</label>
@@ -40,16 +34,64 @@
                                         class="w-6 h-6 cursor-pointer">
                                 </div>
 
-                                <div class="flex flex-col gap-1">
+                                <div class="flex gap-1">
                                     {{-- ✅ botones tipo="button" para evitar submit --}}
                                     <button type="button" wire:click="agregarItem({{ $eIndex }})"
                                         class="text-xs bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded">
-                                        + Agregar Fila
+                                        <!--
+                                            tags: [table, plus, add, insert, include, data-table, table-operation, table-add, add-to-table, include-in-table]
+                                            category: Database
+                                            version: "2.13"
+                                            unicode: "fa1f"
+                                            -->
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="40"
+                                                height="40"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="#ffffffff"
+                                                stroke-width="0.7"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            >
+                                            <title>Agregar título</title>
+                                            <path d="M12.5 21h-7.5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7.5" />
+                                            <path d="M3 10h18" />
+                                            <path d="M10 3v18" />
+                                            <path d="M16 19h6" />
+                                            <path d="M19 16v6" />
+                                            </svg>
                                     </button>
 
                                     <button type="button" wire:click="eliminarEmpresa({{ $eIndex }})"
                                         class="text-xs bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded">
-                                        Eliminar Empresa
+                                        <!--
+                                            tags: [table, column, data-table, spreadsheet, table-structure, columnar, information, grid, table-columnar, dataset]
+                                            category: Database
+                                            version: "2.24"
+                                            unicode: "faff"
+                                            -->
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="40"
+                                                height="40"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="#ffffffff"
+                                                stroke-width="0.7"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            >
+                                            <title>Eliminar empresa</title>
+                                            <path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14z" />
+                                            <path d="M10 10h11" />
+                                            <path d="M10 3v18" />
+                                            <path d="M9 3l-6 6" />
+                                            <path d="M10 7l-7 7" />
+                                            <path d="M10 12l-7 7" />
+                                            <path d="M10 17l-4 4" />
+                                            </svg>
                                     </button>
                                 </div>
                             </td>
@@ -60,7 +102,8 @@
                             <input type="text"
                                 wire:model="empresas.{{ $eIndex }}.items.{{ $iIndex }}.concepto"
                                 placeholder="Concepto"
-                                class="w-full text-xs border rounded p-1">
+                                class="w-full text-xs border rounded p-1"
+                                style="border-color:rgba(31, 89, 177, 1);">
                         </td>
 
                         {{-- Cantidad --}}
@@ -68,7 +111,8 @@
                             <input type="text"
                                 wire:model="empresas.{{ $eIndex }}.items.{{ $iIndex }}.cantidad"
                                 placeholder="#"
-                                class="w-16 text-xs border rounded p-1 text-center">
+                                class="w-16 text-xs border rounded p-1 text-center"
+                                style="border-color:rgba(31, 89, 177, 1);">
                         </td>
 
                         {{-- Costo --}}
@@ -76,7 +120,8 @@
                             <input type="text"
                                 wire:model="empresas.{{ $eIndex }}.items.{{ $iIndex }}.costo"
                                 placeholder="$"
-                                class="w-32 text-xs border rounded p-1 text-center">
+                                class="w-32 text-xs border rounded p-1 text-center"
+                                style="border-color:rgba(31, 89, 177, 1);">
                         </td>
 
                         {{-- Comentarios --}}
@@ -84,11 +129,14 @@
                             <input type="text"
                                 wire:model="empresas.{{ $eIndex }}.items.{{ $iIndex }}.comentarios"
                                 placeholder="Comentarios"
-                                class="w-full text-xs border rounded p-1 text-center mb-1">
-
+                                class="w-full text-xs border rounded p-1 text-center mb-1"
+                                style="border-color:rgba(31, 89, 177, 1);">
+                        </td>
+                        {{-- Eliminar fila --}}
+                        <td style="padding: 4px;">
                             {{-- ❌ eliminar fila --}}
                             <button type="button" wire:click="eliminarItem({{ $eIndex }}, {{ $iIndex }})"
-                                class="text-xs text-red-700 font-bold hover:underline">
+                                class="text-xs bg-red-600 hover:bg-red-700 font-bold hover:underline rounded">
                                 <!--
                                     tags: [table, row, data-table, spreadsheet, table-structure, row-wise, information, grid, table-row-wise, dataset]
                                     category: Database
@@ -101,11 +149,12 @@
                                     height="40"
                                     viewBox="0 0 24 24"
                                     fill="none"
-                                    stroke="#cf0909ff"
+                                    stroke="#ffffffff"
                                     stroke-width="0.7"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                     >
+                                    <title>Eliminar fila</title>
                                     <path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14z" />
                                     <path d="M9 3l-6 6" />
                                     <path d="M14 3l-7 7" />
@@ -114,7 +163,6 @@
                                     <path d="M3 10h18" />
                                     <path d="M10 10v11" />
                                     </svg>
-
                             </button>
                         </td>
                     </tr>
@@ -128,10 +176,18 @@
             @endforelse
         </tbody>
     </table>
+    <br>
+    <div class="flex justify-end mb-4">
+        {{-- 🔹 Botón principal para agregar empresa --}}
+        <button type="button" wire:click="agregarEmpresa"
+            class="bg-teal-600 hover:bg-teal-800 text-white font-semibold px-4 py-2 rounded">
+            + Agregar Empresa
+        </button>
+    </div>
 </div>
 
     @foreach ($bloques as $i => $bloque)
-        <div class="border rounded-lg p-4 bg-white shadow space-y-4 mb-4">
+        <div class="border rounded-lg p-4 bg-white shadow space-y-4 mb-4" style="border-color: #001a4d;">
             <div class="flex justify-between items-center">
                 <h2 class="font-semibold text-blue-800">Bloque {{ $i + 1 }}</h2>
                 <button type="button" wire:click="eliminarBloque({{ $i }})"
@@ -182,7 +238,7 @@
             {{-- Imágenes --}}
             <div class="space-y-4">
                 @foreach ($bloque['imagenes'] as $j => $img)
-                    <div class="border p-3 rounded-lg bg-gray-50">
+                    <div class="border p-3 rounded-lg bg-gray-50" style="border-color: #0f4569ff;">
                         <div class="flex justify-between items-center mb-2">
                             <h3 class="font-medium text-gray-700">Imagen {{ $j + 1 }}</h3>
                             <button type="button" wire:click="eliminarImagen({{ $i }}, {{ $j }})"
@@ -192,10 +248,12 @@
                         <label class="block text-sm font-medium text-gray-700">Título</label>
                         <input type="text" wire:model="bloques.{{ $i }}.imagenes.{{ $j }}.leyenda"
                             class="mt-1 w-full border rounded px-2 py-1 text-sm"
-                            placeholder="Ingrese título de la imagen">
-
+                            placeholder="Ingrese título de la imagen" style="border-color:rgba(31, 89, 177, 1);">
+                        
                         <label class="block text-sm font-medium text-gray-700 mt-3">Archivo</label>
-                        <input type="file" wire:model="bloques.{{ $i }}.imagenes.{{ $j }}.img" accept="image/*">
+                        <input type="file" wire:model="bloques.{{ $i }}.imagenes.{{ $j }}.img" accept="image/*"
+                            class="text-gray-500 border rounded p-1 cursor-pointer w-full text-sm"
+                            style="border-color:rgba(31, 89, 177, 1);">
 
                         @if ($img['img'])
                             <img src="{{ $img['img']->temporaryUrl() }}" class="w-32 h-32 object-cover rounded mt-2 border">
@@ -213,15 +271,15 @@
 
     {{-- Botón agregar bloque --}}
     <button type="button" wire:click="agregarBloque"
-        class="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800 mb-4">
+        class="px-4 py-2 text-white rounded bg-teal-600 hover:bg-teal-800 mb-4 ml-auto block">
         + Agregar bloque
     </button>
 
     {{-- Botón guardar --}}
-    <div class="text-center pt-4">
+    <div class="text-left pt-4">
         <button type="button" wire:click="store('{{ $RTitle->id ?? $RSubtitle->id ?? $RSection->id }}', '{{ $boton }}', '{{ $rp }}')"
-            class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-            💾 Guardar todo
+            class="px-6 py-2 bg-success border border-success text-white rounded hover:opacity-75">
+                Guardar
         </button>
     </div>
 
