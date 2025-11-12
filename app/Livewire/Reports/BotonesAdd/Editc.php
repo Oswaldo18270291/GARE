@@ -944,7 +944,7 @@ public function eliminarYRenumerarReferencia(int $reportId, int $numero)
 
     DB::transaction(function () use ($reportId, $numero, &$map, &$refEliminada) {
 
-        // 1) Eliminar la referencia con ese número global en el reporte
+        // 1️⃣ Eliminar la referencia específica
         $ref = \App\Models\ContentReference::query()
             ->where('numero', $numero)
             ->whereHas('content', function ($q) use ($reportId) {
@@ -959,36 +959,28 @@ public function eliminarYRenumerarReferencia(int $reportId, int $numero)
             $refEliminada = true;
         }
 
-        // 2) Traer todas las referencias del reporte, ordenadas por numero
-        $todas = \App\Models\ContentReference::query()
+        if (! $refEliminada) return;
+
+        // 2️⃣ Buscar todas las referencias posteriores y restarles 1
+        $refsPosteriores = \App\Models\ContentReference::query()
             ->whereHas('content', function ($q) use ($reportId) {
                 $q->whereHas('reportTitle', fn($r) => $r->where('report_id', $reportId))
                   ->orWhereHas('reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId))
                   ->orWhereHas('reportTitleSubtitleSection.reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId));
             })
+            ->where('numero', '>', $numero)
             ->orderBy('numero')
             ->get();
 
-        // 3) Construir mapa old=>new (el eliminado va a null)
-        //    y reescribir los numeros (1..N)
-        $map = [];
-        $i = 1;
-        if ($refEliminada) {
-            $map[$numero] = null; // el que se elimina
-        }
-        foreach ($todas as $r) {
+        foreach ($refsPosteriores as $r) {
             $old = (int)$r->numero;
-            if (!isset($map[$old])) { // solo si no estaba marcado null
-                $map[$old] = $i;
-            }
-            if ($r->numero != $map[$old]) {
-                $r->numero = $map[$old];
-                $r->save();
-            }
-            $i++;
+            $new = $old - 1;
+            $map[$old] = $new;
+            $r->numero = $new;
+            $r->save();
         }
 
-        // 4) Reescribir el HTML de TODOS los contenidos del reporte con el mapa
+        // 3️⃣ Reescribir todos los contenidos
         $contenidos = \App\Models\Content::query()
             ->whereHas('reportTitle', fn($r) => $r->where('report_id', $reportId))
             ->orWhereHas('reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId))
@@ -996,15 +988,20 @@ public function eliminarYRenumerarReferencia(int $reportId, int $numero)
             ->get();
 
         foreach ($contenidos as $c) {
-            $nuevo = $this->renumerarHtmlConMapa($c->cont ?? '', $map);
+            if (! str_contains($c->cont ?? '', '<sup')) continue;
+
+            $nuevo = $this->renumerarHtmlSup($c->cont ?? '', $numero);
             if ($nuevo !== $c->cont) {
                 $c->cont = $nuevo;
                 $c->save();
             }
         }
+
+        // 4️⃣ Agregar el eliminado al mapa
+        $map[$numero] = null;
     });
 
-    // 5) Devolver referencias y mapa actualizado al front
+    // 5️⃣ Devolver referencias actualizadas
     $refsActuales = \App\Models\ContentReference::query()
         ->whereHas('content', function ($q) use ($reportId) {
             $q->whereHas('reportTitle', fn($r) => $r->where('report_id', $reportId))
@@ -1016,13 +1013,68 @@ public function eliminarYRenumerarReferencia(int $reportId, int $numero)
         ->map(fn($r) => ['num' => (int)$r->numero, 'texto' => $r->texto])
         ->toArray();
 
-    // Actualiza el estado público si lo usas en el componente
     $this->referencias = $refsActuales;
 
     return [
-        'map' => $map,                 // p.ej. {3:null, 4:3, 5:4, ...}
-        'referencias' => $refsActuales // lista normalizada
+        'map' => $map,
+        'referencias' => $refsActuales
     ];
+}
+
+/**
+ * Reescribe los <sup>[n]</sup> dentro del contenido HTML.
+ * - Si n == $numeroEliminado → elimina el <sup>.
+ * - Si n > $numeroEliminado → lo reduce en 1.
+ */
+private function renumerarHtmlSup(string $html, int $numeroEliminado): string
+{
+    if (trim($html) === '') return $html;
+
+    // Busca coincidencias como <sup ...>[12]</sup> (sin importar estilos)
+    $pat = '/<sup[^>]*>\s*\[(\d+)\]\s*<\/sup>/i';
+
+    $nuevo = preg_replace_callback($pat, function ($m) use ($numeroEliminado) {
+        $num = (int)$m[1];
+        if ($num === $numeroEliminado) {
+            // Eliminar este superíndice completo
+            return '';
+        } elseif ($num > $numeroEliminado) {
+            $nuevoNum = $num - 1;
+            // Sustituir el número dentro del [ ]
+            return str_replace('['.$num.']', '['.$nuevoNum.']', $m[0]);
+        }
+        return $m[0];
+    }, $html);
+
+    return $nuevo ?? $html;
+}
+
+/**
+ * Reescribe todos los <span class="ref" data-num="X"><sup>[X]</sup></span>
+ * Si X == $numeroEliminado → elimina el span.
+ * Si X > $numeroEliminado → resta 1 a X.
+ */
+private function renumerarHtmlReduciendo(string $html, int $numeroEliminado): string
+{
+    if (trim($html) === '') return $html;
+
+    $pat = '/<span\s+class=["\']ref["\']([^>]*)data-num=["\'](\d+)["\']([^>]*)>\s*<sup>\[(\d+)\]<\/sup>\s*<\/span>/i';
+
+    $nuevo = preg_replace_callback($pat, function ($m) use ($numeroEliminado) {
+        $num = (int)$m[2];
+        if ($num === $numeroEliminado) {
+            // Eliminar este span
+            return '';
+        } elseif ($num > $numeroEliminado) {
+            $nuevoNum = $num - 1;
+            $reemplazo = preg_replace('/data-num=["\']'.$num.'["\']/', 'data-num="'.$nuevoNum.'"', $m[0]);
+            $reemplazo = preg_replace('/\['.$num.'\]/', '['.$nuevoNum.']', $reemplazo);
+            return $reemplazo;
+        }
+        return $m[0];
+    }, $html);
+
+    return $nuevo ?? $html;
 }
 
 /**
