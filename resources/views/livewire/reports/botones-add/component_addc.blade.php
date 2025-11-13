@@ -1945,41 +1945,47 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
 
                         {{-- Acción (Quill + select + botón) --}}
                         <td class="border border-dotted border-black text-left px-2 align-top" width="700">
-                            <div
-                                x-data="{ initQuill() {
-                                    const root = this.$refs.editor;
-                                    if (root.dataset.inited === '1') return;
+                            <div wire:ignore
+                                x-data="{
+                                    initQuill() {
+                                        const root = this.$refs.editor;
+                                        if (root.dataset.inited === '1') return;
 
-                                    const quill = new Quill(root, {
-                                        theme: 'snow',
-                                        modules: {
-                                            toolbar: {
-                                                container: [
-                                                    [{ header: [1, 2, false] }],
-                                                    ['bold', 'italic', 'underline'],
-                                                    [{ 'align': [] }],
-                                                    [{ list: 'ordered' }, { list: 'bullet' }],
-                                                    ['clean']
-                                                ]
+                                        const quill = new Quill(root, {
+                                            theme: 'snow',
+                                            modules: {
+                                                toolbar: {
+                                                    container: [
+                                                        [{ header: [1, 2, false] }],
+                                                        ['bold', 'italic', 'underline'],
+                                                        [{ 'align': [] }],
+                                                        [{ list: 'ordered' }, { list: 'bullet' }],
+                                                        ['clean']
+                                                    ]
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
 
-                                    const hidden = this.$refs.textarea;
-                                    if (hidden.value) quill.root.innerHTML = hidden.value;
-                                    quill.on('text-change', () => {
-                                        hidden.value = quill.root.innerHTML;
-                                        hidden.dispatchEvent(new Event('input'));
-                                    });
-                                    root.dataset.inited = '1';
-                                }}"
+                                        const hidden = this.$refs.textarea;
+                                        if (hidden.value) quill.root.innerHTML = hidden.value;
+
+                                        quill.on('text-change', () => {
+                                            hidden.value = quill.root.innerHTML;
+                                            hidden.dispatchEvent(new Event('input'));
+                                        });
+
+                                        root.dataset.inited = '1';
+                                    }
+                                }"
                                 x-init="initQuill()"
                             >
-                                <div x-ref="editor" style="height:150px; background:white;" wire:ignore></div>
-                                <textarea x-ref="textarea"
-                                    class="hidden"
-                                    wire:model.defer="acciones.{{ $titulo }}.{{ $index }}.accion"></textarea>
+                                <div x-ref="editor" style="height:150px; background:white;"></div>
 
+                                <textarea
+                                    x-ref="textarea"
+                                    class="hidden"
+                                    wire:model.defer="acciones.{{ $titulo }}.{{ $index }}.accion"
+                                ></textarea>
                             </div>
                         </td>
 

@@ -145,19 +145,20 @@ class EditExtends extends Component
     // ===================================================
     // 🔹 Actualizar bloques y cotizaciones
     // ===================================================
-    public function update()
+   public function update()
     {
-        // ✅ Actualizar bloques normales
-        foreach ($this->bloques as $bloque) {
+        foreach ($this->bloques as $bloqueIndex => $bloque) {
             $content = Content::find($bloque['id']);
             if (!$content) continue;
 
             $imagenesFinales = [];
 
-            foreach ($bloque['imagenes'] as $img) {
+            foreach ($bloque['imagenes'] as $imgIndex => $img) {
+
                 $ruta = $img['src'];
                 $leyenda = $img['leyenda'];
 
+                // Reemplazo de imagen
                 if (!empty($img['nuevo'])) {
                     if (!Storage::disk('public')->exists('img_extends')) {
                         Storage::disk('public')->makeDirectory('img_extends');
@@ -167,36 +168,45 @@ class EditExtends extends Component
                         Storage::disk('public')->delete($ruta);
                     }
 
-                    $filename = uniqid('img_') . '.' . $img['nuevo']->getClientOriginalExtension();
+                    $filename = "bloque{$bloqueIndex}_img{$imgIndex}_" . uniqid() . "." .
+                        $img['nuevo']->getClientOriginalExtension();
+
                     $ruta = $img['nuevo']->storeAs('img_extends', $filename, 'public');
                 }
 
                 $imagenesFinales[] = [
                     'src' => $ruta,
                     'leyenda' => $leyenda,
+                    'orden_imagen' => $imgIndex + 1,
                 ];
             }
 
             $content->update([
                 'cont' => $bloque['contenido'],
                 'img1' => json_encode($imagenesFinales, JSON_UNESCAPED_UNICODE),
+                'orden' => $bloqueIndex + 1,
+                'bloque_num' => $bloqueIndex + 1,
             ]);
         }
 
-        // ✅ Actualizar cotizaciones (solo del primer bloque)
+        // ============================================================
+        // Actualizar cotizaciones como antes
+        // ============================================================
+
         $primerContent = $this->bloques[0]['id'] ?? null;
 
         if ($primerContent) {
-                foreach ($this->empresas as $eIndex => $empresa) {
-                    $empresaModel = EmpresaCotizacion::updateOrCreate(
-                        ['id' => $empresa['id']],
-                        [
-                            'content_id' => $primerContent,
-                            'nombre' => $empresa['nombre'],
-                            'color' => $empresa['color'],
-                            'orden' => $eIndex + 1, // ✅ mantener orden en actualización
-                        ]
-                    );
+            foreach ($this->empresas as $eIndex => $empresa) {
+
+                $empresaModel = EmpresaCotizacion::updateOrCreate(
+                    ['id' => $empresa['id']],
+                    [
+                        'content_id' => $primerContent,
+                        'nombre' => $empresa['nombre'],
+                        'color' => $empresa['color'],
+                        'orden' => $eIndex + 1,
+                    ]
+                );
 
                 foreach ($empresa['items'] as $iIndex => $item) {
                     DetalleCotizacion::updateOrCreate(
@@ -207,15 +217,48 @@ class EditExtends extends Component
                             'cantidad' => $item['cantidad'],
                             'costo' => $item['costo'],
                             'comentarios' => $item['comentarios'],
-                            'orden' => $iIndex + 1, // ✅ mantener orden de filas
+                            'orden' => $iIndex + 1,
                         ]
                     );
                 }
             }
         }
 
-        session()->flash('cont', '✅ Bloques y cotizaciones actualizados correctamente.');
+        session()->flash('cont', 'Contenido actualizado correctamente.');
         return redirect()->route('my_reports.addcontenido', ['id' => $this->rp]);
+    }
+
+        public function agregarBloque()
+    {
+        $this->bloques[] = [
+            'contenido' => '',
+            'imagenes' => [
+                ['leyenda' => '', 'img' => null],
+            ],
+        ];
+    }
+
+    /** 🗑 Eliminar bloque */
+    public function eliminarBloque($index)
+    {
+        unset($this->bloques[$index]);
+        $this->bloques = array_values($this->bloques);
+    }
+
+    /** ➕ Agregar imagen */
+    public function agregarImagen($bloqueIndex)
+    {
+        $this->bloques[$bloqueIndex]['imagenes'][] = [
+            'leyenda' => '',
+            'img' => null,
+        ];
+    }
+
+    /** 🗑 Eliminar imagen */
+    public function eliminarImagen($bloqueIndex, $imagenIndex)
+    {
+        unset($this->bloques[$bloqueIndex]['imagenes'][$imagenIndex]);
+        $this->bloques[$bloqueIndex]['imagenes'] = array_values($this->bloques[$bloqueIndex]['imagenes']);
     }
 
     public function render()

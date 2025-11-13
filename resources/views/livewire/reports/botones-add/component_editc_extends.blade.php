@@ -163,7 +163,11 @@
 
         @foreach ($bloques as $i => $bloque)
             <div class="border rounded-lg p-4 bg-white shadow space-y-4" style="border-color: #001a4d;">
+            <div class="flex justify-between items-center">
                 <h2 class="font-semibold text-blue-800">Bloque {{ $i + 1 }}</h2>
+                <button type="button" wire:click="eliminarBloque({{ $i }})"
+                    class="text-red-600 hover:underline">🗑 Eliminar</button>
+            </div>
 
                 {{-- Editor Quill --}}
                 <div wire:ignore x-data x-init="
@@ -204,7 +208,7 @@
                                     class="text-sm text-red-600 hover:underline">🗑 Quitar</button>
                             </div>
 
-                            @if ($img['src'])
+                            @if (!empty($img['src']))
                                 <img src="{{ asset('storage/' . $img['src']) }}" class="w-32 h-32 object-cover rounded border mb-2">
                             @endif
 
@@ -224,7 +228,12 @@
                     </button>
                 </div>
             </div>
+            <br>
         @endforeach
+        <button type="button" wire:click="agregarBloque"
+            class="px-4 py-2 text-white rounded bg-teal-600 hover:bg-teal-800 mb-4 ml-auto block">
+            + Agregar bloque
+        </button>
 
         {{-- Botón guardar --}}
         <div class="text-left pt-4">
