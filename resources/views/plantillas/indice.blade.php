@@ -87,27 +87,57 @@
       @foreach ($reports->titles as $title)
         <tr>
           {{-- Título --}}
-          <td style="text-align: justify; border-bottom: 1.5px dotted #000; display:flex">
-            <strong><span>{{ $loop->iteration }}.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $title->title->nombre }}</span></strong>
-            <td style="float: right;"><strong>{{ getPage($markers, 'TITLE', $title->id) }}</strong></td>
+          <td style="text-align: justify; ">
+            <TABLE  style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="width: auto; height: auto; white-space: nowrap;">
+                  <strong><span>{{ $loop->iteration }}.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $title->title->nombre }}</span></strong>
+                </td>
+                <td style=" border-bottom: 1px dotted #000;width: 100%;">
+                </td>
+                <td style="float: right;">
+                  <strong>{{ getPage($markers, 'TITLE', $title->id) }}</strong>
+                </td>
+              </tr>
+            </TABLE>
           </td>
         </tr>
 
         {{-- Subtítulos dentro del título --}}
         @foreach ($title->subtitles as $subtitle)
         <tr>
-          <td style=" padding-left: 15px; text-align: justify; border-bottom: 1px dotted #000; display:flex">
-              <span>{{ $loop->parent->iteration }}.{{ $loop->iteration }}.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $subtitle->subtitle->nombre }}</span>
-              <td style="float: right;">{{ getPage($markers, 'SUBTITLE', $subtitle->id) }}</td>
-            </td>
+          <td style="text-align: justify; ">
+            <TABLE  style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="width: auto; height: auto; white-space: nowrap; padding-left: 15px;">
+                  <span>{{$loop->parent->iteration }}.{{ $loop->iteration }}.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $subtitle->subtitle->nombre }}</span>
+                </td>
+                <td style=" border-bottom: 1px dotted #000;width: 100%;">
+                </td>
+                <td style="float: right;">
+                  {{ getPage($markers, 'SUBTITLE', $subtitle->id) }}
+                </td>
+              </tr>
+            </TABLE>
+          </td>
           </tr>
 
             {{-- Secciones dentro del subtítulo --}}
           @foreach ($subtitle->sections as $section)
           <tr>
-              <td style=" padding-left: 30px; ptext-align: justify;border-bottom: 1px dotted #000; display:flex">
-                <span>{{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $section->section->nombre }}</span>
-                <td style="float: right;">{{ getPage($markers, 'SECTION', $section->id) }}</td>
+              <td style="text-align: justify; ">
+                <TABLE  style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="width: auto; height: auto; white-space: nowrap; padding-left: 30px;">
+                      {{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $section->section->nombre }}</span>
+                    </td>
+                    <td style=" border-bottom: 1px dotted #000;width: 100%;">
+                    </td>
+                    <td style="float: right;">
+                      {{ getPage($markers, 'SECTION', $section->id) }}
+                    </td>
+                  </tr>
+                </TABLE>
               </td>
             </tr>
           @endforeach
