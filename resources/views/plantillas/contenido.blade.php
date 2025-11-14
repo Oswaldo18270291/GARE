@@ -710,7 +710,7 @@
                                                             <td style="border: 1px solid #000; text-align: center">25</td>
                                                             <td style="border: 1px solid #000; text-align: center">{{ $diag->cal }}</td>
                                                             <td
-                                                                style=" border: 1px solid #000; text-align: center
+                                                                style=" border: 1px solid #000; text-align: center;
                                                                 background-color:
                                                                     {{ ($diag->clase_riesgo ?? '') == 'MUY ALTO' ? '#ff0000' :
                                                                     (($diag->clase_riesgo ?? '') == 'ALTO' ? '#ff6600' :
@@ -1451,7 +1451,7 @@
                                                             <td style="border: 1px solid #000; text-align: center">25</td>
                                                             <td style="border: 1px solid #000; text-align: center">{{ $diag->cal }}</td>
                                                             <td
-                                                                style=" border: 1px solid #000; text-align: center
+                                                                style=" border: 1px solid #000; text-align: center;
                                                                 background-color:
                                                                     {{ ($diag->clase_riesgo ?? '') == 'MUY ALTO' ? '#ff0000' :
                                                                     (($diag->clase_riesgo ?? '') == 'ALTO' ? '#ff6600' :
