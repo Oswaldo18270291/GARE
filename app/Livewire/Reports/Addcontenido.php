@@ -98,7 +98,7 @@ class Addcontenido extends Component
             $contents = Content::where('r_t_id', $id)->get();
             foreach ($contents as $content) {
                 // Eliminar imágenes del JSON (img1)
-                $imagenes = json_decode($content->img_block, true) ?? [];
+                $imagenes = $content->img_block;
                 foreach ($imagenes as $img) {
                     if (!empty($img['src']) && Storage::disk('public')->exists($img['src'])) {
                         Storage::disk('public')->delete($img['src']);

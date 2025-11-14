@@ -138,7 +138,7 @@ public function store($id, $boton, $rp)
         // Datos del bloque
         $data = [
             'cont' => $contenido,
-            'img_block' => json_encode($imagenes, JSON_UNESCAPED_UNICODE),
+            'img_block' => $imagenes,
             'orden' => $bloqueIndex + 1,
             'bloque_num' => $bloqueIndex + 1,
         ];

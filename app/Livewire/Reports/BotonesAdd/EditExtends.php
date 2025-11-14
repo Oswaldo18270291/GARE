@@ -48,7 +48,7 @@ class EditExtends extends Component
         // 🔹 Cargar los bloques de contenido
         // ===================================================
         foreach ($contents as $content) {
-            $imgs = json_decode($content->img_block, true) ?? [];
+            $imgs = $content->img_block;
 
             $imagenes = [];
             foreach ($imgs as $img) {
@@ -183,7 +183,7 @@ class EditExtends extends Component
 
             $content->update([
                 'cont' => $bloque['contenido'],
-                'img_block' => json_encode($imagenesFinales, JSON_UNESCAPED_UNICODE),
+                'img_block' => $imagenesFinales,
                 'orden' => $bloqueIndex + 1,
                 'bloque_num' => $bloqueIndex + 1,
             ]);
