@@ -13,7 +13,7 @@ class Content extends Model
         protected $fillable = ['r_t_s_s_id','r_t_id','r_t_s_id', 'cont', 'img1', 'img2', 'img3','leyenda1','leyenda2',
         'leyenda3','grafica','img_grafica', 'que', 'como', 'quien', 'por_que', 'donde', 
         'cuanto', 'de', 'hasta','contenido_m_p_a','contenido_a_p', 'img_mapa','bloque_num',
-        'puesto_r','nombre_r','puesto_e','nombre_e','puesto_c','nombre_c'];
+        'puesto_r','nombre_r','puesto_e','nombre_e','puesto_c','nombre_c', 'img_block'];
 
         public function reportTitleSubtitleSection()
     {
