@@ -102,79 +102,153 @@
                         <br>
                         @foreach ($title->content as $cont)
                             @if (empty(trim($cont->cont)))
-                                @php
-                                    $imgs = [];
+                            
+@php
+    $imgs = [];
 
-                                    // Recolectar imágenes con su orientación
-                                    foreach (['img1', 'img2', 'img3'] as $i) {
-                                        if (!empty($cont->{$i})) {
-                                            $path = storage_path('app/public/'.$cont->{$i});
-                                            $size = @getimagesize($path);
-                                            $ori = ($size && $size[0] > $size[1]) ? 'h' : 'v'; // horizontal o vertical
+    /* ==========================================================
+        1) IMÁGENES SUELTAS (img1, img2, img3)
+    ==========================================================*/
+    foreach (['img1','img2','img3'] as $i) {
+        if (!empty($cont->{$i})) {
 
-                                            $imgs[] = [
-                                                'src' => $cont->{$i},
-                                                'leyenda' => $cont->{'leyenda'.substr($i, -1)},
-                                                'o' => $ori,
-                                            ];
-                                        }
-                                    }
+            $full = storage_path('app/public/'.$cont->{$i});
+            $size = @getimagesize($full);
 
-                                    // Determinar tipo general
-                                    $count = count($imgs);
-                                    $allV = $count && collect($imgs)->every(fn($x) => $x['o'] === 'v');
-                                    $allH = $count && collect($imgs)->every(fn($x) => $x['o'] === 'h');
-                                @endphp
+            $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
 
-                                @if ($count)
-                                    <div style="margin-top:25px; text-align:center; overflow:hidden;">
-                                        @foreach ($imgs as $i => $img)
-                                            @php
-                                                $style = '';
+            $imgs[] = [
+                'src'          => $cont->{$i},
+                'leyenda'      => $cont->{'leyenda'.substr($i, -1)} ?? '',
+                'orden_imagen' => 99998, // las imágenes sueltas van antes que las sin orden
+                'o'            => $ori,
+            ];
+        }
+    }
 
-                                                if ($count === 1) {
-                                                    // ✅ Solo una imagen → centrada
-                                                    $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
-                                                } elseif ($allV) {
-                                                    // ✅ Tres verticales → en una sola línea
-                                                    $style = 'float:left; width:32%; margin:0 1% 12px;';
-                                                } elseif ($allH) {
-                                                    // ✅ Dos o tres horizontales
-                                                    if ($count == 2) {
-                                                        $style = 'float:left; width:48%; margin:0 1% 12px;';
-                                                    } elseif ($count == 3 && $loop->last) {
-                                                        $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
-                                                    } else {
-                                                        $style = 'float:left; width:48%; margin:0 1% 12px;';
-                                                    }
-                                                } else {
-                                                    // ✅ Mixtas (por si acaso)
-                                                    $style = ($count == 3 && $loop->last)
-                                                        ? 'float:none; display:block; width:70%; margin:0 auto 12px;'
-                                                        : 'float:left; width:48%; margin:0 1% 12px;';
-                                                }
-                                            @endphp
+    /* ==========================================================
+        2) IMÁGENES DE img_block (JSON)
+    ==========================================================*/
+    if (!empty($cont->img_block) && is_array($cont->img_block)) {
 
-                                            <div style="{{ $style }} text-align:center;">
-                                                {{-- Leyenda arriba --}}
-                                                <p style="margin:0 0 6px; line-height:1.2;">
-                                                    <b>Imagen {{ $imgNum++ }}</b><br>
-                                                    <i>{{ $img['leyenda'] }}</i>
-                                                </p>
+        foreach ($cont->img_block as $bl) {
 
-                                                {{-- Imagen --}}
-                                                <img src="{{ storage_path('app/public/'.$img['src']) }}"
-                                                    style="width:100%; height:auto; object-fit:contain;">
-                                            </div>
+            if (!isset($bl["src"])) continue;
 
-                                            {{-- Limpiar flotantes después de cada par de horizontales --}}
-                                            @if ($allH && (($loop->iteration % 2) == 0) && !($loop->last && $count == 3))
-                                                <div style="clear:both;"></div>
-                                            @endif
-                                        @endforeach
-                                        <div style="clear:both;"></div>
-                                    </div>
-                                @endif
+            $src = trim($bl["src"]); // limpiar espacios si existen
+
+            $full = storage_path("app/public/".$src);
+
+            $size = @getimagesize($full);
+            $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
+
+            $imgs[] = [
+                'src'          => $src,
+                'leyenda'      => $bl["leyenda"] ?? '',
+                'orden_imagen' => $bl["orden_imagen"] ?? 99999,
+                'o'            => $ori,
+            ];
+        }
+    }
+
+    /* ==========================================================
+        3) ORDENAR RESPETANDO orden_imagen
+    ==========================================================*/
+    usort($imgs, function ($a, $b) {
+        return ($a['orden_imagen'] ?? 99999) <=> ($b['orden_imagen'] ?? 99999);
+    });
+
+    /* ==========================================================
+        4) REGLAS DE ORIENTACIÓN
+    ==========================================================*/
+    $count = count($imgs);
+    $allV  = $count && collect($imgs)->every(fn($x) => $x['o'] === 'v');
+    $allH  = $count && collect($imgs)->every(fn($x) => $x['o'] === 'h');
+
+    $imgNum = 1;
+@endphp
+
+
+
+@if ($count)
+<div style="margin-top:25px; text-align:center; overflow:hidden;">
+
+    @foreach ($imgs as $img)
+        @php
+            /* ==========================================================
+                PRIORIDAD: SI SON 2 IMÁGENES → SIEMPRE LADO A LADO (48%)
+               ==========================================================*/
+            if ($count === 2) {
+                $style = 'float:left; width:48%; margin:0 1% 20px;';
+            }
+
+            /* ==========================================================
+                SOLO 1 IMAGEN → CENTRADA
+            ==========================================================*/
+            elseif ($count === 1) {
+                $style = 'float:none; display:block; width:70%; margin:0 auto 20px;';
+            }
+
+            /* ==========================================================
+                TODAS VERTICALES
+            ==========================================================*/
+            elseif ($allV) {
+                $style = 'float:left; width:32%; margin:0 1% 20px;';
+            }
+
+            /* ==========================================================
+                TODAS HORIZONTALES
+            ==========================================================*/
+            elseif ($allH) {
+                if ($count == 3 && $loop->last) {
+                    $style = 'float:none; display:block; width:70%; margin:0 auto 20px;';
+                } else {
+                    $style = 'float:left; width:48%; margin:0 1% 20px;';
+                }
+            }
+
+            /* ==========================================================
+                IMÁGENES MIXTAS
+            ==========================================================*/
+            else {
+                $style = ($count == 3 && $loop->last)
+                    ? 'float:none; display:block; width:70%; margin:0 auto 20px;'
+                    : 'float:left; width:48%; margin:0 1% 20px;';
+            }
+        @endphp
+
+
+        <div style="{{ $style }} text-align:center;">
+
+            {{-- Leyenda --}}
+            <p style="margin:0 0 6px; line-height:1.2;">
+                <b>Imagen {{ $imgNum++ }}</b><br>
+                <i>{{ $img['leyenda'] }}</i>
+            </p>
+
+            {{-- Imagen --}}
+            <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                 style="width:100%; height:auto; object-fit:contain;">
+        </div>
+
+        {{-- Clear para 2 imágenes --}}
+        @if ($count === 2 && $loop->iteration == 2)
+            <div style="clear:both;"></div>
+        @endif
+
+        {{-- Limpiar en caso de horizontales --}}
+        @if ($allH && ($loop->iteration % 2) == 0 && !($loop->last && $count == 3))
+            <div style="clear:both;"></div>
+        @endif
+
+    @endforeach
+
+    <div style="clear:both;"></div>
+</div>
+@endif
+
+
+
                                 <br>
                                 @if($cont->reportTitle->title_id==12)
                                     @if($cont->cotizaciones->count())
@@ -235,79 +309,125 @@
                                 <span style="color:white; font-size:1px;">__MARKER_CONTENT_{{ $cont->id }}__</span>
 
                                 {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
-                                @php
-                                    $imgs = [];
+@php
+    $imgs = [];
 
-                                    // Recolectar imágenes con su orientación
-                                    foreach (['img1', 'img2', 'img3'] as $i) {
-                                        if (!empty($cont->{$i})) {
-                                            $path = storage_path('app/public/'.$cont->{$i});
-                                            $size = @getimagesize($path);
-                                            $ori = ($size && $size[0] > $size[1]) ? 'h' : 'v'; // horizontal o vertical
+    /* ==========================================================
+        1) IMÁGENES SUELTAS (img1, img2, img3)
+    ==========================================================*/
+    foreach (['img1','img2','img3'] as $i) {
+        if (!empty($cont->{$i})) {
+            $path = storage_path('app/public/'.$cont->{$i});
+            $size = @getimagesize($path);
+            $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
 
-                                            $imgs[] = [
-                                                'src' => $cont->{$i},
-                                                'leyenda' => $cont->{'leyenda'.substr($i, -1)},
-                                                'o' => $ori,
-                                            ];
-                                        }
-                                    }
+            $imgs[] = [
+                'src'          => $cont->{$i},
+                'leyenda'      => $cont->{'leyenda'.substr($i, -1)},
+                'orden_imagen' => null,   // estas no tienen orden
+                'o'            => $ori,
+            ];
+        }
+    }
 
-                                    // Determinar tipo general
-                                    $count = count($imgs);
-                                    $allV = $count && collect($imgs)->every(fn($x) => $x['o'] === 'v');
-                                    $allH = $count && collect($imgs)->every(fn($x) => $x['o'] === 'h');
-                                @endphp
+    /* ==========================================================
+        2) IMÁGENES DE img_block (JSON)
+           Ejemplo del JSON:
+           [
+             { "src": "...", "leyenda": "...", "orden_imagen": 1 }
+           ]
+    ==========================================================*/
+    if ($cont->img_block && is_array($cont->img_block)) {
+        foreach ($cont->img_block as $bl) {
+            if (!empty($bl["src"])) {
+                $path = storage_path("app/public/".$bl["src"]);
+                $size = @getimagesize($path);
+                $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
 
-                                @if ($count)
-                                    <div style="margin-top:25px; text-align:center; overflow:hidden;">
-                                        @foreach ($imgs as $i => $img)
-                                            @php
-                                                $style = '';
+                $imgs[] = [
+                    'src'          => $bl["src"],
+                    'leyenda'      => $bl["leyenda"] ?? '',
+                    'orden_imagen' => $bl["orden_imagen"] ?? 99999,
+                    'o'            => $ori,
+                ];
+            }
+        }
+    }
 
-                                                if ($count === 1) {
-                                                    // ✅ Solo una imagen → centrada
-                                                    $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
-                                                } elseif ($allV) {
-                                                    // ✅ Tres verticales → en una sola línea
-                                                    $style = 'float:left; width:32%; margin:0 1% 12px;';
-                                                } elseif ($allH) {
-                                                    // ✅ Dos o tres horizontales
-                                                    if ($count == 2) {
-                                                        $style = 'float:left; width:48%; margin:0 1% 12px;';
-                                                    } elseif ($count == 3 && $loop->last) {
-                                                        $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
-                                                    } else {
-                                                        $style = 'float:left; width:48%; margin:0 1% 12px;';
-                                                    }
-                                                } else {
-                                                    // ✅ Mixtas (por si acaso)
-                                                    $style = ($count == 3 && $loop->last)
-                                                        ? 'float:none; display:block; width:70%; margin:0 auto 12px;'
-                                                        : 'float:left; width:48%; margin:0 1% 12px;';
-                                                }
-                                            @endphp
+    /* ==========================================================
+        3) ORDENAR RESPETANDO orden_imagen
+    ==========================================================*/
+    usort($imgs, function ($a, $b) {
+        $oa = $a['orden_imagen'] ?? 99999;
+        $ob = $b['orden_imagen'] ?? 99999;
+        return $oa <=> $ob;
+    });
 
-                                            <div style="{{ $style }} text-align:center;">
-                                                {{-- Leyenda arriba --}}
-                                                <p style="margin:0 0 6px; line-height:1.2;">
-                                                    <b>Imagen {{ $imgNum++ }}</b><br>
-                                                    <i>{{ $img['leyenda'] }}</i>
-                                                </p>
+    /* ==========================================================
+        4) DETECTAR ORIENTACIÓN Y REGLAS
+    ==========================================================*/
+    $count = count($imgs);
+    $allV = $count && collect($imgs)->every(fn($x) => $x['o'] === 'v');
+    $allH = $count && collect($imgs)->every(fn($x) => $x['o'] === 'h');
 
-                                                {{-- Imagen --}}
-                                                <img src="{{ storage_path('app/public/'.$img['src']) }}"
-                                                    style="width:100%; height:auto; object-fit:contain;">
-                                            </div>
+    $imgNum = 1;
+@endphp
 
-                                            {{-- Limpiar flotantes después de cada par de horizontales --}}
-                                            @if ($allH && (($loop->iteration % 2) == 0) && !($loop->last && $count == 3))
-                                                <div style="clear:both;"></div>
-                                            @endif
-                                        @endforeach
-                                        <div style="clear:both;"></div>
-                                    </div>
-                                @endif
+
+@if ($count)
+    <div style="margin-top:25px; text-align:center; overflow:hidden;">
+
+        @foreach ($imgs as $img)
+            @php
+                // ============================
+                // Reglas de acomodo
+                // ============================
+                if ($count === 1) {
+                    $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                }
+                elseif ($allV) {
+                    $style = 'float:left; width:32%; margin:0 1% 12px;';
+                }
+                elseif ($allH) {
+                    if ($count == 2) {
+                        $style = 'float:left; width:48%; margin:0 1% 12px;';
+                    } elseif ($count == 3 && $loop->last) {
+                        $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                    } else {
+                        $style = 'float:left; width:48%; margin:0 1% 12px;';
+                    }
+                }
+                else {
+                    $style = ($count == 3 && $loop->last)
+                        ? 'float:none; display:block; width:70%; margin:0 auto 12px;'
+                        : 'float:left; width:48%; margin:0 1% 12px;';
+                }
+            @endphp
+
+            <div style="{{ $style }} text-align:center;">
+                
+                {{-- Leyenda --}}
+                <p style="margin:0 0 6px; line-height:1.2;">
+                    <b>Imagen {{ $imgNum++ }}</b><br>
+                    <i>{{ $img['leyenda'] }}</i>
+                </p>
+
+                {{-- Imagen --}}
+                <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                     style="width:100%; height:auto; object-fit:contain;">
+            </div>
+
+            {{-- Salto en horizontales --}}
+            @if ($allH && ($loop->iteration % 2) == 0 && !($loop->last && $count == 3))
+                <div style="clear:both;"></div>
+            @endif
+        @endforeach
+
+        <div style="clear:both;"></div>
+    </div>
+@endif
+
+
                                 <br>
                                 @if($cont->reportTitle->title_id==12)
                                     <div style="page-break-before: always;">
