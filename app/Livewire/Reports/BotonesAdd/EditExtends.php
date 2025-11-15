@@ -147,19 +147,39 @@ class EditExtends extends Component
     // ===================================================
    public function update()
     {
-        foreach ($this->bloques as $bloqueIndex => $bloque) {
-            $content = Content::find($bloque['id']);
-            if (!$content) continue;
+          foreach ($this->bloques as $bloqueIndex => $bloque) {
 
+            // ================================
+            // BLOQUE EXISTENTE O NUEVO
+            // ================================
+            if (!empty($bloque['id'])) {
+                $content = Content::find($bloque['id']);
+            } else {
+                // Crear nuevo bloque
+                $content = Content::create([
+                    'r_t_id' => $this->RTitle->id ?? null,
+                    'r_t_s_id' => $this->RSubtitle->id ?? null,
+                    'r_t_s_s_id' => $this->RSection->id ?? null,
+                    'cont' => '',
+                    'bloque_num' => $bloqueIndex + 1,
+                ]);
+
+                // Guardar ID en el arreglo Livewire
+                $this->bloques[$bloqueIndex]['id'] = $content->id;
+            }
+
+            // ================================
+            // IMÁGENES
+            // ================================
             $imagenesFinales = [];
 
             foreach ($bloque['imagenes'] as $imgIndex => $img) {
 
-                $ruta = $img['src'];
+                $ruta = $img['src'] ?? null;
                 $leyenda = $img['leyenda'];
 
-                // Reemplazo de imagen
                 if (!empty($img['nuevo'])) {
+
                     if (!Storage::disk('public')->exists('img_extends')) {
                         Storage::disk('public')->makeDirectory('img_extends');
                     }
@@ -188,6 +208,7 @@ class EditExtends extends Component
                 'bloque_num' => $bloqueIndex + 1,
             ]);
         }
+
 
         // ============================================================
         // Actualizar cotizaciones como antes
@@ -228,15 +249,17 @@ class EditExtends extends Component
         return redirect()->route('my_reports.addcontenido', ['id' => $this->rp]);
     }
 
-        public function agregarBloque()
+    public function agregarBloque()
     {
         $this->bloques[] = [
+            'id' => null, // ← AGREGAR ESTO
             'contenido' => '',
             'imagenes' => [
                 ['leyenda' => '', 'img' => null],
             ],
         ];
     }
+
 
     /** 🗑 Eliminar bloque */
     public function eliminarBloque($index)
