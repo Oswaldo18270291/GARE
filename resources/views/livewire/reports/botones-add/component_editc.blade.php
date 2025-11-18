@@ -2196,6 +2196,9 @@ if (window.Livewire) {
                                 case 'bajo':
                                     td.classList.add('bg-[#00B0F0]', 'text-black');
                                     break;
+                                case 'N/A':
+                                td.classList.add('bg-[#FFFFFFFF]', 'text-white');
+                                    break;
                             }
                         }
                         </script>

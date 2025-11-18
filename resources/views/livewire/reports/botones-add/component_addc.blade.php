@@ -1998,6 +1998,7 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
                                             <option value="" hidden>Seleccione…</option>
                                             <option value="SI">SI</option>
                                             <option value="NO">NO</option>
+                                            <option value="N/A">N/A</option>
                                         </select>
                                     </div>
                             {{ $r['t_costo'] ?? '' }}
@@ -2014,6 +2015,7 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
                                 <option value="bajo">Bajo</option>
                                 <option value="medio">Medio</option>
                                 <option value="urgente">Urgente</option>
+                                <option value="N/A">N/A</option>
                             </select>
 
                             <div class="mt-1 uppercase">{{ $r['nivel_p'] }}</div>
@@ -2032,6 +2034,9 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
                                     break;
                                 case 'bajo':
                                     td.classList.add('bg-[#00B0F0]', 'text-black');
+                                    break;
+                                case 'N/A':
+                                td.classList.add('bg-[#FFFFFFFF]', 'text-white');
                                     break;
                             }
                         }
