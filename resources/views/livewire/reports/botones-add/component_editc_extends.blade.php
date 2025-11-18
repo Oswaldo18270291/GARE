@@ -1,5 +1,6 @@
 
 <div>
+    @if($titulo===12)
 <div class="mt-6">
     <table class="w-full border-collapse text-sm" style="border:1px solid #001a4d;">
         <thead>
@@ -158,7 +159,7 @@
         </button>
     </div>
 </div>
-
+@endif
     <form wire:submit.prevent="update" class="space-y-6">
 
         @foreach ($bloques as $i => $bloque)
