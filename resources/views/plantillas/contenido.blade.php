@@ -104,148 +104,210 @@
                             @if (empty(trim($cont->cont)))
                             
 @php
-    $imgs = [];
+/*****************************************************************
+    0) CONTADOR GLOBAL UNA SOLA VEZ
+*****************************************************************/
+if (!isset($globalImageNumber)) {
+    $globalImageNumber = 1;
+}
 
-    /* ==========================================================
-        1) IMÁGENES SUELTAS (img1, img2, img3)
-    ==========================================================*/
-    foreach (['img1','img2','img3'] as $i) {
-        if (!empty($cont->{$i})) {
+/*****************************************************************
+    1) RECOLECTAR TODAS LAS IMÁGENES
+*****************************************************************/
+$imgs = [];
 
-            $full = storage_path('app/public/'.$cont->{$i});
-            $size = @getimagesize($full);
+// Imágenes sueltas
+foreach (['img1','img2','img3'] as $i) {
+    if (!empty($cont->{$i})) {
+        $full = storage_path('app/public/'.$cont->{$i});
+        $size = @getimagesize($full);
+        $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
 
-            $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
+        $imgs[] = [
+            'src' => $cont->{$i},
+            'leyenda' => $cont->{'leyenda'.substr($i,-1)} ?? '',
+            'orden_imagen' => 99998,
+            'o' => $ori,
+            'w' => $size[0] ?? 0,
+            'h' => $size[1] ?? 0
+        ];
+    }
+}
 
-            $imgs[] = [
-                'src'          => $cont->{$i},
-                'leyenda'      => $cont->{'leyenda'.substr($i, -1)} ?? '',
-                'orden_imagen' => 99998, // las imágenes sueltas van antes que las sin orden
-                'o'            => $ori,
-            ];
-        }
+// Imágenes JSON
+if (!empty($cont->img_block) && is_array($cont->img_block)) {
+    foreach ($cont->img_block as $bl) {
+        if (!isset($bl["src"])) continue;
+
+        $src = trim($bl["src"]);
+        $full = storage_path("app/public/".$src);
+        $size = @getimagesize($full);
+        $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
+
+        $imgs[] = [
+            'src' => $src,
+            'leyenda' => $bl["leyenda"] ?? '',
+            'orden_imagen' => $bl["orden_imagen"] ?? 99999,
+            'o' => $ori,
+            'w' => $size[0] ?? 0,
+            'h' => $size[1] ?? 0
+        ];
+    }
+}
+
+/*****************************************************************
+    2) ORDENAR TODAS LAS IMÁGENES
+*****************************************************************/
+usort($imgs, fn($a,$b)=>($a['orden_imagen']??99999) <=> ($b['orden_imagen']??99999));
+
+
+/*****************************************************************
+    3) AGRUPAR EN FILAS (NUEVA REGLA H–H SIEMPRE JUNTAS)
+*****************************************************************/
+$rows = [];
+$i = 0;
+$total = count($imgs);
+
+while ($i < $total) {
+
+    $img = $imgs[$i];
+    $next = $imgs[$i + 1] ?? null;
+
+    // ⚡ SI H–H SEGUIDAS → SIEMPRE JUNTAS
+    if ($img['o'] === 'h' && $next && $next['o'] === 'h') {
+
+        $rows[] = [$img, $next];
+
+        // saltar ambas sin duplicar
+        $i += 2;
+        continue;
     }
 
-    /* ==========================================================
-        2) IMÁGENES DE img_block (JSON)
-    ==========================================================*/
-    if (!empty($cont->img_block) && is_array($cont->img_block)) {
+    // ⚡ REGLA NORMAL (slots)
+    $slot = ($img['o'] === 'h') ? 2 : 1;
 
-        foreach ($cont->img_block as $bl) {
+    if ($slot == 2) {
+        // una horizontal sola
+        $rows[] = [$img];
+    } else {
+        // vertical, intentar agrupar hasta 3
+        $row = [$img];
+        $taken = 1;
 
-            if (!isset($bl["src"])) continue;
-
-            $src = trim($bl["src"]); // limpiar espacios si existen
-
-            $full = storage_path("app/public/".$src);
-
-            $size = @getimagesize($full);
-            $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
-
-            $imgs[] = [
-                'src'          => $src,
-                'leyenda'      => $bl["leyenda"] ?? '',
-                'orden_imagen' => $bl["orden_imagen"] ?? 99999,
-                'o'            => $ori,
-            ];
+        // meter verticales seguidas
+        $j = $i + 1;
+        while ($j < $total && $taken < 3 && $imgs[$j]['o'] === 'v') {
+            $row[] = $imgs[$j];
+            $taken++;
+            $j++;
         }
+
+        $i = $j - 1;
+        $rows[] = $row;
     }
 
-    /* ==========================================================
-        3) ORDENAR RESPETANDO orden_imagen
-    ==========================================================*/
-    usort($imgs, function ($a, $b) {
-        return ($a['orden_imagen'] ?? 99999) <=> ($b['orden_imagen'] ?? 99999);
-    });
+    $i++;
+}
 
-    /* ==========================================================
-        4) REGLAS DE ORIENTACIÓN
-    ==========================================================*/
-    $count = count($imgs);
-    $allV  = $count && collect($imgs)->every(fn($x) => $x['o'] === 'v');
-    $allH  = $count && collect($imgs)->every(fn($x) => $x['o'] === 'h');
-
-    $imgNum = 1;
 @endphp
 
 
 
-@if ($count)
-<div style="margin-top:25px; text-align:center; overflow:hidden;">
+@if (count($rows))
+<div style="margin-top:25px; overflow:hidden; width:100%;">
 
-    @foreach ($imgs as $img)
-        @php
-            /* ==========================================================
-                PRIORIDAD: SI SON 2 IMÁGENES → SIEMPRE LADO A LADO (48%)
-               ==========================================================*/
-            if ($count === 2) {
-                $style = 'float:left; width:48%; margin:0 1% 20px;';
-            }
 
-            /* ==========================================================
-                SOLO 1 IMAGEN → CENTRADA
-            ==========================================================*/
-            elseif ($count === 1) {
-                $style = 'float:none; display:block; width:70%; margin:0 auto 20px;';
-            }
+{{-- ============================================================
+     4) IMPRIMIR CADA FILA (NUMERO + TITULO + IMAGEN SIEMPRE JUNTOS)
+============================================================ --}}
+@foreach ($rows as $row)
 
-            /* ==========================================================
-                TODAS VERTICALES
-            ==========================================================*/
-            elseif ($allV) {
-                $style = 'float:left; width:32%; margin:0 1% 20px;';
-            }
+    @php
+        $isOne = count($row) == 1;
+        $isTwoH = (count($row)==2 && $row[0]['o']=='h' && $row[1]['o']=='h');
+    @endphp
 
-            /* ==========================================================
-                TODAS HORIZONTALES
-            ==========================================================*/
-            elseif ($allH) {
-                if ($count == 3 && $loop->last) {
-                    $style = 'float:none; display:block; width:70%; margin:0 auto 20px;';
-                } else {
-                    $style = 'float:left; width:48%; margin:0 1% 20px;';
+    <div style="width:100%; text-align:center; margin-bottom:25px;">
+
+        @foreach ($row as $img)
+
+            @php
+                if ($isOne) {
+                    $style = "
+                        display:inline-block;
+                        width:auto;
+                        max-width:90%;
+                        max-height:800px;
+                        margin:25px auto;
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                        text-align:center;
+                    ";
                 }
-            }
+                elseif ($isTwoH) {
+                    $style = "
+                        display:inline-block;
+                        width:48%;
+                        margin:25px 1% 20px;
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                        text-align:center;
+                    ";
+                }
+                else {
+                    // verticales o mezcla
+                    $w = ($img['o']=='h') ? "48%" : "32%";
+                    $style = "
+                        display:inline-block;
+                        width:{$w};
+                        margin:25px 1% 20px;
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                        text-align:center;
+                    ";
+                }
+            @endphp
 
-            /* ==========================================================
-                IMÁGENES MIXTAS
-            ==========================================================*/
-            else {
-                $style = ($count == 3 && $loop->last)
-                    ? 'float:none; display:block; width:70%; margin:0 auto 20px;'
-                    : 'float:left; width:48%; margin:0 1% 20px;';
-            }
-        @endphp
 
+            <div style="{{ $style }}">
+                
+                {{-- TITULO + NUMERO SIEMPRE JUNTOS --}}
+                <div style="page-break-inside: avoid; break-inside: avoid;">
 
-        <div style="{{ $style }} text-align:center;">
+                    <p style="margin:0 0 6px; font-size:10pt; line-height:1.2;">
+                        <b>Imagen {{ $globalImageNumber++ }}</b><br>
+                        <i>{{ $img['leyenda'] }}</i>
+                    </p>
 
-            {{-- Leyenda --}}
-            <p style="margin:0 0 6px; line-height:1.2;">
-                <b>Imagen {{ $imgNum++ }}</b><br>
-                <i>{{ $img['leyenda'] }}</i>
-            </p>
+                    {{-- IMAGEN --}}
+                    @if ($isOne)
+                        <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                             style="
+                                width:auto;
+                                height:auto;
+                                max-width:90%;
+                                max-height:800px;
+                                object-fit:contain;
+                             ">
+                    @else
+                        <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                             style="width:100%; height:auto; object-fit:contain;">
+                    @endif
 
-            {{-- Imagen --}}
-            <img src="{{ storage_path('app/public/'.$img['src']) }}"
-                 style="width:100%; height:auto; object-fit:contain;">
-        </div>
+                </div>
 
-        {{-- Clear para 2 imágenes --}}
-        @if ($count === 2 && $loop->iteration == 2)
-            <div style="clear:both;"></div>
-        @endif
+            </div>
 
-        {{-- Limpiar en caso de horizontales --}}
-        @if ($allH && ($loop->iteration % 2) == 0 && !($loop->last && $count == 3))
-            <div style="clear:both;"></div>
-        @endif
+        @endforeach
 
-    @endforeach
+    </div>
 
-    <div style="clear:both;"></div>
+@endforeach
+
 </div>
 @endif
+
+
 
 
 
@@ -310,213 +372,268 @@
 
                                 {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
 @php
-    $imgs = [];
+/*****************************************************************
+    0) CONTADOR GLOBAL UNA SOLA VEZ
+*****************************************************************/
+if (!isset($globalImageNumber)) {
+    $globalImageNumber = 1;
+}
 
-    /* ==========================================================
-        1) IMÁGENES SUELTAS (img1, img2, img3)
-    ==========================================================*/
-    foreach (['img1','img2','img3'] as $i) {
-        if (!empty($cont->{$i})) {
-            $path = storage_path('app/public/'.$cont->{$i});
-            $size = @getimagesize($path);
-            $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
+/*****************************************************************
+    1) RECOLECTAR TODAS LAS IMÁGENES
+*****************************************************************/
+$imgs = [];
 
-            $imgs[] = [
-                'src'          => $cont->{$i},
-                'leyenda'      => $cont->{'leyenda'.substr($i, -1)},
-                'orden_imagen' => null,   // estas no tienen orden
-                'o'            => $ori,
-            ];
-        }
+// Imágenes sueltas
+foreach (['img1','img2','img3'] as $i) {
+    if (!empty($cont->{$i})) {
+        $full = storage_path('app/public/'.$cont->{$i});
+        $size = @getimagesize($full);
+        $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
+
+        $imgs[] = [
+            'src' => $cont->{$i},
+            'leyenda' => $cont->{'leyenda'.substr($i,-1)} ?? '',
+            'orden_imagen' => 99998,
+            'o' => $ori,
+            'w' => $size[0] ?? 0,
+            'h' => $size[1] ?? 0
+        ];
+    }
+}
+
+// Imágenes JSON
+if (!empty($cont->img_block) && is_array($cont->img_block)) {
+    foreach ($cont->img_block as $bl) {
+        if (!isset($bl["src"])) continue;
+
+        $src = trim($bl["src"]);
+        $full = storage_path("app/public/".$src);
+        $size = @getimagesize($full);
+        $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
+
+        $imgs[] = [
+            'src' => $src,
+            'leyenda' => $bl["leyenda"] ?? '',
+            'orden_imagen' => $bl["orden_imagen"] ?? 99999,
+            'o' => $ori,
+            'w' => $size[0] ?? 0,
+            'h' => $size[1] ?? 0
+        ];
+    }
+}
+
+/*****************************************************************
+    2) ORDENAR TODAS LAS IMÁGENES
+*****************************************************************/
+usort($imgs, fn($a,$b)=>($a['orden_imagen']??99999) <=> ($b['orden_imagen']??99999));
+
+
+/*****************************************************************
+    3) AGRUPAR EN FILAS (NUEVA REGLA H–H SIEMPRE JUNTAS)
+*****************************************************************/
+$rows = [];
+$i = 0;
+$total = count($imgs);
+
+while ($i < $total) {
+
+    $img = $imgs[$i];
+    $next = $imgs[$i + 1] ?? null;
+
+    // ⚡ SI H–H SEGUIDAS → SIEMPRE JUNTAS
+    if ($img['o'] === 'h' && $next && $next['o'] === 'h') {
+
+        $rows[] = [$img, $next];
+
+        // saltar ambas sin duplicar
+        $i += 2;
+        continue;
     }
 
-    /* ==========================================================
-        2) IMÁGENES DE img_block (JSON)
-           Ejemplo del JSON:
-           [
-             { "src": "...", "leyenda": "...", "orden_imagen": 1 }
-           ]
-    ==========================================================*/
-    if ($cont->img_block && is_array($cont->img_block)) {
-        foreach ($cont->img_block as $bl) {
-            if (!empty($bl["src"])) {
-                $path = storage_path("app/public/".$bl["src"]);
-                $size = @getimagesize($path);
-                $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
+    // ⚡ REGLA NORMAL (slots)
+    $slot = ($img['o'] === 'h') ? 2 : 1;
 
-                $imgs[] = [
-                    'src'          => $bl["src"],
-                    'leyenda'      => $bl["leyenda"] ?? '',
-                    'orden_imagen' => $bl["orden_imagen"] ?? 99999,
-                    'o'            => $ori,
-                ];
-            }
+    if ($slot == 2) {
+        // una horizontal sola
+        $rows[] = [$img];
+    } else {
+        // vertical, intentar agrupar hasta 3
+        $row = [$img];
+        $taken = 1;
+
+        // meter verticales seguidas
+        $j = $i + 1;
+        while ($j < $total && $taken < 3 && $imgs[$j]['o'] === 'v') {
+            $row[] = $imgs[$j];
+            $taken++;
+            $j++;
         }
+
+        $i = $j - 1;
+        $rows[] = $row;
     }
 
-    /* ==========================================================
-        3) ORDENAR RESPETANDO orden_imagen
-    ==========================================================*/
-    usort($imgs, function ($a, $b) {
-        $oa = $a['orden_imagen'] ?? 99999;
-        $ob = $b['orden_imagen'] ?? 99999;
-        return $oa <=> $ob;
-    });
+    $i++;
+}
 
-    /* ==========================================================
-        4) DETECTAR ORIENTACIÓN Y REGLAS
-    ==========================================================*/
-    $count = count($imgs);
-    $allV = $count && collect($imgs)->every(fn($x) => $x['o'] === 'v');
-    $allH = $count && collect($imgs)->every(fn($x) => $x['o'] === 'h');
-
-    $imgNum = 1;
 @endphp
 
 
-@if ($count)
-    <div style="margin-top:25px; text-align:center; overflow:hidden;">
 
-        @foreach ($imgs as $img)
+@if (count($rows))
+<div style="margin-top:25px; overflow:hidden; width:100%;">
+
+
+{{-- ============================================================
+     4) IMPRIMIR CADA FILA (NUMERO + TITULO + IMAGEN SIEMPRE JUNTOS)
+============================================================ --}}
+@foreach ($rows as $row)
+
+    @php
+        $isOne = count($row) == 1;
+        $isTwoH = (count($row)==2 && $row[0]['o']=='h' && $row[1]['o']=='h');
+    @endphp
+
+    <div style="width:100%; text-align:center; margin-bottom:25px;">
+
+        @foreach ($row as $img)
+
             @php
-                // ============================
-                // Reglas de acomodo
-                // ============================
-                if ($count === 1) {
-                    $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+                if ($isOne) {
+                    $style = "
+                        display:inline-block;
+                        width:auto;
+                        max-width:90%;
+                        max-height:800px;
+                        margin:25px auto;
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                        text-align:center;
+                    ";
                 }
-                elseif ($allV) {
-                    $style = 'float:left; width:32%; margin:0 1% 12px;';
-                }
-                elseif ($allH) {
-                    if ($count == 2) {
-                        $style = 'float:left; width:48%; margin:0 1% 12px;';
-                    } elseif ($count == 3 && $loop->last) {
-                        $style = 'float:none; display:block; width:70%; margin:0 auto 12px;';
-                    } else {
-                        $style = 'float:left; width:48%; margin:0 1% 12px;';
-                    }
+                elseif ($isTwoH) {
+                    $style = "
+                        display:inline-block;
+                        width:48%;
+                        margin:25px 1% 20px;
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                        text-align:center;
+                    ";
                 }
                 else {
-                    $style = ($count == 3 && $loop->last)
-                        ? 'float:none; display:block; width:70%; margin:0 auto 12px;'
-                        : 'float:left; width:48%; margin:0 1% 12px;';
+                    // verticales o mezcla
+                    $w = ($img['o']=='h') ? "48%" : "32%";
+                    $style = "
+                        display:inline-block;
+                        width:{$w};
+                        margin:25px 1% 20px;
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                        text-align:center;
+                    ";
                 }
             @endphp
 
-            <div style="{{ $style }} text-align:center;">
-                
-                {{-- Leyenda --}}
-                <p style="margin:0 0 6px; line-height:1.2;">
-                    <b>Imagen {{ $imgNum++ }}</b><br>
-                    <i>{{ $img['leyenda'] }}</i>
-                </p>
 
-                {{-- Imagen --}}
-                <img src="{{ storage_path('app/public/'.$img['src']) }}"
-                     style="width:100%; height:auto; object-fit:contain;">
+            <div style="{{ $style }}">
+                
+                {{-- TITULO + NUMERO SIEMPRE JUNTOS --}}
+                <div style="page-break-inside: avoid; break-inside: avoid;">
+
+                    <p style="margin:0 0 6px; font-size:10pt; line-height:1.2;">
+                        <b>Imagen {{ $globalImageNumber++ }}</b><br>
+                        <i>{{ $img['leyenda'] }}</i>
+                    </p>
+
+                    {{-- IMAGEN --}}
+                    @if ($isOne)
+                        <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                             style="
+                                width:auto;
+                                height:auto;
+                                max-width:90%;
+                                max-height:800px;
+                                object-fit:contain;
+                             ">
+                    @else
+                        <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                             style="width:100%; height:auto; object-fit:contain;">
+                    @endif
+
+                </div>
+
             </div>
 
-            {{-- Salto en horizontales --}}
-            @if ($allH && ($loop->iteration % 2) == 0 && !($loop->last && $count == 3))
-                <div style="clear:both;"></div>
-            @endif
         @endforeach
 
-        <div style="clear:both;"></div>
     </div>
+
+@endforeach
+
+</div>
 @endif
 
 
+
+
+
                                 <br>
-                                @if($cont->reportTitle->title_id==12)
-                                    <div style="page-break-before: always;">
-                                        <table class="w-full border-collapse font-sans" style="border:1px solid #001a4d; border-collapse:collapse;">
-                                            <thead>
-                                                <tr class=" border border-dotted border-white text-center">
-                                                    <td colspan="5" class="border border-dotted border-white px-1 p-4 font-bold" style="font-size: 10pt; font-weight:bold; background-color:#002060; color:white; text-align: center;">COTIZACIONES DE SISTEMAS TECNOLÓGICOS</td>
-                                                </tr>
-                                                <tr style="background-color:#002060; color:white; border:1px solid #001a4d; font-size: 10pt;">
-                                                <th style="border:1px solid #ffffffff; padding:8px; ">EMPRESA</th>
-                                                <th style="border:1px solid #ffffffff; padding:8px; ">CONCEPTO</th>
-                                                <th style="border:1px solid #ffffffff; padding:8px; ">CANT.</th>
-                                                <th style="border:1px solid #ffffffff; padding:8px; ">COSTO SIN IVA</th>
-                                                <th style="border:1px solid #ffffffff; padding:8px; ">COMENTARIOS</th>
-                                                </tr>
-                                            </thead>
+                                 @if($cont->reportTitle->title_id==12)
+                                    @if($cont->cotizaciones->count())
+                                            <div style="page-break-before: always;">
+                                                <table class="w-full border-collapse font-sans" style="border:1px solid #001a4d; border-collapse:collapse;">
+                                                    <thead>
+                                                        <tr class="border border-dotted border-white text-center">
+                                                            <td colspan="5" class="border border-dotted border-white px-1 p-4 font-bold"
+                                                                style="font-size: 10pt; background-color:#002060; color:white; text-align:center;">
+                                                                COTIZACIONES DE SISTEMAS TECNOLÓGICOS
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="background-color:#002060; color:white; border:1px solid #001a4d; font-size:10pt;">
+                                                            <th style="border:1px solid #ffffffff; padding:8px;">EMPRESA</th>
+                                                            <th style="border:1px solid #ffffffff; padding:8px;">CONCEPTO</th>
+                                                            <th style="border:1px solid #ffffffff; padding:8px;">CANT.</th>
+                                                            <th style="border:1px solid #ffffffff; padding:8px;">COSTO SIN IVA</th>
+                                                            <th style="border:1px solid #ffffffff; padding:8px;">COMENTARIOS</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($cont->cotizaciones as $empresa)
+                                                            @foreach($empresa->detalles as $index => $detalle)
+                                                                <tr style="background-color: {{ $empresa->color }};">
+                                                                    @if($index === 0)
+                                                                        <td rowspan="{{ $empresa->detalles->count() }}"
+                                                                            class="border font-semibold text-left align-top"
+                                                                            style="border:1px solid black; padding:8px; font-size:8pt;">
+                                                                            {{ $empresa->nombre }}
+                                                                        </td>
+                                                                    @endif
+                                                                    <td class="border text-left"
+                                                                        style="border:1px solid black; padding:8px; font-size:8pt;">
+                                                                        {{ $detalle->concepto }}
+                                                                    </td>
+                                                                    <td class="border text-center"
+                                                                        style="border:1px solid black; padding:8px; font-size:8pt;">
+                                                                        {{ $detalle->cantidad }}
+                                                                    </td>
+                                                                    <td class="border text-center"
+                                                                        style="border:1px solid black; padding:8px; font-size:8pt;">
+                                                                        {{ $detalle->costo }}
+                                                                    </td>
+                                                                    <td class="border text-center"
+                                                                        style="border:1px solid black; padding:8px; font-size:8pt;">
+                                                                        {{ $detalle->comentarios }}
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                    @endif
 
-                                            <tbody>
-                                                <!-- 🔹 Empresa 1 -->
-                                                <tr style="background-color: #949494ff;">
-                                                    <td rowspan="2" class="border p-2 font-semibold text-left align-top" style="border:1px solid black; padding:8px; font-size: 8pt;">JIG TECNOLOGÍAS INTEGRALES APLICADAS</td>
-                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• MÁQUINA DE INSPECCIÓN DE RX MODELO: ISD SG650S-4CVI / MARCA HIKVISION</td>
-                                                    <td class="border p-2 font-semibold" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">1</td>
-                                                    <td class="border p-2 font-semibold" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$37,120 USD<br>$742,400 MXN</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
-                                                </tr>
-                                                <tr style="background-color: #949494ff;">
-                                                    <td class="border p-2 text-left" style="border:1px solid black; font-size: 8pt; padding:8px;">• ARCO DETECTOR METALES MODELO: PD6500I / MARCA GARRETT</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$11,252 USD<br>$225,040 MXN</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
-                                                </tr>
-
-                                                <!-- 🔹 Empresa 2 -->
-                                                <tr style="background-color: #fdff97ff;">
-                                                    <td rowspan="4" class="border p-2 font-semibold text-left align-top" style="border:1px solid black; font-size: 8pt; padding:8px;">IMPACTO SISTEMAS Y COMUNICACIONES</td>
-                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• MÁQUINA DE INSPECCIÓN DE RX</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">1</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$363,940 MXN</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
-                                                </tr >
-                                                <tr style="background-color: #fdff97ff;">
-                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• ARCO DETECTOR METALES 18 ZONAS</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$49,928 MXN</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
-                                                </tr>
-                                                <tr style="background-color: #fdff97ff;">
-                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• CÁMARAS / NVR / PUERTOS / CABLEADO / ETC</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">31</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$252,732 MXN</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
-                                                </tr>
-                                                <tr style="background-color: #fdff97ff;">
-                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• CENTRO DE MONITOREO / NÚCLEO CEMENTO / ESTACIÓN DE TRABAJO / MONITOR 50” / SILLA / INSTALACIÓN ELÉCTRICA / PUERTA DE SEGURIDAD</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">1</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$52,400 MXN</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
-                                                </tr>
-
-                                                <!-- 🔹 Empresa 3 -->
-                                                <tr style="background-color: #9fece2ff;">
-                                                    <td rowspan="4" class="border p-2 font-semibold text-left align-top" style="border:1px solid #001a4d; font-size: 8pt; padding:8px;">CUSTODIA CORPORATIVA</td>
-                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• MÁQUINA DE INSPECCIÓN DE RX MODELO: AP5030</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">1</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$207,472 MXN</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
-                                                </tr>
-                                                <tr style="background-color: #9fece2ff;">
-                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• ARCO DETECTOR DE METALES MODELO: APWESC33 / 33 ZONAS</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$61,605 MXN</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">VENTA</td>
-                                                </tr>
-                                                <tr style="background-color: #9fece2ff;">
-                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• MÁQUINA DE INSPECCIÓN DE RX MODELO: AP5030</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$40,000 MXN</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">RENTA MENSUAL</td>
-                                                </tr>
-                                                <tr style="background-color: #9fece2ff;">
-                                                    <td class="border p-2 text-left" style="border:1px solid black; padding:8px; font-size: 8pt;">• ARCO DETECTOR DE METALES MODELO: APWESC33 / 33 ZONAS</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">2</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">$20,000 MXN</td>
-                                                    <td class="border p-2" style="border:1px solid black; text-align: center; padding:8px; font-size: 8pt;">RENTA MENSUAL</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
                                 @endif
                             @endif
                         @endforeach
