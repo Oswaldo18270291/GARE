@@ -18,10 +18,20 @@ if (! function_exists('title_case_except')) {
 
 if (! function_exists('limpiarHtml')) {
     function limpiarHtml($string) {
-        // Eliminar párrafos vacíos con &nbsp; o <br>
-        return preg_replace('/<p[^>]*>(&nbsp;|\s|<br\s*\/?>)*<\/p>/', '', $string);
+
+        // 1. Eliminar TODOS los <p> vacíos o con <br> / &nbsp;
+        $string = preg_replace('/<p[^>]*>(\s|&nbsp;|<br\s*\/?>)*<\/p>/i', '', $string);
+
+        // 2. Eliminar <p> vacíos al inicio del contenido
+        $string = preg_replace('/^\s*<p[^>]*>(\s|&nbsp;|<br\s*\/?>)*<\/p>/i', '', $string);
+
+        // 3. Eliminar espacios y saltos de línea en el inicio
+        $string = ltrim($string);
+
+        return $string;
     }
 }
+
 
 /**
  * Corrige la numeración de listas <ol> generadas por Quill
