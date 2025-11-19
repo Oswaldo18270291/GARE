@@ -1,4 +1,6 @@
 <div>
+@if($titulo===12)
+
 <div class="p-4">
     <table class="w-full border-collapse font-sans text-sm" style="border:1px solid #001a4d;">
         <thead>
@@ -185,7 +187,7 @@
         </button>
     </div>
 </div>
-
+@endif
     @foreach ($bloques as $i => $bloque)
         <div class="border rounded-lg p-4 bg-white shadow space-y-4 mb-4" style="border-color: #001a4d;">
             <div class="flex justify-between items-center">

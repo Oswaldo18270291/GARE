@@ -75,7 +75,7 @@
                         {{ $loop->iteration }}. {{ $title->title->nombre }}
                     </h2>
                     <div class="flex space-x-2">
-                        @if($title->title->id===12)
+                        @if($title->title->id===12 or $title->title->id===13)
                         <button
                             class="px-3 py-1 border border-emerald-600 rounded 
                                 text-emerald-600 
@@ -98,7 +98,7 @@
                             Agregar
                         </button>
                         @endif
-                          @if($title->title->id===12)
+                          @if($title->title->id===12 or $title->title->id===13)
                         <button 
                             class="px-3 py-1 border rounded 
                                 @if(\App\Models\Content::where('r_t_id', $title->id)->doesntExist()) 

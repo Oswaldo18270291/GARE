@@ -5,7 +5,7 @@
             <h1 class="text-white font-sans font-extrabold text-xl">{{$RTitle->title->nombre}}</h2>
         </div>
         @include('livewire.reports.botones-add.component_editc_extends',[
-                    'titulo' => $RTitle->title->nombre,
+                    'titulo' => $RTitle->title->id,
                     'boton' => $boton,
                 ])
     </form>

@@ -157,7 +157,7 @@ class Editc extends Component
                     $acciones = AccionSeguridad::where('content_id', $contenido->id)
                         ->orderBy('no')
                         ->get()
-                        ->groupBy('seccion')
+                        ->groupBy('tit')
                         ->toArray();
 
                     // Formatear a estructura esperada (por índice)

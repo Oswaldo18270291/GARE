@@ -7,7 +7,7 @@
         </div>
 
         @include('livewire.reports.botones-add.component_addc_extends',[
-                    'titulo' => $RTitle->title->nombre,
+                    'titulo' => $RTitle->title->id,
                     'boton' => $boton,
                 ])
     </form>

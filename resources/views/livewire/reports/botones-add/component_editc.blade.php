@@ -2178,6 +2178,7 @@ if (window.Livewire) {
                                 <option value="bajo">Bajo</option>
                                 <option value="medio">Medio</option>
                                 <option value="urgente">Urgente</option>
+                                <option value="N/A">N/A</option>
                             </select>
 
                         </td>
