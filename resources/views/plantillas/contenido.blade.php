@@ -52,6 +52,11 @@
                 font-weight: 300;
                 font-style: normal;
             }
+
+            p {
+                margin: 0 0 6px 0; /* espaciado normal entre párrafos */
+                line-height: 1.4; /* interlineado agradable */
+            }
             
         </style>
     </head>
@@ -95,11 +100,10 @@
                 @foreach ($reports->titles as $title)
                     <div>
                         {{-- Título --}}
-                        <a style="display: block; font-weight: bold;">
+                        <a style="display: block; font-weight: bold; margin-bottom: 10px;">
                             <span style="color: transparent; font-size: 0;">__MARKER_TITLE_{{ $title->id }}__</span>
                             {{ $loop->iteration }}. {{ title_case_except($title->title->nombre) }}
                         </a>
-                        <br>
                         @foreach ($title->content as $cont)
                             @if (empty(trim($cont->cont)))
                             
@@ -640,11 +644,10 @@ while ($i < $total) {
 
                         {{-- Subtítulos dentro del título --}}
                         @foreach ($title->subtitles as $subtitle)
-                            <a style="display: block; text-align: justify; font-weight: bold;">
+                            <a style="display: block; text-align: justify; font-weight: bold; margin-bottom: 10px;">
                                 <span style="color: transparent; font-size: 0;">__MARKER_SUBTITLE_{{ $subtitle->id }}__</span>
                                 {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($subtitle->subtitle->nombre) }}
                             </a>
-                            <br>
                             @foreach ($subtitle->content as $cont)
                                 @if (empty(trim($cont->cont)))
                                     @php
@@ -1389,6 +1392,7 @@ while ($i < $total) {
                                                                 case 'urgente': $bgColor = '#C00000'; $txtColor = 'white'; break;
                                                                 case 'medio': $bgColor = '#FFFF00'; $txtColor = 'black'; break;
                                                                 case 'bajo': $bgColor = '#00B0F0'; $txtColor = 'white'; break;
+                                                                case 'N/A': $bgColor = '#ffffffff'; $txtColor = 'white'; break;
                                                             }
                                                         @endphp
                                                         <tr>
@@ -1847,6 +1851,85 @@ while ($i < $total) {
                                  </div>
                                     @endif
 
+                                    @if ($cont->reportTitleSubtitle->subtitle_id == 38)
+                                        <style>
+                                            body { font-family: Helvetica, Arial, sans-serif; }
+                                            table { page-break-inside: avoid; }
+                                            tr { page-break-inside: avoid; }
+                                        </style>
+
+                                        {{-- 🔹 Encabezado --}}
+                                        <table style="width:100%; border-collapse:collapse; text-align:center; font-size:13px;">
+                                            <thead>
+                                                <tr style="background-color:#002060; color:white; font-weight:bold;">
+                                                    <th colspan="9" style="border:1px dotted white; padding:5px;">
+                                                        RECOMENDACIONES Y ACCIONES DE SEGURIDAD FÍSICA
+                                                    </th>
+                                                </tr>
+                                                <tr style="color:white; font-weight:bold;">
+                                                    <th style="background-color:#002060; border:1px dotted white; padding:4px;">ALTO /<br>URGENTE<br>LO ANTES POSIBLE</th>
+                                                    <th style="background-color:#C00000; border:1px dotted white; padding:4px;">URGENTE</th>
+                                                    <th style="background-color:#002060; border:1px dotted white;"> </th>
+                                                    <th style="background-color:#002060; border:1px dotted white; padding:4px;">MEDIANO /<br>IMPORTANTE<br>EN EL CORTO TIEMPO</th>
+                                                    <th style="background-color:#FFFF00; color:black; border:1px dotted white; padding:4px;">MEDIO</th>
+                                                    <th style="background-color:#002060; border:1px dotted white;"> </th>
+                                                    <th style="background-color:#002060; border:1px dotted white; padding:4px;">BAJO /<br>OBLIGATORIA<br>REALIZAR A MEDIANO PLAZO</th>
+                                                    <th style="background-color:#00B0F0; border:1px dotted white; padding:4px;">BAJO</th>
+                                                    <th style="background-color:#002060; border:1px dotted white;"> </th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+
+                                        {{-- 🔹 Contenido --}}
+                                        <table style="width:100%; border-collapse:collapse; text-align:center; font-size:12px; margin-top:2px;">
+                                            <thead>
+                                                <tr style="background-color:#002060; color:white;">
+                                                    <th style="border:1px dotted white; padding:4px; width:7%;">NO.</th>
+                                                    <th style="border:1px dotted white; padding:4px; width:20%;">TEMA</th>
+                                                    <th style="border:1px dotted white; padding:4px; width:50%;">ACCIÓN</th>
+                                                    <th style="border:1px dotted white; padding:4px; width:10%;">TIENE<br>COSTO</th>
+                                                    <th style="border:1px dotted white; padding:4px; width:13%;">NIVEL DE<br>PRIORIDAD</th>
+                                                </tr>
+                                            </thead>
+
+                                        <tbody>
+                                            @if (!empty($cont->accionSeguridad) && count($cont->accionSeguridad) > 0)
+                                                @foreach ($cont->accionSeguridad->keys() as $titulo)
+                                                    @php $temas = $cont->accionSeguridad[$titulo]; @endphp
+                                                    <tr style="background-color:#FDE9D9; font-weight:bold;">
+                                                        <td colspan="5" style="border:1px dotted black; padding:5px;">
+                                                            {{ strtoupper($titulo ?? 'SIN TÍTULO') }}
+                                                        </td>
+                                                    </tr>
+
+                                                    @foreach ($temas->sortBy('no') as $r)
+                                                        @php
+                                                            $bgColor = '';
+                                                            $txtColor = 'black';
+                                                            switch ($r->nivel_p) {
+                                                                case 'urgente': $bgColor = '#C00000'; $txtColor = 'white'; break;
+                                                                case 'medio': $bgColor = '#FFFF00'; $txtColor = 'black'; break;
+                                                                case 'bajo': $bgColor = '#00B0F0'; $txtColor = 'white'; break;
+                                                                case 'N/A': $bgColor = '#ffffffff'; $txtColor = 'white'; break;
+                                                            }
+                                                        @endphp
+                                                        <tr>
+                                                            <td style="border:1px dotted black; padding:4px;"></td>
+                                                            <td style="border:1px dotted black; padding:4px; text-align:left;">{{ $r->tema }}</td>
+                                                            <td style="border:1px dotted black; padding:4px; text-align:left;">{!! $r->accion !!}</td>
+                                                            <td style="border:1px dotted black; padding:4px; font-weight:bold;">{{ strtoupper($r->t_costo ?? '-') }}</td>
+                                                            <td style="border:1px dotted black; padding:4px; font-weight:bold; background-color:{{ $bgColor }}; color:{{ $txtColor }};">
+                                                                {{ strtoupper($r->nivel_p ?? '-') }}
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+
+                                        </table>
+                                        @endif
+
                                     @if ($cont->reportTitleSubtitle->subtitle_id==42)
                                         <table style="width: 100%; border-collapse: collapse; text-align: center; font-weight: bold;">
                                             <tr>
@@ -1928,11 +2011,10 @@ while ($i < $total) {
                             @endforeach
                             {{-- Secciones dentro del subtítulo --}}
                             @foreach ($subtitle->sections as $section)
-                                <a style="display: block; text-align: justify; font-weight: bold; text-indent: 0.88cm;">
+                                <a style="display: block; text-align: justify; font-weight: bold; text-indent: 0.88cm; margin-bottom: 10px;">
                                     <span style="color: transparent; font-size: 0;">__MARKER_SECTION_{{ $section->id }}__</span>
                                     {{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($section->section->nombre) }}
                                 </a>
-                                <br>
                                 @foreach ($section->content as $cont)
                                     @if (empty(trim($cont->cont)))
                                         @php
