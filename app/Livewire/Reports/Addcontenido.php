@@ -94,7 +94,7 @@ class Addcontenido extends Component
             $content = Content::where('r_t_id', $id)->first();
             $RTitle =ReportTitle::findOrFail($id);
 
-            if ($RTitle->title_id == 12) {
+            if ($RTitle->title_id == 12 or $RTitle->title_id == 13) {
             $contents = Content::where('r_t_id', $id)->get();
             foreach ($contents as $content) {
                 // Eliminar imágenes del JSON (img1)
