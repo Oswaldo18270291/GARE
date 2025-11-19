@@ -1202,6 +1202,41 @@ private function incrementarSupEnContenidos($contenidos, int $desde)
     }
 }
 
+/**
+ * ✏️ Actualiza el texto de una referencia existente
+ */
+public function actualizarReferencia(int $reportId, int $numero, string $nuevoTexto)
+{
+    $ref = ContentReference::query()
+        ->where('numero', $numero)
+        ->whereHas('content', function ($q) use ($reportId) {
+            $q->whereHas('reportTitle', fn($r) => $r->where('report_id', $reportId))
+              ->orWhereHas('reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId))
+              ->orWhereHas('reportTitleSubtitleSection.reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId));
+        })
+        ->first();
+
+    if ($ref) {
+        $ref->texto = $nuevoTexto;
+        $ref->save();
+
+        // Actualiza el array local para reflejar el cambio
+        $this->referencias = ContentReference::query()
+            ->whereHas('content', function ($q) use ($reportId) {
+                $q->whereHas('reportTitle', fn($r) => $r->where('report_id', $reportId))
+                  ->orWhereHas('reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId))
+                  ->orWhereHas('reportTitleSubtitleSection.reportTitleSubtitle.reportTitle', fn($r) => $r->where('report_id', $reportId));
+            })
+            ->orderBy('numero')
+            ->get()
+            ->map(fn($r) => ['num' => (int)$r->numero, 'texto' => $r->texto])
+            ->toArray();
+
+        return true;
+    }
+
+    return false;
+}
 
 
 

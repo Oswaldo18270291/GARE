@@ -173,9 +173,17 @@
                         const nuevoTexto = modal.querySelector('#refEditText').value.trim();
                         if (!nuevoTexto) return alert('Debes escribir un texto nuevo.');
                         const refObj = window.referenciasActuales.find(r => r.num == num);
-                        if (refObj) refObj.texto = nuevoTexto;
-                        await $wire.set('referencias', window.referenciasActuales);
-                        alert('Referencia actualizada ✅');
+                        if (refObj) {
+                            // 🔹 Actualiza en base de datos
+                            const ok = await $wire.call('actualizarReferencia', reporteId, parseInt(num,10), nuevoTexto);
+                            if (ok) {
+                                refObj.texto = nuevoTexto;
+                                await $wire.set('referencias', window.referenciasActuales);
+                                alert('Referencia actualizada correctamente ✅');
+                            } else {
+                                alert('⚠️ No se pudo actualizar la referencia.');
+                            }
+                        }
                         modal.classList.add('hidden');
                         return;
                     }
