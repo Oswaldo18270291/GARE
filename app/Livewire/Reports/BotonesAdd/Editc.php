@@ -1239,16 +1239,22 @@ public function actualizarReferencia(int $reportId, int $numero, string $nuevoTe
 }
 
 
-
     public function render()
     {
         return view('livewire.reports.botones-add.editc', [
-            'RTitle' => $this->RTitle,
-            'RSubtitle' => $this->RSubtitle,
-            'RSection' => $this->RSection,
-            'boton'  => $this->boton,
-            'rp'  => $this->rp,
-            'nodos '=> $this->nodos,
+            'RTitle'            => $this->RTitle,
+            'RSubtitle'         => $this->RSubtitle,
+            'RSection'          => $this->RSection,
+            'boton'             => $this->boton,
+            'rp'                => $this->rp,
+
+            // CORREGIDO: sin espacio
+            'nodos'             => $this->nodos,
+            'relaciones'        => $this->relaciones,
+
+            // CORREGIDO: nombres que el script necesita
+            'background_image'  => $this->backgroundImage,
+            'background_opacity'=> $this->background_opacity,
         ]);
     }
 }
