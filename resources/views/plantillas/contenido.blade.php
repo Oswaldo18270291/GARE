@@ -34,7 +34,7 @@
             margin-top: 120px; /* mismo alto aproximado que ocupa tu header */
             margin-left: 2.5cm;  /* 👈 margen oficial de 2.5 cm */
             margin-right: 2.5cm;
-            margin-bottom: 2.5cm;
+            margin-bottom: 3cm;
             font-family: 'Arial Nova Light', Arial, sans-serif;
             }
 
@@ -100,7 +100,7 @@
                 @foreach ($reports->titles as $title)
                     <div>
                         {{-- Título --}}
-                        <a style="display: block; font-weight: bold; margin-bottom: 10px;">
+                        <a style="display: block; font-weight: bold; margin-bottom: 4px;">
                             <span style="color: transparent; font-size: 0;">__MARKER_TITLE_{{ $title->id }}__</span>
                             {{ $loop->iteration }}. {{ title_case_except($title->title->nombre) }}
                         </a>
@@ -644,7 +644,7 @@ while ($i < $total) {
 
                         {{-- Subtítulos dentro del título --}}
                         @foreach ($title->subtitles as $subtitle)
-                            <a style="display: block; text-align: justify; font-weight: bold; margin-bottom: 10px;">
+                            <a style="display: block; text-align: justify; font-weight: bold; margin-bottom: 4px;">
                                 <span style="color: transparent; font-size: 0;">__MARKER_SUBTITLE_{{ $subtitle->id }}__</span>
                                 {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($subtitle->subtitle->nombre) }}
                             </a>
@@ -1281,10 +1281,10 @@ while ($i < $total) {
                                         }
 
                                         /* Posiciones ancladas al círculo */
-                                        .fort-box { top: -50px; left: -120px; border-color: #F47B20; }
-                                        .deb-box  { top: -50px; right: -120px; border-color: #808285; }
-                                        .opo-box  { bottom: -50px; left: -120px; border-color: #0072BC; }
-                                        .ame-box  { bottom: -50px; right: -120px; border-color: #FDB913; }
+                                        .fort-box { top: -22px; left: -120px; border-color: #F47B20; }
+                                        .deb-box  { top: -22px; right: -120px; border-color: #808285; }
+                                        .opo-box  { bottom: -24px; left: -120px; border-color: #0072BC; }
+                                        .ame-box  { bottom: -24px; right: -120px; border-color: #FDB913; }
 
                                         .box ul {
                                             margin: 0;
@@ -2011,7 +2011,7 @@ while ($i < $total) {
                             @endforeach
                             {{-- Secciones dentro del subtítulo --}}
                             @foreach ($subtitle->sections as $section)
-                                <a style="display: block; text-align: justify; font-weight: bold; text-indent: 0.88cm; margin-bottom: 10px;">
+                                <a style="display: block; text-align: justify; font-weight: bold; text-indent: 0.88cm; margin-bottom: 4px;">
                                     <span style="color: transparent; font-size: 0;">__MARKER_SECTION_{{ $section->id }}__</span>
                                     {{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($section->section->nombre) }}
                                 </a>

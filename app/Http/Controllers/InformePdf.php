@@ -143,24 +143,50 @@ public function generar($id)
         $pageNumber++;
     }
 
-    // 🔹 Buscar referencias por página (usando content_id)
+        // 🔹 Buscar referencias por página escaneando el texto de cada página
+    //    (funciona aunque un tema se parta en varias hojas)
+
     $referenciasPorPagina = [];
 
-    foreach ($pdfParsed->getPages() as $pageNumber => $page) {
-        $text = $page->getText();
+    // 1) Traer TODAS las referencias del reporte, indexadas por su número
+    $refsReporte = \App\Models\ContentReference::whereHas('content', function ($q) use ($report) {
+        $q->whereHas('reportTitle', function ($r) use ($report) {
+                $r->where('report_id', $report->id);
+            })
+            ->orWhereHas('reportTitleSubtitle.reportTitle', function ($r) use ($report) {
+                $r->where('report_id', $report->id);
+            })
+            ->orWhereHas('reportTitleSubtitleSection.reportTitleSubtitle.reportTitle', function ($r) use ($report) {
+                $r->where('report_id', $report->id);
+            });
+    })->get()->keyBy('numero');  // índice por número de referencia
 
-        if (!empty($contentMarkers[$pageNumber + 1])) {
-            foreach ($contentMarkers[$pageNumber + 1] as $contentId) {
-                $refs = \App\Models\ContentReference::where('content_id', $contentId)->get();
+    // 2) Recorrer todas las páginas del PDF de contenido
+    foreach ($pdfParsed->getPages() as $index => $page) {
+        $pageNo = $index + 1;         // Smalot indexa desde 0, tus páginas empiezan en 1
+        $text   = $page->getText();
 
-                foreach ($refs as $ref) {
-                    if (strpos($text, '[' . $ref->numero . ']') !== false) {
-                        $referenciasPorPagina[$pageNumber + 1][] = '[' . $ref->numero . '] ' . $ref->texto;
+        // Buscar todos los patrones [n] en el texto de la página
+        if (preg_match_all('/\[(\d+)\]/', $text, $matches)) {
+            foreach ($matches[1] as $num) {
+                $num = (int) $num;
+
+                // ¿Existe una referencia con ese número en este reporte?
+                if (isset($refsReporte[$num])) {
+                    $ref = $refsReporte[$num];
+                    $cadena = '[' . $ref->numero . '] ' . $ref->texto;
+
+                    // Evitar duplicados en la misma página
+                    if (!isset($referenciasPorPagina[$pageNo]) ||
+                        !in_array($cadena, $referenciasPorPagina[$pageNo], true)) {
+
+                        $referenciasPorPagina[$pageNo][] = $cadena;
                     }
                 }
             }
         }
     }
+
 
     // 🔹 Generar las demás plantillas
     $pdfPortada = Pdf::loadView('plantillas.portada', ['reports' => $report])->output();
