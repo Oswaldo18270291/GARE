@@ -894,9 +894,10 @@ public function guardarMapaMental()
         // 🔁 Actualiza el mapa sin tocar los demás enlaces
         $this->dispatch('actualizarMapa', nodos: $this->nodos, relaciones: $this->relaciones);
     }
-#[On('setBackground')]
+
 public function setBackground($base64)
 {
+    \Log::info("🔥 LLEGO A setBackground() correctamente");
     // 🧹 Si viene vacío, elimina el fondo actual
     if (empty($base64)) {
         if ($this->content) {
