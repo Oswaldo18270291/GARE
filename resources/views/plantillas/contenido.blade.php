@@ -1077,120 +1077,124 @@ if (count($currentRow)) {
                                             </tbody>
                                         </table>
                                     @endif   
-                                    @if($cont->reportTitleSubtitle->subtitle_id==17)
+      @if($cont->reportTitleSubtitle->subtitle_id==17)
+                                    <!-- BLOQUE ENTERO: INSEPARABLE -->
+                                <div style="border:1px solid black;">
+                                    <div style="
+                                        width:100%;
+                                        position:relative;
+                                        min-height:20px;
+                                        border-bottom:1px solid black;
+                                        page-break-inside: avoid !important;
+                                    ">
+                                        <div style="
+                                            width:25%;
+                                            background:#10284A;
+                                            color:white;
+                                            font-weight:bold;
+                                            padding:8px;
+                                            position:absolute;
+                                            top:0;
+                                            left:0;
+                                            bottom:0;
+                                            font-size:12px;
+                                            border_buttom:1px solid black;
+                                            background:#002060;
+                                            text-align:center;
+                                            font-weight:bold;
+                                        ">
+                                            ACCIONES DIVERSAS
+                                        </div>
 
-<!-- BLOQUE ENTERO: INSEPARABLE -->
-<div style="
-    width:100%;
-    border:1px solid black;
-    margin-bottom:20px;
-    position:relative;
-    page-break-inside: avoid !important;
-">
+                                        <div style="
+                                            margin-left:25%;
+                                            padding:8px;
+                                            overflow-wrap: break-word;
+                                            font-size:12px;
+                                            background:#002060;
+                                            color:white;
+                                            text-align:center;
+                                            font-weight:bold;
+                                            border-bottom:1px solid black;
+                                        ">
+                                            TRATAMIENTO GENERAL DE LOS RIESGOS IDENTIFICADOS
+                                        </div>
+                                    </div>
 
-    <!-- 🔵 ENCABEZADO -->
-    <div style="
-        background:#002060;
-        color:white;
-        padding:10px;
-        text-align:center;
-        font-weight:bold;
-        border-bottom:1px solid black;
-    ">
-        ACCIONES DIVERSAS <br>
-        TRATAMIENTO GENERAL DE LOS RIESGOS IDENTIFICADOS
-    </div>
+                                        <!-- ===================== FILA 1 ===================== -->
+                                    <div style="
+                                        width:100%;
+                                        position:relative;
+                                        min-height:20px;
+                                        border-bottom:1px solid black;
+                                        page-break-inside: avoid !important;
+                                    ">
 
-    <!-- ===================== FILA 1 ===================== -->
-    <div style="
-        width:100%;
-        position:relative;
-        min-height:20px;
-        border-bottom:1px solid black;
-        page-break-inside: avoid !important;
-    ">
+                                        <!-- 🟥 COLUMNA IZQUIERDA (BANDA) -->
+                                        <div style="
+                                            width:25%;
+                                            background:#10284A;
+                                            color:white;
+                                            font-weight:bold;
+                                            padding:8px;
+                                            position:absolute;
+                                            top:0;
+                                            left:0;
+                                            bottom:0;
+                                            border-bottom:1px solid black;
+                                        ">
+                                            Medidas preventivas actuales
+                                        </div>
 
-        <!-- 🟥 COLUMNA IZQUIERDA (BANDA) -->
-        <div style="
-            width:25%;
-            background:#10284A;
-            color:white;
-            font-weight:bold;
-            padding:8px;
-            position:absolute;
-            top:0;
-            left:0;
-            bottom:0;
-            border-right:1px solid black;
-        ">
-            Medidas preventivas actuales
-        </div>
+                                        <!-- 🟦 CONTENIDO A LA DERECHA -->
+                                        <div style="
+                                            margin-left:28%;
+                                            padding:8px;
+                                            overflow-wrap: break-word;
+                                            line-height:1.1;
+                                            font-size:10px;
+                                        ">
+                                        {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->contenido_m_p_a))) !!}
+                                        </div>
 
-        <!-- 🟦 CONTENIDO A LA DERECHA -->
-        <div style="
-            margin-left:28%;
-            padding:8px;
-            overflow-wrap: break-word;
-            line-height:1.1;
-            font-size:10px;
-        ">
-            {!! nl2br(
-                fix_quill_lists(
-                    convert_quill_indents_to_nested_lists(
-                        limpiarHtml($cont->contenido_m_p_a)
-                    )
-                )
-            ) !!}
-        </div>
+                                    </div>
 
-    </div>
-
-    <!-- ===================== FILA 2 ===================== -->
-    <div style="
-        width:100%;
-        position:relative;
-        page-break-inside: avoid !important;
-    ">
-
-        <!-- 🟥 COLUMNA IZQUIERDA (BANDA) -->
-        <div style="
-            width:25%;
-            background:#10284A;
-            color:white;
-            font-weight:bold;
-            padding:8px;
-            top:0;
-            left:0;
-            border-right:1px solid black;
-        ">
-            Acciones / Planes por realizar
-        </div>
-
-        <!-- 🟦 CONTENIDO A LA DERECHA -->
-        <div style="
-            margin-left:28%;
-            padding:8px;
-            overflow-wrap:break-word;
-            font-size:11px;
-        ">
-            {!! nl2br(
-                fix_quill_lists(
-                    convert_quill_indents_to_nested_lists(
-                        limpiarHtml($cont->contenido_a_p)
-                    )
-                )
-            ) !!}
-        </div>
-
-    </div>
-
-</div>
-
-
-
-
-
-                                    @endif
+                                        <!-- ===================== FILA 2 ===================== -->
+                                    <div style="
+                                        width:100%;
+                                        position:relative;
+                                        page-break-inside:auto !important;
+                                        border:1px solid black;
+                                    ">
+                                        <!-- 🟢 CONTENIDO CON “BANDA” IZQUIERDA SIMULADA -->
+                                        <div style="
+                                            padding:10px;
+                                            border-left:25px solid #10284A; /* 🟦 Simula la franja izquierda */
+                                            text-align:justify;
+                                            overflow-wrap:break-word;
+                                            font-size:10px;
+                                            line-height:1.3;
+                                            margin-left: 140px;
+                                            position: relative;
+                                        ">
+                                            <div style="
+                                                position: absolute;
+                                                top: 50%;
+                                                left: -110px;
+                                                transform: translate(-50%, -50%);
+                                                color: white;
+                                                align-items: center;  
+                                                font-size:15px;
+                                                font-weight:bold;
+                                                width: 20%;
+                                            ">
+                                                Acciones / Planes por realizar
+                                            </div>
+                                            {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->contenido_a_p))) !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
 
                                     @if ($cont->reportTitleSubtitle->subtitle_id==18)
                                     <table class="w-full border-collapse text-center text-sm font-sans" 
