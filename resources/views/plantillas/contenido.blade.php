@@ -120,198 +120,157 @@ if (!isset($globalImageNumber)) {
 *****************************************************************/
 $imgs = [];
 
-// Imágenes sueltas
+$addImage = function($src, $leyenda, $orden) use (&$imgs) {
+    $full = storage_path("app/public/".$src);
+    $size = @getimagesize($full);
+    $w = $size[0] ?? 800;
+    $h = $size[1] ?? 800;
+
+    // orientación + factor de espacio
+    $o = ($w > $h) ? "h" : "v";
+
+    // "peso" según tamaño:
+    // horizontal grande = 2 slots
+    // vertical normal = 1 slot
+    $slot = ($o === "h") ? 2 : 1;
+
+    $imgs[] = [
+        'src' => $src,
+        'leyenda' => $leyenda,
+        'orden_imagen' => $orden,
+        'o' => $o,
+        'w' => $w,
+        'h' => $h,
+        'slot' => $slot
+    ];
+};
+
+// imágenes sueltas
 foreach (['img1','img2','img3'] as $i) {
     if (!empty($cont->{$i})) {
-        $full = storage_path('app/public/'.$cont->{$i});
-        $size = @getimagesize($full);
-        $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
-
-        $imgs[] = [
-            'src' => $cont->{$i},
-            'leyenda' => $cont->{'leyenda'.substr($i,-1)} ?? '',
-            'orden_imagen' => 99998,
-            'o' => $ori,
-            'w' => $size[0] ?? 0,
-            'h' => $size[1] ?? 0
-        ];
+        $addImage(
+            $cont->{$i},
+            $cont->{'leyenda'.substr($i,-1)} ?? '',
+            99998
+        );
     }
 }
 
-// Imágenes JSON
+// imágenes json
 if (!empty($cont->img_block) && is_array($cont->img_block)) {
     foreach ($cont->img_block as $bl) {
-        if (!isset($bl["src"])) continue;
-
-        $src = trim($bl["src"]);
-        $full = storage_path("app/public/".$src);
-        $size = @getimagesize($full);
-        $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
-
-        $imgs[] = [
-            'src' => $src,
-            'leyenda' => $bl["leyenda"] ?? '',
-            'orden_imagen' => $bl["orden_imagen"] ?? 99999,
-            'o' => $ori,
-            'w' => $size[0] ?? 0,
-            'h' => $size[1] ?? 0
-        ];
+        if (!isset($bl['src'])) continue;
+        $addImage(
+            trim($bl['src']),
+            $bl['leyenda'] ?? '',
+            $bl['orden_imagen'] ?? 99999
+        );
     }
 }
 
 /*****************************************************************
-    2) ORDENAR TODAS LAS IMÁGENES
+    2) ORDENAR
 *****************************************************************/
 usort($imgs, fn($a,$b)=>($a['orden_imagen']??99999) <=> ($b['orden_imagen']??99999));
 
-
 /*****************************************************************
-    3) AGRUPAR EN FILAS (NUEVA REGLA H–H SIEMPRE JUNTAS)
+    3) AGRUPAR DINÁMICAMENTE POR FILA (SLOTS)
 *****************************************************************/
+
+// Una fila tiene capacidad máxima de: 4 slots
+// Ejemplos:
+// - H (2) + H (2) = fila llena
+// - H (2) + V (1) + V (1) = fila llena
+// - V (1)+V (1)+V (1) = 3 slots (válido)
+// - V (1)+V (1)+V (1)+V (1)=4 slots
+// - H (2) solo = válido
+
 $rows = [];
-$i = 0;
-$total = count($imgs);
+$currentRow = [];
+$currentSlots = 0;
 
-while ($i < $total) {
+foreach ($imgs as $img) {
 
-    $img = $imgs[$i];
-    $next = $imgs[$i + 1] ?? null;
-
-    // ⚡ SI H–H SEGUIDAS → SIEMPRE JUNTAS
-    if ($img['o'] === 'h' && $next && $next['o'] === 'h') {
-
-        $rows[] = [$img, $next];
-
-        // saltar ambas sin duplicar
-        $i += 2;
-        continue;
+    // Si no cabe en la fila actual => cerramos fila
+    if ($currentSlots + $img['slot'] > 4) {
+        $rows[] = $currentRow;
+        $currentRow = [];
+        $currentSlots = 0;
     }
 
-    // ⚡ REGLA NORMAL (slots)
-    $slot = ($img['o'] === 'h') ? 2 : 1;
+    $currentRow[] = $img;
+    $currentSlots += $img['slot'];
+}
 
-    if ($slot == 2) {
-        // una horizontal sola
-        $rows[] = [$img];
-    } else {
-        // vertical, intentar agrupar hasta 3
-        $row = [$img];
-        $taken = 1;
-
-        // meter verticales seguidas
-        $j = $i + 1;
-        while ($j < $total && $taken < 3 && $imgs[$j]['o'] === 'v') {
-            $row[] = $imgs[$j];
-            $taken++;
-            $j++;
-        }
-
-        $i = $j - 1;
-        $rows[] = $row;
-    }
-
-    $i++;
+if (count($currentRow)) {
+    $rows[] = $currentRow;
 }
 
 @endphp
 
-
-
 @if (count($rows))
-<div style="margin-top:25px; overflow:hidden; width:100%;">
+<div style="margin-top:10px; width:100%; overflow:hidden;">
 
-
-{{-- ============================================================
-     4) IMPRIMIR CADA FILA (NUMERO + TITULO + IMAGEN SIEMPRE JUNTOS)
-============================================================ --}}
 @foreach ($rows as $row)
 
-    @php
-        $isOne = count($row) == 1;
-        $isTwoH = (count($row)==2 && $row[0]['o']=='h' && $row[1]['o']=='h');
-    @endphp
+    {{-- 🔥 FILA DE IMÁGENES --}}
+    <div style="width:100%; overflow:hidden; margin-bottom:10px;">
 
-    <div style="width:100%; text-align:center; margin-bottom:25px;">
+        @php
+            $count = count($row);
+
+            if ($count === 1)      $width = "90%";
+            elseif ($count === 2) $width = "48%";
+            elseif ($count === 3) $width = "31%";
+            else                  $width = "23%";
+        @endphp
 
         @foreach ($row as $img)
 
             @php
-                if ($isOne) {
-                    $style = "
-                        display:inline-block;
-                        width:auto;
-                        max-width:90%;
-                        max-height:800px;
-                        margin:25px auto;
-                        page-break-inside: avoid;
-                        break-inside: avoid;
-                        text-align:center;
-                    ";
-                }
-                elseif ($isTwoH) {
-                    $style = "
-                        display:inline-block;
-                        width:48%;
-                        margin:25px 1% 20px;
-                        page-break-inside: avoid;
-                        break-inside: avoid;
-                        text-align:center;
-                    ";
-                }
-                else {
-                    // verticales o mezcla
-                    $w = ($img['o']=='h') ? "48%" : "32%";
-                    $style = "
-                        display:inline-block;
-                        width:{$w};
-                        margin:25px 1% 20px;
-                        page-break-inside: avoid;
-                        break-inside: avoid;
-                        text-align:center;
-                    ";
-                }
+                // Ajuste especial vertical
+                $wImg = ($img['o'] === 'v') ? "28%" : $width;
             @endphp
 
+            {{-- 🔥 TARJETA COMPLETA (TÍTULO + IMAGEN) --}}
+            <div style="
+                float:left;
+                width:{{ $wImg }};
+                margin:6px 0.6%;
+                text-align:center;
+                line-height:1.2;
+            ">
 
-            <div style="{{ $style }}">
-                
-                {{-- TITULO + NUMERO SIEMPRE JUNTOS --}}
-                <div style="page-break-inside: avoid; break-inside: avoid;">
+                {{-- Título SIEMPRE arriba y dentro --}}
+                <p style="
+                    margin:0 0 4px 0;
+                    font-size:11pt;
+                ">
+                    <b>Imagen {{ $globalImageNumber++ }}</b><br>
+                    <i>{{ $img['leyenda'] }}</i>
+                </p>
 
-                    <p style="margin:0 0 6px; font-size:10pt; line-height:1.2;">
-                        <b>Imagen {{ $globalImageNumber++ }}</b><br>
-                        <i>{{ $img['leyenda'] }}</i>
-                    </p>
-
-                    {{-- IMAGEN --}}
-                    @if ($isOne)
-                        <img src="{{ storage_path('app/public/'.$img['src']) }}"
-                             style="
-                                width:auto;
-                                height:auto;
-                                max-width:90%;
-                                max-height:800px;
-                                object-fit:contain;
-                             ">
-                    @else
-                        <img src="{{ storage_path('app/public/'.$img['src']) }}"
-                             style="width:100%; height:auto; object-fit:contain;">
-                    @endif
-
-                </div>
-
+                {{-- IMAGEN --}}
+                <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                    style="
+                        width:100%;
+                        height:auto;
+                        max-height:550px;
+                        object-fit:contain;
+                        display:block;
+                        margin:0 auto;
+                    ">
             </div>
 
         @endforeach
 
+        <div style="clear:both;"></div>
     </div>
 
 @endforeach
 
 </div>
 @endif
-
-
 
 
 
@@ -388,185 +347,170 @@ if (!isset($globalImageNumber)) {
 *****************************************************************/
 $imgs = [];
 
-// Imágenes sueltas
+$addImage = function($src, $leyenda, $orden) use (&$imgs) {
+    $full = storage_path("app/public/".$src);
+    $size = @getimagesize($full);
+    $w = $size[0] ?? 800;
+    $h = $size[1] ?? 800;
+
+    // orientación + factor de espacio
+    $o = ($w > $h) ? "h" : "v";
+
+    // "peso" según tamaño:
+    // horizontal grande = 2 slots
+    // vertical normal = 1 slot
+    $slot = ($o === "h") ? 2 : 1;
+
+    $imgs[] = [
+        'src' => $src,
+        'leyenda' => $leyenda,
+        'orden_imagen' => $orden,
+        'o' => $o,
+        'w' => $w,
+        'h' => $h,
+        'slot' => $slot
+    ];
+};
+
+// imágenes sueltas
 foreach (['img1','img2','img3'] as $i) {
     if (!empty($cont->{$i})) {
-        $full = storage_path('app/public/'.$cont->{$i});
-        $size = @getimagesize($full);
-        $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
-
-        $imgs[] = [
-            'src' => $cont->{$i},
-            'leyenda' => $cont->{'leyenda'.substr($i,-1)} ?? '',
-            'orden_imagen' => 99998,
-            'o' => $ori,
-            'w' => $size[0] ?? 0,
-            'h' => $size[1] ?? 0
-        ];
+        $addImage(
+            $cont->{$i},
+            $cont->{'leyenda'.substr($i,-1)} ?? '',
+            99998
+        );
     }
 }
 
-// Imágenes JSON
+// imágenes json
 if (!empty($cont->img_block) && is_array($cont->img_block)) {
     foreach ($cont->img_block as $bl) {
-        if (!isset($bl["src"])) continue;
-
-        $src = trim($bl["src"]);
-        $full = storage_path("app/public/".$src);
-        $size = @getimagesize($full);
-        $ori  = ($size && $size[0] > $size[1]) ? 'h' : 'v';
-
-        $imgs[] = [
-            'src' => $src,
-            'leyenda' => $bl["leyenda"] ?? '',
-            'orden_imagen' => $bl["orden_imagen"] ?? 99999,
-            'o' => $ori,
-            'w' => $size[0] ?? 0,
-            'h' => $size[1] ?? 0
-        ];
+        if (!isset($bl['src'])) continue;
+        $addImage(
+            trim($bl['src']),
+            $bl['leyenda'] ?? '',
+            $bl['orden_imagen'] ?? 99999
+        );
     }
 }
 
 /*****************************************************************
-    2) ORDENAR TODAS LAS IMÁGENES
+    2) ORDENAR
 *****************************************************************/
 usort($imgs, fn($a,$b)=>($a['orden_imagen']??99999) <=> ($b['orden_imagen']??99999));
 
-
 /*****************************************************************
-    3) AGRUPAR EN FILAS (NUEVA REGLA H–H SIEMPRE JUNTAS)
+    3) AGRUPAR DINÁMICAMENTE POR FILA (SLOTS)
 *****************************************************************/
+
+// Una fila tiene capacidad máxima de: 4 slots
+// Ejemplos:
+// - H (2) + H (2) = fila llena
+// - H (2) + V (1) + V (1) = fila llena
+// - V (1)+V (1)+V (1) = 3 slots (válido)
+// - V (1)+V (1)+V (1)+V (1)=4 slots
+// - H (2) solo = válido
+
 $rows = [];
-$i = 0;
-$total = count($imgs);
+$currentRow = [];
+$currentSlots = 0;
 
-while ($i < $total) {
+foreach ($imgs as $img) {
 
-    $img = $imgs[$i];
-    $next = $imgs[$i + 1] ?? null;
-
-    // ⚡ SI H–H SEGUIDAS → SIEMPRE JUNTAS
-    if ($img['o'] === 'h' && $next && $next['o'] === 'h') {
-
-        $rows[] = [$img, $next];
-
-        // saltar ambas sin duplicar
-        $i += 2;
-        continue;
+    // Si no cabe en la fila actual => cerramos fila
+    if ($currentSlots + $img['slot'] > 4) {
+        $rows[] = $currentRow;
+        $currentRow = [];
+        $currentSlots = 0;
     }
 
-    // ⚡ REGLA NORMAL (slots)
-    $slot = ($img['o'] === 'h') ? 2 : 1;
+    $currentRow[] = $img;
+    $currentSlots += $img['slot'];
+}
 
-    if ($slot == 2) {
-        // una horizontal sola
-        $rows[] = [$img];
-    } else {
-        // vertical, intentar agrupar hasta 3
-        $row = [$img];
-        $taken = 1;
-
-        // meter verticales seguidas
-        $j = $i + 1;
-        while ($j < $total && $taken < 3 && $imgs[$j]['o'] === 'v') {
-            $row[] = $imgs[$j];
-            $taken++;
-            $j++;
-        }
-
-        $i = $j - 1;
-        $rows[] = $row;
-    }
-
-    $i++;
+if (count($currentRow)) {
+    $rows[] = $currentRow;
 }
 
 @endphp
-
-
-
 @if (count($rows))
-<div style="margin-top:25px; overflow:hidden; width:100%;">
+<div style="margin-top:10px; overflow:hidden; width:100%;">
 
-
-{{-- ============================================================
-     4) IMPRIMIR CADA FILA (NUMERO + TITULO + IMAGEN SIEMPRE JUNTOS)
-============================================================ --}}
 @foreach ($rows as $row)
 
     @php
-        $isOne = count($row) == 1;
-        $isTwoH = (count($row)==2 && $row[0]['o']=='h' && $row[1]['o']=='h');
+        $count = count($row);
+
+        // Anchos base por número
+        if ($count === 1)      $width = "90%";
+        elseif ($count === 2) $width = "48%";
+        elseif ($count === 3) $width = "32%";  
+        else                  $width = "24%"; 
     @endphp
 
-    <div style="width:100%; text-align:center; margin-bottom:25px;">
+    <div style="width:100%; text-align:center; margin-bottom:5px;"> {{-- 🔥 espacio reducido --}}
 
         @foreach ($row as $img)
 
+            {{-- 🔥 TODA VERTICAL = 29% PARA FORZAR 3 POR FILA --}}
             @php
-                if ($isOne) {
-                    $style = "
-                        display:inline-block;
-                        width:auto;
-                        max-width:90%;
-                        max-height:800px;
-                        margin:25px auto;
-                        page-break-inside: avoid;
-                        break-inside: avoid;
-                        text-align:center;
-                    ";
-                }
-                elseif ($isTwoH) {
-                    $style = "
-                        display:inline-block;
-                        width:48%;
-                        margin:25px 1% 20px;
-                        page-break-inside: avoid;
-                        break-inside: avoid;
-                        text-align:center;
-                    ";
-                }
-                else {
-                    // verticales o mezcla
-                    $w = ($img['o']=='h') ? "48%" : "32%";
-                    $style = "
-                        display:inline-block;
-                        width:{$w};
-                        margin:25px 1% 20px;
-                        page-break-inside: avoid;
-                        break-inside: avoid;
-                        text-align:center;
-                    ";
+                if ($img['o'] === 'v') {
+                    $width = "29%";
                 }
             @endphp
 
+            <div style="
+                display:inline-block;
+                width:{{ $width }};
+                margin:6px 0.3%;         /* 🔥 MUCHO MENOS ESPACIO ENTRE IMÁGENES */
+                text-align:center;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            ">
 
-            <div style="{{ $style }}">
-                
-                {{-- TITULO + NUMERO SIEMPRE JUNTOS --}}
-                <div style="page-break-inside: avoid; break-inside: avoid;">
+                {{-- NÚMERO + LEYENDA (Siempre visibles) --}}
+                <div style="
+                    display:block !important;
+                    width:100%;
+                    text-align:center;
+                    background:white;
+                    position:relative;
+                    z-index:999 !important;
+                    padding-bottom:5px;
+                    page-break-inside: avoid;
+                    break-inside: avoid;
+                ">
 
-                    <p style="margin:0 0 6px; font-size:10pt; line-height:1.2;">
+                    {{-- 🔥 LEYENDA Y NÚMERO SIEMPRE ARRIBA --}}
+                    <p style="
+                        margin:0 0 6px;
+                        font-size:12pt;
+                        line-height:1.2;
+                        padding:4px 0;
+                        background:white;
+                        position:relative;
+                        z-index:1000 !important;
+                        display:block;
+                    ">
                         <b>Imagen {{ $globalImageNumber++ }}</b><br>
-                        <i>{{ $img['leyenda'] }}</i>
+                        <i>{{ $img['leyenda'] ?: ' ' }}</i>
                     </p>
 
-                    {{-- IMAGEN --}}
-                    @if ($isOne)
-                        <img src="{{ storage_path('app/public/'.$img['src']) }}"
-                             style="
-                                width:auto;
-                                height:auto;
-                                max-width:90%;
-                                max-height:800px;
-                                object-fit:contain;
-                             ">
-                    @else
-                        <img src="{{ storage_path('app/public/'.$img['src']) }}"
-                             style="width:100%; height:auto; object-fit:contain;">
-                    @endif
-
+                    {{-- 🔥 IMAGEN --}}
+                    <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                        style="
+                            width:100%;
+                            height:auto;
+                            max-height:620px;
+                            object-fit:contain;
+                            position:relative;
+                            z-index:900 !important;
+                            display:block;
+                            margin:0 auto;
+                        ">
                 </div>
+
 
             </div>
 
@@ -578,8 +522,6 @@ while ($i < $total) {
 
 </div>
 @endif
-
-
 
 
 
