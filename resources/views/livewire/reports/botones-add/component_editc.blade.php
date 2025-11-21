@@ -955,7 +955,7 @@ crearGrafico(dataInicial, tipoInicial);
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="40"
-                        height="Auto"
+                        height="40"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="#ffffffff"
@@ -1055,7 +1055,7 @@ function renderMapa() {
     };
 
     // === Fondo inicial ===
-    if (fondo && networkBackground) {
+    if (fondo && fondo.trim() !== "" && networkBackground) {
         networkBackground.style.backgroundImage = `url('${fondo}')`;
         networkBackground.style.opacity = opacidad;
     }
@@ -1179,6 +1179,13 @@ function renderMapa() {
         });
     }
 
+    // === Helper para obtener el componente Livewire actual ===
+    function getLivewireComponent() {
+        const el = document.querySelector('[wire\\:id]');
+        if (!el) return null;
+        return Livewire.find(el.getAttribute('wire:id'));
+    }
+
     // === Fondo personalizado (crear/editar) ===
     if (inputFondo) {
         inputFondo.addEventListener("change", (event) => {
@@ -1191,15 +1198,12 @@ function renderMapa() {
                 networkBackground.style.backgroundImage = `url('${imageUrl}')`;
                 networkBackground.style.opacity = "0.4";
 
-                if (window.Livewire) {
-                    const comps = Object.values(window.Livewire.components.componentsById || {});
-                    const comp = comps[0];
-                    if (comp) {
-                        comp.$wire.call('setBackground', imageUrl); // ✅ variable correcta
-                        console.log("✅ Fondo enviado correctamente (base64 detectado)");
-                    } else {
-                        console.warn("⚠️ No se encontró componente Livewire activo.");
-                    }
+                const comp = getLivewireComponent();
+                if (comp) {
+                    comp.call('setBackground', imageUrl);
+                    console.log("✅ Fondo enviado correctamente a Livewire");
+                } else {
+                    console.warn("⚠️ No se encontró componente Livewire activo.");
                 }
             };
             reader.readAsDataURL(file);
@@ -1209,13 +1213,11 @@ function renderMapa() {
     if (btnQuitarFondo) {
         btnQuitarFondo.addEventListener("click", () => {
             networkBackground.style.backgroundImage = "none";
-            if (window.Livewire) {
-                const comps = Object.values(window.Livewire.components.componentsById || {});
-                const comp = comps[0];
-                if (comp) {
-                    comp.$wire.call('setBackground', '');
-                    console.log("🧹 Fondo eliminado del componente Livewire.");
-                }
+
+            const comp = getLivewireComponent();
+            if (comp) {
+                comp.call('setBackground', '');
+                console.log("🧹 Fondo eliminado en Livewire.");
             }
         });
     }
@@ -1225,6 +1227,11 @@ function renderMapa() {
         rangoOpacidad.addEventListener("input", () => {
             const valor = rangoOpacidad.value / 100;
             networkBackground.style.opacity = valor.toString();
+
+            const comp = getLivewireComponent();
+            if (comp) {
+                comp.call('setOpacity', valor);
+            }
         });
     }
 
@@ -1237,15 +1244,8 @@ function renderMapa() {
 
 // === Hooks de Livewire ===
 document.addEventListener("livewire:load", renderMapa);
-window.Livewire.hook("element.updated", (el, component) => {
-    if (el.id && el.id.includes("network")) {
-        setTimeout(renderMapa, 300);
-    }
-});
 document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400));
 </script>
-
-
 
 
   <br>
