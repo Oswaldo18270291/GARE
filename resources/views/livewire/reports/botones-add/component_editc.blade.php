@@ -1863,7 +1863,7 @@ if (window.Livewire) {
                             }
                         });
 
-                        quill.root.innerHTML = @js($contenido ?? '');
+                        quill.root.innerHTML = @js($contenido_m_p_a ?? '');
 
                         quill.on('text-change', () => {
                             const html = quill.root.innerHTML;
@@ -1908,7 +1908,7 @@ if (window.Livewire) {
                         }
                     });
 
-                    quill.root.innerHTML = @js($contenido ?? '');
+                    quill.root.innerHTML = @js($contenido_a_p ?? '');
 
                     quill.on('text-change', () => {
                         const html = quill.root.innerHTML;

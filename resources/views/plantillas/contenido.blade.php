@@ -1078,32 +1078,117 @@ if (count($currentRow)) {
                                         </table>
                                     @endif   
                                     @if($cont->reportTitleSubtitle->subtitle_id==17)
-                                    <table class="w-full border-collapse text-center text-sm font-sans" style="border:1px solid black;">
-                                        <thead>
-                                        <tr style="background-color:#002060; color:white;">
-                                            <th class="border p-4 w-1/4">ACCIONES DIVERSAS</th>
-                                            <th class="border p-4 w-3/4">TRATAMIENTO GENERAL DE LOS RIESGOS IDENTIFICADOS</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td class="border p-2 bg-[#10284A] text-white align-top">
-                                            Medidas preventivas actuales
-                                            </td>
-                                            <td class="border p-2 align-top">
-                                            {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->contenido_m_p_a))) !!}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="border p-2 bg-[#10284A] text-white align-top">
-                                            Acciones / Planes por realizar
-                                            </td>
-                                            <td class="border p-2 align-top">
-                                                {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->contenido_a_p))) !!}   
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+
+<!-- BLOQUE ENTERO: INSEPARABLE -->
+<div style="
+    width:100%;
+    border:1px solid black;
+    margin-bottom:20px;
+    position:relative;
+    page-break-inside: avoid !important;
+">
+
+    <!-- 🔵 ENCABEZADO -->
+    <div style="
+        background:#002060;
+        color:white;
+        padding:10px;
+        text-align:center;
+        font-weight:bold;
+        border-bottom:1px solid black;
+    ">
+        ACCIONES DIVERSAS <br>
+        TRATAMIENTO GENERAL DE LOS RIESGOS IDENTIFICADOS
+    </div>
+
+    <!-- ===================== FILA 1 ===================== -->
+    <div style="
+        width:100%;
+        position:relative;
+        min-height:20px;
+        border-bottom:1px solid black;
+        page-break-inside: avoid !important;
+    ">
+
+        <!-- 🟥 COLUMNA IZQUIERDA (BANDA) -->
+        <div style="
+            width:25%;
+            background:#10284A;
+            color:white;
+            font-weight:bold;
+            padding:8px;
+            position:absolute;
+            top:0;
+            left:0;
+            bottom:0;
+            border-right:1px solid black;
+        ">
+            Medidas preventivas actuales
+        </div>
+
+        <!-- 🟦 CONTENIDO A LA DERECHA -->
+        <div style="
+            margin-left:28%;
+            padding:8px;
+            overflow-wrap: break-word;
+            line-height:1.1;
+            font-size:10px;
+        ">
+            {!! nl2br(
+                fix_quill_lists(
+                    convert_quill_indents_to_nested_lists(
+                        limpiarHtml($cont->contenido_m_p_a)
+                    )
+                )
+            ) !!}
+        </div>
+
+    </div>
+
+    <!-- ===================== FILA 2 ===================== -->
+    <div style="
+        width:100%;
+        position:relative;
+        page-break-inside: avoid !important;
+    ">
+
+        <!-- 🟥 COLUMNA IZQUIERDA (BANDA) -->
+        <div style="
+            width:25%;
+            background:#10284A;
+            color:white;
+            font-weight:bold;
+            padding:8px;
+            top:0;
+            left:0;
+            border-right:1px solid black;
+        ">
+            Acciones / Planes por realizar
+        </div>
+
+        <!-- 🟦 CONTENIDO A LA DERECHA -->
+        <div style="
+            margin-left:28%;
+            padding:8px;
+            overflow-wrap:break-word;
+            font-size:11px;
+        ">
+            {!! nl2br(
+                fix_quill_lists(
+                    convert_quill_indents_to_nested_lists(
+                        limpiarHtml($cont->contenido_a_p)
+                    )
+                )
+            ) !!}
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
 
                                     @endif
 

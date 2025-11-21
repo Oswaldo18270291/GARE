@@ -144,6 +144,10 @@ class Editc extends Component
     $this->riesgs = OrganigramaControl::where('content_id', $this->content->id)->get()->toArray();
 
     }
+        if ($subtitleId == 17) {
+            $this->contenido_m_p_a=$this->content->contenido_m_p_a;
+            $this->contenido_a_p=$this->content->contenido_a_p;
+    }
     if ($subtitleId == 33) {
     $this->riesgs = Foda::where('content_id', $this->content->id)->first();
         $this->fortalezas = $this->riesgs->fortalezas;
