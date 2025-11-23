@@ -1079,29 +1079,25 @@ if (count($currentRow)) {
                                     @endif   
       @if($cont->reportTitleSubtitle->subtitle_id==17)
                                     <!-- BLOQUE ENTERO: INSEPARABLE -->
-                                <div style="border:1px solid black;">
+                                <div style="border: 1px dotted black">
                                     <div style="
                                         width:100%;
                                         position:relative;
                                         min-height:20px;
-                                        border-bottom:1px solid black;
                                         page-break-inside: avoid !important;
+                                        border-bottom: 1px dotted black
                                     ">
                                         <div style="
-                                            width:25%;
-                                            background:#10284A;
+                                            width:24%;
+                                            background:#002060;
                                             color:white;
                                             font-weight:bold;
                                             padding:8px;
                                             position:absolute;
-                                            top:0;
-                                            left:0;
-                                            bottom:0;
                                             font-size:12px;
-                                            border_buttom:1px solid black;
-                                            background:#002060;
                                             text-align:center;
                                             font-weight:bold;
+                                            border-right: 1px dotted rgb(255, 255, 255)
                                         ">
                                             ACCIONES DIVERSAS
                                         </div>
@@ -1115,7 +1111,7 @@ if (count($currentRow)) {
                                             color:white;
                                             text-align:center;
                                             font-weight:bold;
-                                            border-bottom:1px solid black;
+                                            
                                         ">
                                             TRATAMIENTO GENERAL DE LOS RIESGOS IDENTIFICADOS
                                         </div>
@@ -1125,35 +1121,33 @@ if (count($currentRow)) {
                                     <div style="
                                         width:100%;
                                         position:relative;
-                                        min-height:20px;
-                                        border-bottom:1px solid black;
-                                        page-break-inside: avoid !important;
+                                        page-break-inside:auto !important;
                                     ">
-
-                                        <!-- 🟥 COLUMNA IZQUIERDA (BANDA) -->
-                                        <div style="
-                                            width:25%;
-                                            background:#10284A;
-                                            color:white;
-                                            font-weight:bold;
-                                            padding:8px;
-                                            position:absolute;
-                                            top:0;
-                                            left:0;
-                                            bottom:0;
-                                            border-bottom:1px solid black;
-                                        ">
-                                            Medidas preventivas actuales
-                                        </div>
-
                                         <!-- 🟦 CONTENIDO A LA DERECHA -->
                                         <div style="
-                                            margin-left:28%;
+                                            border-left:160px solid #002060;
                                             padding:8px;
-                                            overflow-wrap: break-word;
-                                            line-height:1.1;
+                                            text-align:justify;
+                                            overflow-wrap:break-word;
                                             font-size:10px;
+                                            line-height:1.3;
+                                            position: relative;
+                                            border-bottom: 1px dotted black
+
                                         ">
+                                            <div style="
+                                                position: absolute;
+                                                top: 15%;
+                                                left: -110px;
+                                                transform: translate(-50%, -50%);
+                                                color: rgb(255, 255, 255);
+                                                align-items: center;  
+                                                font-size:15px;
+                                                font-weight:bold;
+                                                width: 20%;
+                                            ">
+                                                Medidas preventivas actuales
+                                            </div>
                                         {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->contenido_m_p_a))) !!}
                                         </div>
 
@@ -1164,17 +1158,15 @@ if (count($currentRow)) {
                                         width:100%;
                                         position:relative;
                                         page-break-inside:auto !important;
-                                        border:1px solid black;
                                     ">
                                         <!-- 🟢 CONTENIDO CON “BANDA” IZQUIERDA SIMULADA -->
                                         <div style="
+                                            border-left:160px solid #002060;
                                             padding:10px;
-                                            border-left:25px solid #10284A; /* 🟦 Simula la franja izquierda */
                                             text-align:justify;
                                             overflow-wrap:break-word;
                                             font-size:10px;
                                             line-height:1.3;
-                                            margin-left: 140px;
                                             position: relative;
                                         ">
                                             <div style="
