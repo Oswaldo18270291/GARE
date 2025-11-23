@@ -212,65 +212,105 @@ if (count($currentRow)) {
 <div style="margin-top:10px; width:100%; overflow:hidden;">
 
 @foreach ($rows as $row)
+    @php
+        $count = count($row);
+    @endphp
 
-    {{-- 🔥 FILA DE IMÁGENES --}}
-    <div style="width:100%; overflow:hidden; margin-bottom:10px;">
-
-        @php
-            $count = count($row);
-
-            if ($count === 1)      $width = "90%";
-            elseif ($count === 2) $width = "48%";
-            elseif ($count === 3) $width = "31%";
-            else                  $width = "23%";
-        @endphp
+    {{-- 🔥 FILA DE IMÁGENES CENTRADA --}}
+    <div style="
+        width:100%;
+        text-align:center;
+        margin-bottom:10px;
+    ">
 
         @foreach ($row as $img)
 
             @php
-                // Ajuste especial vertical
-                $wImg = ($img['o'] === 'v') ? "28%" : $width;
+                /*****************************************************************
+                 * LÓGICA DE TAMAÑO DE CADA IMAGEN
+                 *****************************************************************/
+                $w = $img['w'] ?? 800;
+                $h = $img['h'] ?? 800;
+                $ratio = ($w > 0) ? ($h / $w) : 1;
+
+                if ($count === 1) {
+                    // 🟢 Una sola imagen
+                    if (abs($ratio - 1) < 0.1) {
+                        // 🔵 Cuadrada → ocupa toda la hoja
+                        $isFullPage = true;
+                        $wImg = '100%';
+                        $maxH = '100%';
+                    } else {
+                        // 🔶 Rectangular → casi toda la hoja
+                        $isFullPage = false;
+                        $wImg = '95%';
+                        $maxH = '680px';
+                    }
+                } else {
+                    // 🔹 Varias imágenes
+                    $isFullPage = false;
+                    if ($count === 2)      $wImg = '48%';
+                    elseif ($count === 3) $wImg = '31%';
+                    else                  $wImg = '23%';
+                    if (($img['o'] ?? 'h') === 'v') $wImg = '28%';
+                    $maxH = '550px';
+                }
             @endphp
 
             {{-- 🔥 TARJETA COMPLETA (TÍTULO + IMAGEN) --}}
             <div style="
-                float:left;
+                display:{{ $isFullPage ? 'flex' : 'inline-block' }};
+                {{ $isFullPage ? 'align-items:center; justify-content:center; height:100vh;' : '' }}
+                vertical-align:top;
                 width:{{ $wImg }};
-                margin:6px 0.6%;
+                margin:{{ $isFullPage ? '0' : '6px 0.6%' }};
                 text-align:center;
                 line-height:1.2;
+                page-break-inside: avoid;
+                
             ">
 
-                {{-- Título SIEMPRE arriba y dentro --}}
-                <p style="
-                    margin:0 0 4px 0;
+                {{-- 🔹 TÍTULO Y NÚMERO --}}
+                @if (!$isFullPage)
+                <div style="
+                    display:block;
                     font-size:11pt;
+                    font-weight:bold;
+                    margin-bottom:4px;
+                    z-index:10;
+                    position:relative;
+                    
                 ">
-                    <b>Imagen {{ $globalImageNumber++ }}</b><br>
-                    <i>{{ $img['leyenda'] }}</i>
-                </p>
+                    Imagen {{ $globalImageNumber++ }}
+                    <div style="
+                        font-weight:normal;
+                        font-style:italic;
+                    ">
+                        {{ $img['leyenda'] }}
+                    </div>
+                </div>
+                @endif
 
-                {{-- IMAGEN --}}
+                {{-- 🖼️ IMAGEN --}}
                 <img src="{{ storage_path('app/public/'.$img['src']) }}"
                     style="
-                        width:100%;
+                        {{ $isFullPage ? 'max-width:95%; max-height:95%;' : 'max-width:100%; max-height:'.$maxH.';' }}
+                        width:auto;
                         height:auto;
-                        max-height:550px;
-                        object-fit:contain;
                         display:block;
                         margin:0 auto;
+                        object-fit:contain;
                     ">
             </div>
 
         @endforeach
-
-        <div style="clear:both;"></div>
     </div>
-
 @endforeach
-
 </div>
 @endif
+
+
+
 
 
 
