@@ -216,36 +216,44 @@ if (count($currentRow)) {
         $count = count($row);
     @endphp
 
-    {{-- 🔥 FILA DE IMÁGENES CENTRADA --}}
-    <div style="
-        width:100%;
-        text-align:center;
-        margin-bottom:10px;
-    ">
+    {{-- 🔥 FILA DE IMÁGENES --}}
+    <div style="width:100%; text-align:center; margin-bottom:10px;">
 
         @foreach ($row as $img)
-
             @php
-                /*****************************************************************
-                 * LÓGICA DE TAMAÑO DE CADA IMAGEN
-                 *****************************************************************/
+                /***************************************************************
+                 * LÓGICA DE TAMAÑO SEGÚN ORIENTACIÓN Y CANTIDAD
+                 ***************************************************************/
                 $w = $img['w'] ?? 800;
                 $h = $img['h'] ?? 800;
                 $ratio = ($w > 0) ? ($h / $w) : 1;
 
                 if ($count === 1) {
                     // 🟢 Una sola imagen
+                    $isFullPage = true;
+
                     if (abs($ratio - 1) < 0.1) {
                         // 🔵 Cuadrada → ocupa toda la hoja
-                        $isFullPage = true;
-                        $wImg = '100%';
-                        $maxH = '100%';
+                        $imgStyle = 'max-width:95%; max-height:95vh;';
+                    } elseif ($ratio > 1.1) {
+                        // 🟣 Vertical → ocupa toda la altura
+                        $imgStyle = 'max-height:95vh; width:auto;';
                     } else {
-                        // 🔶 Rectangular → casi toda la hoja
-                        $isFullPage = false;
-                        $wImg = '95%';
-                        $maxH = '680px';
+                        // 🟠 Horizontal → ocupa todo el ancho
+                        $imgStyle = 'max-width:95%; height:auto;';
                     }
+
+                    $containerStyle = '
+                        display:flex;
+                        flex-direction:column;
+                        align-items:center;
+                        justify-content:center;
+                        height:100vh;
+                        width:100%;
+                        page-break-before:always;
+                        text-align:center;
+                        page-break-inside:avoid;
+                    ';
                 } else {
                     // 🔹 Varias imágenes
                     $isFullPage = false;
@@ -253,61 +261,54 @@ if (count($currentRow)) {
                     elseif ($count === 3) $wImg = '31%';
                     else                  $wImg = '23%';
                     if (($img['o'] ?? 'h') === 'v') $wImg = '28%';
-                    $maxH = '550px';
+
+                    $imgStyle = 'max-width:100%; max-height:550px;';
+                    $containerStyle = "
+                        display:inline-block;
+                        vertical-align:top;
+                        width:$wImg;
+                        margin:6px 0.6%;
+                        text-align:center;
+                        line-height:1.2;
+                        page-break-inside:avoid;
+                    ";
                 }
             @endphp
 
-            {{-- 🔥 TARJETA COMPLETA (TÍTULO + IMAGEN) --}}
-            <div style="
-                display:{{ $isFullPage ? 'flex' : 'inline-block' }};
-                {{ $isFullPage ? 'align-items:center; justify-content:center; height:100vh;' : '' }}
-                vertical-align:top;
-                width:{{ $wImg }};
-                margin:{{ $isFullPage ? '0' : '6px 0.6%' }};
-                text-align:center;
-                line-height:1.2;
-                page-break-inside: avoid;
-                
-            ">
-
-                {{-- 🔹 TÍTULO Y NÚMERO --}}
-                @if (!$isFullPage)
+            {{-- 🖼️ BLOQUE COMPLETO (IMAGEN + LEYENDA) --}}
+            <div style="{{ $containerStyle }}">
+                                {{-- 🔹 LEYENDA Y NÚMERO (siempre visible) --}}
                 <div style="
-                    display:block;
+                    margin-top:8px;
                     font-size:11pt;
+                    padding-bottom:8px;
                     font-weight:bold;
-                    margin-bottom:4px;
-                    z-index:10;
-                    position:relative;
-                    
+                    text-align:center;
+                    width:90%;
+                    line-height:1.2;
                 ">
                     Imagen {{ $globalImageNumber++ }}
-                    <div style="
-                        font-weight:normal;
-                        font-style:italic;
-                    ">
+                    <div style="font-weight:normal; font-style:italic;">
                         {{ $img['leyenda'] }}
                     </div>
                 </div>
-                @endif
-
                 {{-- 🖼️ IMAGEN --}}
                 <img src="{{ storage_path('app/public/'.$img['src']) }}"
                     style="
-                        {{ $isFullPage ? 'max-width:95%; max-height:95%;' : 'max-width:100%; max-height:'.$maxH.';' }}
-                        width:auto;
-                        height:auto;
                         display:block;
                         margin:0 auto;
                         object-fit:contain;
+                        {{ $imgStyle }}
                     ">
-            </div>
 
+
+            </div>
         @endforeach
     </div>
 @endforeach
 </div>
 @endif
+
 
 
 
@@ -474,94 +475,107 @@ if (count($currentRow)) {
 }
 
 @endphp
+
 @if (count($rows))
-<div style="margin-top:10px; overflow:hidden; width:100%;">
+<div style="margin-top:10px; width:100%; overflow:hidden;">
 
 @foreach ($rows as $row)
-
     @php
         $count = count($row);
-
-        // Anchos base por número
-        if ($count === 1)      $width = "90%";
-        elseif ($count === 2) $width = "48%";
-        elseif ($count === 3) $width = "32%";  
-        else                  $width = "24%"; 
     @endphp
 
-    <div style="width:100%; text-align:center; margin-bottom:5px;"> {{-- 🔥 espacio reducido --}}
+    {{-- 🔥 FILA DE IMÁGENES --}}
+    <div style="width:100%; text-align:center; margin-bottom:10px;">
 
         @foreach ($row as $img)
-
-            {{-- 🔥 TODA VERTICAL = 29% PARA FORZAR 3 POR FILA --}}
             @php
-                if ($img['o'] === 'v') {
-                    $width = "29%";
+                /***************************************************************
+                 * LÓGICA DE TAMAÑO SEGÚN ORIENTACIÓN Y CANTIDAD
+                 ***************************************************************/
+                $w = $img['w'] ?? 800;
+                $h = $img['h'] ?? 800;
+                $ratio = ($w > 0) ? ($h / $w) : 1;
+
+                if ($count === 1) {
+                    // 🟢 Una sola imagen
+                    $isFullPage = true;
+
+                    if (abs($ratio - 1) < 0.1) {
+                        // 🔵 Cuadrada → ocupa toda la hoja
+                        $imgStyle = 'max-width:95%; max-height:95vh;';
+                    } elseif ($ratio > 1.1) {
+                        // 🟣 Vertical → ocupa toda la altura
+                        $imgStyle = 'max-height:95vh; width:auto;';
+                    } else {
+                        // 🟠 Horizontal → ocupa todo el ancho
+                        $imgStyle = 'max-width:95%; height:auto;';
+                    }
+
+                    $containerStyle = '
+                        display:flex;
+                        flex-direction:column;
+                        align-items:center;
+                        justify-content:center;
+                        height:100vh;
+                        width:100%;
+                        page-break-before:always;
+                        text-align:center;
+                        page-break-inside:avoid;
+                    ';
+                } else {
+                    // 🔹 Varias imágenes
+                    $isFullPage = false;
+                    if ($count === 2)      $wImg = '48%';
+                    elseif ($count === 3) $wImg = '31%';
+                    else                  $wImg = '23%';
+                    if (($img['o'] ?? 'h') === 'v') $wImg = '28%';
+
+                    $imgStyle = 'max-width:100%; max-height:550px;';
+                    $containerStyle = "
+                        display:inline-block;
+                        vertical-align:top;
+                        width:$wImg;
+                        margin:6px 0.6%;
+                        text-align:center;
+                        line-height:1.2;
+                        page-break-inside:avoid;
+                    ";
                 }
             @endphp
 
-            <div style="
-                display:inline-block;
-                width:{{ $width }};
-                margin:6px 0.3%;         /* 🔥 MUCHO MENOS ESPACIO ENTRE IMÁGENES */
-                text-align:center;
-                page-break-inside: avoid;
-                break-inside: avoid;
-            ">
-
-                {{-- NÚMERO + LEYENDA (Siempre visibles) --}}
+            {{-- 🖼️ BLOQUE COMPLETO (IMAGEN + LEYENDA) --}}
+            <div style="{{ $containerStyle }}">
+                                {{-- 🔹 LEYENDA Y NÚMERO (siempre visible) --}}
                 <div style="
-                    display:block !important;
-                    width:100%;
+                    margin-top:8px;
+                    padding-bottom:8px;
+                    font-size:11pt;
+                    font-weight:bold;
                     text-align:center;
-                    background:white;
-                    position:relative;
-                    z-index:999 !important;
-                    padding-bottom:5px;
-                    page-break-inside: avoid;
-                    break-inside: avoid;
+                    width:90%;
+                    line-height:1.2;
                 ">
-
-                    {{-- 🔥 LEYENDA Y NÚMERO SIEMPRE ARRIBA --}}
-                    <p style="
-                        margin:0 0 6px;
-                        font-size:12pt;
-                        line-height:1.2;
-                        padding:4px 0;
-                        background:white;
-                        position:relative;
-                        z-index:1000 !important;
-                        display:block;
-                    ">
-                        <b>Imagen {{ $globalImageNumber++ }}</b><br>
-                        <i>{{ $img['leyenda'] ?: ' ' }}</i>
-                    </p>
-
-                    {{-- 🔥 IMAGEN --}}
-                    <img src="{{ storage_path('app/public/'.$img['src']) }}"
-                        style="
-                            width:100%;
-                            height:auto;
-                            max-height:620px;
-                            object-fit:contain;
-                            position:relative;
-                            z-index:900 !important;
-                            display:block;
-                            margin:0 auto;
-                        ">
+                    Imagen {{ $globalImageNumber++ }}
+                    <div style="font-weight:normal; font-style:italic;">
+                        {{ $img['leyenda'] }}
+                    </div>
                 </div>
-
+                {{-- 🖼️ IMAGEN --}}
+                <img src="{{ storage_path('app/public/'.$img['src']) }}"
+                    style="
+                        display:block;
+                        margin:0 auto;
+                        object-fit:contain;
+                        {{ $imgStyle }}
+                    ">
 
             </div>
-
         @endforeach
-
     </div>
-
 @endforeach
-
 </div>
 @endif
+
 
 
 
