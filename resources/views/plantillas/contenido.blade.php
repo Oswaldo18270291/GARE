@@ -1997,7 +1997,7 @@ if (count($currentRow)) {
                         <tr>
                             <td style="border:1px dotted black; padding:4px;"></td>
                             <td style="border:1px dotted black; padding:4px; text-align:left;">{{ $r->tema }}</td>
-                            <td style="border:1px dotted black; padding:4px; text-align:left;">{!! fix_quill_lists(limpiarHtml($r->accion)) !!}</td>
+                            <td style="border:1px dotted black; padding:4px; text-align:left;">{!! fix_quill_lists_secondary_forced(limpiarHtml($r->accion)) !!}</td>
                             <td style="border:1px dotted black; padding:4px; font-weight:bold;">{{ strtoupper($r->t_costo ?? '-') }}</td>
                             <td style="border:1px dotted black; padding:4px; font-weight:bold; background-color:{{ $bgColor }}; color:{{ $txtColor }};">
                                 {{ strtoupper($r->nivel_p ?? '-') }}

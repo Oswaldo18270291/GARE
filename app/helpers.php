@@ -149,4 +149,46 @@ if (!function_exists('convert_quill_indents_to_nested_lists')) {
     }
 }
 
+if (!function_exists('fix_quill_lists_secondary_forced')) {
+    function fix_quill_lists_secondary_forced($html)
+    {
+        if (!$html) return $html;
+
+        libxml_use_internal_errors(true);
+        $dom = new DOMDocument();
+        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $html);
+
+        $xpath = new DOMXPath($dom);
+
+        // Buscar solo listas ordenadas <ol>
+        $ols = $xpath->query('//ol');
+
+        foreach ($ols as $ol) {
+            $items = $ol->getElementsByTagName('li');
+            $i = 1;
+            foreach ($items as $li) {
+                // Forzar numeración manual
+                $li->nodeValue = $i . '. ' . $li->nodeValue;
+                $i++;
+            }
+        }
+
+        $body = $dom->getElementsByTagName('body')->item(0);
+        $html = $dom->saveHTML($body);
+
+        // 🚨 OBLIGATORIO: anular numeración automática del contenido principal
+        $style = '
+            <style>
+                .sec-lista ol > li::before {
+                    content: "" !important;
+                }
+            </style>
+        ';
+
+        return $style . '<div class="sec-lista">' . $html . '</div>';
+    }
+}
+
+
+
 
