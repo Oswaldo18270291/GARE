@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const ocurrencias = def.risks.map(r => r.factor_oc);
     const colores = coloresByValue(ocurrencias);
     const tipo = def.tipo;
+    const titulo = def.titulo;
     const esCircular = ['pie','doughnut','polarArea'].includes(tipo);
 
     if (esCircular) {
@@ -92,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
           },
           plugins: {
-            title: { display: true, text: 'Gráfica de exposición general', color: '#000', font: { size: 14, family: 'Segoe UI' } },
+            title: { display: true, text: titulo, color: '#000', font: { size: 14, family: 'Segoe UI' } },
             legend: { display: true, position: 'bottom', labels: { color: '#000', font: { size: 10 } } },
             datalabels: {
               display: true,

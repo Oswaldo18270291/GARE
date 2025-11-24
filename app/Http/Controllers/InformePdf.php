@@ -315,7 +315,7 @@ public function generar($id)
             'subtitleId' => 32,
             'risks' => AnalysisDiagram::where('content_id', $co32->id)->orderBy('no')->get(),
             'tipo' => $co32->grafica ?? 'bar',
-        ];
+            'titulo' => 'Gráfica de exposición general',        ];
     }
 
     if ($co16) {
@@ -323,6 +323,7 @@ public function generar($id)
             'subtitleId' => 16,
             'risks' => AnalysisDiagram::where('content_id', $co32->id)->orderBy('no')->get(),
             'tipo' => $co16->grafica ?? 'bar',
+            'titulo' => 'Gráfica de % de probablilidad de ocurrencia',
         ];
     }
 

@@ -106,6 +106,61 @@
                         </a>
                         @foreach ($title->content as $cont)
                             @if (empty(trim($cont->cont)))
+                            @if($cont->reportTitle->title_id==12)
+                                    @if($cont->cotizaciones->count())
+                                            <div style="page-break-before: always;">
+                                                <table class="w-full border-collapse font-sans" style="border:1px solid #001a4d; border-collapse:collapse;">
+                                                    <thead>
+                                                        <tr class="border border-dotted border-white text-center">
+                                                            <td colspan="5" class="border border-dotted border-white px-1 p-4 font-bold"
+                                                                style="font-size: 10pt; background-color:#002060; color:white; text-align:center;">
+                                                                COTIZACIONES DE SISTEMAS TECNOLÓGICOS
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="background-color:#002060; color:white; border:1px solid #001a4d; font-size:10pt;">
+                                                            <th style="border:1px solid #ffffffff; padding:8px;">EMPRESA</th>
+                                                            <th style="border:1px solid #ffffffff; padding:8px;">CONCEPTO</th>
+                                                            <th style="border:1px solid #ffffffff; padding:8px;">CANT.</th>
+                                                            <th style="border:1px solid #ffffffff; padding:8px;">COSTO SIN IVA</th>
+                                                            <th style="border:1px solid #ffffffff; padding:8px;">COMENTARIOS</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($cont->cotizaciones as $empresa)
+                                                            @foreach($empresa->detalles as $index => $detalle)
+                                                                <tr style="background-color: {{ $empresa->color }};">
+                                                                    @if($index === 0)
+                                                                        <td rowspan="{{ $empresa->detalles->count() }}"
+                                                                            class="border font-semibold text-left align-top"
+                                                                            style="border:1px solid black; padding:8px; font-size:8pt;">
+                                                                            {{ $empresa->nombre }}
+                                                                        </td>
+                                                                    @endif
+                                                                    <td class="border text-left"
+                                                                        style="border:1px solid black; padding:8px; font-size:8pt;">
+                                                                        {{ $detalle->concepto }}
+                                                                    </td>
+                                                                    <td class="border text-center"
+                                                                        style="border:1px solid black; padding:8px; font-size:8pt;">
+                                                                        {{ $detalle->cantidad }}
+                                                                    </td>
+                                                                    <td class="border text-center"
+                                                                        style="border:1px solid black; padding:8px; font-size:8pt;">
+                                                                        {{ $detalle->costo }}
+                                                                    </td>
+                                                                    <td class="border text-center"
+                                                                        style="border:1px solid black; padding:8px; font-size:8pt;">
+                                                                        {{ $detalle->comentarios }}
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                    @endif
+
+                                @endif
                             
 @php
 /*****************************************************************
@@ -316,6 +371,9 @@ if (count($currentRow)) {
 
 
                                 <br>
+                            @else
+                                <span style="color:white; font-size:1px;">__MARKER_CONTENT_{{ $cont->id }}__</span>
+
                                 @if($cont->reportTitle->title_id==12)
                                     @if($cont->cotizaciones->count())
                                             <div style="page-break-before: always;">
@@ -371,10 +429,9 @@ if (count($currentRow)) {
                                     @endif
 
                                 @endif
-                            @else
-                                <span style="color:white; font-size:1px;">__MARKER_CONTENT_{{ $cont->id }}__</span>
-
+                                <br>
                                 {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
+
 @php
 /*****************************************************************
     0) CONTADOR GLOBAL UNA SOLA VEZ
@@ -580,70 +637,22 @@ if (count($currentRow)) {
 
 
                                 <br>
-                                 @if($cont->reportTitle->title_id==12)
-                                    @if($cont->cotizaciones->count())
-                                            <div style="page-break-before: always;">
-                                                <table class="w-full border-collapse font-sans" style="border:1px solid #001a4d; border-collapse:collapse;">
-                                                    <thead>
-                                                        <tr class="border border-dotted border-white text-center">
-                                                            <td colspan="5" class="border border-dotted border-white px-1 p-4 font-bold"
-                                                                style="font-size: 10pt; background-color:#002060; color:white; text-align:center;">
-                                                                COTIZACIONES DE SISTEMAS TECNOLÓGICOS
-                                                            </td>
-                                                        </tr>
-                                                        <tr style="background-color:#002060; color:white; border:1px solid #001a4d; font-size:10pt;">
-                                                            <th style="border:1px solid #ffffffff; padding:8px;">EMPRESA</th>
-                                                            <th style="border:1px solid #ffffffff; padding:8px;">CONCEPTO</th>
-                                                            <th style="border:1px solid #ffffffff; padding:8px;">CANT.</th>
-                                                            <th style="border:1px solid #ffffffff; padding:8px;">COSTO SIN IVA</th>
-                                                            <th style="border:1px solid #ffffffff; padding:8px;">COMENTARIOS</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach($cont->cotizaciones as $empresa)
-                                                            @foreach($empresa->detalles as $index => $detalle)
-                                                                <tr style="background-color: {{ $empresa->color }};">
-                                                                    @if($index === 0)
-                                                                        <td rowspan="{{ $empresa->detalles->count() }}"
-                                                                            class="border font-semibold text-left align-top"
-                                                                            style="border:1px solid black; padding:8px; font-size:8pt;">
-                                                                            {{ $empresa->nombre }}
-                                                                        </td>
-                                                                    @endif
-                                                                    <td class="border text-left"
-                                                                        style="border:1px solid black; padding:8px; font-size:8pt;">
-                                                                        {{ $detalle->concepto }}
-                                                                    </td>
-                                                                    <td class="border text-center"
-                                                                        style="border:1px solid black; padding:8px; font-size:8pt;">
-                                                                        {{ $detalle->cantidad }}
-                                                                    </td>
-                                                                    <td class="border text-center"
-                                                                        style="border:1px solid black; padding:8px; font-size:8pt;">
-                                                                        {{ $detalle->costo }}
-                                                                    </td>
-                                                                    <td class="border text-center"
-                                                                        style="border:1px solid black; padding:8px; font-size:8pt;">
-                                                                        {{ $detalle->comentarios }}
-                                                                    </td>
-                                                                </tr>
-                                                            @endforeach
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                    @endif
-
-                                @endif
                             @endif
                         @endforeach
 
                         {{-- Subtítulos dentro del título --}}
                         @foreach ($title->subtitles as $subtitle)
+                        @if($subtitle->id != 42)
                             <a style="display: block; text-align: justify; font-weight: bold; margin-bottom: 4px;">
                                 <span style="color: transparent; font-size: 0;">__MARKER_SUBTITLE_{{ $subtitle->id }}__</span>
                                 {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($subtitle->subtitle->nombre) }}
                             </a>
+                        @else
+                            <a style="display: block; text-align: justify; font-weight: bold; margin-bottom: 4px; page-break-before: always;">
+                                            <span style="color: transparent; font-size: 0;">__MARKER_SUBTITLE_{{ $subtitle->id }}__</span>
+                                            {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($subtitle->subtitle->nombre) }}
+                                        </a>
+                        @endif
                             @foreach ($subtitle->content as $cont)
                                 @if (empty(trim($cont->cont)))
                                     @php
@@ -974,49 +983,78 @@ if (count($currentRow)) {
                                     @endif
 
                                     @if($cont->reportTitleSubtitle->subtitle_id==15)
-                                        <table id="tabla" style=" border-collapse: collapse;">
-                                            <!-- Encabezado Cibernéticos -->
-                                            <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
-                                                <td colspan="2" style="padding: 4px;">Cibernéticos</td>
-                                            </tr>
-                                            <tbody id="ciberneticos" wire:ignore>
-                                                @foreach ($diagrama->where('tipo_riesgo', 'ciberneticos')->sortBy('orden') as $r)
-                                                    <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
-                                                        <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">{{ $r->orden }}</td>
-                                                        <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                            <!-- Encabezado Naturales -->
-                                            <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
-                                                <td colspan="2" style="padding: 4px;">Naturales</td>
-                                            </tr>
-                                            <tbody id="naturales" wire:ignore>
-                                                @foreach ($diagrama->where('tipo_riesgo', 'naturales')->sortBy('orden') as $r)
-                                                    <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
-                                                        <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">{{ $r->orden }}</td>
-                                                        <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                            <!-- Encabezado Sociales -->
-                                            <tr style="background-color: #0f4a75ff; font-weight: bold; color: white; border: 1px solid #000000ff;">
-                                                <td colspan="2" style="padding: 4px;">Sociales (Personas)</td>
-                                            </tr>
-                                            <tbody id="sociales" wire:ignore>
-                                                @foreach ($diagrama->where('tipo_riesgo', 'sociales')->sortBy('orden') as $r)
-                                                    <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
-                                                        <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;"">{{ $r->orden }}</td>
-                                                        <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    @endif
+<div style="width:100%;">
+    <table id="tabla" style="
+        border-collapse: collapse;
+        margin-left:auto;
+        margin-right:auto;
+        width: fit-content;
+    ">
+        <!-- Encabezado Cibernéticos -->
+        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
+            <td colspan="2" style="padding: 4px; font-size: 11pt;">Cibernéticos</td>
+        </tr>
 
+        <tbody id="ciberneticos" wire:ignore>
+            @foreach ($diagrama->where('tipo_riesgo', 'ciberneticos')->sortBy('orden') as $r)
+                <tr style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                    <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">
+                        {{ $r->orden }}
+                    </td>
+                    <td style="padding: 4px; font-size: 10pt;">
+                        {{ $r->no }} - {{ $r->riesgo }}
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+
+        <!-- Encabezado Naturales -->
+        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
+            <td colspan="2" style="padding: 4px; font-size: 11pt;">Naturales</td>
+        </tr>
+
+        <tbody id="naturales" wire:ignore>
+            @foreach ($diagrama->where('tipo_riesgo', 'naturales')->sortBy('orden') as $r)
+                <tr style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                    <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">
+                        {{ $r->orden }}
+                    </td>
+                    <td style="padding: 4px; font-size: 10pt;">
+                        {{ $r->no }} - {{ $r->riesgo }}
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+
+        <!-- Encabezado Sociales -->
+        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
+            <td colspan="2" style="padding: 4px; font-size: 11pt;">Sociales (Personas)</td>
+        </tr>
+
+        <tbody id="sociales" wire:ignore>
+            @foreach ($diagrama->where('tipo_riesgo', 'sociales')->sortBy('orden') as $r)
+                <tr style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                    <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">
+                        {{ $r->orden }}
+                    </td>
+                    <td style="padding: 4px; font-size: 10pt;">
+                        {{ $r->no }} - {{ $r->riesgo }}
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+<br>
+                                    @endif
                                         
                                      @if($cont->reportTitleSubtitle->subtitle_id==16)
-                                     {{--ACA VA LA OTRA GRAFICAAAAA --}}
+                                        @if(!empty($cont->img_grafica))
+                                            <div class="justify-center items-center bg-blue-100 place-items-center">
+                                                <img src="storage/{{ $cont->img_grafica }}" style="page-break-before: always; margin-top: 1.5cm;"/>
+                                            </div>
+                                        @endif
+                                        <br><br>
                                         <style>
                                             .bg-green { background-color: #15803d; }  /* Verde oscuro */
                                             .bg-yellow { background-color: #facc15; color: black; } /* Amarillo */
@@ -1028,7 +1066,7 @@ if (count($currentRow)) {
                                             .cell-red { background-color: #fecaca; }     /* Rojo claro */
                                             ul {
                                             margin: 0;
-                                            padding-left: 18px;
+                                            padding: 8px;
                                             }
 
                                             li {
@@ -1049,7 +1087,12 @@ if (count($currentRow)) {
                                         </style>
                                         <table style ="font-size: 11pt;">
                                             <thead>
-                                                <tr>
+                                                <tr style ="font-size: 11pt;">
+                                                    <th colspan="3" style="background-color: #0f4a75ff; color: white;">CARACTERÍSTICAS DE LOS RIESGOS</th>
+                                                </tr>
+                                            </thead>
+                                            <thead>
+                                                <tr style ="font-size: 11pt;">
                                                     <th class="bg-green">Rango Normal<br>(Zona de Seguridad)</th>
                                                     <th class="bg-yellow">Rango Intermedio<br>(Zona de Atención)</th>
                                                     <th class="bg-red">Rango de atención inmediata<br>(Zona intolerable)</th>
@@ -1065,7 +1108,7 @@ if (count($currentRow)) {
                                                         @if ($riesgosNormales->count() > 0)
                                                             <ul>
                                                                 @foreach ($riesgosNormales as $r)
-                                                                    <li style="text-align: justify; line-height: 1.4em;">{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                                    <li style="text-align: justify; line-height: 1.4em; font-size: 10pt;">{{ $r->no }} - {{ $r->riesgo }}</li>
                                                                 @endforeach
                                                             </ul>
                                                         @endif
@@ -1078,7 +1121,7 @@ if (count($currentRow)) {
                                                         @if ($riesgosIntermedios->count() > 0)
                                                             <ul>
                                                                 @foreach ($riesgosIntermedios as $r)
-                                                                    <li style="text-align: justify; line-height: 1.4em;">{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                                    <li style="text-align: justify; line-height: 1.4em;padding: 4px; font-size: 10pt;">{{ $r->no }} - {{ $r->riesgo }}</li>
                                                                 @endforeach
                                                             </ul>
                                                         @endif
@@ -1090,15 +1133,15 @@ if (count($currentRow)) {
                                                         @if ($riesgosInmediatos->count() > 0)
                                                             <ul>
                                                                 @foreach ($riesgosInmediatos as $r)
-                                                                    <li style="text-align: justify; line-height: 1.4em;">{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                                    <li style="text-align: justify; line-height: 1.4em; font-size: 10pt;">{{ $r->no }} - {{ $r->riesgo }}</li>
                                                                 @endforeach
                                                             </ul>
                                                         @endif
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="bg-green" style="line-height: 1.4em;">
-                                                        <p>
+                                                    <td class="bg-green" style="line-height: 1.4em; padding: 1px; text-align: justify; font-size: 10pt;">
+                                                        <p style="padding: 4px;">
                                                             Este rango representa riesgos de baja probabilidad y bajo impacto. Los eventos situados
                                                             en este rango normalmente se consideran aceptables y dentro de los límites normales de
                                                             operación. Las consecuencias, si ocurren, serían bajas y fácilmente controladas por la
@@ -1108,8 +1151,8 @@ if (count($currentRow)) {
                                                         </p>
                                                     </td>
 
-                                                    <td class="bg-yellow" style="line-height: 1.4em;">
-                                                        <p>
+                                                    <td class="bg-yellow" style="line-height: 1.4em; padding: 1px;text-align: justify; font-size: 10pt;">
+                                                        <p style="padding: 4px;">
                                                             En este rango, los riesgos presentan una probabilidad y/o impactos moderados. Los eventos
                                                             en el área intermedia requieren atención, ya que pueden causar perturbaciones
                                                             significativas en la operación, aunque no de manera catastrófica. Se recomiendan medidas
@@ -1118,8 +1161,8 @@ if (count($currentRow)) {
                                                         </p>
                                                     </td>
 
-                                                    <td class="bg-red" style="line-height: 1.4em;">
-                                                        <p>
+                                                    <td class="bg-red" style="line-height: 1.4em; padding: 1px;text-align: justify; font-size: 10pt;">
+                                                        <p style="padding: 4px;">
                                                             Este rango representa riesgos de alta probabilidad y/o alto impacto, siendo considerados
                                                             inaceptables y requieren intervención inmediata. Cualquier evento en este rango puede
                                                             causar graves consecuencias para la organización, comprometiendo seriamente sus objetivos
@@ -1130,7 +1173,8 @@ if (count($currentRow)) {
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    @endif   
+                                        <br><br>
+                                    @endif    
       @if($cont->reportTitleSubtitle->subtitle_id==17)
                                     <!-- BLOQUE ENTERO: INSEPARABLE -->
                                 <div style="border: 1px dotted black">
@@ -1191,7 +1235,7 @@ if (count($currentRow)) {
                                         ">
                                             <div style="
                                                 position: absolute;
-                                                top: 15%;
+                                                top: 5%;
                                                 left: -110px;
                                                 transform: translate(-50%, -50%);
                                                 color: rgb(255, 255, 255);
@@ -1247,27 +1291,27 @@ if (count($currentRow)) {
                                             style="border:1px solid #ffffffff; border-collapse:collapse;">
                                         <thead>
                                             <tr class="bg-[#002060] font-bold text-center border border-dotted border-white">
-                                                <td colspan="5" class="border border-dotted border-white px-1 p-4 font-bold text-white">ORGANIGRAMA DE CONTROLES GENERALES DE ACTUACIÓN</td>
+                                                <td colspan="5" class="border border-dotted border-white px-1 p-4 font-bold text-white" style="font-size:12px;">ORGANIGRAMA DE CONTROLES GENERALES DE ACTUACIÓN</td>
                                             </tr>
                                             <tr style="background-color:#002060; color:white; border:1px solid #001a4d;">
-                                            <th style="border:1px solid #ffffffff; padding:8px; width:5%;">No.</th>
-                                            <th style="border:1px solid #ffffffff; padding:8px; width:15%;">Tipo de Riesgo</th>
-                                            <th style="border:1px solid #ffffffff; padding:8px; width:25%;">Medidas preventivas actuales</th>
-                                            <th style="border:1px solid #ffffffff; padding:8px; width:40%;">Acciones / Planes por realizar</th>
-                                            <th style="border:1px solid #ffffffff; padding:8px; width:15%;">Estatus</th>
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:5%; font-size:12px;">No.</th>
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:15%; font-size:12px;">Tipo de Riesgo</th>
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:25%; font-size:12px;">Medidas preventivas actuales</th>
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:40%; font-size:12px;">Acciones / Planes por realizar</th>
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:15%; font-size:12px;">Estatus</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($cont->organigramaControls as $organigrama)
                                             <tr>
-                                                <td class="border p-1" style="border:1px solid #000000ff;">{{ $organigrama->no }}</td>
-                                                <td class="border p-1 text-left" style="border:1px solid #000000ff;">{{ $organigrama->riesgo}}</td>
+                                                <td class="border p-1" style="border:1px solid #000000ff; font-size:10px;">{{ $organigrama->no }}</td>
+                                                <td class="border p-1 text-left" style="border:1px solid #000000ff; font-size:10px;">{{ $organigrama->riesgo}}</td>
 
-                                                <td style="border:1px solid #000000ff; padding:6px;">
+                                                <td style="border:1px solid #000000ff; padding:6px; font-size:10px;">
                                                     {{ $organigrama->medidas_p }}
                                                 </td>
 
-                                                <td style="border:1px solid #000000ff; padding:6px;">
+                                                <td style="border:1px solid #000000ff; padding:6px; font-size:10px;">
                                                     {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($organigrama->acciones_planes)))) !!}
                                                 </td>
                                                 <td style="border:1px solid #000000ff; padding:6px;"></td>
@@ -1796,48 +1840,79 @@ if (count($currentRow)) {
                                     @endif
 
                                     @if($cont->reportTitleSubtitle->subtitle_id==15)
-                                        <table id="tabla" style=" border-collapse: collapse;">
-                                            <!-- Encabezado Cibernéticos -->
-                                            <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
-                                                <td colspan="2" style="padding: 4px;">Cibernéticos</td>
-                                            </tr>
-                                            <tbody id="ciberneticos" wire:ignore>
-                                                @foreach ($diagrama->where('tipo_riesgo', 'ciberneticos')->sortBy('orden') as $r)
-                                                    <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
-                                                        <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">{{ $r->orden }}</td>
-                                                        <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                            <!-- Encabezado Naturales -->
-                                            <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
-                                                <td colspan="2" style="padding: 4px;">Naturales</td>
-                                            </tr>
-                                            <tbody id="naturales" wire:ignore>
-                                                @foreach ($diagrama->where('tipo_riesgo', 'naturales')->sortBy('orden') as $r)
-                                                    <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
-                                                        <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">{{ $r->orden }}</td>
-                                                        <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                            <!-- Encabezado Sociales -->
-                                            <tr style="background-color: #0f4a75ff; font-weight: bold; color: white; border: 1px solid #000000ff;">
-                                                <td colspan="2" style="padding: 4px;">Sociales (Personas)</td>
-                                            </tr>
-                                            <tbody id="sociales" wire:ignore>
-                                                @foreach ($diagrama->where('tipo_riesgo', 'sociales')->sortBy('orden') as $r)
-                                                    <tr data-id="{{ $r->id }}" style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
-                                                        <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;"">{{ $r->orden }}</td>
-                                                        <td style="padding: 4px;">{{ $r->no }} - {{ $r->riesgo }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+ <div style="width:100%;">
+    <table id="tabla" style="
+        border-collapse: collapse;
+        margin-left:auto;
+        margin-right:auto;
+        width: fit-content;
+    ">
+        <!-- Encabezado Cibernéticos -->
+        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
+            <td colspan="2" style="padding: 4px; font-size: 11pt;">Cibernéticos</td>
+        </tr>
+
+        <tbody id="ciberneticos" wire:ignore>
+            @foreach ($diagrama->where('tipo_riesgo', 'ciberneticos')->sortBy('orden') as $r)
+                <tr style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                    <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">
+                        {{ $r->orden }}
+                    </td>
+                    <td style="padding: 4px; font-size: 10pt;">
+                        {{ $r->no }} - {{ $r->riesgo }}
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+
+        <!-- Encabezado Naturales -->
+        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
+            <td colspan="2" style="padding: 4px; font-size: 11pt;">Naturales</td>
+        </tr>
+
+        <tbody id="naturales" wire:ignore>
+            @foreach ($diagrama->where('tipo_riesgo', 'naturales')->sortBy('orden') as $r)
+                <tr style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                    <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">
+                        {{ $r->orden }}
+                    </td>
+                    <td style="padding: 4px; font-size: 10pt;">
+                        {{ $r->no }} - {{ $r->riesgo }}
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+
+        <!-- Encabezado Sociales -->
+        <tr style="background-color: #0f4a75ff; font-weight: bold; color:white; border: 1px solid #000000ff;">
+            <td colspan="2" style="padding: 4px; font-size: 11pt;">Sociales (Personas)</td>
+        </tr>
+
+        <tbody id="sociales" wire:ignore>
+            @foreach ($diagrama->where('tipo_riesgo', 'sociales')->sortBy('orden') as $r)
+                <tr style="border-bottom: 1px solid #000000ff; border-right: 1px solid #000000ff;">
+                    <td style="width: 40px; text-align: center; border-right: 1px solid #000000ff; border-left: 1px solid #000000ff; padding: 4px;">
+                        {{ $r->orden }}
+                    </td>
+                    <td style="padding: 4px; font-size: 10pt;">
+                        {{ $r->no }} - {{ $r->riesgo }}
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+<br>
                                     @endif
+                                    
 
                                     @if($cont->reportTitleSubtitle->subtitle_id==16)
-                                     {{--ACA VA LA OTRA GRAFICAAAAA --}}
+                                        @if(!empty($cont->img_grafica))
+                                            <div class="justify-center items-center bg-blue-100 place-items-center">
+                                                <img src="storage/{{ $cont->img_grafica }}" style="page-break-before: always; margin-top: 1.5cm;"/>
+                                            </div>
+                                        @endif
+                                        <br><br><br><br><br>
                                         <style>
                                             .bg-green { background-color: #15803d; }  /* Verde oscuro */
                                             .bg-yellow { background-color: #facc15; color: black; } /* Amarillo */
@@ -1849,7 +1924,7 @@ if (count($currentRow)) {
                                             .cell-red { background-color: #fecaca; }     /* Rojo claro */
                                             ul {
                                             margin: 0;
-                                            padding-left: 18px;
+                                            padding: 8px;
                                             }
 
                                             li {
@@ -1870,7 +1945,12 @@ if (count($currentRow)) {
                                         </style>
                                         <table style ="font-size: 11pt;">
                                             <thead>
-                                                <tr>
+                                                <tr style ="font-size: 11pt;">
+                                                    <th colspan="3" style="background-color: #0f4a75ff; color: white;">CARACTERÍSTICAS DE LOS RIESGOS</th>
+                                                </tr>
+                                            </thead>
+                                            <thead>
+                                                <tr style ="font-size: 11pt;">
                                                     <th class="bg-green">Rango Normal<br>(Zona de Seguridad)</th>
                                                     <th class="bg-yellow">Rango Intermedio<br>(Zona de Atención)</th>
                                                     <th class="bg-red">Rango de atención inmediata<br>(Zona intolerable)</th>
@@ -1886,7 +1966,7 @@ if (count($currentRow)) {
                                                         @if ($riesgosNormales->count() > 0)
                                                             <ul>
                                                                 @foreach ($riesgosNormales as $r)
-                                                                    <li style="text-align: justify; line-height: 1.4em;">{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                                    <li style="text-align: justify; line-height: 1.4em; font-size: 10pt;">{{ $r->no }} - {{ $r->riesgo }}</li>
                                                                 @endforeach
                                                             </ul>
                                                         @endif
@@ -1899,7 +1979,7 @@ if (count($currentRow)) {
                                                         @if ($riesgosIntermedios->count() > 0)
                                                             <ul>
                                                                 @foreach ($riesgosIntermedios as $r)
-                                                                    <li style="text-align: justify; line-height: 1.4em;">{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                                    <li style="text-align: justify; line-height: 1.4em;padding: 4px; font-size: 10pt;">{{ $r->no }} - {{ $r->riesgo }}</li>
                                                                 @endforeach
                                                             </ul>
                                                         @endif
@@ -1911,15 +1991,15 @@ if (count($currentRow)) {
                                                         @if ($riesgosInmediatos->count() > 0)
                                                             <ul>
                                                                 @foreach ($riesgosInmediatos as $r)
-                                                                    <li style="text-align: justify; line-height: 1.4em;">{{ $r->no }} - {{ $r->riesgo }}</li>
+                                                                    <li style="text-align: justify; line-height: 1.4em; font-size: 10pt;">{{ $r->no }} - {{ $r->riesgo }}</li>
                                                                 @endforeach
                                                             </ul>
                                                         @endif
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="bg-green" style="line-height: 1.4em;">
-                                                        <p>
+                                                    <td class="bg-green" style="line-height: 1.4em; padding: 1px; text-align: justify; font-size: 10pt;">
+                                                        <p style="padding: 4px;">
                                                             Este rango representa riesgos de baja probabilidad y bajo impacto. Los eventos situados
                                                             en este rango normalmente se consideran aceptables y dentro de los límites normales de
                                                             operación. Las consecuencias, si ocurren, serían bajas y fácilmente controladas por la
@@ -1929,8 +2009,8 @@ if (count($currentRow)) {
                                                         </p>
                                                     </td>
 
-                                                    <td class="bg-yellow" style="line-height: 1.4em;">
-                                                        <p>
+                                                    <td class="bg-yellow" style="line-height: 1.4em; padding: 1px;text-align: justify; font-size: 10pt;">
+                                                        <p style="padding: 4px;">
                                                             En este rango, los riesgos presentan una probabilidad y/o impactos moderados. Los eventos
                                                             en el área intermedia requieren atención, ya que pueden causar perturbaciones
                                                             significativas en la operación, aunque no de manera catastrófica. Se recomiendan medidas
@@ -1939,8 +2019,8 @@ if (count($currentRow)) {
                                                         </p>
                                                     </td>
 
-                                                    <td class="bg-red" style="line-height: 1.4em;">
-                                                        <p>
+                                                    <td class="bg-red" style="line-height: 1.4em; padding: 1px;text-align: justify; font-size: 10pt;">
+                                                        <p style="padding: 4px;">
                                                             Este rango representa riesgos de alta probabilidad y/o alto impacto, siendo considerados
                                                             inaceptables y requieren intervención inmediata. Cualquier evento en este rango puede
                                                             causar graves consecuencias para la organización, comprometiendo seriamente sus objetivos
@@ -1951,6 +2031,7 @@ if (count($currentRow)) {
                                                 </tr>
                                             </tbody>
                                         </table>
+                                        <br><br>
                                     @endif 
 
                                     @if($cont->reportTitleSubtitle->subtitle_id==17)
@@ -2069,27 +2150,27 @@ if (count($currentRow)) {
                                             style="border:1px solid #ffffffff; border-collapse:collapse;">
                                         <thead>
                                             <tr class="bg-[#002060] font-bold text-center border border-dotted border-white">
-                                                <td colspan="5" class="border border-dotted border-white px-1 p-4 font-bold text-white">ORGANIGRAMA DE CONTROLES GENERALES DE ACTUACIÓN</td>
+                                                <td colspan="5" class="border border-dotted border-white px-1 p-4 font-bold text-white" style="font-size:12px;">ORGANIGRAMA DE CONTROLES GENERALES DE ACTUACIÓN</td>
                                             </tr>
                                             <tr style="background-color:#002060; color:white; border:1px solid #001a4d;">
-                                            <th style="border:1px solid #ffffffff; padding:8px; width:5%;">No.</th>
-                                            <th style="border:1px solid #ffffffff; padding:8px; width:15%;">Tipo de Riesgo</th>
-                                            <th style="border:1px solid #ffffffff; padding:8px; width:25%;">Medidas preventivas actuales</th>
-                                            <th style="border:1px solid #ffffffff; padding:8px; width:40%;">Acciones / Planes por realizar</th>
-                                            <th style="border:1px solid #ffffffff; padding:8px; width:15%;">Estatus</th>
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:5%; font-size:10px;">No.</th>
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:15%; font-size:10px;">Tipo de Riesgo</th>
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:25%; font-size:10px;">Medidas preventivas actuales</th>
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:40%; font-size:10px;">Acciones / Planes por realizar</th>
+                                            <th style="border:1px solid #ffffffff; padding:8px; width:15%; font-size:10px;">Estatus</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($cont->organigramaControls as $organigrama)
                                             <tr>
-                                                <td class="border p-1" style="border:1px solid #000000ff;">{{ $organigrama->no }}</td>
-                                                <td class="border p-1 text-left" style="border:1px solid #000000ff;">{{ $organigrama->riesgo}}</td>
+                                                <td class="border p-1" style="border:1px solid #000000ff; font-size:10px;">{{ $organigrama->no }}</td>
+                                                <td class="border p-1 text-left" style="border:1px solid #000000ff; font-size:10px;">{{ $organigrama->riesgo}}</td>
 
-                                                <td style="border:1px solid #000000ff; padding:6px;">
+                                                <td style="border:1px solid #000000ff; padding:6px; font-size:10px;">
                                                     {{ $organigrama->medidas_p }}
                                                 </td>
 
-                                                <td style="border:1px solid #000000ff; padding:6px;">
+                                                <td style="border:1px solid #000000ff; padding:6px; font-size:10px;">
                                                     {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($organigrama->acciones_planes)))) !!}
                                                 </td>
                                                 <td style="border:1px solid #000000ff; padding:6px;"></td>
