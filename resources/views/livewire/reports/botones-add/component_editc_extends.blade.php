@@ -187,11 +187,67 @@
                                 ]
                             }
                         });
-                        quill.root.innerHTML = @js($bloque['contenido']);
-                        quill.on('text-change', () => {
-                            $refs.textarea{{ $i }}.value = quill.root.innerHTML;
-                            $refs.textarea{{ $i }}.dispatchEvent(new Event('input'));
-                        });
+                        // 🚀 Detectar Shift + Enter manualmente (como tu versión original)
+quill.root.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.shiftKey) {
+        e.preventDefault(); // Evita que Quill cree otra viñeta
+
+        const range = quill.getSelection(true);
+        if (!range) return;
+
+        const [block] = quill.scroll.descendant(Quill.import('blots/block'), range.index);
+        const formats = quill.getFormat(range);
+
+        // 🔹 Insertar salto de línea dentro del mismo <li>
+        quill.insertEmbed(range.index, 'text', '\n', Quill.sources.USER);
+
+        // 🔹 Mantener indentación y formato del punto actual
+        quill.formatLine(range.index + 1, formats);
+
+        // 🔹 Reubicar cursor
+        quill.setSelection(range.index + 1, Quill.sources.SILENT);
+    }
+});
+
+function getHtmlWithBreaks() {
+    let html = quill.root.innerHTML;
+
+    // 🔹 Reemplaza saltos de línea (\n) por <br>
+    html = html
+        .replace(/\n/g, '<br>')
+        .replace(/<br><\/li>/g, '</li>'); // Limpieza para evitar <br> al final del <li>
+
+    return html;
+}
+
+let contenido = @js($bloque['contenido'] ?? '');
+
+// Reemplazar <br> y <br/> por saltos de línea reales (\n)
+contenido = contenido
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>\s*<p>/gi, '\n'); // por si hay párrafos seguidos
+
+// ✅ Asignar el contenido procesado a Quill
+quill.root.innerHTML = contenido;
+
+    quill.on('text-change', () => {
+    let html = quill.root.innerHTML;
+
+    // 🧩 Reemplazar saltos de línea dentro de <li> por <br>
+    html = html.replace(/(<li[^>]*>[^<]*)\n([^<]*<\/li>)/g, '$1<br>$2');
+
+    // 🧩 Reemplazar saltos fuera de listas
+    html = html.replace(/\n/g, '<br>');
+
+    // 🧩 Limpieza para evitar <br> al final de listas o párrafos
+    html = html
+        .replace(/<br>\s*<\/li>/g, '</li>')
+        .replace(/<br>\s*<\/p>/g, '</p>');
+
+    // 🧠 Actualizar textarea y Livewire
+        $refs.textarea{{ $i }}.value = quill.root.innerHTML;
+        $refs.textarea{{ $i }}.dispatchEvent(new Event('input'));
+});
                     };
                     init();
                 ">
