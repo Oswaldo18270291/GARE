@@ -15,7 +15,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Livewire\Plantillas\portada;
 use App\Livewire\Reports\Addcontenido;
 use App\Livewire\Reports\Editestructura;
-use App\Livewire\Reports\BotonesAdd\AddC;
+use App\Livewire\Reports\BotonesAdd\Addc;
 use App\Livewire\Reports\BotonesAdd\Editc;
 use App\Livewire\Admin\Users;
 use App\Http\Controllers\Dashboard;
@@ -81,7 +81,7 @@ Route::post('/reporte/guardar-grafica/{id}', [InformePdf::class, 'guardarImagenG
     ->name('guardar.imagen.grafica');
 
 
-Route::get('/reporte/pdf/{id}', [InformePdf::class, 'generar'])->name('reporte.pdf');
+//Route::get('/reporte/pdf/{id}', [InformePdf::class, 'generar'])->name('reporte.pdf');
 Route::get('reportes/{id}/generar-mapa', [InformePdf::class, 'generarMapa'])->name('reporte.generarMapa');
 Route::post('reportes/{id}/guardar-mapa', [InformePdf::class, 'guardarImagenMapa'])->name('reporte.guardarMapa');
 
