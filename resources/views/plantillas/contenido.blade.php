@@ -97,6 +97,12 @@
         <!-- Contenido -->
         <div class="contenido">
             <div style="width: 100%; border-collapse: collapse; font-size: 12pt;">
+                @php
+                if (!isset($globalImageNumber)) {
+                    $globalImageNumber = 1;
+                }
+
+                @endphp
                 @foreach ($reports->titles as $title)
                     <div>
                         {{-- Título --}}
@@ -164,14 +170,7 @@
                             
 @php
 /*****************************************************************
-    0) CONTADOR GLOBAL UNA SOLA VEZ
-*****************************************************************/
-if (!isset($globalImageNumber)) {
-    $globalImageNumber = 1;
-}
-
-/*****************************************************************
-    1) RECOLECTAR TODAS LAS IMÁGENES
+    1) RECOLECTAR IMÁGENES (sueltas + bloque)
 *****************************************************************/
 $imgs = [];
 
@@ -183,10 +182,6 @@ $addImage = function($src, $leyenda, $orden) use (&$imgs) {
 
     // orientación + factor de espacio
     $o = ($w > $h) ? "h" : "v";
-
-    // "peso" según tamaño:
-    // horizontal grande = 2 slots
-    // vertical normal = 1 slot
     $slot = ($o === "h") ? 2 : 1;
 
     $imgs[] = [
@@ -211,7 +206,7 @@ foreach (['img1','img2','img3'] as $i) {
     }
 }
 
-// imágenes json
+// imágenes desde JSON
 if (!empty($cont->img_block) && is_array($cont->img_block)) {
     foreach ($cont->img_block as $bl) {
         if (!isset($bl['src'])) continue;
@@ -229,30 +224,18 @@ if (!empty($cont->img_block) && is_array($cont->img_block)) {
 usort($imgs, fn($a,$b)=>($a['orden_imagen']??99999) <=> ($b['orden_imagen']??99999));
 
 /*****************************************************************
-    3) AGRUPAR DINÁMICAMENTE POR FILA (SLOTS)
+    3) AGRUPAR POR FILAS (4 slots máximo)
 *****************************************************************/
-
-// Una fila tiene capacidad máxima de: 4 slots
-// Ejemplos:
-// - H (2) + H (2) = fila llena
-// - H (2) + V (1) + V (1) = fila llena
-// - V (1)+V (1)+V (1) = 3 slots (válido)
-// - V (1)+V (1)+V (1)+V (1)=4 slots
-// - H (2) solo = válido
-
 $rows = [];
 $currentRow = [];
 $currentSlots = 0;
 
 foreach ($imgs as $img) {
-
-    // Si no cabe en la fila actual => cerramos fila
     if ($currentSlots + $img['slot'] > 4) {
         $rows[] = $currentRow;
         $currentRow = [];
         $currentSlots = 0;
     }
-
     $currentRow[] = $img;
     $currentSlots += $img['slot'];
 }
@@ -260,8 +243,8 @@ foreach ($imgs as $img) {
 if (count($currentRow)) {
     $rows[] = $currentRow;
 }
-
 @endphp
+
 
 @if (count($rows))
 <div style="margin-top:10px; width:100%; overflow:hidden;">
@@ -269,100 +252,85 @@ if (count($currentRow)) {
 @foreach ($rows as $row)
     @php
         $count = count($row);
+        $allH = collect($row)->every(fn($x)=>$x['o']==='h');
+        $allV = collect($row)->every(fn($x)=>$x['o']==='v');
     @endphp
 
-    {{-- 🔥 FILA DE IMÁGENES --}}
-    <div style="width:100%; text-align:center; margin-bottom:10px;">
+    {{-- 🔹 FILA --}}
+    <div style="width:100%; text-align:center; margin-bottom:10px; overflow:hidden;">
 
-        @foreach ($row as $img)
-            @php
-                /***************************************************************
-                 * LÓGICA DE TAMAÑO SEGÚN ORIENTACIÓN Y CANTIDAD
-                 ***************************************************************/
-                $w = $img['w'] ?? 800;
-                $h = $img['h'] ?? 800;
-                $ratio = ($w > 0) ? ($h / $w) : 1;
+        @foreach ($row as $i => $img)
+@php
+    $styles = '';
+    $o = $img['o'];
 
-                if ($count === 1) {
-                    // 🟢 Una sola imagen
-                    $isFullPage = true;
+    if ($allV) {
+        // 3 verticales en línea
+        $styles = 'float:left; width:32%; margin:0 1% 12px;';
+    }
+    elseif ($allH) {
+        // horizontales puras: dos por fila, tercera centrada
+        if ($count==3 && $loop->last) {
+            $styles = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+        } else {
+            $styles = 'float:left; width:48%; margin:0 1% 12px;';
+        }
+    }
+    else {
+        // mixtas: dos por fila, última centrada si es tercera
+        $styles = ($count==3 && $loop->last)
+            ? 'float:none; display:block; width:70%; margin:0 auto 12px;'
+            : 'float:left; width:48%; margin:0 1% 12px;';
+    }
 
-                    if (abs($ratio - 1) < 0.1) {
-                        // 🔵 Cuadrada → ocupa toda la hoja
-                        $imgStyle = 'max-width:95%; max-height:95vh;';
-                    } elseif ($ratio > 1.1) {
-                        // 🟣 Vertical → ocupa toda la altura
-                        $imgStyle = 'max-height:95vh; width:auto;';
-                    } else {
-                        // 🟠 Horizontal → ocupa todo el ancho
-                        $imgStyle = 'max-width:95%; height:auto;';
-                    }
+    /***************************************************************
+     * 🔸 AJUSTAR TAMAÑO DE IMAGEN SEGÚN CONDICIÓN
+     ***************************************************************/
+    $w = $img['w'] ?? 800;
+    $h = $img['h'] ?? 800;
+    $ratio = $w > 0 ? ($h / $w) : 1;
+    $isSquare = abs($ratio - 1) < 0.1; // diferencia <10%
 
-                    $containerStyle = '
-                        display:flex;
-                        flex-direction:column;
-                        align-items:center;
-                        justify-content:center;
-                        height:100vh;
-                        width:100%;
-                        page-break-before:always;
-                        text-align:center;
-                        page-break-inside:avoid;
-                    ';
-                } else {
-                    // 🔹 Varias imágenes
-                    $isFullPage = false;
-                    if ($count === 2)      $wImg = '48%';
-                    elseif ($count === 3) $wImg = '31%';
-                    else                  $wImg = '23%';
-                    if (($img['o'] ?? 'h') === 'v') $wImg = '28%';
+    if ($count === 1 && $o === 'v') {
+        // 🟢 Una sola imagen vertical
+        $styles = 'float:none; display:flex; justify-content:center; align-items:center; width:auto; margin:20px auto; text-align:center;';
+        $imgStyle = 'max-height:80%; width:auto; object-fit:contain; display:block; margin:0 auto;';
+    } elseif ($count === 1 && $o === 'h') {
+        // 🟠 Una sola imagen horizontal
+        $styles = 'float:none; display:flex; justify-content:center; align-items:center; width:auto; margin:20px auto; text-align:center;';
+        $imgStyle = 'max-width:90%; height:auto; object-fit:contain; display:block; margin:0 auto;';
+    } elseif ($count === 1 && $isSquare) {
+        // 🔵 Una sola imagen cuadrada
+        $styles = 'float:none; display:flex; justify-content:center; align-items:center; width:auto; margin:20px auto; text-align:center;';
+        $imgStyle = 'max-width:75%; max-height:auto; object-fit:contain; display:block; margin:0 auto;';
+    } else {
+        // 🔹 Múltiples imágenes normales
+        $imgStyle = 'width:100%; height:auto; object-fit:contain;';
+    }
+@endphp
 
-                    $imgStyle = 'max-width:100%; max-height:550px;';
-                    $containerStyle = "
-                        display:inline-block;
-                        vertical-align:top;
-                        width:$wImg;
-                        margin:6px 0.6%;
-                        text-align:center;
-                        line-height:1.2;
-                        page-break-inside:avoid;
-                    ";
-                }
-            @endphp
-
-            {{-- 🖼️ BLOQUE COMPLETO (IMAGEN + LEYENDA) --}}
-            <div style="{{ $containerStyle }}">
-                                {{-- 🔹 LEYENDA Y NÚMERO (siempre visible) --}}
-                <div style="
-                    margin-top:8px;
-                    font-size:11pt;
-                    padding-bottom:8px;
-                    font-weight:bold;
-                    text-align:center;
-                    width:90%;
-                    line-height:1.2;
-                ">
-                    Imagen {{ $globalImageNumber++ }}
-                    <div style="font-weight:normal; font-style:italic;">
-                        {{ $img['leyenda'] }}
-                    </div>
-                </div>
-                {{-- 🖼️ IMAGEN --}}
-                <img src="{{ storage_path('app/public/'.$img['src']) }}"
-                    style="
-                        display:block;
-                        margin:0 auto;
-                        object-fit:contain;
-                        {{ $imgStyle }}
-                    ">
-
-
+            <div style="{{ $styles }} text-align:center; page-break-inside:avoid;">
+                <p style="margin:0 0 6px; line-height:1.2;">
+                    <b>Imagen {{ $globalImageNumber++ }}</b><br>
+                    <i>{{ $img['leyenda'] }}</i>
+                </p>
+                <img src="{{ storage_path('app/public/'.$img['src']) }}" style="{{ $imgStyle }}">
             </div>
+
+            {{-- Clear después de cada pareja en horizontales --}}
+            @if ($allH && (($loop->iteration % 2) == 0) && !($loop->last && $count==3))
+                <div style="clear:both;"></div>
+            @endif
+
         @endforeach
+
+        <div style="clear:both;"></div>
     </div>
 @endforeach
+
 </div>
 @endif
+
 
 
 
@@ -432,16 +400,9 @@ if (count($currentRow)) {
                                 <br>
                                 {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
 
-@php
+      @php
 /*****************************************************************
-    0) CONTADOR GLOBAL UNA SOLA VEZ
-*****************************************************************/
-if (!isset($globalImageNumber)) {
-    $globalImageNumber = 1;
-}
-
-/*****************************************************************
-    1) RECOLECTAR TODAS LAS IMÁGENES
+    1) RECOLECTAR IMÁGENES (sueltas + bloque)
 *****************************************************************/
 $imgs = [];
 
@@ -453,10 +414,6 @@ $addImage = function($src, $leyenda, $orden) use (&$imgs) {
 
     // orientación + factor de espacio
     $o = ($w > $h) ? "h" : "v";
-
-    // "peso" según tamaño:
-    // horizontal grande = 2 slots
-    // vertical normal = 1 slot
     $slot = ($o === "h") ? 2 : 1;
 
     $imgs[] = [
@@ -481,7 +438,7 @@ foreach (['img1','img2','img3'] as $i) {
     }
 }
 
-// imágenes json
+// imágenes desde JSON
 if (!empty($cont->img_block) && is_array($cont->img_block)) {
     foreach ($cont->img_block as $bl) {
         if (!isset($bl['src'])) continue;
@@ -499,30 +456,18 @@ if (!empty($cont->img_block) && is_array($cont->img_block)) {
 usort($imgs, fn($a,$b)=>($a['orden_imagen']??99999) <=> ($b['orden_imagen']??99999));
 
 /*****************************************************************
-    3) AGRUPAR DINÁMICAMENTE POR FILA (SLOTS)
+    3) AGRUPAR POR FILAS (4 slots máximo)
 *****************************************************************/
-
-// Una fila tiene capacidad máxima de: 4 slots
-// Ejemplos:
-// - H (2) + H (2) = fila llena
-// - H (2) + V (1) + V (1) = fila llena
-// - V (1)+V (1)+V (1) = 3 slots (válido)
-// - V (1)+V (1)+V (1)+V (1)=4 slots
-// - H (2) solo = válido
-
 $rows = [];
 $currentRow = [];
 $currentSlots = 0;
 
 foreach ($imgs as $img) {
-
-    // Si no cabe en la fila actual => cerramos fila
     if ($currentSlots + $img['slot'] > 4) {
         $rows[] = $currentRow;
         $currentRow = [];
         $currentSlots = 0;
     }
-
     $currentRow[] = $img;
     $currentSlots += $img['slot'];
 }
@@ -530,8 +475,8 @@ foreach ($imgs as $img) {
 if (count($currentRow)) {
     $rows[] = $currentRow;
 }
-
 @endphp
+
 
 @if (count($rows))
 <div style="margin-top:10px; width:100%; overflow:hidden;">
@@ -539,102 +484,84 @@ if (count($currentRow)) {
 @foreach ($rows as $row)
     @php
         $count = count($row);
+        $allH = collect($row)->every(fn($x)=>$x['o']==='h');
+        $allV = collect($row)->every(fn($x)=>$x['o']==='v');
     @endphp
 
-    {{-- 🔥 FILA DE IMÁGENES --}}
-    <div style="width:100%; text-align:center; margin-bottom:10px;">
+    {{-- 🔹 FILA --}}
+    <div style="width:100%; text-align:center; margin-bottom:10px; overflow:hidden;">
 
-        @foreach ($row as $img)
-            @php
-                /***************************************************************
-                 * LÓGICA DE TAMAÑO SEGÚN ORIENTACIÓN Y CANTIDAD
-                 ***************************************************************/
-                $w = $img['w'] ?? 800;
-                $h = $img['h'] ?? 800;
-                $ratio = ($w > 0) ? ($h / $w) : 1;
+        @foreach ($row as $i => $img)
+     @php
+    $styles = '';
+    $o = $img['o'];
 
-                if ($count === 1) {
-                    // 🟢 Una sola imagen
-                    $isFullPage = true;
+    if ($allV) {
+        // 3 verticales en línea
+        $styles = 'float:left; width:32%; margin:0 1% 12px;';
+    }
+    elseif ($allH) {
+        // horizontales puras: dos por fila, tercera centrada
+        if ($count==3 && $loop->last) {
+            $styles = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+        } else {
+            $styles = 'float:left; width:48%; margin:0 1% 12px;';
+        }
+    }
+    else {
+        // mixtas: dos por fila, última centrada si es tercera
+        $styles = ($count==3 && $loop->last)
+            ? 'float:none; display:block; width:70%; margin:0 auto 12px;'
+            : 'float:left; width:48%; margin:0 1% 12px;';
+    }
 
-                    if (abs($ratio - 1) < 0.1) {
-                        // 🔵 Cuadrada → ocupa toda la hoja
-                        $imgStyle = 'max-width:95%; max-height:95vh;';
-                    } elseif ($ratio > 1.1) {
-                        // 🟣 Vertical → ocupa toda la altura
-                        $imgStyle = 'max-height:95vh; width:auto;';
-                    } else {
-                        // 🟠 Horizontal → ocupa todo el ancho
-                        $imgStyle = 'max-width:95%; height:auto;';
-                    }
+    /***************************************************************
+     * 🔸 AJUSTAR TAMAÑO DE IMAGEN SEGÚN CONDICIÓN
+     ***************************************************************/
+    $w = $img['w'] ?? 800;
+    $h = $img['h'] ?? 800;
+    $ratio = $w > 0 ? ($h / $w) : 1;
+    $isSquare = abs($ratio - 1) < 0.1; // diferencia <10%
 
-                    $containerStyle = '
-                        display:flex;
-                        flex-direction:column;
-                        align-items:center;
-                        justify-content:center;
-                        height:100vh;
-                        width:100%;
-                        page-break-before:always;
-                        text-align:center;
-                        page-break-inside:avoid;
-                    ';
-                } else {
-                    // 🔹 Varias imágenes
-                    $isFullPage = false;
-                    if ($count === 2)      $wImg = '48%';
-                    elseif ($count === 3) $wImg = '31%';
-                    else                  $wImg = '23%';
-                    if (($img['o'] ?? 'h') === 'v') $wImg = '28%';
+    if ($count === 1 && $o === 'v') {
+        // 🟢 Una sola imagen vertical
+        $styles = 'float:none; display:flex; justify-content:center; align-items:center; width:auto; margin:20px auto; text-align:center;';
+        $imgStyle = 'max-height:80%; width:auto; object-fit:contain; display:block; margin:0 auto;';
+    } elseif ($count === 1 && $o === 'h') {
+        // 🟠 Una sola imagen horizontal
+        $styles = 'float:none; display:flex; justify-content:center; align-items:center; width:auto; margin:20px auto; text-align:center;';
+        $imgStyle = 'max-width:90%; height:auto; object-fit:contain; display:block; margin:0 auto;';
+    } elseif ($count === 1 && $isSquare) {
+        // 🔵 Una sola imagen cuadrada
+        $styles = 'float:none; display:flex; justify-content:center; align-items:center; width:auto; margin:20px auto; text-align:center;';
+        $imgStyle = 'max-width:75%; max-height:auto; object-fit:contain; display:block; margin:0 auto;';
+    } else {
+        // 🔹 Múltiples imágenes normales
+        $imgStyle = 'width:100%; height:auto; object-fit:contain;';
+    }
+@endphp
 
-                    $imgStyle = 'max-width:100%; max-height:550px;';
-                    $containerStyle = "
-                        display:inline-block;
-                        vertical-align:top;
-                        width:$wImg;
-                        margin:6px 0.6%;
-                        text-align:center;
-                        line-height:1.2;
-                        page-break-inside:avoid;
-                    ";
-                }
-            @endphp
-
-            {{-- 🖼️ BLOQUE COMPLETO (IMAGEN + LEYENDA) --}}
-            <div style="{{ $containerStyle }}">
-                                {{-- 🔹 LEYENDA Y NÚMERO (siempre visible) --}}
-                <div style="
-                    margin-top:8px;
-                    padding-bottom:8px;
-                    font-size:11pt;
-                    font-weight:bold;
-                    text-align:center;
-                    width:90%;
-                    line-height:1.2;
-                ">
-                    Imagen {{ $globalImageNumber++ }}
-                    <div style="font-weight:normal; font-style:italic;">
-                        {{ $img['leyenda'] }}
-                    </div>
-                </div>
-                {{-- 🖼️ IMAGEN --}}
-                <img src="{{ storage_path('app/public/'.$img['src']) }}"
-                    style="
-                        display:block;
-                        margin:0 auto;
-                        object-fit:contain;
-                        {{ $imgStyle }}
-                    ">
-
+            <div style="{{ $styles }} text-align:center; page-break-inside:avoid;">
+                <p style="margin:0 0 6px; line-height:1.2;">
+                    <b>Imagen {{ $globalImageNumber++ }}</b><br>
+                    <i>{{ $img['leyenda'] }}</i>
+                </p>
+                <img src="{{ storage_path('app/public/'.$img['src']) }}" style="{{ $imgStyle }}">
             </div>
+
+            {{-- Clear después de cada pareja en horizontales --}}
+            @if ($allH && (($loop->iteration % 2) == 0) && !($loop->last && $count==3))
+                <div style="clear:both;"></div>
+            @endif
+
         @endforeach
+
+        <div style="clear:both;"></div>
     </div>
 @endforeach
+
 </div>
 @endif
-
-
-
 
                                 <br>
                             @endif
@@ -698,7 +625,7 @@ if (count($currentRow)) {
                                                 @endphp
                                                 <div style="{{ $styles }} text-align:center;">
                                                     <p style="margin:0 0 6px; line-height:1.2;">
-                                                        <b>Imagen {{ $imgNum++ }}</b><br>
+                                                        <b>Imagen {{ $globalImageNumber++ }}</b><br>
                                                         <i>{{ $img['leyenda'] }}</i>
                                                     </p>
                                                     <img src="{{ storage_path('app/public/'.$img['src']) }}"
@@ -1672,7 +1599,7 @@ if (count($currentRow)) {
                                                 <div style="{{ $style }} text-align:center;">
                                                     {{-- Leyenda arriba --}}
                                                     <p style="margin:0 0 6px; line-height:1.2;">
-                                                        <b>Imagen {{ $imgNum++ }}</b><br>
+                                                        <b>Imagen {{ $globalImageNumber++ }}</b><br>
                                                         <i>{{ $img['leyenda'] }}</i>
                                                     </p>
 
@@ -2539,7 +2466,7 @@ if (count($currentRow)) {
                                                     <div style="{{ $style }} text-align:center;">
                                                         {{-- Leyenda arriba --}}
                                                         <p style="margin:0 0 6px; line-height:1.2;">
-                                                            <b>Imagen {{ $imgNum++ }}</b><br>
+                                                            <b>Imagen {{ $globalImageNumber++ }}</b><br>
                                                             <i>{{ $img['leyenda'] }}</i>
                                                         </p>
 
@@ -2617,7 +2544,7 @@ if (count($currentRow)) {
                                                     <div style="{{ $style }} text-align:center;">
                                                         {{-- Leyenda arriba --}}
                                                         <p style="margin:0 0 6px; line-height:1.2;">
-                                                            <b>Imagen {{ $imgNum++ }}</b><br>
+                                                            <b>Imagen {{ $globalImageNumber++ }}</b><br>
                                                             <i>{{ $img['leyenda'] }}</i>
                                                         </p>
 
