@@ -247,7 +247,7 @@ if (count($currentRow)) {
 
 
 @if (count($rows))
-<div style="margin-top:10px; width:100%; overflow:hidden;">
+<div style="margin-top:1px; width:100%; overflow:hidden;">
 
 @foreach ($rows as $row)
     @php
@@ -479,7 +479,7 @@ if (count($currentRow)) {
 
 
 @if (count($rows))
-<div style="margin-top:10px; width:100%; overflow:hidden;">
+<div style="width:100%; overflow:hidden;">
 
 @foreach ($rows as $row)
     @php
@@ -489,7 +489,7 @@ if (count($currentRow)) {
     @endphp
 
     {{-- 🔹 FILA --}}
-    <div style="width:100%; text-align:center; margin-bottom:10px; overflow:hidden;">
+    <div style="width:100%; text-align:center; margin-bottom:1px; overflow:hidden;">
 
         @foreach ($row as $i => $img)
      @php
@@ -498,21 +498,21 @@ if (count($currentRow)) {
 
     if ($allV) {
         // 3 verticales en línea
-        $styles = 'float:left; width:32%; margin:0 1% 12px;';
+        $styles = 'float:left; width:32%; margin:0 1% 1px;';
     }
     elseif ($allH) {
         // horizontales puras: dos por fila, tercera centrada
         if ($count==3 && $loop->last) {
-            $styles = 'float:none; display:block; width:70%; margin:0 auto 12px;';
+            $styles = 'float:none; display:block; width:70%; margin:0 auto 1px;';
         } else {
-            $styles = 'float:left; width:48%; margin:0 1% 12px;';
+            $styles = 'float:left; width:48%; margin:0 1% 1px;';
         }
     }
     else {
         // mixtas: dos por fila, última centrada si es tercera
         $styles = ($count==3 && $loop->last)
-            ? 'float:none; display:block; width:70%; margin:0 auto 12px;'
-            : 'float:left; width:48%; margin:0 1% 12px;';
+            ? 'float:none; display:block; width:70%; margin:0 auto 1px;'
+            : 'float:left; width:48%; margin:0 1% 1px;';
     }
 
     /***************************************************************
