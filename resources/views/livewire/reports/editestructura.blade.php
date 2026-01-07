@@ -282,7 +282,7 @@
                 </div>
 
                 {{-- Titles --}}
-                @foreach ($report->reportTitles->sortBy('title_id') as $title)
+                @foreach ($report->titles->sortBy('title_id') as $title)
                     <div class="title-wrapper"
                         x-data="{ isOpen: {{ $title->status ? 'true' : 'false' }} }">
                         <label>
@@ -315,7 +315,7 @@
 
                         {{-- Subtitles --}}
                         <div class="subtitles" x-show="isOpen" style="margin-left: 20px;">
-                            @foreach ($title->reportTitleSubtitles->sortBy('subtitle_id') as $subtitle)
+                            @foreach ($title->subtitles->sortBy('subtitle_id') as $subtitle)
                                 <div class="subtitle-wrapper"
                                     x-data="{ isSubOpen: {{ $subtitle->status ? 'true' : 'false' }} }">
                                     <label>
@@ -342,7 +342,7 @@
 
                                     {{-- Sections --}}
                                     <ul class="sections" x-show="isSubOpen" style="margin-left: 20px;">
-                                        @foreach ($subtitle->reportTitleSubtitleSections->sortBy('section_id') as $section)
+                                        @foreach ($subtitle->sections->sortBy('section_id') as $section)
                                             <li>
                                                 <label>
                                                     <input

@@ -57,11 +57,23 @@ class Editestructura extends Component
         $this->colaborador    = $this->report->colaborador1;
         $this->clasificacion   = $this->report->clasificacion;
         $this->img_portada = $this->report->img_portada;
-        $this->report->titles = ReportTitle::where('report_id', $this->report->id)->get();
+        $this->report->titles = ReportTitle::where('report_id', $this->report->id)
+                                ->whereHas('title', function ($q) {
+                                    $q->where('status', 1);
+                                })
+                                ->get();
         foreach ($this->report->titles as $title) {
-            $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)->get();
+            $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)
+                                ->whereHas('subtitle', function ($q) {
+                                    $q->where('status', 1);
+                                })
+                                ->get();
             foreach ($title->subtitles as $subtitle) {
-                $subtitle->sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)->get();
+                $subtitle->sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)
+                                ->whereHas('section', function ($q) {
+                                    $q->where('status', 1);
+                                })
+                                ->get();
             }
         }
 
