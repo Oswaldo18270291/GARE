@@ -123,15 +123,33 @@ class Index extends Component
     {
         $this->titles = Title::with([
             'subtitles' => function($query){
-                $query ->where('status',true)
-                ->with(['sections'=> function($q){
-                    $q->where('status',true);
-                }]);
+                $query->where('status', true)
+                    ->with(['sections' => function($q){
+                        $q->where('status', true);
+                    }]);
             }
         ])
-        ->where('status',true)
+        ->where('status', true)
         ->get();
+
+        // 🔹 PRESELECCIONAR TODO DESDE EL INICIO
+        $this->title = $this->titles->pluck('id')->toArray();
+
+        $this->subtitle = $this->titles
+            ->flatMap->subtitles
+            ->pluck('id')
+            ->toArray();
+
+        $this->section = $this->titles
+            ->flatMap->subtitles
+            ->flatMap->sections
+            ->pluck('id')
+            ->toArray();
+
+        // 🔹 Expandir todo visualmente
+        $this->expandAll = true;
     }
+
 
 
 
