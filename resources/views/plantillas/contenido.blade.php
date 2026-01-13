@@ -108,7 +108,7 @@
                         {{-- Título --}}
                         <a style="display: block; font-weight: bold; margin-bottom: 4px;">
                             <span style="color: transparent; font-size: 0;">__MARKER_TITLE_{{ $title->id }}__</span>
-                            {{ $loop->iteration }}. {{ title_case_except($title->title->nombre) }}
+                            {{ $loop->iteration }}. {{ $title->title->nombre}}
                         </a>
                         @foreach ($title->content as $cont)
                             @if (empty(trim($cont->cont)))
@@ -572,12 +572,12 @@ if (count($currentRow)) {
                         @if($subtitle->id != 42)
                             <a style="display: block; text-align: justify; font-weight: bold; margin-bottom: 4px;">
                                 <span style="color: transparent; font-size: 0;">__MARKER_SUBTITLE_{{ $subtitle->id }}__</span>
-                                {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($subtitle->subtitle->nombre) }}
+                                {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ ($subtitle->subtitle->nombre) }}
                             </a>
                         @else
                             <a style="display: block; text-align: justify; font-weight: bold; margin-bottom: 4px; page-break-before: always;">
                                             <span style="color: transparent; font-size: 0;">__MARKER_SUBTITLE_{{ $subtitle->id }}__</span>
-                                            {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($subtitle->subtitle->nombre) }}
+                                            {{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ ($subtitle->subtitle->nombre) }}
                                         </a>
                         @endif
                             @foreach ($subtitle->content as $cont)
@@ -2406,7 +2406,7 @@ if (count($currentRow)) {
                             @foreach ($subtitle->sections as $section)
                                 <a style="display: block; text-align: justify; font-weight: bold; text-indent: 0.88cm; margin-bottom: 4px;">
                                     <span style="color: transparent; font-size: 0;">__MARKER_SECTION_{{ $section->id }}__</span>
-                                    {{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ title_case_except($section->section->nombre) }}
+                                    {{ $loop->parent->parent->iteration }}.{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ ($section->section->nombre) }}
                                 </a>
                                 @foreach ($section->content as $cont)
                                     @if (empty(trim($cont->cont)))
