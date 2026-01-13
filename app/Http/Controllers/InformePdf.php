@@ -88,18 +88,21 @@ public function generar($id)
     // 🔹 Diagrama opcional
     $ti = ReportTitle::where('report_id', $report->id)->where('title_id', 4)
         ->where('status', 1)->first();
-
+    if (!empty($ti)) {
     $su = ReportTitleSubtitle::where('r_t_id', $ti->id)->where('subtitle_id', 32)
         ->where('status', 1)->first();
 
     $co = Content::where('r_t_s_id', $su->id)->first();
-
-    if (!empty($co)) {
+        if (!empty($co)) {
         $diagrama = AnalysisDiagram::where('content_id', $co->id)->get();
         $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report, 'diagrama' => $diagrama]);
     } else {
         $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report]);
     }
+
+    }else {
+            $pdfContenido = Pdf::loadView('plantillas.contenido', ['reports' => $report]);
+        }
 
     // 🔹 Guardar PDF temporal del contenido
     $pathContenido = storage_path("app/public/tmp_contenido_{$id}.pdf");

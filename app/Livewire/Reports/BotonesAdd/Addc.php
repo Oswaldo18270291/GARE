@@ -87,7 +87,6 @@ class Addc extends Component
             $this->RSubtitle = null;
         } elseif($boton == 'sub'){
             $ti =ReportTitle::where('report_id', $this->rep->id)
-            ->where('title_id', 5)
             ->where('status',1)
             ->first();
             $this->su = ReportTitleSubtitle::where('r_t_id',$ti->id)
