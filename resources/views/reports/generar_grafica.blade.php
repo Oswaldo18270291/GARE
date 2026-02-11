@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
           },
           plugins: {
-            title: { display: true, text: titulo, color: '#000', font: { size: 14, family: 'Segoe UI' } },
+            title: { display: true, text: titulo, color: '#000', font: { size: 14, family: 'Segoe UI' }, padding: {bottom: 20}},
             legend: { display: true, position: 'bottom', labels: { color: '#000', font: { size: 10 } } },
             datalabels: {
               display: true,

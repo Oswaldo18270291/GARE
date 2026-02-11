@@ -15,10 +15,10 @@
             margin: 1cm;  /* 👈 margen oficial de 2.5 cm */
             }
 
-            header { 
+            header {
             position: fixed;
-            top: 55px; 
-            left: 30px; 
+            top: 55px;
+            left: 30px;
             right: 30px;
             height: 80px; /* define altura fija del header */
             text-align: center;
@@ -45,7 +45,7 @@
             /*text-indent: 2.5em;   sangría de la primera línea (~5 espacios) */
             text-align: justify; /* texto justificado*/
             }
-            
+
             @font-face {
                 font-family: 'Arial Nova Light';
                 src: url('/fonts/ArialNova-Light.ttf') format('truetype');
@@ -57,7 +57,7 @@
                 margin: 0 0 6px 0; /* espaciado normal entre párrafos */
                 line-height: 1.4; /* interlineado agradable */
             }
-            
+
         </style>
     </head>
     <body>
@@ -167,7 +167,7 @@
                                     @endif
 
                                 @endif
-                            
+
 @php
 /*****************************************************************
     1) RECOLECTAR IMÁGENES (sueltas + bloque)
@@ -671,8 +671,8 @@ if (count($currentRow)) {
                                                     <td style="border: 1px solid black; padding: 5px;">{{ $diagram->f_ocurrencia }}</td>
                                                 </tr>
                                             @endforeach
-                                        </table>  
-                                    @endif   
+                                        </table>
+                                    @endif
                                     @if($cont->reportTitleSubtitle->subtitle_id==15)
                                         <table id="tabla" style=" border-collapse: collapse;">
                                             <!-- Encabezado Cibernéticos -->
@@ -834,7 +834,7 @@ if (count($currentRow)) {
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    @endif   
+                                    @endif
                                      --}}
                                     {{-- AQUI DEBE DE IR LA TABLA DE MATRIZ DE RIESGOS --}}
                                     @if($cont->reportTitleSubtitle->subtitle_id==32)
@@ -906,7 +906,7 @@ if (count($currentRow)) {
                                                 <img src="storage/{{ $cont->img_grafica }}" style="page-break-before: always; margin-top: 1.5cm;"/>
                                             </div>
                                         @endif
-                                        
+
                                     @endif
 
                                     @if($cont->reportTitleSubtitle->subtitle_id==15)
@@ -974,7 +974,7 @@ if (count($currentRow)) {
 </div>
 <br>
                                     @endif
-                                        
+
                                      @if($cont->reportTitleSubtitle->subtitle_id==16)
                                         @if(!empty($cont->img_grafica))
                                             <div class="justify-center items-center bg-blue-100 place-items-center">
@@ -1027,7 +1027,7 @@ if (count($currentRow)) {
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                           
+
                                                     <td class="cell-green">
                                                         @php
                                                             $riesgosNormales = $diagrama->where('c_riesgo', 'normal')->sortBy('orden2');
@@ -1101,7 +1101,7 @@ if (count($currentRow)) {
                                             </tbody>
                                         </table>
                                         <br><br>
-                                    @endif    
+                                    @endif
       @if($cont->reportTitleSubtitle->subtitle_id==17)
                                     <!-- BLOQUE ENTERO: INSEPARABLE -->
                                 <div style="border: 1px dotted black">
@@ -1136,7 +1136,7 @@ if (count($currentRow)) {
                                             color:white;
                                             text-align:center;
                                             font-weight:bold;
-                                            
+
                                         ">
                                             TRATAMIENTO GENERAL DE LOS RIESGOS IDENTIFICADOS
                                         </div>
@@ -1151,7 +1151,7 @@ if (count($currentRow)) {
                                         <!-- 🟦 CONTENIDO A LA DERECHA -->
                                         <div style="
                                             border-left:160px solid #002060;
-                                            padding:8px;
+                                            padding:5px;
                                             text-align:justify;
                                             overflow-wrap:break-word;
                                             font-size:10px;
@@ -1162,11 +1162,11 @@ if (count($currentRow)) {
                                         ">
                                             <div style="
                                                 position: absolute;
-                                                top: 5%;
+                                                top: 10%;
                                                 left: -110px;
                                                 transform: translate(-50%, -50%);
                                                 color: rgb(255, 255, 255);
-                                                align-items: center;  
+                                                align-items: center;
                                                 font-size:15px;
                                                 font-weight:bold;
                                                 width: 20%;
@@ -1187,7 +1187,7 @@ if (count($currentRow)) {
                                         <!-- 🟢 CONTENIDO CON “BANDA” IZQUIERDA SIMULADA -->
                                         <div style="
                                             border-left:160px solid #002060;
-                                            padding:10px;
+                                            padding:5px;
                                             text-align:justify;
                                             overflow-wrap:break-word;
                                             font-size:10px;
@@ -1195,15 +1195,17 @@ if (count($currentRow)) {
                                             position: relative;
                                         ">
                                             <div style="
-                                                position: absolute;
+                                                position: relative;
                                                 top: 50%;
                                                 left: -110px;
                                                 transform: translate(-50%, -50%);
-                                                color: white;
-                                                align-items: center;  
+                                                color: rgb(255, 255, 255);
+                                                align-items: center;
                                                 font-size:15px;
                                                 font-weight:bold;
                                                 width: 20%;
+                                                page-break-inside: avoid;
+                                                break-inside: avoid;
                                             ">
                                                 Acciones / Planes por realizar
                                             </div>
@@ -1214,7 +1216,7 @@ if (count($currentRow)) {
                             @endif
 
                                     @if ($cont->reportTitleSubtitle->subtitle_id==18)
-                                    <table class="w-full border-collapse text-center text-sm font-sans" 
+                                    <table class="w-full border-collapse text-center text-sm font-sans"
                                             style="border:1px solid #ffffffff; border-collapse:collapse;">
                                         <thead>
                                             <tr class="bg-[#002060] font-bold text-center border border-dotted border-white">
@@ -1257,7 +1259,7 @@ if (count($currentRow)) {
                                             height: auto;             /* ✅ se ajusta al contenido */
                                             page-break-inside: avoid; /* ✅ evita que se divida en páginas */
                                             text-align: center;
-                                            margin-top: 40px;   
+                                            margin-top: 40px;
                                             margin-bottom: 40px;      /* ✅ agrega espacio antes para no invadir texto anterior */
                                         }
 
@@ -1538,7 +1540,7 @@ if (count($currentRow)) {
                                                 </td>
                                             </tr>
                                         </table>
-                                    @endif            
+                                    @endif
                                 @else
                                     <span style="color:white; font-size:1px;">__MARKER_CONTENT_{{ $cont->id }}__</span>
                                     {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->cont))) !!}
@@ -1763,7 +1765,7 @@ if (count($currentRow)) {
                                                 <img src="storage/{{ $cont->img_grafica }}" style="page-break-before: always; margin-top: 1.5cm;"/>
                                             </div>
                                         @endif
-                                        
+
                                     @endif
 
                                     @if($cont->reportTitleSubtitle->subtitle_id==15)
@@ -1831,7 +1833,7 @@ if (count($currentRow)) {
 </div>
 <br>
                                     @endif
-                                    
+
 
                                     @if($cont->reportTitleSubtitle->subtitle_id==16)
                                         @if(!empty($cont->img_grafica))
@@ -1885,7 +1887,7 @@ if (count($currentRow)) {
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                           
+
                                                     <td class="cell-green">
                                                         @php
                                                             $riesgosNormales = $diagrama->where('c_riesgo', 'normal')->sortBy('orden2');
@@ -1959,7 +1961,7 @@ if (count($currentRow)) {
                                             </tbody>
                                         </table>
                                         <br><br>
-                                    @endif 
+                                    @endif
 
                                     @if($cont->reportTitleSubtitle->subtitle_id==17)
                                     <!-- BLOQUE ENTERO: INSEPARABLE -->
@@ -1995,7 +1997,7 @@ if (count($currentRow)) {
                                                     color:white;
                                                     text-align:center;
                                                     font-weight:bold;
-                                                    
+
                                                 ">
                                                     TRATAMIENTO GENERAL DE LOS RIESGOS IDENTIFICADOS
                                                 </div>
@@ -2025,7 +2027,7 @@ if (count($currentRow)) {
                                                         left: -110px;
                                                         transform: translate(-50%, -50%);
                                                         color: rgb(255, 255, 255);
-                                                        align-items: center;  
+                                                        align-items: center;
                                                         font-size:15px;
                                                         font-weight:bold;
                                                         width: 20%;
@@ -2059,7 +2061,7 @@ if (count($currentRow)) {
                                                         left: -110px;
                                                         transform: translate(-50%, -50%);
                                                         color: white;
-                                                        align-items: center;  
+                                                        align-items: center;
                                                         font-size:15px;
                                                         font-weight:bold;
                                                         width: 20%;
@@ -2073,7 +2075,7 @@ if (count($currentRow)) {
                                     @endif
 
                                     @if ($cont->reportTitleSubtitle->subtitle_id==18)
-                                    <table class="w-full border-collapse text-center text-sm font-sans" 
+                                    <table class="w-full border-collapse text-center text-sm font-sans"
                                             style="border:1px solid #ffffffff; border-collapse:collapse;">
                                         <thead>
                                             <tr class="bg-[#002060] font-bold text-center border border-dotted border-white">
@@ -2116,7 +2118,7 @@ if (count($currentRow)) {
                                             height: auto;             /* ✅ se ajusta al contenido */
                                             page-break-inside: avoid; /* ✅ evita que se divida en páginas */
                                             text-align: center;
-                                            margin-top: 40px;   
+                                            margin-top: 40px;
                                             margin-bottom: 40px;      /* ✅ agrega espacio antes para no invadir texto anterior */
                                         }
 
@@ -2399,8 +2401,8 @@ if (count($currentRow)) {
                                                 </td>
                                             </tr>
                                         </table>
-                                    @endif 
-                                @endif               
+                                    @endif
+                                @endif
                             @endforeach
                             {{-- Secciones dentro del subtítulo --}}
                             @foreach ($subtitle->sections as $section)
