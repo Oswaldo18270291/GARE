@@ -79,7 +79,7 @@ class Addc extends Component
     public function mount($id, $boton, $rp)
     {
         $report = Report::findOrFail($rp);
-        $this->authorize('update', $report); 
+        $this->authorize('update', $report);
 
         $this->rep = Report::findOrFail($rp);
         if($boton == 'tit'){
@@ -162,13 +162,13 @@ class Addc extends Component
                     ['no' => 28, 'tema' => 'Puerta de acceso al estacionamiento de la instalación', 'accion' => null, 't_costo' => null, 'nivel_p' => null],
                 ],
             ];
-            
+
             $this->RSubtitle = ReportTitleSubtitle::findOrFail($id);
             $this->rep->titles = ReportTitle::where('report_id', $this->rep->id)->where('status',1)->get();
-            foreach ($this->rep->titles as $title) 
+            foreach ($this->rep->titles as $title)
             {
             if( ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 32)->exists()){
-            $mosler = ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 32)->first();  
+            $mosler = ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 32)->first();
                 if( Content::where('r_t_s_id',$mosler->id)->exists()){
                     $c = Content::where('r_t_s_id',$mosler->id)->first();
                     $this->risks = AnalysisDiagram::where('content_id',$c->id)->get();
@@ -177,7 +177,7 @@ class Addc extends Component
              }
             }
             $this->cargarRiesgos();
-            
+
             $this->RTitle = null;
         } else if($boton == 'sec'){
             $this->RTitle = null;
@@ -236,13 +236,13 @@ class Addc extends Component
             'img3.required_with'     => '⚠️ Si agregas un título, también debes subir una imagen.',
             'leyenda3.required_with' => '⚠️ Si subes una imagen, también debes escribir un título.',
         ]);
-  
+
         $path  = $this->img1 ? $this->img1->store('img_cont1', 'public') : null;
         $path2 = $this->img2 ? $this->img2->store('img_cont2', 'public') : null;
         $path3 = $this->img3 ? $this->img3->store('img_cont3', 'public') : null;
 
         if ($boton == 'tit') {
-     
+
             // 👉 Crear el Content y guardar la instancia
             $content = Content::create([
                 'cont'     => $this->contenido,
@@ -284,7 +284,7 @@ class Addc extends Component
             // Si el nombre coincide, agrega la clave extra
             if ($nl->subtitle_id === 32 || $nl->subtitle_id === 16 ) {
                 $data['grafica'] = $this->grafica;
-            }            
+            }
             if ($nl->subtitle_id === 17 ) {
                 $data['contenido_a_p'] = $this->contenido_a_p;
                 $data['contenido_m_p_a'] = $this->contenido_m_p_a;
@@ -322,7 +322,7 @@ class Addc extends Component
                     'orden'        => $index + 1,
                 ];
             }
-            
+
             if (!empty($rows)) {
                 AnalysisDiagram::insert($rows);
             }
@@ -350,7 +350,7 @@ class Addc extends Component
                         'updated_at'     => $now,
                     ];
                 }
-                
+
                 if (!empty($rows)) {
                     AnalysisDiagram::insert($rows);
                 }
@@ -484,7 +484,7 @@ class Addc extends Component
     {
         $this->risks;
 
-        
+
     }
 
     #[On('guardarOrden2')]
@@ -505,7 +505,7 @@ public function guardarOrden2($risks)
         $this->risks = AnalysisDiagram::where('content_id', $this->c->id ?? null)->get();
     }
 
-    
+
      public function calcularFOcurrencia($riesgo)
     {
         // Ejemplo: promedio ponderado (ajusta según tu fórmula real)
@@ -841,7 +841,7 @@ $this->dispatch('actualizarGrafica', [
         $this->backgroundImage = $base64;
     }
 
-    
+
     public function getNextReferenceNumber($reportId)
     {
         return \App\Models\ContentReference::nextNumberForReport($reportId);

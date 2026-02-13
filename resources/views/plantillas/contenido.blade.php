@@ -1175,7 +1175,6 @@ if (count($currentRow)) {
                                             </div>
                                         {!! fix_quill_lists(convert_quill_indents_to_nested_lists(limpiarHtml($cont->contenido_m_p_a))) !!}
                                         </div>
-
                                     </div>
 
                                         <!-- ===================== FILA 2 ===================== -->

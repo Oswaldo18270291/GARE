@@ -1,7 +1,7 @@
 <div>
     <!-- Bloque Quill -->
-<div 
-    x-data 
+<div
+    x-data
     wire:ignore
     x-init="
         const init = async () => {
@@ -293,17 +293,17 @@ quill.on('text-change', () => {
 <div class="flex gap-6 flex-wrap">
 
     <div class="flex flex-col items-center w-full max-w-xs">
-        <div class="flex w-full flex-col gap-1 mt-2">            
+        <div class="flex w-full flex-col gap-1 mt-2">
         <label class="w-fit pl-0.5 text-2x1">Título 1</label>
         <input wire:model="leyenda1" id="leyenda1" type="text"
                class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
                placeholder="Ingrese texto del título 1"
                style="border-color:rgba(31, 89, 177, 1);" />
-            @error('leyenda1') 
+            @error('leyenda1')
                 <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
             @enderror
     </div>
-        <div 
+        <div
             class="flex w-full max-w-xl text-center flex-col gap-1"
             x-data="{
                 isDropping: false,
@@ -311,8 +311,8 @@ quill.on('text-change', () => {
                 handleFile(file, field, input) {
                     this.errorMsg = '';
                     if (file && file.type.startsWith('image/')) {
-                        $wire.upload(field, file, 
-                            () => {}, 
+                        $wire.upload(field, file,
+                            () => {},
                             () => { this.errorMsg = '⚠️ Error al subir la imagen.' }
                         );
                     } else {
@@ -333,19 +333,19 @@ quill.on('text-change', () => {
             <span class="w-fit pl-0.5 text-2x1">Imagen 1</span>
 
             {{-- Contenedor Drag & Drop --}}
-            <div 
+            <div
                 class="bg-white flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
                 :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
                 style="border-color:rgba(31, 89, 177, 1);"
             >
                 {{-- Input oculto --}}
-                <input 
-                    id="img1" 
-                    type="file" 
-                    class="sr-only" 
+                <input
+                    id="img1"
+                    type="file"
+                    class="sr-only"
                     accept="image/png,image/jpeg"
                     x-ref="img1Input"
-                    x-on:change="handleFile($event.target.files[0], 'img1', $event.target)" 
+                    x-on:change="handleFile($event.target.files[0], 'img1', $event.target)"
                 />
 
                 <label for="img1" class="cursor-pointer font-medium text-primary">
@@ -355,15 +355,15 @@ quill.on('text-change', () => {
 
                 {{-- Vista previa imagen actual (si existe y no se ha subido una nueva) --}}
                 @if ($content && $content->img1 && !$img1)
-                    <img src="{{ asset('storage/' . $content->img1) }}" 
-                        class="w-32 h-32 object-cover mt-2 rounded border" 
+                    <img src="{{ asset('storage/' . $content->img1) }}"
+                        class="w-32 h-32 object-cover mt-2 rounded border"
                         alt="Imagen actual" />
                 @endif
 
                 {{-- Vista previa nueva imagen --}}
                 @if ($img1)
-                    <img src="{{ $img1->temporaryUrl() }}" 
-                        class="w-32 h-32 object-cover mt-2 rounded border" 
+                    <img src="{{ $img1->temporaryUrl() }}"
+                        class="w-32 h-32 object-cover mt-2 rounded border"
                         alt="Vista previa nueva" />
                 @endif
 
@@ -378,17 +378,17 @@ quill.on('text-change', () => {
 
         <!-- Imagen 2 -->
        <div class="flex flex-col items-center w-full max-w-xs">
-        <div class="flex w-full flex-col gap-1 mt-2">            
+        <div class="flex w-full flex-col gap-1 mt-2">
           <label class="w-fit pl-0.5 text-2x1">Título 2</label>
           <input wire:model="leyenda2" id="leyenda2" type="text"
                 class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
                 placeholder="Ingrese texto del título 2"
                 style="border-color:rgba(31, 89, 177, 1);" />
-              @error('leyenda2') 
+              @error('leyenda2')
                   <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
               @enderror
         </div>
-        <div 
+        <div
           class="flex w-full max-w-xl text-center flex-col gap-1"
           x-data="{
               isDropping: false,
@@ -396,8 +396,8 @@ quill.on('text-change', () => {
               handleFile(file, field, input) {
                   this.errorMsg = '';
                   if (file && file.type.startsWith('image/')) {
-                      $wire.upload(field, file, 
-                          () => {}, 
+                      $wire.upload(field, file,
+                          () => {},
                           () => { this.errorMsg = '⚠️ Error al subir la imagen.' }
                       );
                   } else {
@@ -418,19 +418,19 @@ quill.on('text-change', () => {
           <span class="w-fit pl-0.5 text-2x1">Imagen 2</span>
 
           {{-- Contenedor Drag & Drop --}}
-          <div 
+          <div
               class="bg-white flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
               :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
               style="border-color:rgba(31, 89, 177, 1);"
           >
               {{-- Input oculto --}}
-              <input 
-                  id="img2" 
-                  type="file" 
-                  class="sr-only" 
+              <input
+                  id="img2"
+                  type="file"
+                  class="sr-only"
                   accept="image/png,image/jpeg"
                   x-ref="img2Input"
-                  x-on:change="handleFile($event.target.files[0], 'img2', $event.target)" 
+                  x-on:change="handleFile($event.target.files[0], 'img2', $event.target)"
               />
 
               <label for="img2" class="cursor-pointer font-medium text-primary">
@@ -440,15 +440,15 @@ quill.on('text-change', () => {
 
               {{-- Vista previa imagen actual (si existe y no se ha subido una nueva) --}}
               @if ($content && $content->img2 && !$img2)
-                  <img src="{{ asset('storage/' . $content->img2) }}" 
-                      class="w-32 h-32 object-cover mt-2 rounded border" 
+                  <img src="{{ asset('storage/' . $content->img2) }}"
+                      class="w-32 h-32 object-cover mt-2 rounded border"
                       alt="Imagen actual" />
               @endif
 
               {{-- Vista previa nueva imagen --}}
               @if ($img2)
-                  <img src="{{ $img2->temporaryUrl() }}" 
-                      class="w-32 h-32 object-cover mt-2 rounded border" 
+                  <img src="{{ $img2->temporaryUrl() }}"
+                      class="w-32 h-32 object-cover mt-2 rounded border"
                       alt="Vista previa nueva" />
               @endif
 
@@ -462,17 +462,17 @@ quill.on('text-change', () => {
     </div>
         <!-- Imagen 3 -->
         <div class="flex flex-col items-center w-full max-w-xs">
-        <div class="flex w-full flex-col gap-1 mt-2">            
+        <div class="flex w-full flex-col gap-1 mt-2">
             <label class="w-fit pl-0.5 text-2x1">Título 3</label>
             <input wire:model="leyenda3" id="leyenda3" type="text"
                 class="bg-white w-full rounded-radius border border-outline px-2 py-2 text-sm"
                 placeholder="Ingrese texto del título 3"
                 style="border-color:rgba(31, 89, 177, 1);" />
-                @error('leyenda3') 
+                @error('leyenda3')
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
         </div>
-        <div 
+        <div
             class="flex w-full max-w-xl text-center flex-col gap-1"
             x-data="{
                 isDropping: false,
@@ -480,8 +480,8 @@ quill.on('text-change', () => {
                 handleFile(file, field, input) {
                     this.errorMsg = '';
                     if (file && file.type.startsWith('image/')) {
-                        $wire.upload(field, file, 
-                            () => {}, 
+                        $wire.upload(field, file,
+                            () => {},
                             () => { this.errorMsg = '⚠️ Error al subir la imagen.' }
                         );
                     } else {
@@ -502,19 +502,19 @@ quill.on('text-change', () => {
             <span class="w-fit pl-0.5 text-2x1">Imagen 3</span>
 
             {{-- Contenedor Drag & Drop --}}
-            <div 
+            <div
                 class="bg-white flex w-full flex-col items-center justify-center gap-2 rounded-radius border border-dashed p-8 transition"
                 :class="isDropping ? 'border-primary bg-primary/5' : 'border-gray-300'"
                 style="border-color:rgba(31, 89, 177, 1);"
             >
                 {{-- Input oculto --}}
-                <input 
-                    id="img3" 
-                    type="file" 
-                    class="sr-only" 
+                <input
+                    id="img3"
+                    type="file"
+                    class="sr-only"
                     accept="image/png,image/jpeg"
                     x-ref="img3Input"
-                    x-on:change="handleFile($event.target.files[0], 'img3', $event.target)" 
+                    x-on:change="handleFile($event.target.files[0], 'img3', $event.target)"
                 />
 
                 <label for="img3" class="cursor-pointer font-medium text-primary">
@@ -524,15 +524,15 @@ quill.on('text-change', () => {
 
                 {{-- Vista previa imagen actual (si existe y no se ha subido una nueva) --}}
                 @if ($content && $content->img3 && !$img3)
-                    <img src="{{ asset('storage/' . $content->img3) }}" 
-                        class="w-32 h-32 object-cover mt-2 rounded border" 
+                    <img src="{{ asset('storage/' . $content->img3) }}"
+                        class="w-32 h-32 object-cover mt-2 rounded border"
                         alt="Imagen actual" />
                 @endif
 
                 {{-- Vista previa nueva imagen --}}
                 @if ($img3)
-                    <img src="{{ $img3->temporaryUrl() }}" 
-                        class="w-32 h-32 object-cover mt-2 rounded border" 
+                    <img src="{{ $img3->temporaryUrl() }}"
+                        class="w-32 h-32 object-cover mt-2 rounded border"
                         alt="Vista previa nueva" />
                 @endif
 
@@ -628,8 +628,8 @@ quill.on('text-change', () => {
   <div class="mt-3 flex gap-2">
       <button type="button" wire:click="addFila" class="px-3 py-2 bg-emerald-600 text-white rounded">+ Agregar fila</button>
 
-      <button type="button" 
-              wire:click="updateRiesgos({{ $content->id ?? 'null' }})" 
+      <button type="button"
+              wire:click="updateRiesgos({{ $content->id ?? 'null' }})"
               class="px-3 py-2 bg-blue-600 text-white rounded">
           💾 Guardar cambios de tabla
       </button>
@@ -685,15 +685,15 @@ quill.on('text-change', () => {
 
                     @foreach (['impacto_f','impacto_o','extension_d','probabilidad_m','impacto_fin'] as $campo)
                         <td class="border p-1 font-bold" style="border:1px solid #001a4d;">
-                          <input 
+                          <input
                               type="number"
                               min="1"
                               max="5"
                               step="1"
-                              
+
                               oninput="this.value = Math.max(1, Math.min(5, this.value))"
                               wire:model.lazy="riesgos.{{ $i }}.{{ $campo }}"
-                              wire:blur="recalcularRiesgosFila({{ $i }})"                              
+                              wire:blur="recalcularRiesgosFila({{ $i }})"
                               class="w-14 text-center border-gray-400 rounded"
                           />
                         </td>
@@ -723,7 +723,7 @@ quill.on('text-change', () => {
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="absolute pointer-events-none right-4 top-8 size-5">
         <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
     </svg>
-    <select 
+    <select
         required
         wire:model="grafica"
         id="chartType"
@@ -819,7 +819,7 @@ let chartInstance = null; // 👈 fuera de la función
                     text: 'Gráfica de exposición general', // 🔹 Texto del título
                     color: '#000000ff',        // 🔹 Color del texto
                     font: {
-                    size: 14,              // 🔹 Tamaño del texto       
+                    size: 14,              // 🔹 Tamaño del texto
                     family: 'Segoe UI'     // 🔹 Fuente
                     },
                     padding: {
@@ -996,7 +996,7 @@ crearGrafico(dataInicial, tipoInicial);
             <label class="flex flex-col text-sm text-black">
                 <span class="mb-1">Fondo del mapa:</span>
                 <input type="file"
-                       id="inputFondo" 
+                       id="inputFondo"
                        accept="image/*"
                        class="text-gray-500 text-sm border rounded p-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400"
                        style="border-color:rgba(31, 89, 177, 1);"
@@ -1445,16 +1445,16 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
     <div class="relative w-[750px] h-[750px] rounded-full overflow-visible shadow-xl border-8 border-white">
 
         <!-- 🟧 Fortalezas -->
-        <div class="absolute top-0 left-0 w-1/2 h-1/2 bg-[#F47B20] text-white 
+        <div class="absolute top-0 left-0 w-1/2 h-1/2 bg-[#F47B20] text-white
                     flex flex-col items-center justify-start text-center pt-10 rounded-tl-full border-r-8 border-b-8 border-white">
               <h2 class="absolute text-xl font-bold tracking-wide"
                   style="top: 250px; left: 160px;">
                   FORTALEZAS
-              </h2>  
+              </h2>
         </div>
 
         <!-- ⚫ Debilidades -->
-        <div class="absolute top-0 right-0 w-1/2 h-1/2 bg-[#808285] text-white 
+        <div class="absolute top-0 right-0 w-1/2 h-1/2 bg-[#808285] text-white
                     flex flex-col items-center justify-start text-center pt-10 rounded-tr-full border-l-8 border-b-8 border-white">
               <h2 class="absolute text-xl font-bold tracking-wide"
                   style="top: 250px; left: 20px;">
@@ -1463,7 +1463,7 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
         </div>
 
         <!-- 🟦 Oportunidades -->
-        <div class="absolute bottom-0 left-0 w-1/2 h-1/2 bg-[#0072BC] text-white 
+        <div class="absolute bottom-0 left-0 w-1/2 h-1/2 bg-[#0072BC] text-white
                     flex flex-col items-center justify-end text-center pb-10 rounded-bl-full border-r-8 border-t-8 border-white">
               <h2 class="absolute text-xl font-bold tracking-wide"
                   style="top: 80px; left: 150px;">
@@ -1472,7 +1472,7 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
         </div>
 
         <!-- 🟨 Amenazas -->
-        <div class="absolute bottom-0 right-0 w-1/2 h-1/2 bg-[#FDB913] text-white 
+        <div class="absolute bottom-0 right-0 w-1/2 h-1/2 bg-[#FDB913] text-white
                     flex flex-col items-center justify-end text-center pb-10 rounded-br-full border-l-8 border-t-8 border-white">
               <h2 class="absolute text-xl font-bold tracking-wide"
                   style="top: 80px; left: 20px;">
@@ -1488,7 +1488,7 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
         </div>
 
         <!-- 📦 Cuadro Fortalezas -->
-        <div class="absolute top-[40px] left-[-100px] z-30 w-[260px] h-[130px] 
+        <div class="absolute top-[40px] left-[-100px] z-30 w-[260px] h-[130px]
                     border-2 border-[#F47B20] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
             <textarea wire:model.defer="fortalezas"
                       class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
@@ -1496,7 +1496,7 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
         </div>
 
         <!-- 📦 Cuadro Debilidades -->
-        <div class="absolute top-[40px] right-[-100px] z-30 w-[260px] h-[130px] 
+        <div class="absolute top-[40px] right-[-100px] z-30 w-[260px] h-[130px]
                     border-2 border-[#808285] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
             <textarea wire:model.defer="debilidades"
                       class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
@@ -1504,7 +1504,7 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
         </div>
 
         <!-- 📦 Cuadro Oportunidades -->
-        <div class="absolute bottom-[40px] left-[-100px] z-30 w-[260px] h-[130px] 
+        <div class="absolute bottom-[40px] left-[-100px] z-30 w-[260px] h-[130px]
                     border-2 border-[#0072BC] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
             <textarea wire:model.defer="oportunidades"
                       class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
@@ -1512,7 +1512,7 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
         </div>
 
         <!-- 📦 Cuadro Amenazas -->
-        <div class="absolute bottom-[40px] right-[-100px] z-30 w-[260px] h-[130px] 
+        <div class="absolute bottom-[40px] right-[-100px] z-30 w-[260px] h-[130px]
                     border-2 border-[#FDB913] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
             <textarea wire:model.defer="amenazas"
                       class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
@@ -1522,7 +1522,7 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
 </div>
 
   @endif
-  
+
   @if ($titulo==16)
 @if(!empty($risks))
 
@@ -1532,10 +1532,10 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
         <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
     </svg>
 
-    <select 
-        wire:model="grafica" 
-        id="chartType" 
-        name="chartType" 
+    <select
+        wire:model="grafica"
+        id="chartType"
+        name="chartType"
         class="w-full appearance-none rounded-radius border border-outline bg-surface-alt px-4 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
     >
         <option value="bar">Barras</option>
@@ -1663,11 +1663,11 @@ function renderRiesgosChart() {
                     }
                 },
                 scales: esCircular ? {} : {
-                    x: { 
+                    x: {
                         ticks: { color: '#000' },
                         grid: { display: false }
                     },
-                    y: { 
+                    y: {
                         beginAtZero: true,
                         ticks: { color: '#000' },
                         grid: { color: '#ddd' },
@@ -1777,28 +1777,28 @@ if (window.Livewire) {
       <!-- Descripciones -->
       <tr style="vertical-align: top;">
         <td style="width: 33.33%; border: 1px solid black; padding: 6px; background-color: #00B050; color: black;">
-          Este rango representa riesgos de baja probabilidad y bajo impacto. Los eventos situados en este rango 
-          normalmente se consideran aceptables y dentro de los límites normales de operación. Las consecuencias, 
-          si ocurren, serían bajas y fácilmente controladas por la organización. Normalmente, no se necesita ninguna 
-          acción correctiva inmediata, pero se deben mantener los controles actuales y monitorear continuamente los riesgos 
-          para garantizar que permanezcan dentro de esta zona de seguridad. Este rango representa riesgos de baja probabilidad y 
-          bajo impacto. Los eventos situados en este rango normalmente se consideran aceptables y dentro de los límites normales de 
-          operación. Las consecuencias, si ocurren, serían bajas y fácilmente controladas por la organización. Normalmente, no se necesita 
-          ninguna acción correctiva inmediata, pero se deben mantener los controles actuales y monitorear continuamente los riesgos para garantizar 
+          Este rango representa riesgos de baja probabilidad y bajo impacto. Los eventos situados en este rango
+          normalmente se consideran aceptables y dentro de los límites normales de operación. Las consecuencias,
+          si ocurren, serían bajas y fácilmente controladas por la organización. Normalmente, no se necesita ninguna
+          acción correctiva inmediata, pero se deben mantener los controles actuales y monitorear continuamente los riesgos
+          para garantizar que permanezcan dentro de esta zona de seguridad. Este rango representa riesgos de baja probabilidad y
+          bajo impacto. Los eventos situados en este rango normalmente se consideran aceptables y dentro de los límites normales de
+          operación. Las consecuencias, si ocurren, serían bajas y fácilmente controladas por la organización. Normalmente, no se necesita
+          ninguna acción correctiva inmediata, pero se deben mantener los controles actuales y monitorear continuamente los riesgos para garantizar
           que permanezcan dentro de esta zona de seguridad.
         </td>
 
         <td style="width: 33.33%; border: 1px solid black; padding: 6px; background-color: #FFFF00; color: black;">
-          En este rango, los riesgos presentan una probabilidad y/o impactos moderados. Los eventos en el área intermedia requieren atención, 
-          ya que pueden causar perturbaciones significativas en la operación, aunque no de manera catastrófica. Se recomiendan medidas preventivas 
-          o correctivas para mitigar el impacto o la probabilidad de ocurrencia, con un monitoreo constante para evitar que migren al área de 
+          En este rango, los riesgos presentan una probabilidad y/o impactos moderados. Los eventos en el área intermedia requieren atención,
+          ya que pueden causar perturbaciones significativas en la operación, aunque no de manera catastrófica. Se recomiendan medidas preventivas
+          o correctivas para mitigar el impacto o la probabilidad de ocurrencia, con un monitoreo constante para evitar que migren al área de
           riesgo intolerable.
         </td>
 
         <td style="width: 33.33%; border: 1px solid black; padding: 6px; background-color: #FF0000; color: white;">
-          Este rango representa riesgos de alta probabilidad y/o alto impacto, siendo considerados inaceptables y 
-          requieren intervención inmediata. Cualquier evento en este rango puede causar graves consecuencias para la 
-          organización, comprometiendo seriamente sus objetivos y/o procesos. La mitigación de estos riesgos debe ser 
+          Este rango representa riesgos de alta probabilidad y/o alto impacto, siendo considerados inaceptables y
+          requieren intervención inmediata. Cualquier evento en este rango puede causar graves consecuencias para la
+          organización, comprometiendo seriamente sus objetivos y/o procesos. La mitigación de estos riesgos debe ser
           la máxima prioridad, y se requieren acciones inmediatas para reducir el impacto y/o la probabilidad de ocurrencia.
         </td>
       </tr>
@@ -1893,13 +1893,13 @@ if (window.Livewire) {
           Medidas preventivas actuales
         </td>
         <td class="border p-2 align-top">
-            <div 
-                x-data 
+            <div
+                x-data
                 wire:ignore
                 x-init="
                     const init = () => {
-                        if (typeof Quill === 'undefined') { 
-                            return setTimeout(init, 150); 
+                        if (typeof Quill === 'undefined') {
+                            return setTimeout(init, 150);
                         }
 
                         const quill = new Quill($refs.editorTit, {
@@ -1993,13 +1993,13 @@ quill.on('text-change', () => {
           Acciones / Planes por realizar
         </td>
         <td class="border p-2 align-top">
-          <div 
-            x-data 
+          <div
+            x-data
             wire:ignore
             x-init="
                 const init = () => {
-                    if (typeof Quill === 'undefined') { 
-                        return setTimeout(init, 150); 
+                    if (typeof Quill === 'undefined') {
+                        return setTimeout(init, 150);
                     }
 
                     const quill = new Quill($refs.editorTit, {
@@ -2095,7 +2095,7 @@ quill.on('text-change', () => {
 
   @endif
   @if ($titulo==18)
-  <table class="w-full border-collapse text-center text-sm font-sans" 
+  <table class="w-full border-collapse text-center text-sm font-sans"
           style="border:1px solid #ffffffff; border-collapse:collapse;">
       <thead>
         <tr class="bg-[#002060] font-bold text-center border border-dotted border-white">
@@ -2139,59 +2139,59 @@ quill.on('text-change', () => {
   <br>
   @endif
   @if (in_array($titulo, [20,21,22,23,24,25,26,27,28,29]))
-  5.4	 Control: Consultoría de seguridad interna. - 5.13 
+  5.4	 Control: Consultoría de seguridad interna. - 5.13
   <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 12pt; text-align: left;">
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Qué?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea required wire:model="que" id="que" class="w-full rounded-radius border border-outline bg-surface-alt 
-          px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
-          disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
+          <textarea required wire:model="que" id="que" class="w-full rounded-radius border border-outline bg-surface-alt
+          px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
+          disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50
           dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Cómo?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea required wire:model="como" id="como" class="w-full rounded-radius border border-outline bg-surface-alt 
-          px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
-          disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
+          <textarea required wire:model="como" id="como" class="w-full rounded-radius border border-outline bg-surface-alt
+          px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
+          disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50
           dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Quién?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea required wire:model="quien" id="quien" class="w-full rounded-radius border border-outline bg-surface-alt 
-          px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
-          disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>    
+          <textarea required wire:model="quien" id="quien" class="w-full rounded-radius border border-outline bg-surface-alt
+          px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
+          disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50
+          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Por qué?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea required wire:model="por_que" id="por_que" class="w-full rounded-radius border border-outline bg-surface-alt 
-          px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
-          disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
-          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>    
+          <textarea required wire:model="por_que" id="por_que" class="w-full rounded-radius border border-outline bg-surface-alt
+          px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
+          disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50
+          dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Dónde?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea required wire:model="donde" id="donde" class="w-full rounded-radius border border-outline bg-surface-alt 
-          px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
-          disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
+          <textarea required wire:model="donde" id="donde" class="w-full rounded-radius border border-outline bg-surface-alt
+          px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
+          disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50
           dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>
       </td>
     </tr>
     <tr>
       <td style="border: 1px solid black; padding: 8px;"><b>¿Cuánto?</b></td>
       <td style="border: 1px solid black; padding: 8px;">
-          <textarea required wire:model="cuanto" id="cuanto" class="w-full rounded-radius border border-outline bg-surface-alt 
-          px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
-          disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 
+          <textarea required wire:model="cuanto" id="cuanto" class="w-full rounded-radius border border-outline bg-surface-alt
+          px-2.5 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
+          disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50
           dark:focus-visible:outline-primary-dark" rows="2" placeholder="Coloca la informacion"></textarea>
       </td>
     </tr>
@@ -2201,19 +2201,19 @@ quill.on('text-change', () => {
         <div class="flex w-full max-w-2xl gap-4 text-on-surface dark:text-on-surface-dark">
           De
           <div>
-              <input required wire:model="de" id="de" type="date" name="de" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
-              text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+              <input required wire:model="de" id="de" type="date" name="de" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2
+              text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
               disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
               style="border-color:rgba(31, 89, 177, 1);" />
           </div>
           Hasta
           <div>
-              <input required wire:model="hasta" id="hasta" type="date" name="hasta" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2 
-              text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
+              <input required wire:model="hasta" id="hasta" type="date" name="hasta" class="bg-white w-full rounded-radius border border-outline bg-surface-alt px-2 py-2
+              text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
               disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
               style="border-color:rgba(31, 89, 177, 1);" />
           </div>
-        </div>  
+        </div>
       </td>
     </tr>
   </table>
@@ -2267,7 +2267,7 @@ quill.on('text-change', () => {
                     <tr>
                         {{-- Número --}}
                         <td class="border border-dotted border-black py-1 align-top w-[60px]">
-                           
+
                         </td>
 
                         {{-- Tema --}}
@@ -2341,7 +2341,7 @@ quill.on('text-change', () => {
 
                         {{-- Nivel de prioridad --}}
                         <td class="nivel-celda border border-dotted border-black font-bold align-top text-center" width="100">
-                            <select 
+                            <select
                                 class="border rounded px-2 py-1 text-sm w-full"
                                 wire:model.defer="acciones.{{ $titulo }}.{{ $index }}.nivel_p"
                                 onchange="cambiarColorCelda(this)"
@@ -2481,4 +2481,4 @@ quill.on('text-change', () => {
     <button type="submit" class="inline-flex justify-center items-center gap-2 rounded-radius bg-success border border-success px-4 py-2 text-sm font-medium text-on-success transition hover:opacity-75">
         Guardar
     </button>
-</div> 
+</div>

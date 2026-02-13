@@ -102,8 +102,8 @@ document.addEventListener('DOMContentLoaded', async function () {
               align:  tipo === 'bar' ? 'end' : 'center',
               font: { size: esCircular ? 11 : 9 },
               formatter: (v, ctx) => esCircular
-                ? `${ctx.chart.data.labe[ctx.dataIndex]}\n(${v})`
-                : `${ctx.chart.data.datasets[ctx.datasetIndex].numero}[${v}]`
+                ? `${ctx.chart.data.labe[ctx.dataIndex]}\n(${v}%)`
+                : `${ctx.chart.data.datasets[ctx.datasetIndex].numero} (${v}%)`
             }
           },
           scales: esCircular ? {} : {
