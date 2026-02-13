@@ -704,10 +704,10 @@ function inicializarGrafica() {
                         formatter: (value, ctx) => {
                             if (esCircular) {
                                 const index = ctx.dataIndex;
-                                return `${ctx.chart.data.labe[index]}\n(${value})`;
+                                return `${ctx.chart.data.labe[index]}\n(${value}%)`;
                             } else {
                                 const dataset = ctx.chart.data.datasets[ctx.datasetIndex];
-                                return `${dataset.numero} (${value})`;
+                                return `${dataset.numero} (${value}%)`;
                             }
                         }
                     }
