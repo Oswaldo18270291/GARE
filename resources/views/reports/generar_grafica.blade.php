@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <title>Generar gráficas</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    Chart.defaults.devicePixelRatio = 2;
+    </script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
   <style>
   @keyframes spin {0% {transform:rotate(0deg);}100% {transform:rotate(360deg);}}
@@ -47,6 +50,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     const canvas = document.getElementById('grafica_' + def.subtitleId);
     const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     const riesgos = def.risks.map(r => r.no + " - " + r.riesgo);
     const riesg = def.risks.map(r => r.no);
@@ -73,11 +78,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         options: {
           responsive: false,
           maintainAspectRatio: false,
+          devicePixelRatio: 2, // 🔥 redundancia útil en servidor
           animation: {
             duration: 800,
             onComplete: async () => {
               await new Promise(r => setTimeout(r, 500)); // Esperar un poco más tras render
-              const base64 = canvas.toDataURL('image/png');
+              const base64 = canvas.toDataURL('image/png', 1.0);
 
               await fetch("{{ route('guardar.imagen.grafica', $report->id) }}", {
                 method: 'POST',
@@ -102,8 +108,8 @@ document.addEventListener('DOMContentLoaded', async function () {
               align:  tipo === 'bar' ? 'end' : 'center',
               font: { size: esCircular ? 11 : 9 },
               formatter: (v, ctx) => esCircular
-                ? `${ctx.chart.data.labe[ctx.dataIndex]}\n(${v}%)`
-                : `${ctx.chart.data.datasets[ctx.datasetIndex].numero} (${v}%)`
+                ? `${ctx.chart.data.labe[ctx.dataIndex]}\n${v}%`
+                : `${ctx.chart.data.datasets[ctx.datasetIndex].numero} ${v}%`
             }
           },
           scales: esCircular ? {} : {

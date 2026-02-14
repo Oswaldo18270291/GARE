@@ -903,7 +903,13 @@ if (count($currentRow)) {
                                         @endif
                                         @if(!empty($cont->img_grafica))
                                             <div class="justify-center items-center bg-blue-100 place-items-center">
-                                                <img src="storage/{{ $cont->img_grafica }}" style="page-break-before: always; margin-top: 1.5cm;"/>
+                                            <img src="{{ public_path('storage/'.$cont->img_grafica) }}"
+                                                style="
+                                                    page-break-before: always;
+                                                    margin-top: 1.5cm;
+                                                    width: 100%;
+                                                    height: auto;
+                                                "/>
                                             </div>
                                         @endif
 
@@ -978,7 +984,13 @@ if (count($currentRow)) {
                                      @if($cont->reportTitleSubtitle->subtitle_id==16)
                                         @if(!empty($cont->img_grafica))
                                             <div class="justify-center items-center bg-blue-100 place-items-center">
-                                                <img src="storage/{{ $cont->img_grafica }}" style="page-break-before: always; margin-top: 1.5cm;"/>
+                                            <img src="{{ public_path('storage/'.$cont->img_grafica) }}"
+                                                style="
+                                                    page-break-before: always;
+                                                    margin-top: 1.5cm;
+                                                    width: 100%;
+                                                    height: auto;
+                                                "/>
                                             </div>
                                         @endif
                                         <br><br>
@@ -1761,7 +1773,13 @@ if (count($currentRow)) {
                                         @endif
                                         @if(!empty($cont->img_grafica))
                                             <div class="justify-center items-center bg-blue-100 place-items-center">
-                                                <img src="storage/{{ $cont->img_grafica }}" style="page-break-before: always; margin-top: 1.5cm;"/>
+                                            <img src="{{ public_path('storage/'.$cont->img_grafica) }}"
+                                                style="
+                                                    page-break-before: always;
+                                                    margin-top: 1.5cm;
+                                                    width: 100%;
+                                                    height: auto;
+                                                "/>
                                             </div>
                                         @endif
 
@@ -1837,7 +1855,13 @@ if (count($currentRow)) {
                                     @if($cont->reportTitleSubtitle->subtitle_id==16)
                                         @if(!empty($cont->img_grafica))
                                             <div class="justify-center items-center bg-blue-100 place-items-center">
-                                                <img src="storage/{{ $cont->img_grafica }}" style="page-break-before: always; margin-top: 1.5cm;"/>
+                                                <img src="{{ public_path('storage/'.$cont->img_grafica) }}"
+                                                    style="
+                                                        page-break-before: always;
+                                                        margin-top: 1.5cm;
+                                                        width: 100%;
+                                                        height: auto;
+                                                    "/>
                                             </div>
                                         @endif
                                         <br><br><br><br><br>
