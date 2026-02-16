@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\DB;
 
 class Editc extends Component
 {
-    public $contentId; 
+    public $contentId;
     use WithFileUploads;
     public $RTitle;
     public $RSubtitle;
@@ -59,7 +59,7 @@ class Editc extends Component
     public $hasta;
     public $acciones_planes;
     public $medidas_p;
-    
+
     public $nodos = [];
     public $relaciones = [];
     public $backgroundImage = null;
@@ -83,14 +83,14 @@ class Editc extends Component
     public function mount($id,$boton,$rp)
     {
     $report = Report::findOrFail($rp);
-    $this->authorize('update', $report); 
+    $this->authorize('update', $report);
 
     $this->rep = Report::findOrFail($rp);
     $this->authorize('update', $report); // 👈 ahora sí se evalúa la policy
         if($boton == 'tit'){
         $this->content = Content::with('referencias')->where('r_t_id', $id)->first();
             // Cargamos valores existentes
-            
+
             $this->contenido = $this->content->cont;
             $this->leyenda1 = $this->content->leyenda1;
             $this->leyenda2 = $this->content->leyenda2;
@@ -136,7 +136,7 @@ class Editc extends Component
 
                 }
         }
-    }else 
+    }else
         {
             $this->riesgos = [];
         }
@@ -181,10 +181,10 @@ class Editc extends Component
             }
             $this->rep->titles = ReportTitle::where('report_id', $this->rep->id)->where('status',1)->get();
             // Cargamos valores existentes
-            foreach ($this->rep->titles as $title) 
+            foreach ($this->rep->titles as $title)
             {
             if( ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 32)->exists()){
-            $mosler = ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 32)->first();  
+            $mosler = ReportTitleSubtitle::where('r_t_id', $title->id)->where('subtitle_id', 32)->first();
                 if( Content::where('r_t_s_id',$mosler->id)->exists()){
                     $c = Content::where('r_t_s_id',$mosler->id)->first();
                     $this->risks = AnalysisDiagram::where('content_id',$c->id)->get();
@@ -219,7 +219,7 @@ class Editc extends Component
             $this->nombre_e = $this->content->nombre_e;
             $this->puesto_c = $this->content->puesto_c;
             $this->nombre_c = $this->content->nombre_c;
-            
+
 
             $this->RSubtitle = ReportTitleSubtitle::findOrFail($id);
             $this->dispatch('actualizarMapa', nodos: $this->nodos, relaciones: $this->relaciones);
@@ -228,7 +228,7 @@ class Editc extends Component
             $this->RSubtitle = null;
             $this->content = Content::with('referencias')->where('r_t_s_s_id', $id)->first();
             // Cargamos valores existentes
-            
+
             $this->contenido = $this->content->cont;
             $this->leyenda1 = $this->content->leyenda1;
             $this->leyenda2 = $this->content->leyenda2;
@@ -238,9 +238,9 @@ class Editc extends Component
             $this->oldImg2 = $this->content->img2;
             $this->oldImg3 = $this->content->img3;
             $this->RSection = ReportTitleSubtitleSection::findOrFail($id);
-            
 
-        } 
+
+        }
             $this->contentId = $this->content->id; // 👈 aquí lo asignas
             $this->contenido =  $this->content->cont;
             $this->referencias = $this->content->referencias->map(fn($r) => [
@@ -305,12 +305,12 @@ class Editc extends Component
         $data = [
             'no'           => $r['no'],
             'riesgo'       => trim($r['riesgo']),
-            'f'            => (int)($r['f'] ?? 1),
-            's'            => (int)($r['s'] ?? 1),
-            'p'            => (int)($r['p'] ?? 1),
-            'e'            => (int)($r['e'] ?? 1),
-            'pb'           => (int)($r['pb'] ?? 1),
-            'if'           => (int)($r['if'] ?? 1),
+            'f'            => (int)($r['f'] ??0),
+            's'            => (int)($r['s'] ?? 0),
+            'p'            => (int)($r['p'] ?? 0),
+            'e'            => (int)($r['e'] ?? 0),
+            'pb'           => (int)($r['pb'] ?? 0),
+            'if'           => (int)($r['if'] ?? 0),
             'f_ocurrencia' => $this->calcularFOcurrencia($r),
             'orden'        => $index + 1,
             'updated_at'   => $now,
@@ -330,41 +330,6 @@ class Editc extends Component
     session()->flash('cont', '✅ Riesgos actualizados correctamente.');
 }
 
-public function updateRiesgosEvaluacion($contentId)
-{
-    $now = now();
-
-    foreach ($this->riesgos as $index => $r) {
-        if (empty($r['riesgo'])) continue;
-
-        $data = [
-            'no' => $r['no'],
-            'riesgo' => trim($r['riesgo']),
-            'impacto_f' => (int)($r['impacto_f'] ?? 1),
-            'impacto_o' => (int)($r['impacto_o'] ?? 1),
-            'extension_d' => (int)($r['extension_d'] ?? 1),
-            'probabilidad_m' => (int)($r['probabilidad_m'] ?? 1),
-            'impacto_fin' => (int)($r['impacto_fin'] ?? 1),
-            'cal' => (int)($r['cal'] ?? 0),
-            'clase_riesgo' => $r['clase_riesgo'] ?? '',
-            'factor_oc' => $r['factor_oc'] ?? 0,
-            'orden' => $index + 1,
-            'updated_at' => $now,
-        ];
-
-        if (isset($r['id'])) {
-            AnalysisDiagram::where('id', $r['id'])->update($data);
-        } else {
-            $data['content_id'] = $contentId;
-            $data['created_at'] = $now;
-            AnalysisDiagram::create($data);
-        }
-    }
-
-    session()->flash('success', '✅ Riesgos de evaluación actualizados correctamente.');
-}
-
-
     public function update($id,$boton,$rp)
     {
 
@@ -374,7 +339,7 @@ public function updateRiesgosEvaluacion($contentId)
             'img3' => 'nullable|image',
 
         ]);
-        
+
         // Subir nuevas imágenes si se reemplazaron
         $path1 = $this->img1 ? $this->img1->store('img_cont1', 'public') : $this->oldImg1;
         $path2 = $this->img2 ? $this->img2->store('img_cont2', 'public') : $this->oldImg2;
@@ -389,7 +354,7 @@ public function updateRiesgosEvaluacion($contentId)
             'img3'     => $path3,
             'leyenda3' => $this->leyenda3,
         ];
-       
+
 
         // Solo agrega el campo "grafica" si el subtitle_id es 16
         if ($boton === 'sub') {
@@ -398,7 +363,7 @@ public function updateRiesgosEvaluacion($contentId)
                 $data['grafica'] = $this->grafica;
                 $this->guardarRiesgos();
                 $this->guardarMapaMental();
-            }            
+            }
             if ($nl->subtitle_id === 16) {
                 $data['grafica'] = $this->grafica;
             }
@@ -457,7 +422,7 @@ public function updateRiesgosEvaluacion($contentId)
                         }
                     }
                 }
-            
+
             }
             $name = Subtitle::where('id', $nl->subtitle_id)->value('id');
             if (in_array($name, [20, 21, 22, 23, 24, 25, 26, 27, 28, 29])) {
@@ -516,7 +481,7 @@ public function updateRiesgosEvaluacion($contentId)
     {
         $this->risks;
 
-        
+
     }
 
     #[On('guardarOrden2')]
@@ -537,7 +502,7 @@ public function guardarOrden2($risks)
         $this->risks = AnalysisDiagram::where('content_id', $this->c->id ?? null)->get();
     }
 
-    
+
      public function calcularFOcurrencia($riesgo)
     {
         // Ejemplo: promedio ponderado (ajusta según tu fórmula real)
@@ -588,32 +553,33 @@ public function guardarOrden2($risks)
         $this->dispatch('$refresh'); // 🔄 fuerza el re-render del componente
     }
 
-    public function recalcularRiesgosFila($index)
-{
-    if (!isset($this->riesgos[$index])) return;
+   public function recalcularRiesgosFila($index)
+    {
+        if (!isset($this->riesgos[$index])) return;
 
-    $fila = &$this->riesgos[$index];
-    $campos = ['impacto_f','impacto_o','extension_d','probabilidad_m','impacto_fin'];
+        $fila = &$this->riesgos[$index];
+        $campos = ['impacto_f','impacto_o','extension_d','probabilidad_m','impacto_fin'];
 
-    // Si faltan campos, no hacemos nada todavía
-    foreach ($campos as $campo) {
-        if (empty($fila[$campo])) {
-            return; // espera a que el usuario complete todos los valores
+        // Esperar hasta que todos tengan valor válido
+        foreach ($campos as $campo) {
+            if (empty($fila[$campo])) {
+                return;
+            }
         }
+
+        // Calcular SOLO la fila
+        $this->calcularFila($index);
+
+        // 🚀 Actualizar gráfica UNA sola vez
+        $this->dispatch('actualizarGrafica', [
+            'riesgos' => collect($this->riesgos)->map(fn($r) => [
+                'no' => $r['no'] ?? '',
+                'riesgo' => $r['riesgo'] ?? '',
+                'factor_oc' => (float)($r['factor_oc'] ?? 0),
+            ])->values()
+        ]);
     }
 
-    // Calcular la fila normalmente
-    $this->calcularFila($index);
-
-    // 🚀 Solo cuando la fila está completa, generamos la gráfica
-    $this->dispatch('actualizarGrafica', [
-        'riesgos' => collect($this->riesgos)->map(fn($r) => [
-            'no' => $r['no'] ?? '',
-            'riesgo' => $r['riesgo'] ?? '',
-            'factor_oc' => (float)($r['factor_oc'] ?? 0),
-        ])->values()
-    ]);
-    }
     public function calcularFila($index)
     {
         if (!isset($this->riesgos[$index])) return;
@@ -621,7 +587,6 @@ public function guardarOrden2($risks)
         $fila = &$this->riesgos[$index];
         $campos = ['impacto_f', 'impacto_o', 'extension_d', 'probabilidad_m', 'impacto_fin'];
 
-        // Validar que estén dentro del rango
         foreach ($campos as $campo) {
             if (!isset($fila[$campo]) || !is_numeric($fila[$campo]) || $fila[$campo] < 1 || $fila[$campo] > 5) {
                 $fila[$campo] = null;
@@ -630,15 +595,11 @@ public function guardarOrden2($risks)
             }
         }
 
-        // Calcular Calificación total
         $total = array_sum(array_map(fn($campo) => $fila[$campo] ?? 0, $campos));
         $fila['cal'] = $total;
 
-        // Calcular Porcentaje (sobre 25)
-        $porcentaje = $total > 0 ? round(($total / 25) * 100) : 0;
-        $fila['factor_oc'] = $porcentaje;
+        $fila['factor_oc'] = $total > 0 ? round(($total / 25) * 100) : 0;
 
-        // Determinar Clase de Riesgo según la Calificación
         if ($total >= 21) {
             $fila['clase_riesgo'] = 'MUY ALTO';
         } elseif ($total >= 16) {
@@ -650,15 +611,8 @@ public function guardarOrden2($risks)
         } else {
             $fila['clase_riesgo'] = '';
         }
-
-    $this->dispatch('actualizarGrafica', [
-        'riesgos' => collect($this->riesgos)->map(fn($r) => [
-            'no' => $r['no'] ?? '',
-            'riesgo' => $r['riesgo'] ?? '',
-            'factor_oc' => (float)($r['factor_oc'] ?? 0),
-        ])->values()
-    ]);
     }
+
 
     public function guardarRiesgos()
 {
@@ -674,11 +628,11 @@ public function guardarOrden2($risks)
                 'content_id' => $this->content->id,
                 'no' => $r['no'],
                 'riesgo' => $r['riesgo'],
-                'impacto_f' => (int)($r['impacto_f'] ?? 1),
-                'impacto_o' => (int)($r['impacto_o'] ?? 1),
-                'extension_d' => (int)($r['extension_d'] ?? 1),
-                'probabilidad_m' => (int)($r['probabilidad_m'] ?? 1),
-                'impacto_fin' => (int)($r['impacto_fin'] ?? 1),
+                'impacto_f' => (int)($r['impacto_f']),
+                'impacto_o' => (int)($r['impacto_o'] ),
+                'extension_d' => (int)($r['extension_d']),
+                'probabilidad_m' => (int)($r['probabilidad_m']),
+                'impacto_fin' => (int)($r['impacto_fin']),
                 'cal' => (int)($r['cal'] ?? 0),
                 'clase_riesgo' => $r['clase_riesgo'] ?? '',
                 'factor_oc' => $r['factor_oc'] ?? 0,
@@ -719,7 +673,7 @@ public function guardarMapaMental()
             $data['background_image'] = 'storage/mental_maps/' . $fileName;
             logger('🧩 Fondo guardado en archivo', ['path' => $data['background_image']]);
         }
-    } 
+    }
     // 🔹 Si no hay nueva imagen, conservar la existente
     elseif ($mentalMap && $mentalMap->background_image) {
         $data['background_image'] = $mentalMap->background_image;

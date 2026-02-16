@@ -670,13 +670,6 @@ public function calcularFila($index)
         $fila['clase_riesgo'] = '';
     }
 
-$this->dispatch('actualizarGrafica', [
-    'riesgos' => collect($this->riesgos)->map(fn($r) => [
-        'no' => $r['no'] ?? '',
-        'riesgo' => $r['riesgo'] ?? '',
-        'factor_oc' => (float)($r['factor_oc'] ?? 0),
-    ])->values()
-]);
 }
 
     public $nodos = [];
