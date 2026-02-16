@@ -8,6 +8,7 @@ use Livewire\WithFileUploads;
 
 use App\Models\AnalysisDiagram;
 use App\Models\Subtitle;
+use App\Models\Section;
 use App\Models\Report;
 use App\Models\Content;
 use App\Models\ContentReference;
@@ -75,7 +76,10 @@ class Addc extends Component
     public $puesto_c;
     public $nombre_c;
     public $acciones;
-
+    public $riesg1;
+    public $riesg2;
+    public $riesg3;
+    public $riesg4;
     public function mount($id, $boton, $rp)
     {
         $report = Report::findOrFail($rp);
@@ -94,20 +98,33 @@ class Addc extends Component
             ->where('status',1)
             ->with('subtitle')
             ->get();
-            //MATRIZ DE RIESGO
-           $this->riesgos = [
-            ['no'=>'R01','riesgo'=>'Intrusión'],
-            ['no'=>'R02','riesgo'=>'Invasión para ocupación de áreas adyacentes a instalación'],
-            ['no'=>'R03','riesgo'=>'Manifestaciones sociales y movimientos sindicales'],
-            ['no'=>'R04','riesgo'=>'Ciber ataque – Sistemas de la organización'],
-            ['no'=>'R05','riesgo'=>'Filtración de información'],
-            ['no'=>'R06','riesgo'=>'Emergencias médicas'],
-            ['no'=>'R07','riesgo'=>'Tempestad y/o lluvia con inundaciones alta intensidad'],
-            ['no'=>'R08','riesgo'=>'Lesiones'],
-            ['no'=>'R09','riesgo'=>'Amenazas a empleados'],
-            ['no'=>'R10','riesgo'=>'Incendio'],
-            ['no'=>'R11','riesgo'=>'Sismo'],
-        ];
+
+        $riesg1 = ReportTitle::where('report_id', $this->rep->id)
+            ->where('status', 1)
+            ->where('title_id', 3)
+            ->first();
+
+        $riesg2 = ReportTitleSubtitle::where('r_t_id', $riesg1->id)
+            ->where('status', 1)
+            ->get();
+
+        $riesg3 = ReportTitleSubtitleSection::where('status', 1)
+            ->whereIn('r_t_s_id', $riesg2->pluck('id'))
+            ->get();
+
+        $riesg4 = Section::select('nombre')->whereIn('id', $riesg3->pluck('section_id'))
+            ->get();
+        $this->riesgos = $riesg4
+        ->values() // reindexa
+        ->map(function ($item, $index) {
+            return [
+                'no' => 'R' . str_pad($index + 1, 2, '0', STR_PAD_LEFT),
+                'riesgo' => $item->nombre,
+            ];
+        })
+        ->toArray();
+
+
 
         foreach ($this->riesgos as &$r) {
             $r['impacto_f']=null; $r['impacto_o']=null; $r['extension_d']=null;

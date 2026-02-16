@@ -31,6 +31,8 @@ class Editestructura extends Component
     public $subtitles = [];
     public $sections = [];
 
+    public $titlesCatalog;
+
     public $img_portada;        // Portada seleccionada (string)
     public $portada_custom; 
 
@@ -57,41 +59,51 @@ class Editestructura extends Component
         $this->colaborador    = $this->report->colaborador1;
         $this->clasificacion   = $this->report->clasificacion;
         $this->img_portada = $this->report->img_portada;
-        $this->report->titles = ReportTitle::where('report_id', $this->report->id)
-                                ->whereHas('title', function ($q) {
-                                    $q->where('status', 1);
-                                })
-                                ->get();
-        foreach ($this->report->titles as $title) {
-            $title->subtitles = ReportTitleSubtitle::where('r_t_id', $title->id)
-                                ->whereHas('subtitle', function ($q) {
-                                    $q->where('status', 1);
-                                })
-                                ->get();
-            foreach ($title->subtitles as $subtitle) {
-                $subtitle->sections = ReportTitleSubtitleSection::where('r_t_s_id', $subtitle->id)
-                                ->whereHas('section', function ($q) {
-                                    $q->where('status', 1);
-                                })
-                                ->get();
+      // 1) Catálogo ACTIVO
+        $this->titlesCatalog = Title::query()
+            ->where('status', 1)
+            ->with([
+                'subtitles' => fn ($q) => $q->where('status', 1)->orderBy('orden')
+                    ->with(['sections' => fn ($qq) => $qq->where('status', 1)->orderBy('orden')]),
+            ])
+            ->orderBy('orden')
+            ->get();
+
+        // 2) Pivots del reporte (cargados de una vez)
+        $reportTitles = ReportTitle::where('report_id', $this->report->id)->get()->keyBy('title_id');
+
+        $reportTitleSubtitles = ReportTitleSubtitle::whereIn(
+                'r_t_id',
+                $reportTitles->pluck('id')->all()
+            )->get();
+        $subtitlesBySubtitleId = $reportTitleSubtitles->keyBy('subtitle_id');
+
+
+        // Ojo: sections pivot depende del r_t_s_id
+        $reportTitleSubtitleSections = ReportTitleSubtitleSection::whereIn(
+                'r_t_s_id',
+                $reportTitleSubtitles->pluck('id')->all()
+            )->get()->keyBy('section_id');
+
+        // 3) Preselecciones (con IDs REALES del catálogo)
+        $this->titles = [];
+        $this->subtitles = [];
+        $this->sections = [];
+
+        foreach ($this->titlesCatalog as $t) {
+            $rt = $reportTitles->get($t->id);
+            if ($rt?->status)     $this->titles[]    = $t->id;
+
+            foreach ($t->subtitles as $st) {
+                $rts = $subtitlesBySubtitleId->get($st->id);
+                if ($rts?->status)    $this->subtitles[] = $st->id;
+                foreach ($st->sections as $sec) {
+                    $rtssec = $reportTitleSubtitleSections->get($sec->id);
+                    if ($rtssec?->status) $this->sections[]  = $sec->id;
+                }
             }
         }
 
-        $this->titles = $this->report->reportTitles->where('status', true)->pluck('id')->toArray();
-
-        foreach ($this->report->reportTitles as $title) {
-            foreach ($title->reportTitleSubtitles as $subtitle) {
-                if ($subtitle->status) {
-                    $this->subtitles[] = $subtitle->id;
-                }
-
-                foreach ($subtitle->reportTitleSubtitleSections as $section) {
-                    if ($section->status) {
-                        $this->sections[] = $section->id;
-                    }
-                }
-            }
-        }
 
     }
 
@@ -139,20 +151,36 @@ class Editestructura extends Component
             'img_portada' => $this->img_portada,
         ]);
         $this->report->save();
-        foreach ($this->report->reportTitles as $title) {
-            $title->status = in_array($title->id, $this->titles);
-            $title->save();
+        // TITLES
+        foreach ($this->titlesCatalog as $t) {
+            $rt = ReportTitle::firstOrCreate(
+                ['report_id' => $this->report->id, 'title_id' => $t->id],
+                ['status' => false]
+            );
 
-            foreach ($title->reportTitleSubtitles as $subtitle) {
-                $subtitle->status = in_array($subtitle->id, $this->subtitles);
-                $subtitle->save();
+            $rt->update(['status' => in_array($t->id, $this->titles ?? [])]);
 
-                foreach ($subtitle->reportTitleSubtitleSections as $section) {
-                    $section->status = in_array($section->id, $this->sections);
-                    $section->save();
+            // SUBTITLES
+            foreach ($t->subtitles as $st) {
+                $rts = ReportTitleSubtitle::firstOrCreate(
+                    ['r_t_id' => $rt->id, 'subtitle_id' => $st->id],
+                    ['status' => false]
+                );
+
+                $rts->update(['status' => in_array($st->id, $this->subtitles ?? [])]);
+
+                // SECTIONS
+                foreach ($st->sections as $sec) {
+                    $rtssec = ReportTitleSubtitleSection::firstOrCreate(
+                        ['r_t_s_id' => $rts->id, 'section_id' => $sec->id],
+                        ['status' => false]
+                    );
+
+                    $rtssec->update(['status' => in_array($sec->id, $this->sections ?? [])]);
                 }
             }
         }
+
         session()->flash('up', 'Informe actualizado correctamente ✅');
         $this->redirectRoute('my_reports.index', navigate:true);
 
@@ -164,6 +192,7 @@ class Editestructura extends Component
             'report' => $this->report,
             'img' => $this->img,
             'logo' => $this->logo,
+            'titlesCatalog' => $this->titlesCatalog,
         ]);
     }
 }

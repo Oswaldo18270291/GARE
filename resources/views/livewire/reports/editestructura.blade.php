@@ -281,88 +281,53 @@
                     <label for="textInputDefault" class="w-fit pl-0.5 text-2x1">Esquema de Informe</label>
                 </div>
 
-                {{-- Titles --}}
-                @foreach ($report->titles->sortBy('title_id') as $title)
-                    <div class="title-wrapper"
-                        x-data="{ isOpen: {{ $title->status ? 'true' : 'false' }} }">
+              @foreach ($titlesCatalog as $t)
+                <div class="title-wrapper" x-data="{ isOpen: @js(in_array($t->id, $titles ?? [])) }">
+                    <label>
+                    <input
+                        type="checkbox"
+                        value="{{ $t->id }}"
+                        wire:model="titles"
+                        x-on:click="isOpen = $event.target.checked"
+                    />
+                    <strong>{{ $t->nombre }}</strong>
+                    </label>
+
+                    <div class="subtitles" x-show="isOpen" style="margin-left:20px;">
+                    @foreach ($t->subtitles as $st)
+                        <div class="subtitle-wrapper" x-data="{ isSubOpen: @js(in_array($st->id, $subtitles ?? [])) }">
                         <label>
                             <input
-                                value="{{ $title->id }}"
-                                id="title_{{ $title->id }}"
-                                wire:model="titles"
-                                type="checkbox"
-                                x-on:click="
-                                    isOpen = $event.target.checked;
-                                    if (!isOpen) {
-                                        // Desmarcar todos los subtítulos y secciones hijos
-                                        const subtitles = $el.querySelectorAll('.subtitle-checkbox');
-                                        subtitles.forEach(sub => {
-                                            sub.checked = false;
-                                            sub.dispatchEvent(new Event('input', { bubbles: true }));
-                                        });
-
-                                        const sections = $el.querySelectorAll('.section-checkbox');
-                                        sections.forEach(sec => {
-                                            sec.checked = false;
-                                            sec.dispatchEvent(new Event('input', { bubbles: true }));
-                                        });
-                                    }
-                                "
-                                @checked($title->status)
+                            type="checkbox"
+                            value="{{ $st->id }}"
+                            wire:model="subtitles"
+                            class="subtitle-checkbox"
+                            x-on:click="isSubOpen = $event.target.checked"
                             />
-                            <strong>{{ $title->title->nombre }}</strong>
+                            {{ $st->nombre }}
                         </label>
 
-                        {{-- Subtitles --}}
-                        <div class="subtitles" x-show="isOpen" style="margin-left: 20px;">
-                            @foreach ($title->subtitles->sortBy('subtitle_id') as $subtitle)
-                                <div class="subtitle-wrapper"
-                                    x-data="{ isSubOpen: {{ $subtitle->status ? 'true' : 'false' }} }">
-                                    <label>
-                                        <input
-                                            value="{{ $subtitle->id }}"
-                                            id="subtitle_{{ $subtitle->id }}"
-                                            wire:model="subtitles"
-                                            type="checkbox"
-                                            class="subtitle-checkbox"
-                                            x-on:click="
-                                                isSubOpen = $event.target.checked;
-                                                if (!isSubOpen) {
-                                                    const sections = $el.querySelectorAll('.section-checkbox');
-                                                    sections.forEach(sec => {
-                                                        sec.checked = false;
-                                                        sec.dispatchEvent(new Event('input', { bubbles: true }));
-                                                    });
-                                                }
-                                            "
-                                            @checked($subtitle->status)
-                                        />
-                                        {{ $subtitle->subtitle->nombre }}
-                                    </label>
-
-                                    {{-- Sections --}}
-                                    <ul class="sections" x-show="isSubOpen" style="margin-left: 20px;">
-                                        @foreach ($subtitle->sections->sortBy('section_id') as $section)
-                                            <li>
-                                                <label>
-                                                    <input
-                                                        value="{{ $section->id }}"
-                                                        id="section_{{ $section->id }}"
-                                                        wire:model="sections"
-                                                        type="checkbox"
-                                                        class="section-checkbox"
-                                                        @checked($section->status)
-                                                    />
-                                                    {{ $section->section->nombre }}
-                                                </label>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
+                        <ul class="sections" x-show="isSubOpen" style="margin-left:20px;">
+                            @foreach ($st->sections as $sec)
+                            <li>
+                                <label>
+                                <input
+                                    type="checkbox"
+                                    value="{{ $sec->id }}"
+                                    wire:model="sections"
+                                    class="section-checkbox"
+                                />
+                                {{ $sec->nombre }}
+                                </label>
+                            </li>
                             @endforeach
+                        </ul>
                         </div>
+                    @endforeach
                     </div>
+                </div>
                 @endforeach
+
             </div>
     </div>
         <br>

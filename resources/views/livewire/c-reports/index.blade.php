@@ -344,7 +344,7 @@
                         style="{{ ($expandAll || in_array($t->id, $title ?? [])) 
                                 ? 'display:block; margin-left:20px;' 
                                 : 'display:none; margin-left:20px;' }}">
-                        
+
                         @foreach ($t->subtitles->where('status',1)->sortBy('orden') as $st)
                             <div class="subtitle-wrapper">
                                 <label>
