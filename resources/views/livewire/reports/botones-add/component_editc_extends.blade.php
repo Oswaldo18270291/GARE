@@ -177,14 +177,21 @@
                         const quill = new Quill($refs.editor{{ $i }}, {
                             theme: 'snow',
                             modules: {
-                                toolbar: [
-                                    [{ header: [1, 2, false] }],
-                                    ['bold', 'italic', 'underline'],
-                                    [{ 'align': [] }],
-                                    [{ list: 'ordered' }, { list: 'bullet' }],
-                                    [{ script: 'sub' }, { script: 'super' }],
-                                    ['clean']
-                                ]
+                                toolbar: {
+                                    container: [
+                                        [{ header: [1, 2, false] }],
+                                        ['bold', 'italic', 'underline'],
+                                        [{ 'align': [] }],
+                                        [{ list: 'ordered' }, { list: 'bullet' }],
+                                        [{ script: 'sub' }, { script: 'super' }],
+                                        ['clean'],
+                                        ['undo', 'redo']
+                                    ],
+                                    handlers: {
+                                        'undo': function() { this.quill.history.undo(); },
+                                        'redo': function() { this.quill.history.redo(); }
+                                    }
+                                }
                             }
                         });
                         // 🚀 Detectar Shift + Enter manualmente (como tu versión original)

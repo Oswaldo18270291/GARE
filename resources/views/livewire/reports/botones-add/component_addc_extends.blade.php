@@ -216,8 +216,13 @@
                                     [{ 'align': [] }],
                                     [{ list: 'ordered' }, { list: 'bullet' }],
                                     [{ script: 'sub' }, { script: 'super' }],
-                                    ['clean']
-                                ]
+                                    ['clean'],
+                                    ['undo', 'redo']
+                                ],
+                                handlers: {
+                                    'undo': function() { this.quill.history.undo(); },
+                                    'redo': function() { this.quill.history.redo(); }
+                                }
                             }
                         }
                     });

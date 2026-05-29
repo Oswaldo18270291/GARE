@@ -18,8 +18,13 @@
                             [{ align: [] }],
                             [{ list: 'ordered' }, { list: 'bullet' }],
                             [{ script: 'sub' }, { script: 'super' }],
-                            ['clean']
-                        ]
+                            ['clean'],
+                            ['undo', 'redo']
+                        ],
+                        handlers: {
+                            'undo': function() { this.quill.history.undo(); },
+                            'redo': function() { this.quill.history.redo(); }
+                        }
                     }
                 }
             });
@@ -1731,8 +1736,13 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
                                 ['bold', 'italic', 'underline'],
                                 [{ 'align': [] }],
                                 [{ list: 'ordered' }, { list: 'bullet' }],
-                                ['clean']
-                            ]
+                                ['clean'],
+                                ['undo', 'redo']
+                            ],
+                            handlers: {
+                                'undo': function() { this.quill.history.undo(); },
+                                'redo': function() { this.quill.history.redo(); }
+                            }
                         }
                     }
                 });
@@ -1823,8 +1833,13 @@ quill.on('text-change', () => {
                                     ['bold', 'italic', 'underline'],
                                     [{ 'align': [] }],
                                     [{ list: 'ordered' }, { list: 'bullet' }],
-                                    ['clean']
-                                ]
+                                    ['clean'],
+                                    ['undo', 'redo']
+                                ],
+                                handlers: {
+                                    'undo': function() { this.quill.history.undo(); },
+                                    'redo': function() { this.quill.history.redo(); }
+                                }
                             }
                         }
                     });
@@ -2101,8 +2116,13 @@ quill.on('text-change', () => {
                                                         ['bold', 'italic', 'underline'],
                                                         [{ 'align': [] }],
                                                         [{ list: 'ordered' }, { list: 'bullet' }],
-                                                        ['clean']
-                                                    ]
+                                                        ['clean'],
+                                                        ['undo', 'redo']
+                                                    ],
+                                                    handlers: {
+                                                        'undo': function() { this.quill.history.undo(); },
+                                                        'redo': function() { this.quill.history.redo(); }
+                                                    }
                                                 }
                                             }
                                         });
