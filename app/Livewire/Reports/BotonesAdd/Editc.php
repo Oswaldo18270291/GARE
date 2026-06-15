@@ -853,6 +853,16 @@ public function guardarMapaMental()
         $this->dispatch('actualizarMapa', nodos: $this->nodos, relaciones: $this->relaciones);
     }
 
+public function setOpacity($valor)
+{
+    $this->background_opacity = (float) $valor;
+
+    if ($this->content) {
+        \App\Models\MentalMap::where('content_id', $this->content->id)
+            ->update(['background_opacity' => $this->background_opacity]);
+    }
+}
+
 public function setBackground($base64)
 {
     \Log::info("🔥 LLEGO A setBackground() correctamente");
