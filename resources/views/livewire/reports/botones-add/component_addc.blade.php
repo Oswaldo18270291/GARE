@@ -2393,7 +2393,8 @@ quill.on('text-change', () => {
         </table>
     @endif
     <br>
-    <button type="submit" class="inline-flex justify-center items-center gap-2 rounded-radius bg-success border border-success px-4 py-2 text-sm font-medium text-on-success transition hover:opacity-75">
-        Guardar
+    <button type="submit" wire:loading.attr="disabled" wire:loading.class="opacity-50 cursor-not-allowed" class="inline-flex justify-center items-center gap-2 rounded-radius bg-success border border-success px-4 py-2 text-sm font-medium text-on-success transition hover:opacity-75">
+        <span wire:loading.remove>Guardar</span>
+        <span wire:loading>Guardando...</span>
     </button>
 </div> 
