@@ -1377,17 +1377,23 @@ if (count($currentRow)) {
                                         </div>
 
                                         <!-- 📋 Cuadros transparentes anclados -->
+                                        @php
+                                            $fodaBullet = fn($text) => implode("\n", array_map(
+                                                fn($l) => trim($l) === '' ? $l : (str_starts_with($l, '• ') ? $l : '• ' . $l),
+                                                explode("\n", $text)
+                                            ));
+                                        @endphp
                                         <div class="box fort-box">
-                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->fortalezas ?? 'Sin información')))) !!}
+                                            {!! nl2br(e($fodaBullet($cont->fodas->first()?->fortalezas ?? 'Sin información'))) !!}
                                         </div>
                                         <div class="box deb-box">
-                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->debilidades ?? 'Sin información')))) !!}
+                                            {!! nl2br(e($fodaBullet($cont->fodas->first()?->debilidades ?? 'Sin información'))) !!}
                                         </div>
                                         <div class="box opo-box">
-                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->oportunidades ?? 'Sin información')))) !!}
+                                            {!! nl2br(e($fodaBullet($cont->fodas->first()?->oportunidades ?? 'Sin información'))) !!}
                                         </div>
                                         <div class="box ame-box">
-                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->amenazas ?? 'Sin información')))) !!}
+                                            {!! nl2br(e($fodaBullet($cont->fodas->first()?->amenazas ?? 'Sin información'))) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -2248,17 +2254,23 @@ if (count($currentRow)) {
                                         </div>
 
                                         <!-- 📋 Cuadros transparentes anclados -->
+                                        @php
+                                            $fodaBullet = fn($text) => implode("\n", array_map(
+                                                fn($l) => trim($l) === '' ? $l : (str_starts_with($l, '• ') ? $l : '• ' . $l),
+                                                explode("\n", $text)
+                                            ));
+                                        @endphp
                                         <div class="box fort-box">
-                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->fortalezas ?? 'Sin información')))) !!}
+                                            {!! nl2br(e($fodaBullet($cont->fodas->first()?->fortalezas ?? 'Sin información'))) !!}
                                         </div>
                                         <div class="box deb-box">
-                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->debilidades ?? 'Sin información')))) !!}
+                                            {!! nl2br(e($fodaBullet($cont->fodas->first()?->debilidades ?? 'Sin información'))) !!}
                                         </div>
                                         <div class="box opo-box">
-                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->oportunidades ?? 'Sin información')))) !!}
+                                            {!! nl2br(e($fodaBullet($cont->fodas->first()?->oportunidades ?? 'Sin información'))) !!}
                                         </div>
                                         <div class="box ame-box">
-                                            {!! nl2br(e(str_replace("\n", "\n• ", "• " . ($cont->fodas->first()?->amenazas ?? 'Sin información')))) !!}
+                                            {!! nl2br(e($fodaBullet($cont->fodas->first()?->amenazas ?? 'Sin información'))) !!}
                                         </div>
                                     </div>
                                 </div>

@@ -1494,32 +1494,116 @@ document.addEventListener("livewire:navigated", () => setTimeout(renderMapa, 400
 
         <!-- 📦 Cuadro Fortalezas -->
         <div class="absolute top-[40px] left-[-100px] z-30 w-[260px] h-[130px]
-                    border-2 border-[#F47B20] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
+                    border-2 border-[#F47B20] bg-white/95 rounded-xl p-3 shadow-md flex flex-col"
+                    x-data="{
+                 handleKey(e) {
+                     if (e.key !== 'Enter') return;
+                     e.preventDefault();
+                     const ta = e.target;
+                     const s = ta.selectionStart;
+                     ta.value = ta.value.slice(0, s) + '\n• ' + ta.value.slice(ta.selectionEnd);
+                     ta.selectionStart = ta.selectionEnd = s + 3;
+                     ta.dispatchEvent(new Event('input'));
+                 },
+                 handleFocus(e) {
+                     const ta = e.target;
+                     if (!ta.value.trim()) {
+                         ta.value = '• ';
+                         ta.selectionStart = ta.selectionEnd = 2;
+                         ta.dispatchEvent(new Event('input'));
+                     }
+                 }
+             }">
             <textarea wire:model.defer="fortalezas"
+                      x-on:keydown="handleKey"
+                      x-on:focus="handleFocus"
                       class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
                       placeholder="• Escribe las fortalezas aquí..."></textarea>
         </div>
 
         <!-- 📦 Cuadro Debilidades -->
         <div class="absolute top-[40px] right-[-100px] z-30 w-[260px] h-[130px]
-                    border-2 border-[#808285] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
+                    border-2 border-[#808285] bg-white/95 rounded-xl p-3 shadow-md flex flex-col"
+                    x-data="{
+                 handleKey(e) {
+                     if (e.key !== 'Enter') return;
+                     e.preventDefault();
+                     const ta = e.target;
+                     const s = ta.selectionStart;
+                     ta.value = ta.value.slice(0, s) + '\n• ' + ta.value.slice(ta.selectionEnd);
+                     ta.selectionStart = ta.selectionEnd = s + 3;
+                     ta.dispatchEvent(new Event('input'));
+                 },
+                 handleFocus(e) {
+                     const ta = e.target;
+                     if (!ta.value.trim()) {
+                         ta.value = '• ';
+                         ta.selectionStart = ta.selectionEnd = 2;
+                         ta.dispatchEvent(new Event('input'));
+                     }
+                 }
+             }">
             <textarea wire:model.defer="debilidades"
+                      x-on:keydown="handleKey"
+                      x-on:focus="handleFocus"
                       class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
                       placeholder="• Escribe las debilidades aquí..."></textarea>
         </div>
 
         <!-- 📦 Cuadro Oportunidades -->
         <div class="absolute bottom-[40px] left-[-100px] z-30 w-[260px] h-[130px]
-                    border-2 border-[#0072BC] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
+                    border-2 border-[#0072BC] bg-white/95 rounded-xl p-3 shadow-md flex flex-col"
+                    x-data="{
+                 handleKey(e) {
+                     if (e.key !== 'Enter') return;
+                     e.preventDefault();
+                     const ta = e.target;
+                     const s = ta.selectionStart;
+                     ta.value = ta.value.slice(0, s) + '\n• ' + ta.value.slice(ta.selectionEnd);
+                     ta.selectionStart = ta.selectionEnd = s + 3;
+                     ta.dispatchEvent(new Event('input'));
+                 },
+                 handleFocus(e) {
+                     const ta = e.target;
+                     if (!ta.value.trim()) {
+                         ta.value = '• ';
+                         ta.selectionStart = ta.selectionEnd = 2;
+                         ta.dispatchEvent(new Event('input'));
+                     }
+                 }
+             }">
             <textarea wire:model.defer="oportunidades"
+                      x-on:keydown="handleKey"
+                      x-on:focus="handleFocus"
                       class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
                       placeholder="• Escribe las oportunidades aquí..."></textarea>
         </div>
 
         <!-- 📦 Cuadro Amenazas -->
         <div class="absolute bottom-[40px] right-[-100px] z-30 w-[260px] h-[130px]
-                    border-2 border-[#FDB913] bg-white/95 rounded-xl p-3 shadow-md flex flex-col">
+                    border-2 border-[#FDB913] bg-white/95 rounded-xl p-3 shadow-md flex flex-col"
+                    x-data="{
+                 handleKey(e) {
+                     if (e.key !== 'Enter') return;
+                     e.preventDefault();
+                     const ta = e.target;
+                     const s = ta.selectionStart;
+                     ta.value = ta.value.slice(0, s) + '\n• ' + ta.value.slice(ta.selectionEnd);
+                     ta.selectionStart = ta.selectionEnd = s + 3;
+                     ta.dispatchEvent(new Event('input'));
+                 },
+                 handleFocus(e) {
+                     const ta = e.target;
+                     if (!ta.value.trim()) {
+                         ta.value = '• ';
+                         ta.selectionStart = ta.selectionEnd = 2;
+                         ta.dispatchEvent(new Event('input'));
+                     }
+                 }
+             }">
             <textarea wire:model.defer="amenazas"
+                      x-on:keydown="handleKey"
+                      x-on:focus="handleFocus"
                       class="w-full h-full p-2 text-sm text-[#002060] resize-none focus:outline-none bg-transparent"
                       placeholder="• Escribe las amenazas aquí..."></textarea>
         </div>
